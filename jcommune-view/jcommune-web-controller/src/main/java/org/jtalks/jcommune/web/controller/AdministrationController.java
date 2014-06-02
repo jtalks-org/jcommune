@@ -39,6 +39,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -224,6 +225,12 @@ public class AdministrationController {
         permission.setAvailableGroups(available);
 
         return new JsonResponse(JsonResponseStatus.SUCCESS, permission);
+    }
+
+    @RequestMapping(value = "/branch/permissions/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse editBranchPermissions(@RequestBody BranchPermissionDto permissionInfo) {
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
     /**
