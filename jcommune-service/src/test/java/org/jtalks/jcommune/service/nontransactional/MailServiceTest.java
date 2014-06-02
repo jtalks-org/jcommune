@@ -170,7 +170,7 @@ public class MailServiceTest {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());
         service.sendUpdatesOnSubscription(user, codeReview);
-        verify(sender).send(Matchers.<MimeMessage>any());
+        verify(asyncMailSender).sendEmail(Matchers.<MimeMessage>any());
     }
 
     @Test
@@ -287,7 +287,7 @@ public class MailServiceTest {
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
         enableEmailNotifications();
         Exception fail = new MailSendException("");
-        doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());
+        doThrow(fail).when(asyncMailSender).sendEmail(Matchers.<MimeMessage>any());
 
         service.sendPasswordRecoveryMail(user, PASSWORD);
     }
@@ -386,7 +386,7 @@ public class MailServiceTest {
     }
 
     private void checkMailCredentials() throws MessagingException {
-        verify(sender).send(captor.capture());
+        verify(asyncMailSender).sendEmail(captor.capture());
         assertEquals(captor.getValue().getRecipients(Message.RecipientType.TO).length, 1);
         InternetAddress actualTo = (InternetAddress) captor.getValue().getRecipients(Message.RecipientType.TO)[0];
         assertEquals(actualTo.getAddress(), TO);
