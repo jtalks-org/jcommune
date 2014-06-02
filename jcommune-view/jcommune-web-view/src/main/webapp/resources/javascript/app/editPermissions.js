@@ -98,20 +98,21 @@ $(function () {
                         </div> \
                     </div>";
             content += "<div class='pull-right list-container'>"
-                + getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded)
+                + getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded);
 
             content += "</div></div>";
 
             var submitFunc = function(e) {
                 e.preventDefault();
-                var changed = {
-                    selectedGroups: newlyAdded,
-                    availableGroups: removed
-                };
+                if ((newlyAdded.length == 0) && (removed.length == 0)) {
+                    jDialog.closeDialog();
+                    return;
+                }
                 var permissionInfo = {
                     branchId: branchId,
                     permissionMask: permissionMask,
-                    changedPermissions: changed
+                    newlyAddedGroupIds: newlyAdded,
+                    removedGroupIds: removed
                 };
                 $.ajax ({
                     url: baseUrl + "/branch/permissions/edit",
@@ -154,21 +155,21 @@ $(function () {
             });
 
             //TODO: refactoring
-            $("#addSelected").on('click', function(e){
+            $("#addSelected").on('click', function(e) {
                 console.log("addSelected");
                 selectedGroups = getSelectedAvailableGroups().concat(selectedGroups);
-                console.log("new selected " + selectedGroups.length)
+                console.log("new selected " + selectedGroups.length);
                 jDialog.closeDialog();
                 showDialog(selectedGroups, availableGroups, permissionName, allowed);
             });
 
-            $("#addAll").on('click', function(e){
+            $("#addAll").on('click', function(e) {
                 console.log("addAll");
                 for (var i = 0; i < availableGroups.length; i ++) {
-                    if (removed.indexOf(availableGroups[i]) == -1) {
-                        newlyAdded.push(availableGroups[i]);
+                    if (removed.indexOf(availableGroups[i].id) == -1) {
+                        newlyAdded.push(availableGroups[i].id);
                     } else {
-                        removed.splice(removed.indexOf(availableGroups[i]), 1);
+                        removed.splice(removed.indexOf(availableGroups[i].id), 1);
                     }
                 }
                 console.log("newly added size - " + newlyAdded.length);
@@ -186,13 +187,13 @@ $(function () {
                 showDialog(selectedGroups, availableGroups, permissionName, allowed);
             });
 
-            $("#removeAll").on('click', function(e){
+            $("#removeAll").on('click', function(e) {
                 console.log("removeAll");
                 for (var i = 0; i < selectedGroups.length; i ++) {
-                    if (newlyAdded.indexOf(selectedGroups[i]) == -1) {
-                        removed.push(selectedGroups[i]);
+                    if (newlyAdded.indexOf(selectedGroups[i].id) == -1) {
+                        removed.push(selectedGroups[i].id);
                     } else {
-                        newlyAdded.splice(newlyAdded.indexOf(selectedGroups[i]), 1);
+                        newlyAdded.splice(newlyAdded.indexOf(selectedGroups[i].id), 1);
                     }
                 }
                 console.log("newly added size - " + newlyAdded.length);
@@ -207,31 +208,31 @@ $(function () {
                 var selected = [];
                 $("#groupListAvailable input[type='checkbox']:checked").each(function() {
                     var group = getGroupInfoById(availableGroups, parseInt($(this).prop('id'), 10));
-                    if (removed.indexOf(group) == -1) {
-                        newlyAdded.push(group);
+                    if (removed.indexOf(group.id) == -1) {
+                        newlyAdded.push(group.id);
                     } else {
-                        removed.splice(removed.indexOf(group), 1);
+                        removed.splice(removed.indexOf(group.id), 1);
                     }
                     console.log("newly added size - " + newlyAdded.length);
                     console.log("removed size - " + removed.length);
                     selected.push(group);
                 });
                 return selected;
-            };
+            }
 
             function getSelectedAlreadyAddedGroups() {
                 var selected = [];
                 $("#groupListAlreadyAdded input[type='checkbox']:checked").each(function() {
                     var group = getGroupInfoById(selectedGroups, parseInt($(this).prop('id'), 10));
-                    if (newlyAdded.indexOf(group) == -1) {
-                        removed.push(group);
+                    if (newlyAdded.indexOf(group.id) == -1) {
+                        removed.push(group.id);
                     } else {
-                        newlyAdded.splice(newlyAdded.indexOf(group), 1);
+                        newlyAdded.splice(newlyAdded.indexOf(group.id), 1);
                     }
                     console.log("newly added size - " + newlyAdded.length);
                     console.log("removed size - " + removed.length);
                     selected.push(group);
-                })
+                });
                 return selected;
             }
 
@@ -243,7 +244,7 @@ $(function () {
                         return tmp;
                     }
                 }
-            };
+            }
         }
     }
 });

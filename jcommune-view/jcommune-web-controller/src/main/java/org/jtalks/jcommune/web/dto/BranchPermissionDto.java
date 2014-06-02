@@ -27,7 +27,8 @@ public class BranchPermissionDto {
     private boolean allowed;
     private long branchId;
     private int permissionMask;
-    private PermissionGroupsDto changedPermissions;
+    private List<Long> newlyAddedGroupIds;
+    private List<Long> removedGroupIds;
 
     /**
      * @return true if information was requested about groups for which permission is allowed
@@ -78,11 +79,19 @@ public class BranchPermissionDto {
         this.permissionMask = permissionMask;
     }
 
-    public PermissionGroupsDto getChangedPermissions() {
-        return changedPermissions;
+    public List<Long> getNewlyAddedGroupIds() {
+        return newlyAddedGroupIds;
     }
 
-    public void setChangedPermissions(PermissionGroupsDto changedPermissions) {
-        this.changedPermissions = changedPermissions;
+    public void setNewlyAddedGroupIds(List<Long> newlyAddedGroupIds) {
+        this.newlyAddedGroupIds = newlyAddedGroupIds;
+    }
+
+    public List<Long> getRemovedGroupIds() {
+        return removedGroupIds;
+    }
+
+    public void setRemovedGroupIds(List<Long> removedGroupIds) {
+        this.removedGroupIds = removedGroupIds;
     }
 }
