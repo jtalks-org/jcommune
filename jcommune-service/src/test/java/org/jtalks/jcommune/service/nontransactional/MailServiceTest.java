@@ -64,7 +64,8 @@ public class MailServiceTest {
     private JavaMailSender sender;
     @Mock
     private PropertyDao propertyDao;
-
+    @Mock
+    private AsyncMailSender asyncMailSender;
     private JCommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
     //
     private MailService service;
@@ -92,7 +93,8 @@ public class MailServiceTest {
         velocityEngine.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
         messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages");
-        service = new MailService(sender, FROM, velocityEngine, messageSource, notificationsEnabledProperty);
+        service = new MailService(sender, FROM, velocityEngine, messageSource, notificationsEnabledProperty,
+                asyncMailSender);
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);
         captor = ArgumentCaptor.forClass(MimeMessage.class);

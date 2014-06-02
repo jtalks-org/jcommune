@@ -28,6 +28,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.jtalks.jcommune.service.AsyncMailSender;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -65,6 +66,7 @@ public class MailService {
     private final VelocityEngine velocityEngine;
     private final MessageSource messageSource;
     private final JCommuneProperty notificationsEnabledProperty;
+    private final AsyncMailSender asyncMailSender;
 
     /**
      * Creates a mailing service with a default template message autowired.
@@ -77,17 +79,20 @@ public class MailService {
      * @param engine                       engine for templating email notifications
      * @param source                       for resolving internationalization messages
      * @param notificationsEnabledProperty to check whether email notifications are enabled
+     * @param asyncMailSender              mail sender to async work
      */
     public MailService(JavaMailSender sender,
                        String from,
                        VelocityEngine engine,
                        MessageSource source,
-                       JCommuneProperty notificationsEnabledProperty) {
+                       JCommuneProperty notificationsEnabledProperty,
+                       AsyncMailSender asyncMailSender) {
         this.mailSender = sender;
         this.from = from;
         this.velocityEngine = engine;
         this.messageSource = source;
         this.notificationsEnabledProperty = notificationsEnabledProperty;
+        this.asyncMailSender = asyncMailSender;
     }
 
     /**
@@ -314,7 +319,7 @@ public class MailService {
             helper.setText(plainText, htmlText);
 
             long started = System.currentTimeMillis();
-            mailSender.send(message);
+            asyncMailSender.sendEmail(message);
 
             long secsTook = (System.currentTimeMillis() - started) / 1000;
             if (secsTook > 30) {

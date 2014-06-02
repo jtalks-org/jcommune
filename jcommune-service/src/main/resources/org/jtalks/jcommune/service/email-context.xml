@@ -53,6 +53,10 @@
     </property>
   </bean>
 
+  <bean id="asyncMailSender" class="org.jtalks.jcommune.service.nontransactional.AsyncMailSender">
+    <constructor-arg ref="mailSender"/>
+  </bean>
+
   <bean id="mailService" class="org.jtalks.jcommune.service.nontransactional.MailService">
     <constructor-arg ref="mailSender"/>
     <!--the following argument should match real mailbox we use to send mails-->
@@ -60,6 +64,7 @@
     <constructor-arg ref="velocityEngine"/>
     <constructor-arg ref="messageSource"/>
     <constructor-arg ref="sendingNotificationsProperty"/>
+    <constructor-arg ref="asyncMailSender"/>
   </bean>
 
   <bean id="notificationService" class="org.jtalks.jcommune.service.nontransactional.NotificationService">
