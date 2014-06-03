@@ -20,6 +20,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <jsp:useBean id="topic" type="org.jtalks.jcommune.model.entity.Topic" scope="request"/>
 <head>
   <meta name="description" content="<c:out value="${topic.title}"/>">
@@ -207,10 +208,11 @@
               <c:when test="${isFirstPost}">
                 <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
                                       permission="BranchPermission.DELETE_OWN_POSTS">
-                  <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
-                                        permission='BranchPermission.DELETE_OTHERS_POSTS'>
                     <c:set var="isDeleteButtonAvailable" value="true"/>
-                  </jtalks:hasPermission>
+                </jtalks:hasPermission>
+                <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
+                                      permission='BranchPermission.DELETE_OTHERS_POSTS'>
+                    <c:set var="isDeleteButtonAvailable" value="true"/>
                 </jtalks:hasPermission>
               </c:when>
               <%--Controls for the any other ordinaru post--%>
