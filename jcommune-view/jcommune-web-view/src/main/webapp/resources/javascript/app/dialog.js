@@ -50,7 +50,7 @@ $(function () {
         jDialog.confirmType = 'confirm';
         jDialog.alertType = 'alert';
         jDialog.infoType = 'info';
-        jDialog.options = {}
+        jDialog.options = {};
         jDialog.dialog;
 
         jDialog.rootPanelFunc = function () {
@@ -67,7 +67,7 @@ $(function () {
     ');
 
             return dialog;
-        }
+        };
 
         jDialog.bodyContentFunc = function () {
             var body = '<div class="modal-body">';
@@ -85,7 +85,7 @@ $(function () {
                 }
             }
             return body + '</div>';
-        }
+        };
 
         jDialog.footerContentFunc = function () {
             var footer = '<div class="modal-footer">';
@@ -104,12 +104,15 @@ $(function () {
             }
 
             return footer + '</div>';
-        }
+        };
+
+        var body = $('body');
 
         jDialog.closeDialog = function () {
             jDialog.dialog.modal('hide');
             jDialog.dialog.remove();
-        }
+            body.css('overflow','auto');
+        };
 
         //if user sets options with name which exists in default then default option overridden, else adds
         jDialog.defaultOptions = {
@@ -140,13 +143,13 @@ $(function () {
             'dialogKeydown': Keymaps.defaultDialog,
             'alertDefaultBut': 'alert-ok',
             'backdrop': 'static'
-        }
+        };
 
         jDialog.createDialog = function (opts) {
             if (jDialog.dialog) {
                 jDialog.closeDialog();
             }
-
+            body.css('overflow','hidden');
             //merge default options and users option
             jDialog.options = $.extend({}, jDialog.defaultOptions, opts);
             jDialog.dialog = jDialog.rootPanelFunc();
@@ -171,7 +174,7 @@ $(function () {
             );
 
             //we need add element to calculate width and height
-            $('body').append(jDialog.dialog);
+            body.append(jDialog.dialog);
 
             jDialog.resizeDialog(jDialog.dialog);
 
@@ -191,14 +194,14 @@ $(function () {
             });
 
             return jDialog.dialog;
-        }
+        };
 
         /*
          * first elemnts it is element which have class "first",
          * or first "input" element, or first "button"
          */
         jDialog.focusFirstElement = function () {
-            var firsts = ['.first', 'input:first', 'button:first']
+            var firsts = ['.first', 'input:first', 'button:first'];
             var first;
 
             $.each(firsts, function (idx, v) {
@@ -208,7 +211,7 @@ $(function () {
                     return false;
                 }
             });
-        }
+        };
 
         //methods to dialogs
         jDialog.resizeDialog = function (dialog) {
@@ -220,7 +223,7 @@ $(function () {
                     return $(this).outerWidth() / 2 * (-1)
                 });
             }
-        }
+        };
 
         /**
          * Enable all disabled elements
@@ -232,13 +235,13 @@ $(function () {
             dialog.find('._error').remove();
             dialog.find(".help-block").show();
             dialog.find('.control-group').removeClass('error');
-        }
+        };
 
 
         var capitaliseFirstLetter = function (string)
         {
             return string.charAt(0).toUpperCase() + string.slice(1);
-        }
+        };
 
         /**
          * Show errors under fields with errors
@@ -254,7 +257,7 @@ $(function () {
                 ErrorUtils.addErrorMessage(idField, errors[i].defaultMessage);
             }
             jDialog.resizeDialog(dialog);
-        }
+        };
 
 
         var addHandlers = function () {
@@ -302,10 +305,10 @@ $(function () {
                         $(document).live(k, ke, ve);
                     }
                 })
-            })
+            });
 
             tabNavigation(jDialog.options.tabNavigation);
-        }
+        };
 
         var tabNavigation = function (selectors) {
             $.each(selectors, function (idx, v) {
@@ -314,10 +317,10 @@ $(function () {
                         e.preventDefault();
                         nextTabElm(selectors, idx).focus();
                     }
-                }
+                };
                 $(v).on('keydown', func);
             });
-        }
+        };
 
         var getStaticHandler = function (key) {
             switch (key) {
@@ -328,7 +331,7 @@ $(function () {
                    };
                     break;
             }
-        }
+        };
 
         var nextTabElm = function (els, curIdx) {
             if (els.length == curIdx + 1) {

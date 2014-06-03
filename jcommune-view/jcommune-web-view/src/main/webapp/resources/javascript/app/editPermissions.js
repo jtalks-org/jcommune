@@ -79,7 +79,6 @@ $(function () {
         }
 
         function showDialog(selectedGroups, availableGroups, permissionName, allowed) {
-            $('body').css('overflow','hidden');
             var footerContent = ' \
             <button id="cancelEditPermission" class="btn">' + $labelCancel + '</button> \
             <button id="savePermission" class="btn btn-primary">' + $labelOk + '</button>';
@@ -138,11 +137,6 @@ $(function () {
                 });
             };
 
-            var closeDialogFunc = function() {
-                jDialog.dialog.modal('hide');
-                jDialog.dialog.remove();
-                $('body').css('overflow','auto');
-            };
 
             jDialog.createDialog({
                 dialogId: 'permissionsEditor',
@@ -151,7 +145,6 @@ $(function () {
                 bodyContent: content,
                 maxWidth: 800,
                 maxHeight: 600,
-                closeDialog: closeDialogFunc,
                 handlers: {
                     '#cancelEditPermission' : {'static':'close'},
                     '#savePermission' : {'click':submitFunc}
