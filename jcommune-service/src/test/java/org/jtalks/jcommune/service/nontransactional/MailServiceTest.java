@@ -61,11 +61,9 @@ public class MailServiceTest {
     private static final String USERNAME = "user";
     private static final String PASSWORD = "new_password";
     @Mock
-    private JavaMailSender sender;
-    @Mock
     private PropertyDao propertyDao;
     @Mock
-    private AsyncMailSender asyncMailSender;
+    private MailSender sender;
     private JCommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
     //
     private MailService service;
@@ -93,8 +91,7 @@ public class MailServiceTest {
         velocityEngine.setProperty("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
         messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages");
-        service = new MailService(sender, FROM, velocityEngine, messageSource, notificationsEnabledProperty,
-                asyncMailSender);
+        service = new MailService(sender, FROM, velocityEngine, messageSource, notificationsEnabledProperty);
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);
         captor = ArgumentCaptor.forClass(MimeMessage.class);
@@ -170,7 +167,7 @@ public class MailServiceTest {
         Exception fail = new MailSendException("");
         doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());
         service.sendUpdatesOnSubscription(user, codeReview);
-        verify(asyncMailSender).sendEmail(Matchers.<MimeMessage>any());
+        verify(sender).send(Matchers.<MimeMessage>any());
     }
 
     @Test
@@ -287,7 +284,7 @@ public class MailServiceTest {
     public void testRestorePasswordFail() throws NotFoundException, MailingFailedException {
         enableEmailNotifications();
         Exception fail = new MailSendException("");
-        doThrow(fail).when(asyncMailSender).sendEmail(Matchers.<MimeMessage>any());
+        doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());
 
         service.sendPasswordRecoveryMail(user, PASSWORD);
     }
@@ -386,7 +383,7 @@ public class MailServiceTest {
     }
 
     private void checkMailCredentials() throws MessagingException {
-        verify(asyncMailSender).sendEmail(captor.capture());
+        verify(sender).send(captor.capture());
         assertEquals(captor.getValue().getRecipients(Message.RecipientType.TO).length, 1);
         InternetAddress actualTo = (InternetAddress) captor.getValue().getRecipients(Message.RecipientType.TO)[0];
         assertEquals(actualTo.getAddress(), TO);

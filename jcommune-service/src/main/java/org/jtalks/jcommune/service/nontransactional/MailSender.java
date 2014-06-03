@@ -14,28 +14,23 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.Async;
 
 import javax.mail.internet.MimeMessage;
 
 /**
- * Object send email over Async
+ * Object sends email in a separate thread.
+ * Amount of thread depends on parameter "pool-size" in spring task.
+ * See http://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/scheduling.html
+ *
  * @author Andrey Ivanov
  */
-public class AsyncMailSender implements org.jtalks.jcommune.service.AsyncMailSender
-{
-    private final JavaMailSender sender;
-
-    /**
-     * @param sender basic sender
-     */
-    public AsyncMailSender(JavaMailSender sender) {
-        this.sender = sender;
-    }
-
+public class MailSender extends JavaMailSenderImpl {
     @Async
-    public void sendEmail(MimeMessage message) {
-        this.sender.send(message);
+    @Override
+    public void send(MimeMessage mimeMessage) throws MailException {
+        super.send(mimeMessage);
     }
 }

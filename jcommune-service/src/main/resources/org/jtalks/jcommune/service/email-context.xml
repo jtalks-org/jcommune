@@ -19,7 +19,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+  <bean id="mailSender" class="org.jtalks.jcommune.service.nontransactional.MailSender">
     <property name="host" value="${SMTP_HOST:smtp.mail.ru}"/>
     <property name="port" value="${SMTP_PORT:25}"/>
     <!--the following property should match "from" property in MailSender bean-->
@@ -53,10 +53,6 @@
     </property>
   </bean>
 
-  <bean id="asyncMailSender" class="org.jtalks.jcommune.service.nontransactional.AsyncMailSender">
-    <constructor-arg ref="mailSender"/>
-  </bean>
-
   <bean id="mailService" class="org.jtalks.jcommune.service.nontransactional.MailService">
     <constructor-arg ref="mailSender"/>
     <!--the following argument should match real mailbox we use to send mails-->
@@ -64,7 +60,6 @@
     <constructor-arg ref="velocityEngine"/>
     <constructor-arg ref="messageSource"/>
     <constructor-arg ref="sendingNotificationsProperty"/>
-    <constructor-arg ref="asyncMailSender"/>
   </bean>
 
   <bean id="notificationService" class="org.jtalks.jcommune.service.nontransactional.NotificationService">
