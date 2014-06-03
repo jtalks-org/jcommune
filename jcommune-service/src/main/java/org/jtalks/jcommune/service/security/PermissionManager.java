@@ -180,6 +180,11 @@ public class PermissionManager {
         return allGroups;
     }
 
+    /**
+     * Gets the list of groups which IDs specified in parameter
+     * @param groupIds the list of IDs for which groups should be found
+     * @return the list of found groups or empty list if list of IDs is empty
+     */
     public List<Group> getGroupsByIds(List<Long> groupIds) {
         if (groupIds.isEmpty()) {
             return Collections.emptyList();

@@ -227,6 +227,11 @@ public class AdministrationController {
         return new JsonResponse(JsonResponseStatus.SUCCESS, permission);
     }
 
+    /**
+     * Process change branch permission request
+     * @param permissionInfo information about permission which will be changed
+     * @return "success" or "fail" response status in JSON format
+     */
     @RequestMapping(value = "/branch/permissions/edit", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse editBranchPermissions(@RequestBody BranchPermissionDto permissionInfo) {

@@ -16,9 +16,9 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
+import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;

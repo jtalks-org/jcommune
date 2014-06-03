@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
@@ -33,6 +34,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.anyLong;
@@ -337,6 +339,41 @@ public class TransactionalBranchServiceTest {
 
         List<Group> result = branchService.getPermissionGroupsFor(0, branchId, false, permission);
         assertEquals(result, expectedPermissions.getRestricted(permission));
+    }
+
+    @Test
+    public void changeBranchPermissionsShouldChangeGrantsWhenAllowedIsTrue() throws Exception{
+        long branchId = 42;
+        PermissionChanges changes = new PermissionChanges(BranchPermission.CLOSE_TOPICS, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        Branch expectedBranch = new Branch("name", "description");
+
+        when(branchDao.isExist(branchId)).thenReturn(true);
+        when(branchDao.get(branchId)).thenReturn(expectedBranch);
+
+        branchService.changeBranchPermissions(0, branchId, true, changes);
+        verify(permissionService).changeGrants(expectedBranch, changes);
+    }
+
+    @Test
+    public void changeBranchPermissionsShouldChangeRestrictionsWhenAllowedIsFalse() throws Exception {
+        long branchId = 42;
+        PermissionChanges changes = new PermissionChanges(BranchPermission.CLOSE_TOPICS, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+        Branch expectedBranch = new Branch("name", "description");
+
+        when(branchDao.isExist(branchId)).thenReturn(true);
+        when(branchDao.get(branchId)).thenReturn(expectedBranch);
+
+        branchService.changeBranchPermissions(0, branchId, false, changes);
+        verify(permissionService).changeRestrictions(expectedBranch, changes);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void changeBranchPermissionsShouldThrowExceptionWhenBranchNotFound() throws Exception{
+        long branchId = 42;
+        when(branchDao.isExist(branchId)).thenReturn(false);
+        PermissionChanges changes = new PermissionChanges(BranchPermission.CLOSE_TOPICS, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+
+        branchService.changeBranchPermissions(0, branchId, false, changes);
     }
 
 }

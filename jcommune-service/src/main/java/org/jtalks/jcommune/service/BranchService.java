@@ -118,6 +118,16 @@ public interface BranchService extends EntityService<Branch> {
     List<Group> getPermissionGroupsFor(long componentId, long branchId, boolean allowed, BranchPermission permission)
             throws NotFoundException;
 
+    /**
+     * Changes permissions for given branch
+     * @param componentId ID of the component of the branch (needed only for the authorization purpose)
+     * @param branchId ID of the branch which permissions will be changed
+     * @param allowed if true then branch grants will be changed
+     *                if false then branch restrictions will be changed
+     * @param changes object which represent permission changes for given branch
+     * @throws NotFoundException when branch does not exist
+     * @see org.jtalks.jcommune.model.dto.PermissionChanges
+     */
     void changeBranchPermissions(long componentId, long branchId, boolean allowed, PermissionChanges changes)
             throws NotFoundException;
 }

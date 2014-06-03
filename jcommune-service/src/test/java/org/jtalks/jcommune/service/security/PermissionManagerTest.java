@@ -271,6 +271,25 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
         assertEquals(result.get(0), allGroups.get(0));
     }
 
+    @Test
+    public void getGroupsByIdsShouldReturnAllGroupsWhichIdIsSpecified() {
+        List<Group> groups = Arrays.asList(new Group("group1"), new Group("group2"));
+        List<Long> ids = Arrays.asList(1L, 2L);
+
+        when(groupDao.getGroupsByIds(ids)).thenReturn(groups);
+
+        List<Group> result = manager.getGroupsByIds(ids);
+
+        assertEquals(result, groups);
+    }
+
+    @Test
+    public void getGroupsByIdsShouldReturnEmptyListWhenListOfIdsIsEmpty() {
+        List<Group> result = manager.getGroupsByIds(Collections.EMPTY_LIST);
+
+        assertTrue(result.isEmpty());
+    }
+
     @DataProvider
     public Object[][] accessChanges() {
         PermissionChanges accessChanges = new PermissionChanges(BranchPermission.CLOSE_TOPICS);

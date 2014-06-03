@@ -231,6 +231,9 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         return allPermissions.getRestricted(permission);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public void changeBranchPermissions(long componentId, long branchId, boolean allowed, PermissionChanges changes)
