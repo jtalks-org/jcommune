@@ -16,7 +16,6 @@
 package org.jtalks.jcommune.service.security;
 
 
-import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.Entity;
@@ -30,6 +29,7 @@ import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.builders.AclBuilders;
 import org.jtalks.common.security.acl.sids.UserSid;
+import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.AnonymousGroup;
@@ -127,7 +127,7 @@ public class PermissionManager {
      * @return for {@link org.jtalks.common.model.entity.Group}
      */
     public GroupsPermissions<ProfilePermission> getPermissionsMapFor(List<Group> groups) {
-        GroupsPermissions<ProfilePermission> permissions = new GroupsPermissions<ProfilePermission>(ProfilePermission.getAllAsList());
+        GroupsPermissions<ProfilePermission> permissions = new GroupsPermissions<>(ProfilePermission.getAllAsList());
         for (Group group : groups) {
             GroupsPermissions<ProfilePermission> pmGroup = getPermissionsMapFor(ProfilePermission.getAllAsList(), group);
             for (ProfilePermission permission : pmGroup.getPermissions()) {
@@ -150,7 +150,7 @@ public class PermissionManager {
      * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for provided {@link org.jtalks.common.model.entity.Entity}
      */
     public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(List<T> permissions, Entity entity) {
-        GroupsPermissions<T> groupsPermissions = new GroupsPermissions<T>(permissions);
+        GroupsPermissions<T> groupsPermissions = new GroupsPermissions<>(permissions);
         List<GroupAce> groupAces = aclManager.getGroupPermissionsOn(entity);
         for (T permission : permissions) {
             for (GroupAce groupAce : groupAces) {
@@ -177,6 +177,10 @@ public class PermissionManager {
         List<Group> allGroups = groupDao.getAll();
         allGroups.removeAll(excludedGroupsList);
         return allGroups;
+    }
+
+    public List<Group> getGroupsByIds(List<Long> groupIds) {
+        return groupDao.getGroupsByIds(groupIds);
     }
 
     /**
@@ -217,9 +221,9 @@ public class PermissionManager {
      * @param granted    permission is granted or restricted
      */
     private void changeGrantsOfAnonymousGroup(JtalksPermission permission, Entity entity, boolean granted) {
-        List<Permission> jtalksPermissions = new ArrayList<Permission>();
+        List<Permission> jtalksPermissions = new ArrayList<>();
         jtalksPermissions.add(permission);
-        List<Sid> sids = new ArrayList<Sid>();
+        List<Sid> sids = new ArrayList<>();
         sids.add(UserSid.createAnonymous());
         if (granted) {
             aclManager.grant(sids, jtalksPermissions, entity);
@@ -255,9 +259,9 @@ public class PermissionManager {
      */
     private void deleteGrantsOfAnonymousGroup(JtalksPermission permission,
                                               Entity entity) {
-        List<Permission> jtalksPermissions = new ArrayList<Permission>();
+        List<Permission> jtalksPermissions = new ArrayList<>();
         jtalksPermissions.add(permission);
-        List<Sid> sids = new ArrayList<Sid>();
+        List<Sid> sids = new ArrayList<>();
         sids.add(UserSid.createAnonymous());
         aclManager.delete(sids, jtalksPermissions, entity);
     }

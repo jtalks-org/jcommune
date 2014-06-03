@@ -20,7 +20,6 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
@@ -31,6 +30,7 @@ import org.jtalks.common.security.acl.ExtendedMutableAcl;
 import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.sids.UserGroupSid;
 import org.jtalks.common.security.acl.sids.UserSid;
+import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.AnonymousGroup;
@@ -149,7 +149,7 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
         ObjectIdentityImpl objectIdentity = new ObjectIdentityImpl(targetType, targetId);
         when(aclUtil.createIdentityFor(any(Entity.class))).thenReturn(objectIdentity);
         ExtendedMutableAcl mutableAcl = mock(ExtendedMutableAcl.class);
-        List<AccessControlEntry> controlEntries = new ArrayList<AccessControlEntry>();
+        List<AccessControlEntry> controlEntries = new ArrayList<>();
         when(mutableAcl.getEntries()).thenReturn(controlEntries);
         when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
 
@@ -202,11 +202,11 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
     public void testChangeGrantsOfAnonymousGroup() throws Exception {
         Branch branch = ObjectsFactory.getDefaultBranch();
         PermissionChanges changes = new PermissionChanges(BranchPermission.CLOSE_TOPICS);
-        List<Group> groupList = new ArrayList<Group>();
+        List<Group> groupList = new ArrayList<>();
         groupList.add(AnonymousGroup.ANONYMOUS_GROUP);
         changes.addNewlyAddedGroups(groupList);
         manager.changeGrants(branch, changes);
-        List<Sid> sids = new ArrayList<Sid>();
+        List<Sid> sids = new ArrayList<>();
         sids.add(UserSid.createAnonymous());
 
         verify(aclManager, times(changes.getRemovedGroups().size())).
@@ -220,11 +220,11 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
     public void testRestrictGrantsOfAnonymousGroup() throws Exception {
         Branch branch = ObjectsFactory.getDefaultBranch();
         PermissionChanges changes = new PermissionChanges(BranchPermission.CLOSE_TOPICS);
-        List<Group> groupList = new ArrayList<Group>();
+        List<Group> groupList = new ArrayList<>();
         groupList.add(AnonymousGroup.ANONYMOUS_GROUP);
         changes.addNewlyAddedGroups(groupList);
         manager.changeRestrictions(branch, changes);
-        List<Sid> sids = new ArrayList<Sid>();
+        List<Sid> sids = new ArrayList<>();
         sids.add(UserSid.createAnonymous());
 
         verify(aclManager, times(changes.getRemovedGroups().size())).
@@ -308,7 +308,7 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
         ObjectIdentity entityIdentity = new AclUtil(null).createIdentity(entityId,
                 entity.getClass().getSimpleName());
         ExtendedMutableAcl mutableAcl = mock(ExtendedMutableAcl.class);
-        List<AccessControlEntry> accessControlEntries = new ArrayList<AccessControlEntry>();
+        List<AccessControlEntry> accessControlEntries = new ArrayList<>();
 
         Acl acl = new AclImpl(entityIdentity, entityId + 1, aclAuthorizationStrategy, auditLogger);
 

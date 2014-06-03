@@ -63,4 +63,7 @@
     <![CDATA[from Group g where ? in g.users]]>
   </query>
 
+  <query name="getGroupsByIds">
+      <![CDATA[from Group where id in (:ids)]]>
+  </query>
 </hibernate-mapping>

@@ -18,11 +18,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Group;
 
 import org.jtalks.common.model.entity.User;
+import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dao.utils.SqlLikeEscaper;
 import ru.javatalks.utils.general.Assert;
 
@@ -104,4 +104,12 @@ public class GroupHibernateDao extends GenericDao<Group> implements GroupDao {
         return query.list();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Group> getGroupsByIds(List<Long> ids) {
+        return (List<Group>)session().getNamedQuery("getGroupsByIds")
+                .setParameterList("ids", ids).list();
+    }
 }

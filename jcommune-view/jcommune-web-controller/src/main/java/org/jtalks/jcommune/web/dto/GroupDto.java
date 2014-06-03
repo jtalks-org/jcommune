@@ -50,6 +50,12 @@ public class GroupDto {
     }
 
     /**
+     * Default constructor. Needed for initialization from request body.
+     */
+    public GroupDto() {
+    }
+
+    /**
      * Gets id of the group
      * @return id of the group
      */

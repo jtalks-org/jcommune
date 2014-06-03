@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import java.util.List;
+
 /**
  * DTO for the request from the client side to get information about branch permission.
  * Contains Branch ID for which information is requested, permission mask and
@@ -25,6 +27,8 @@ public class BranchPermissionDto {
     private boolean allowed;
     private long branchId;
     private int permissionMask;
+    private List<Long> newlyAddedGroupIds;
+    private List<Long> removedGroupIds;
 
     /**
      * @return true if information was requested about groups for which permission is allowed
@@ -73,5 +77,21 @@ public class BranchPermissionDto {
      */
     public void setPermissionMask(int permissionMask) {
         this.permissionMask = permissionMask;
+    }
+
+    public List<Long> getNewlyAddedGroupIds() {
+        return newlyAddedGroupIds;
+    }
+
+    public void setNewlyAddedGroupIds(List<Long> newlyAddedGroupIds) {
+        this.newlyAddedGroupIds = newlyAddedGroupIds;
+    }
+
+    public List<Long> getRemovedGroupIds() {
+        return removedGroupIds;
+    }
+
+    public void setRemovedGroupIds(List<Long> removedGroupIds) {
+        this.removedGroupIds = removedGroupIds;
     }
 }

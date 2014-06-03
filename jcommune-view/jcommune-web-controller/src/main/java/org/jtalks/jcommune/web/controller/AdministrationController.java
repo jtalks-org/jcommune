@@ -226,6 +226,12 @@ public class AdministrationController {
         return new JsonResponse(JsonResponseStatus.SUCCESS, permission);
     }
 
+    @RequestMapping(value = "/branch/permissions/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse editBranchPermissions(@RequestBody BranchPermissionDto permissionInfo) {
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
     /**
      * Returns redirect string to previous page
      *
