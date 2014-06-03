@@ -79,29 +79,30 @@ $(function () {
         }
 
         function showDialog(selectedGroups, availableGroups, permissionName, allowed) {
+            $('body').css('overflow','hidden');
             var footerContent = ' \
-            <button id="cancelEditPermission" class="btn" href="#">' + $labelCancel + '</button> \
-            <button id="savePermission" class="btn btn-primary" href="#">' + $labelOk + '</button>';
+            <button id="cancelEditPermission" class="btn">' + $labelCancel + '</button> \
+            <button id="savePermission" class="btn btn-primary">' + $labelOk + '</button>';
 
-            var content = "<div class='two-list-selector'> <div class='pull-left list-container'>"
+            var content = "<div class='two-list-selector'> <div id='left-container' class='pull-left list-container'>"
                 + getGroupListHtml("Available", availableGroups, $permissionsGroupAvailable);
 
             content += "</div>\
                     <div class='two-list-selector-controls'> \
                         <div class='two-list-selector-control'>\
-                            <a id='addSelected' href='#' class='btn'><i class='icon-chevron-right'></i></a>\
+                            <a id='addSelected' class='btn'><i class='icon-chevron-right'></i></a>\
                         </div>\
                         <div class='two-list-selector-control'>\
-                            <a id='addAll' href='#' class='btn'><i class='icon-forward'></i></a>\
+                            <a id='addAll' class='btn'><i class='icon-forward'></i></a>\
                         </div>\
                         <div class='two-list-selector-control'>\
-                            <a id='removeSelected' href='#' class='btn'><i class='icon-chevron-left'></i></a>\
+                            <a id='removeSelected' class='btn'><i class='icon-chevron-left'></i></a>\
                         </div> \
                         <div class='two-list-selector-control'>\
-                            <a id='removeAll' href='#' class='btn'><i class='icon-backward'></i></a>\
+                            <a id='removeAll' class='btn'><i class='icon-backward'></i></a>\
                         </div> \
                     </div>";
-            content += "<div class='pull-right list-container'>"
+            content += "<div id='right-container' class='pull-right list-container'>"
                 + getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded);
 
             content += "</div></div>";
@@ -137,6 +138,12 @@ $(function () {
                 });
             };
 
+            var closeDialogFunc = function() {
+                jDialog.dialog.modal('hide');
+                jDialog.dialog.remove();
+                $('body').css('overflow','auto');
+            };
+
             jDialog.createDialog({
                 dialogId: 'permissionsEditor',
                 footerContent: footerContent,
@@ -144,6 +151,7 @@ $(function () {
                 bodyContent: content,
                 maxWidth: 800,
                 maxHeight: 600,
+                closeDialog: closeDialogFunc,
                 handlers: {
                     '#cancelEditPermission' : {'static':'close'},
                     '#savePermission' : {'click':submitFunc}
@@ -162,88 +170,68 @@ $(function () {
                 });
             });
 
-            //TODO: refactoring
             $("#addSelected").on('click', function(e) {
-                console.log("addSelected");
                 selectedGroups = getSelectedAvailableGroups().concat(selectedGroups);
-                console.log("new selected " + selectedGroups.length);
-                jDialog.closeDialog();
-                showDialog(selectedGroups, availableGroups, permissionName, allowed);
+                updateContent();
             });
 
             $("#addAll").on('click', function(e) {
-                console.log("addAll");
                 for (var i = 0; i < availableGroups.length; i ++) {
-                    if (removed.indexOf(availableGroups[i].id) == -1) {
-                        newlyAdded.push(availableGroups[i].id);
-                    } else {
-                        removed.splice(removed.indexOf(availableGroups[i].id), 1);
-                    }
+                    markOrUnmarkGroupAsEditing(availableGroups[i], newlyAdded, removed);
                 }
-                console.log("newly added size - " + newlyAdded.length);
-                console.log("removed size - " + removed.length);
                 selectedGroups = availableGroups.concat(selectedGroups);
                 availableGroups.length = 0;
-                jDialog.closeDialog();
-                showDialog(selectedGroups, availableGroups, permissionName, allowed);
+                updateContent()
             });
 
             $("#removeSelected").on('click', function(e) {
-                console.log("removeSelected");
                 availableGroups = getSelectedAlreadyAddedGroups().concat(availableGroups);
-                jDialog.closeDialog();
-                showDialog(selectedGroups, availableGroups, permissionName, allowed);
+                updateContent();
             });
 
             $("#removeAll").on('click', function(e) {
-                console.log("removeAll");
                 for (var i = 0; i < selectedGroups.length; i ++) {
-                    if (newlyAdded.indexOf(selectedGroups[i].id) == -1) {
-                        removed.push(selectedGroups[i].id);
-                    } else {
-                        newlyAdded.splice(newlyAdded.indexOf(selectedGroups[i].id), 1);
-                    }
+                    markOrUnmarkGroupAsEditing(selectedGroups[i], removed, newlyAdded);
                 }
-                console.log("newly added size - " + newlyAdded.length);
-                console.log("removed size - " + removed.length);
                 availableGroups = selectedGroups.concat(availableGroups);
                 selectedGroups.length = 0;
-                jDialog.closeDialog();
-                showDialog(selectedGroups, availableGroups, permissionName, allowed);
+                updateContent();
             });
 
+            /**
+             * Gets list of groups which was selected in "Available" column
+             * @return {Array} list of selected groups
+             */
             function getSelectedAvailableGroups() {
                 var selected = [];
                 $("#groupListAvailable input[type='checkbox']:checked").each(function() {
                     var group = getGroupInfoById(availableGroups, parseInt($(this).prop('id'), 10));
-                    if (removed.indexOf(group.id) == -1) {
-                        newlyAdded.push(group.id);
-                    } else {
-                        removed.splice(removed.indexOf(group.id), 1);
-                    }
-                    console.log("newly added size - " + newlyAdded.length);
-                    console.log("removed size - " + removed.length);
+                    markOrUnmarkGroupAsEditing(group, newlyAdded, removed);
                     selected.push(group);
                 });
                 return selected;
             }
 
+            /**
+             * Gets list of groups which was selected in "AlreadyAdded" column
+             * @return {Array} list of selected groups
+             */
             function getSelectedAlreadyAddedGroups() {
                 var selected = [];
                 $("#groupListAlreadyAdded input[type='checkbox']:checked").each(function() {
                     var group = getGroupInfoById(selectedGroups, parseInt($(this).prop('id'), 10));
-                    if (newlyAdded.indexOf(group.id) == -1) {
-                        removed.push(group.id);
-                    } else {
-                        newlyAdded.splice(newlyAdded.indexOf(group.id), 1);
-                    }
-                    console.log("newly added size - " + newlyAdded.length);
-                    console.log("removed size - " + removed.length);
+                    markOrUnmarkGroupAsEditing(group, removed, newlyAdded);
                     selected.push(group);
                 });
                 return selected;
             }
 
+            /**
+             * Gets info about group from specified array by id
+             * @param {Array} groupsInfo array in which info about group will be fetched
+             * @param {Number} id identificator of needed group info
+             * @return {GroupDto} founded info about group
+             */
             function getGroupInfoById(groupsInfo, id) {
                 for (var i = 0; i < groupsInfo.length; i ++) {
                     if (groupsInfo[i].id == id) {
@@ -253,6 +241,31 @@ $(function () {
                     }
                 }
             }
+
+            /**
+             * Updates content of popup
+             */
+            function updateContent() {
+                $("#left-container").html(getGroupListHtml("Available", availableGroups, $permissionsGroupAvailable));
+                $("#right-container").html(getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded));
+            }
+
+            /**
+             * To mark group as editing we use 2 arrays: newlyAdded and removed. Before mark group as newly added we should
+             * check is it marked as removed and vice versa. If group already marked as removed we should not mark it
+             * as newly added. We should just unmark it as removed. Method performs this.
+             * @param {GroupDto} group group info to be checked
+             * @param {Array} markBuffer  buffer for mark group if it not marked in <b>unmarkBuffer</b>
+             * @param {Array} unmarkBuffer buffer for unmark group
+             */
+            function markOrUnmarkGroupAsEditing(group, markBuffer, unmarkBuffer) {
+                if (unmarkBuffer.indexOf(group.id) == -1) {
+                    markBuffer.push(group.id);
+                } else {
+                    unmarkBuffer.splice(unmarkBuffer.indexOf(group.id), 1);
+                }
+            }
+
         }
     }
 });
