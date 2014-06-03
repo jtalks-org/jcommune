@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 
@@ -115,5 +116,8 @@ public interface BranchService extends EntityService<Branch> {
      * @throws NotFoundException when branch does not exist
      */
     List<Group> getPermissionGroupsFor(long componentId, long branchId, boolean allowed, BranchPermission permission)
+            throws NotFoundException;
+
+    void changeBranchPermissions(long componentId, long branchId, boolean allowed, PermissionChanges changes)
             throws NotFoundException;
 }

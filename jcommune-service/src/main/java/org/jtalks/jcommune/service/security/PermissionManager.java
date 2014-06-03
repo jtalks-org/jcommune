@@ -39,6 +39,7 @@ import org.springframework.security.acls.model.Sid;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -180,7 +181,11 @@ public class PermissionManager {
     }
 
     public List<Group> getGroupsByIds(List<Long> groupIds) {
-        return groupDao.getGroupsByIds(groupIds);
+        if (groupIds.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return groupDao.getGroupsByIds(groupIds);
+        }
     }
 
     /**

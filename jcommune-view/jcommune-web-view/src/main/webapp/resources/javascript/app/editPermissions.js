@@ -41,6 +41,9 @@ $(function () {
             allowed: allowed
         };
 
+        var newlyAdded = [];
+        var removed = [];
+
         $.ajax({
             url: baseUrl + "/branch/permissions/json",
             type: "POST",
@@ -64,15 +67,16 @@ $(function () {
                         <label for='selectAll" + idSuffix + "' class='group-caption'>" + selectAllCaption + ":</label>\
                         </div><div class='group-list' id='groupList" + idSuffix + "'>";
             for(var i = 0, size = groupsInfo.length; i < size ; i++){
-                content += "<div class='group-container'><input type='checkbox' id='" + groupsInfo[i].id + "' /> \
+                var className = "group-container";
+                if ((newlyAdded.indexOf(groupsInfo[i].id) != -1) || (removed.indexOf(groupsInfo[i].id) != -1)) {
+                    className += " group-container-highlighted";
+                }
+                content += "<div class='" + className +"'><input type='checkbox' id='" + groupsInfo[i].id + "' /> \
                         <label for='" + groupsInfo[i].id + "'>" + groupsInfo[i].name + "</label> </div>";
             }
             content += "</div>";
             return content;
         }
-
-        var newlyAdded = [];
-        var removed = [];
 
         function showDialog(selectedGroups, availableGroups, permissionName, allowed) {
             var footerContent = ' \
@@ -109,6 +113,7 @@ $(function () {
                     return;
                 }
                 var permissionInfo = {
+                    allowed: allowed,
                     branchId: branchId,
                     permissionMask: permissionMask,
                     newlyAddedGroupIds: newlyAdded,
@@ -121,10 +126,13 @@ $(function () {
                     async: false,
                     data: JSON.stringify(permissionInfo),
                     success : function(resp) {
-                        jDialog.closeDialog();
+                        location.reload();
                     },
                     error : function(resp) {
-                        console.log("error occur");
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: $labelUnexpectedError
+                        });
                     }
                 });
             };

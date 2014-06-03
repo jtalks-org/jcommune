@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.BranchService;
@@ -229,6 +230,18 @@ public class AdministrationController {
     @RequestMapping(value = "/branch/permissions/edit", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse editBranchPermissions(@RequestBody BranchPermissionDto permissionInfo) {
+        long forumId = componentService.getComponentOfForum().getId();
+        BranchPermission branchPermission = BranchPermission.findByMask(permissionInfo.getPermissionMask());
+
+        List<Group> newlyAddedGroups = permissionManager.getGroupsByIds(permissionInfo.getNewlyAddedGroupIds());
+        List<Group> removedGroups = permissionManager.getGroupsByIds(permissionInfo.getRemovedGroupIds());
+
+        PermissionChanges changes = new PermissionChanges(branchPermission, newlyAddedGroups, removedGroups);
+        try {
+            branchService.changeBranchPermissions(forumId, permissionInfo.getBranchId(), permissionInfo.isAllowed(),changes);
+        } catch (NotFoundException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL);
+        }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 

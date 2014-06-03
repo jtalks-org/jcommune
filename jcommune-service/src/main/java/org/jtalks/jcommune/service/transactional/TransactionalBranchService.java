@@ -156,7 +156,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         Branch branch = get(branchId);
 
         // Create tmp list to avoid ConcurrentModificationException
-        List<Topic> loopList = new ArrayList<Topic>(branch.getTopics());
+        List<Topic> loopList = new ArrayList<>(branch.getTopics());
         for (Topic topic : loopList) {
             topicService.deleteTopicSilent(topic.getId());
         }
@@ -229,5 +229,17 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         }
 
         return allPermissions.getRestricted(permission);
+    }
+
+    @Override
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void changeBranchPermissions(long componentId, long branchId, boolean allowed, PermissionChanges changes)
+            throws NotFoundException {
+        Branch branch = get(branchId);
+        if (allowed) {
+            permissionService.changeGrants(branch, changes);
+        } else {
+            permissionService.changeRestrictions(branch, changes);
+        }
     }
 }

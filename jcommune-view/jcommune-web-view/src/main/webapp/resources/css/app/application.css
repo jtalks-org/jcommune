@@ -1001,6 +1001,10 @@ a.mentioned-user {
     width: 100%;
 }
 
+.group-container-highlighted {
+    background: lightskyblue;
+}
+
 .group-list-caption-container, .group-list {
     width: 235px;
     margin: 0px;
