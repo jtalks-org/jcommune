@@ -20,7 +20,7 @@
         </c:if>
         <th class="posts-views-small forum-posts-view-header shrink-to-fit">
           <spring:message code="label.branch.header.posts"/></th>
-        <th class="posts-views-small forum-posts-view-header shrink-to-fit">
+        <th class="posts-views-small forum-posts-view-header shrink-to-fit posts-views-small_2">
           <spring:message code="label.branch.header.views"/></th>
         <th class="latest-by forum-latest-by-header shrink-to-fit">
           <spring:message code="label.branch.header.lastMessage"/></th>
@@ -32,7 +32,7 @@
           <sec:authorize access="isAuthenticated()">
             <td class="status-col-small"><jtalks:topicIconSmall topic="${topic}"/></td>
           </sec:authorize>
-          <td class="posts-td-small">
+          <td class="posts-td-small posts-td-small_2">
             <h2 class="h-nostyle">
                 <%--Some topic types should have a special prefix when displayed--%>
               <c:if test="${topic.announcement=='true'}">
@@ -60,7 +60,7 @@
             </a>
           </td>
           <c:if test="${showBranchColumn}">
-            <td class="posted-in-col shrink-to-fit">
+            <td class="posted-in-col">
               <a href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
                 <c:out value="${topic.branch.name}"/>
               </a>
@@ -69,7 +69,7 @@
           <td class="posts-views-small shrink-to-fit">
             <span class='test-posts-count'><c:out value="${topic.postCount}"/></span>
           </td>
-          <td class="posts-views-small shrink-to-fit">
+          <td class="posts-views-small shrink-to-fit posts-views-small_2">
             <span class='test-views'><c:out value="${topic.views}"/></span>
           </td>
           <td class="latest-by shrink-to-fit">

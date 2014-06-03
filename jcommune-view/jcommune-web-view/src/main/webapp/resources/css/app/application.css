@@ -284,6 +284,8 @@ ul.lang-menu li img {
     }
 }
 
+
+
 @media (max-width: 480px) {
     .posts-views {
         display: none;
@@ -305,8 +307,17 @@ ul.lang-menu li img {
         display: inline;
         white-space: nowrap;
     }
+    .posts-td-small_2{
+        max-width: 40px;
+    }
 }
 
+@media (max-width:250px) {
+    .posts-views-small_2
+    {
+        display: none;
+    }
+}
 @media (min-width: 980px) {
     #topics-table .author-col {
         display: table-cell;
@@ -314,6 +325,10 @@ ul.lang-menu li img {
 
     #topics-table .posted-in-col {
         display: table-cell;
+        width:30%;
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: normal;
     }
 
     .created-by {
@@ -331,7 +346,10 @@ ul.lang-menu li img {
     }
 
     #topics-table .posts-td-small {
-        max-width: 90px;
+       width:70%;
+       word-wrap: break-word;
+       word-break: break-all;
+       white-space: normal;
     }
 }
 
