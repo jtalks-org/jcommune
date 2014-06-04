@@ -71,7 +71,7 @@ $(function () {
                 if ((newlyAdded.indexOf(groupsInfo[i].id) != -1) || (removed.indexOf(groupsInfo[i].id) != -1)) {
                     className += " group-container-highlighted";
                 }
-                content += "<div class='" + className +"'><input type='checkbox' id='" + groupsInfo[i].id + "' /> \
+                content += "<div id='list-item' class='" + className +"'><input type='checkbox' id='" + groupsInfo[i].id + "' /> \
                         <label data-original-title='" + groupsInfo[i].name + "' id='" + groupsInfo[i].id
                     + "' for='" + groupsInfo[i].id + "'><span id='" + groupsInfo[i].id + "'>" + groupsInfo[i].name
                     + "</span></label> </div>";
@@ -270,17 +270,18 @@ $(function () {
                 }
             }
 
+            /**
+             * Enables tooltips for groups with long names
+             */
             function enableTooltipsForLongNames() {
                 for (var i = 0; i < selectedGroups.length; i ++) {
                     if ($('span[id="' + selectedGroups[i].id + '"]').width() > $('label[id="' + selectedGroups[i].id + '"]').width()) {
                         $('label[id="' + selectedGroups[i].id + '"]').tooltip();
-                        console.log("enabled for " + selectedGroups[i].id);
                     }
                 }
                 for (var i = 0; i < availableGroups.length; i ++) {
                     if ($('span[id="' + availableGroups[i].id + '"]').width() > $('label[id="' + availableGroups[i].id + '"]').width()) {
                         $('label[id="' + availableGroups[i].id + '"]').tooltip();
-                        console.log("enabled for " + availableGroups[i].id);
                     }
                 }
             }
