@@ -71,15 +71,16 @@ $(function () {
                 if ((newlyAdded.indexOf(groupsInfo[i].id) != -1) || (removed.indexOf(groupsInfo[i].id) != -1)) {
                     className += " group-container-highlighted";
                 }
-                content += "<div class='" + className +"'><input type='checkbox' id='" + groupsInfo[i].id + "' /> \
-                        <label for='" + groupsInfo[i].id + "'>" + groupsInfo[i].name + "</label> </div>";
+                content += "<div id='list-item' class='" + className +"'><input type='checkbox' id='" + groupsInfo[i].id + "' /> \
+                        <label data-original-title='" + groupsInfo[i].name + "' id='" + groupsInfo[i].id
+                    + "' for='" + groupsInfo[i].id + "'><span id='" + groupsInfo[i].id + "'>" + groupsInfo[i].name
+                    + "</span></label> </div>";
             }
             content += "</div>";
             return content;
         }
 
         function showDialog(selectedGroups, availableGroups, permissionName, allowed) {
-            $('body').css('overflow','hidden');
             var footerContent = ' \
             <button id="cancelEditPermission" class="btn">' + $labelCancel + '</button> \
             <button id="savePermission" class="btn btn-primary">' + $labelOk + '</button>';
@@ -138,11 +139,6 @@ $(function () {
                 });
             };
 
-            var closeDialogFunc = function() {
-                jDialog.dialog.modal('hide');
-                jDialog.dialog.remove();
-                $('body').css('overflow','auto');
-            };
 
             jDialog.createDialog({
                 dialogId: 'permissionsEditor',
@@ -151,24 +147,28 @@ $(function () {
                 bodyContent: content,
                 maxWidth: 800,
                 maxHeight: 600,
-                closeDialog: closeDialogFunc,
                 handlers: {
                     '#cancelEditPermission' : {'static':'close'},
                     '#savePermission' : {'click':submitFunc}
                 }
             });
 
-            $("#selectAllAvailable").on('click', function (e) {
+            var selectAllAvailableFunc = function() {
                 $("#groupListAvailable input[type='checkbox']").each(function() {
                     $(this).prop('checked', $("#selectAllAvailable").prop('checked'));
                 });
-            });
+            };
 
-            $("#selectAllAlreadyAdded").on('click', function (e) {
+            var selectAllAlreadyAddedFunc = function() {
                 $("#groupListAlreadyAdded input[type='checkbox']").each(function() {
                     $(this).prop('checked', $("#selectAllAlreadyAdded").prop('checked'));
                 });
-            });
+            };
+
+
+            $("#selectAllAvailable").bind('click', selectAllAvailableFunc);
+            $("#selectAllAlreadyAdded").bind('click', selectAllAlreadyAddedFunc);
+            enableTooltipsForLongNames();
 
             $("#addSelected").on('click', function(e) {
                 selectedGroups = getSelectedAvailableGroups().concat(selectedGroups);
@@ -248,6 +248,10 @@ $(function () {
             function updateContent() {
                 $("#left-container").html(getGroupListHtml("Available", availableGroups, $permissionsGroupAvailable));
                 $("#right-container").html(getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded));
+
+                $("#selectAllAvailable").bind('click', selectAllAvailableFunc);
+                $("#selectAllAlreadyAdded").bind('click', selectAllAlreadyAddedFunc);
+                enableTooltipsForLongNames();
             }
 
             /**
@@ -263,6 +267,22 @@ $(function () {
                     markBuffer.push(group.id);
                 } else {
                     unmarkBuffer.splice(unmarkBuffer.indexOf(group.id), 1);
+                }
+            }
+
+            /**
+             * Enables tooltips for groups with long names
+             */
+            function enableTooltipsForLongNames() {
+                for (var i = 0; i < selectedGroups.length; i ++) {
+                    if ($('span[id="' + selectedGroups[i].id + '"]').width() > $('label[id="' + selectedGroups[i].id + '"]').width()) {
+                        $('label[id="' + selectedGroups[i].id + '"]').tooltip();
+                    }
+                }
+                for (var i = 0; i < availableGroups.length; i ++) {
+                    if ($('span[id="' + availableGroups[i].id + '"]').width() > $('label[id="' + availableGroups[i].id + '"]').width()) {
+                        $('label[id="' + availableGroups[i].id + '"]').tooltip();
+                    }
                 }
             }
 

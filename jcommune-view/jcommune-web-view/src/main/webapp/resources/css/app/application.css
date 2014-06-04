@@ -1023,6 +1023,11 @@ a.mentioned-user {
     background: lightskyblue;
 }
 
+#list-item .tooltip {
+    white-space: pre-wrap;
+    max-width: 260px;
+}
+
 .group-list-caption-container, .group-list {
     width: 235px;
     margin: 0px;

@@ -18,6 +18,7 @@ import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.BranchService;
@@ -210,7 +211,7 @@ public class AdministrationControllerTest {
         BranchPermissionDto dto = createBranchPermissionDto(targetPermission);
         when(branchService.getPermissionGroupsFor(component.getId(), dto.getBranchId(), dto.isAllowed(), targetPermission))
                 .thenReturn(Collections.EMPTY_LIST);
-        when(permissionManager.getAllGroupsWithoutExcluded(anyList())).thenReturn(Collections.EMPTY_LIST);
+        when(permissionManager.getAllGroupsWithoutExcluded(anyList(), eq(targetPermission))).thenReturn(Collections.EMPTY_LIST);
 
 
         JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
@@ -230,7 +231,7 @@ public class AdministrationControllerTest {
                 .thenReturn(selectedGroupList);
 
         List<Group> allGroupList = Arrays.asList(new Group("4"), new Group("5"), new Group("6"));
-        when(permissionManager.getAllGroupsWithoutExcluded(selectedGroupList)).thenReturn(allGroupList);
+        when(permissionManager.getAllGroupsWithoutExcluded(selectedGroupList, targetPermission)).thenReturn(allGroupList);
 
         JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
 
@@ -239,6 +240,41 @@ public class AdministrationControllerTest {
         PermissionGroupsDto result = (PermissionGroupsDto)jsonResponse.getResult();
         assertEquals(result.getAvailableGroups().size(), 3);
         assertEquals(result.getSelectedGroups().size(), 3);
+    }
+
+    @Test
+    public void editBranchPermissionsShouldReturnSuccessIfBranchExist() throws Exception {
+        Component component = setupComponentMock();
+
+        BranchPermission targetPermission = BranchPermission.CREATE_POSTS;
+        BranchPermissionDto dto = createBranchPermissionDto(targetPermission);
+
+        dto.setNewlyAddedGroupIds(Arrays.asList(1L, 2L));
+        dto.setRemovedGroupIds(Arrays.asList(1L, 2L));
+
+        JsonResponse response = administrationController.editBranchPermissions(dto);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+        verify(branchService).changeBranchPermissions(anyLong(),
+                eq(dto.getBranchId()), eq(dto.isAllowed()), any(PermissionChanges.class));
+    }
+
+    @Test
+    public void editBranchPermissionsShouldReturnFailIfBranchNotFound() throws Exception {
+        Component component = setupComponentMock();
+
+        BranchPermission targetPermission = BranchPermission.CREATE_POSTS;
+        BranchPermissionDto dto = createBranchPermissionDto(targetPermission);
+
+        dto.setNewlyAddedGroupIds(Arrays.asList(1L, 2L));
+        dto.setRemovedGroupIds(Arrays.asList(1L, 2L));
+
+        doThrow(new NotFoundException()).when(branchService).changeBranchPermissions(anyLong(),
+                eq(dto.getBranchId()), eq(dto.isAllowed()), any(PermissionChanges.class));
+
+        JsonResponse response = administrationController.editBranchPermissions(dto);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
     }
 
     private Component setupComponentMock() {
