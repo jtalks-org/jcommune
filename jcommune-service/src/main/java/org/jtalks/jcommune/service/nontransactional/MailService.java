@@ -77,7 +77,6 @@ public class MailService {
      * @param engine                       engine for templating email notifications
      * @param source                       for resolving internationalization messages
      * @param notificationsEnabledProperty to check whether email notifications are enabled
-     * @param asyncMailSender              mail sender to async work
      */
     public MailService(JavaMailSender sender,
                        String from,
@@ -313,21 +312,7 @@ public class MailService {
             helper.setFrom(from);
             helper.setSubject(subject);
             helper.setText(plainText, htmlText);
-
-            long started = System.currentTimeMillis();
             mailSender.send(message);
-
-            long secsTook = (System.currentTimeMillis() - started) / 1000;
-            if (secsTook > 30) {
-                LOGGER.warn("Sending email took long time [{}] for receiver: [{}]. Subject: [{}]",
-                        new Object[]{secsTook, to, subject});
-            } else if (secsTook > 5) {
-                LOGGER.info("Sending email took long time [{}] for receiver: [{}]. Subject: [{}]",
-                        new Object[]{secsTook, to, subject});
-            }
-            LOGGER.debug("Email was sent to [{}] with subject [{}]. Note that this doesn't mean the mail" +
-                    " is delivered to the end user, this only means that mail server accepted the email and will" +
-                    " try to send it further.", to, subject);
         } catch (MailException | MessagingException e) {
             LOGGER.error("Mail sending failed", e);
             throw new MailingFailedException(e);
