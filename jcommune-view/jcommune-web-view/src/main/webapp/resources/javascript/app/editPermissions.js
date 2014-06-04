@@ -72,7 +72,9 @@ $(function () {
                     className += " group-container-highlighted";
                 }
                 content += "<div class='" + className +"'><input type='checkbox' id='" + groupsInfo[i].id + "' /> \
-                        <label for='" + groupsInfo[i].id + "'>" + groupsInfo[i].name + "</label> </div>";
+                        <label data-original-title='" + groupsInfo[i].name + "' id='" + groupsInfo[i].id
+                    + "' for='" + groupsInfo[i].id + "'><span id='" + groupsInfo[i].id + "'>" + groupsInfo[i].name
+                    + "</span></label> </div>";
             }
             content += "</div>";
             return content;
@@ -151,17 +153,22 @@ $(function () {
                 }
             });
 
-            $("#selectAllAvailable").on('click', function (e) {
+            var selectAllAvailableFunc = function() {
                 $("#groupListAvailable input[type='checkbox']").each(function() {
                     $(this).prop('checked', $("#selectAllAvailable").prop('checked'));
                 });
-            });
+            };
 
-            $("#selectAllAlreadyAdded").on('click', function (e) {
+            var selectAllAlreadyAddedFunc = function() {
                 $("#groupListAlreadyAdded input[type='checkbox']").each(function() {
                     $(this).prop('checked', $("#selectAllAlreadyAdded").prop('checked'));
                 });
-            });
+            };
+
+
+            $("#selectAllAvailable").bind('click', selectAllAvailableFunc);
+            $("#selectAllAlreadyAdded").bind('click', selectAllAlreadyAddedFunc);
+            enableTooltipsForLongNames();
 
             $("#addSelected").on('click', function(e) {
                 selectedGroups = getSelectedAvailableGroups().concat(selectedGroups);
@@ -241,6 +248,10 @@ $(function () {
             function updateContent() {
                 $("#left-container").html(getGroupListHtml("Available", availableGroups, $permissionsGroupAvailable));
                 $("#right-container").html(getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded));
+
+                $("#selectAllAvailable").bind('click', selectAllAvailableFunc);
+                $("#selectAllAlreadyAdded").bind('click', selectAllAlreadyAddedFunc);
+                enableTooltipsForLongNames();
             }
 
             /**
@@ -256,6 +267,21 @@ $(function () {
                     markBuffer.push(group.id);
                 } else {
                     unmarkBuffer.splice(unmarkBuffer.indexOf(group.id), 1);
+                }
+            }
+
+            function enableTooltipsForLongNames() {
+                for (var i = 0; i < selectedGroups.length; i ++) {
+                    if ($('span[id="' + selectedGroups[i].id + '"]').width() > $('label[id="' + selectedGroups[i].id + '"]').width()) {
+                        $('label[id="' + selectedGroups[i].id + '"]').tooltip();
+                        console.log("enabled for " + selectedGroups[i].id);
+                    }
+                }
+                for (var i = 0; i < availableGroups.length; i ++) {
+                    if ($('span[id="' + availableGroups[i].id + '"]').width() > $('label[id="' + availableGroups[i].id + '"]').width()) {
+                        $('label[id="' + availableGroups[i].id + '"]').tooltip();
+                        console.log("enabled for " + availableGroups[i].id);
+                    }
                 }
             }
 
