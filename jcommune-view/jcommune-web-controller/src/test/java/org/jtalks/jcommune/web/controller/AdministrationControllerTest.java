@@ -211,7 +211,7 @@ public class AdministrationControllerTest {
         BranchPermissionDto dto = createBranchPermissionDto(targetPermission);
         when(branchService.getPermissionGroupsFor(component.getId(), dto.getBranchId(), dto.isAllowed(), targetPermission))
                 .thenReturn(Collections.EMPTY_LIST);
-        when(permissionManager.getAllGroupsWithoutExcluded(anyList())).thenReturn(Collections.EMPTY_LIST);
+        when(permissionManager.getAllGroupsWithoutExcluded(anyList(), eq(targetPermission))).thenReturn(Collections.EMPTY_LIST);
 
 
         JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
@@ -231,7 +231,7 @@ public class AdministrationControllerTest {
                 .thenReturn(selectedGroupList);
 
         List<Group> allGroupList = Arrays.asList(new Group("4"), new Group("5"), new Group("6"));
-        when(permissionManager.getAllGroupsWithoutExcluded(selectedGroupList)).thenReturn(allGroupList);
+        when(permissionManager.getAllGroupsWithoutExcluded(selectedGroupList, targetPermission)).thenReturn(allGroupList);
 
         JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
 

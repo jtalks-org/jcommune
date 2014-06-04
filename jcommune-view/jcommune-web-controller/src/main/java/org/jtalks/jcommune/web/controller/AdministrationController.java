@@ -218,7 +218,7 @@ public class AdministrationController {
         }
         List<GroupDto> alreadySelected = GroupDto.convertGroupList(selectedGroups, true);
 
-        List<Group> availableGroups = permissionManager.getAllGroupsWithoutExcluded(selectedGroups);
+        List<Group> availableGroups = permissionManager.getAllGroupsWithoutExcluded(selectedGroups, branchPermission);
         List<GroupDto> available = GroupDto.convertGroupList(availableGroups, true);
 
         permission.setSelectedGroups(alreadySelected);
