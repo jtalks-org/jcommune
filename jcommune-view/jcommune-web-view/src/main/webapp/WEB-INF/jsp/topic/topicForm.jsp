@@ -77,6 +77,7 @@
     <br/>
     <br/>
 
+    <c:if test ="${topicId eq null}">
     <div class='well hide-on-preview'>
       <fieldset id="editPoll">
         <legend><spring:message code="label.poll.header"/></legend>
@@ -121,6 +122,7 @@
         <div class="cleared"></div>
       </fieldset>
     </div>
+    </c:if>
   </form:form>
 
   <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
