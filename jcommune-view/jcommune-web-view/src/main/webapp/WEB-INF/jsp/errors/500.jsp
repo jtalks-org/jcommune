@@ -25,7 +25,10 @@
 </head>
 <body>
 <div class="container">
-    <div class="text_errorpage">
+    <div class="image-500-errorpage">
+      <img class="img-err" src="${pageContext.request.contextPath}/resources/images/500.png" alt="500">
+    </div>
+    <div class="text-500-errorpage">
         <h1><span class="error_errorpage"><spring:message code="label.error"/></span>&nbsp;500</h1>
         <spring:message code="label.500.detail"/>
         <br/>
