@@ -1098,7 +1098,6 @@ pre.prettyprint {
 @media (min-width: 640px) {
     .text-500-errorpage {
         left: 45%;
-        top: 120px;
         position: absolute;
         padding-right: 15px;
     }

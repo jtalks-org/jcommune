@@ -22,6 +22,11 @@
         <c:out value="${cmpTitlePrefix}"/>
         <spring:message code="label.500.title"/>
     </title>
+    <script language="javascript">
+      $(document).ready(function () {
+        $(".text-500-errorpage").css('top', $('.image-500-errorpage').offset().top + "px");
+      });
+    </script>
 </head>
 <body>
 <div class="container">
