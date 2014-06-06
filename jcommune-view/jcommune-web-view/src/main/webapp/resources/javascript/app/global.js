@@ -74,11 +74,6 @@ $(document).ready(function () {
     //keyamaps to html forms
     $(document).delegate('form.anti-multipost', 'keydown', Keymaps.bbeditor);
 
-    //for change externalLinks position (top line or main page)
-    $(window).resize(function (e) {
-        e.preventDefault();
-    });
-
     //disable or enable sape configuration inputs of form
     $('#enableSape1').bind('change', function (e) {
         var elements = $('#sape-configuration-form input:not(#enableSape1, input[name="_enableSape"],' +
