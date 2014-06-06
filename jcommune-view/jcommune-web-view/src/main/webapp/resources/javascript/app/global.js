@@ -77,7 +77,6 @@ $(document).ready(function () {
     //for change externalLinks position (top line or main page)
     $(window).resize(function (e) {
         e.preventDefault();
-        $('.btn-navbar').trigger('mainLinksPosition');
     });
 
     //disable or enable sape configuration inputs of form

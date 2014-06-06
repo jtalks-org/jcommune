@@ -88,7 +88,7 @@
 
   <ul class="nav pull-right">
     <%--External links start--%>
-    <li class="dropdown topline-links">
+    <li id="top-line-links-drop-down" class="dropdown topline-links">
                         <span id="links-toggle" class="dropdown-toggle links-selector-container"
                               data-toggle="dropdown"
                               title='<fmt:message key="label.links"/>'>

@@ -131,19 +131,6 @@ $(function () {
         $('li.topline-links').show();
     });
 
-    $('.btn-navbar').on('mainLinksPosition', function (e) {
-        var sizeMin = $('.btn-navbar').css('display');
-        if (sizeMin && sizeMin == 'block') {
-            //show in topLine
-            $('#externalLinks').parent('div').hide();
-            $('li.topline-links').attr('style', 'display: block !important');
-        } else {
-            //show in mainPage
-            $('li.topline-links').attr('style', 'display: none !important');
-            $('#externalLinks').parent('div').show();
-        }
-    });
-
     $('.links_editor').on('click', function (e) {
         e.preventDefault();
 
