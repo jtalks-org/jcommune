@@ -1108,4 +1108,5 @@ pre.prettyprint {
 
 .image-500-errorpage {
     padding-top: 30px;
+    max-height: 600px;
 }
