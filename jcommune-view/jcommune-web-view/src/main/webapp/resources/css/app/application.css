@@ -240,9 +240,17 @@ ul.lang-menu li img {
     line-height: 18px;
     font-size: 14px;
 }
-
-#topics-table .title-col {
-    min-width: 200px;
+@media (max-width: 979px) {
+    #topics-table .title-col{
+        max-width:200px;
+        word-break:break-all;
+    }
+}
+@media (min-width:980px) {
+    #topics-table .title-col{
+        min-width:200px;
+        word-break:break-all;
+    }
 }
 
 .wraptocenter {
