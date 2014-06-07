@@ -41,7 +41,7 @@
 
   <task:annotation-driven executor="executor" scheduler="scheduler"/>
 
-  <task:executor id="executor" pool-size="1"/>
+  <task:executor id="executor" pool-size="3"/>
 
   <task:scheduler id="scheduler" pool-size="1"/>
 
