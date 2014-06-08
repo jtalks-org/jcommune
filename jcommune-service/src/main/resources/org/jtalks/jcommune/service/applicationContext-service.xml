@@ -41,8 +41,6 @@
 
   <task:annotation-driven executor="taskExecutor" scheduler="scheduler"/>
 
-  <task:executor id="executor" pool-size="1"/>
-
   <task:scheduler id="scheduler" pool-size="1"/>
 
   <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
