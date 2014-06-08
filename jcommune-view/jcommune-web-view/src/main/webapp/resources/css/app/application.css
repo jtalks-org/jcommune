@@ -1114,7 +1114,15 @@ pre.prettyprint {
     }
 }
 
+@media (max-width: 799px) {
+    .image-500-errorpage {
+        padding-top: 50px;
+    }
+}
 .image-500-errorpage {
-    padding-top: 30px;
+    max-height: 500px;
+}
+
+.image-500-errorpage img {
     max-height: 600px;
 }
