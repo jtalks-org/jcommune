@@ -39,11 +39,16 @@
 
   <!--Timers and executirs to be specified via annotations-->
 
-  <task:annotation-driven executor="executor" scheduler="scheduler"/>
+  <task:annotation-driven executor="taskExecutor" scheduler="scheduler"/>
 
-  <task:executor id="executor" pool-size="3"/>
+  <task:executor id="executor" pool-size="1"/>
 
   <task:scheduler id="scheduler" pool-size="1"/>
+
+  <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+    <property name="corePoolSize" value="3" />
+    <property name="daemon" value="true"/>
+  </bean>
 
   <!--JMX configuration-->
   <bean id="mbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean">
