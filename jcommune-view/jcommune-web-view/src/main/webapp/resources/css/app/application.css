@@ -1100,19 +1100,14 @@ pre.prettyprint {
 
 @media (min-width: 640px) {
     .text-500-errorpage {
-        left: 45%;
         position: absolute;
-        padding-right: 15px;
+        max-width: 35%;
     }
 }
 
-@media (max-width: 799px) {
-    .image-500-errorpage {
-        padding-top: 50px;
-    }
-}
 .image-500-errorpage {
     max-height: 500px;
+    padding-left: 25%;
 }
 
 .image-500-errorpage img {
