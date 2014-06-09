@@ -65,7 +65,6 @@ public class ErrorsHandlerController {
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public String handleForbiddenError() {
         return "/errors/accessDenied";
-        //userService.getCurrentUser().isAnonymous() ? "redirect:/login" : "/errors/accessDenied";
     }
 
     @RequestMapping(value = "redirect/501")
