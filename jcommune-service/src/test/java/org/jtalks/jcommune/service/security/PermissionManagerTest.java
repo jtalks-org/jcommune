@@ -254,7 +254,7 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
         List<Group> allGroups = Arrays.asList(new Group("1"), new Group("2"));
         when(groupDao.getAll()).thenReturn(allGroups);
 
-        List<Group> result = manager.getAllGroupsWithoutExcluded(Collections.EMPTY_LIST);
+        List<Group> result = manager.getAllGroupsWithoutExcluded(Collections.EMPTY_LIST, BranchPermission.CLOSE_TOPICS);
 
         assertEquals(allGroups, result);
     }
@@ -265,10 +265,20 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
         List<Group> allGroups = new ArrayList<>(Arrays.asList(excludedGroup, new Group("2")));
         when(groupDao.getAll()).thenReturn(allGroups);
 
-        List<Group> result = manager.getAllGroupsWithoutExcluded(Arrays.asList(excludedGroup));
+        List<Group> result = manager.getAllGroupsWithoutExcluded(Arrays.asList(excludedGroup), BranchPermission.CLOSE_TOPICS);
 
         assertEquals(result.size(), 1);
         assertEquals(result.get(0), allGroups.get(0));
+    }
+
+    @Test
+    public void getAllGroupsWithoutExcludedShouldReturnListWithAnonymousGroupWhenItNotExcludedAndRequestedViewTopicPermission() {
+        Group excludedGroup = new Group("1");
+        List<Group> allGroups = new ArrayList<>(Arrays.asList(excludedGroup, new Group("2")));
+        when(groupDao.getAll()).thenReturn(allGroups);
+
+        List<Group> result = manager.getAllGroupsWithoutExcluded(Arrays.asList(excludedGroup), BranchPermission.VIEW_TOPICS);
+        assertTrue(result.contains(AnonymousGroup.ANONYMOUS_GROUP));
     }
 
     @Test
@@ -279,7 +289,6 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
         when(groupDao.getGroupsByIds(ids)).thenReturn(groups);
 
         List<Group> result = manager.getGroupsByIds(ids);
-
         assertEquals(result, groups);
     }
 
@@ -288,6 +297,17 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
         List<Group> result = manager.getGroupsByIds(Collections.EMPTY_LIST);
 
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getGroupsByIdsShouldReturnListWithAnonymousGroupWhenListOfIdsContainsZeroValue() {
+        List<Group> groups = new ArrayList<>(Arrays.asList(new Group("group1")));
+        List<Long> ids = Arrays.asList(0L, 1L);
+
+        when(groupDao.getGroupsByIds(ids)).thenReturn(groups);
+
+        List<Group> result = manager.getGroupsByIds(ids);
+        assertTrue(result.contains(AnonymousGroup.ANONYMOUS_GROUP));
     }
 
     @DataProvider

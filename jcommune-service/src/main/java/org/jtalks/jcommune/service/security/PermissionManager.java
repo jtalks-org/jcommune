@@ -170,26 +170,37 @@ public class PermissionManager {
     }
 
     /**
-     * Gets the list of the all group existing in the System except the group in specified group list
+     * Gets the list of the all group existing in the System except the group in specified group list.
+     * Note: we have Anonymous group which not stored in database and available only for VIEW_TOPICS permission.
      * @param excludedGroupsList groups which should be excluded from the result
      * @return the list of the all group existing in the System except the group in specified group list
+     * @see org.jtalks.jcommune.model.entity.AnonymousGroup
      */
-    public List<Group> getAllGroupsWithoutExcluded(List<Group> excludedGroupsList) {
+    public List<Group> getAllGroupsWithoutExcluded(List<Group> excludedGroupsList, BranchPermission permission) {
         List<Group> allGroups = groupDao.getAll();
         allGroups.removeAll(excludedGroupsList);
+        if (permission.equals(BranchPermission.VIEW_TOPICS) && !excludedGroupsList.contains(AnonymousGroup.ANONYMOUS_GROUP)) {
+            allGroups.add(AnonymousGroup.ANONYMOUS_GROUP);
+        }
         return allGroups;
     }
 
     /**
-     * Gets the list of groups which IDs specified in parameter
+     * Gets the list of groups which IDs specified in parameter. If list of IDs contains 0L value result should
+     * contain instance of AnonymousGroup
      * @param groupIds the list of IDs for which groups should be found
      * @return the list of found groups or empty list if list of IDs is empty
+     * @see org.jtalks.jcommune.model.entity.AnonymousGroup
      */
     public List<Group> getGroupsByIds(List<Long> groupIds) {
         if (groupIds.isEmpty()) {
             return Collections.emptyList();
         } else {
-            return groupDao.getGroupsByIds(groupIds);
+            List<Group> groups = groupDao.getGroupsByIds(groupIds);
+            if (groupIds.contains(0L)) {
+                groups.add(AnonymousGroup.ANONYMOUS_GROUP);
+            }
+            return groups;
         }
     }
 

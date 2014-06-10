@@ -19,6 +19,7 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
@@ -71,6 +72,8 @@ public class TransactionalBranchServiceTest {
     private UserService userService;
     @Mock
     private PermissionService permissionService;
+    @Mock
+    private PostDao postDao;
 
     private Topic topic;
     private Section section;
@@ -84,7 +87,8 @@ public class TransactionalBranchServiceTest {
                 topicDao,
                 groupDao,
                 topicService,
-                permissionService);
+                permissionService,
+                postDao);
         topic = null;
         section = null;
     }
@@ -171,11 +175,13 @@ public class TransactionalBranchServiceTest {
         boolean expectedUnreadPostsCount = true;
         JCUser user = new JCUser("username", "email", "password");
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
+        Post lastPost = new Post(user, "text");
         org.jtalks.common.model.entity.Branch commonBranch = branch;
 
         when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
         when(topicDao.countTopics(branch)).thenReturn(expectedTopicsCount);
         when(userService.getCurrentUser()).thenReturn(user);
+        when(postDao.getLastPostFor(branch)).thenReturn(lastPost);
         //TODO Was removed till milestone 2 due to performance issues
 //        when(branchDao.isUnreadPostsInBranch(branch, user)).thenReturn(expectedUnreadPostsCount);
 
@@ -185,6 +191,7 @@ public class TransactionalBranchServiceTest {
                 "Incorrect count of topics");
         assertEquals(branch.getPostCount(), expectedPostsCount,
                 "Incorrect count of posts");
+        assertEquals(branch.getLastPost(),lastPost, "Incorrect last post");
 //        assertEquals(branch.isUnreadPosts(), expectedUnreadPostsCount,
 //                "Incorrect unread posts state");
     }

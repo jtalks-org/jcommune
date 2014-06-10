@@ -71,8 +71,11 @@ $(function () {
                 if ((newlyAdded.indexOf(groupsInfo[i].id) != -1) || (removed.indexOf(groupsInfo[i].id) != -1)) {
                     className += " group-container-highlighted";
                 }
-                content += "<div class='" + className +"'><input type='checkbox' id='" + groupsInfo[i].id + "' /> \
-                        <label for='" + groupsInfo[i].id + "'>" + groupsInfo[i].name + "</label> </div>";
+                content += "<div id='list-item" + groupsInfo[i].id + "' class='" + className +"'> "
+                    + "<input type='checkbox' id='" + groupsInfo[i].id + "' /> \
+                        <label data-original-title='" + groupsInfo[i].name + "' id='label" + groupsInfo[i].id
+                    + "' for='" + groupsInfo[i].id + "'><span id='span" + groupsInfo[i].id + "'>" + groupsInfo[i].name
+                    + "</span></label> </div>";
             }
             content += "</div>";
             return content;
@@ -151,20 +154,26 @@ $(function () {
                 }
             });
 
-            $("#selectAllAvailable").on('click', function (e) {
+            var selectAllAvailableFunc = function() {
                 $("#groupListAvailable input[type='checkbox']").each(function() {
                     $(this).prop('checked', $("#selectAllAvailable").prop('checked'));
                 });
-            });
+            };
 
-            $("#selectAllAlreadyAdded").on('click', function (e) {
+            var selectAllAlreadyAddedFunc = function() {
                 $("#groupListAlreadyAdded input[type='checkbox']").each(function() {
                     $(this).prop('checked', $("#selectAllAlreadyAdded").prop('checked'));
                 });
-            });
+            };
+
+
+            $("#selectAllAvailable").bind('click', selectAllAvailableFunc);
+            $("#selectAllAlreadyAdded").bind('click', selectAllAlreadyAddedFunc);
+            enableTooltipsOnLongNamesFor(selectedGroups);
+            enableTooltipsOnLongNamesFor(availableGroups);
 
             $("#addSelected").on('click', function(e) {
-                selectedGroups = getSelectedAvailableGroups().concat(selectedGroups);
+                selectedGroups = getSelectedGroupsInfoFrom("Available", availableGroups, newlyAdded, removed).concat(selectedGroups);
                 updateContent();
             });
 
@@ -178,7 +187,7 @@ $(function () {
             });
 
             $("#removeSelected").on('click', function(e) {
-                availableGroups = getSelectedAlreadyAddedGroups().concat(availableGroups);
+                availableGroups = getSelectedGroupsInfoFrom("AlreadyAdded", selectedGroups, removed, newlyAdded).concat(availableGroups);
                 updateContent();
             });
 
@@ -192,55 +201,22 @@ $(function () {
             });
 
             /**
-             * Gets list of groups which was selected in "Available" column
+             * Gets list of group info which was selected in groupList with specified suffix from specified list of groups
+             * and marks or unmarks they as edited.
+             * @param {String} idSuffix suffix of groupList for search
+             * @param {Array} groupsInfo list of group info for search
+             * @param (Array) markBuffer buffer for mark group info if it not marked in <b>unmarkBuffer</b>
+             * @param {Array} unmarkBuffer buffer for unmark group info
              * @return {Array} list of selected groups
              */
-            function getSelectedAvailableGroups() {
+            function getSelectedGroupsInfoFrom(idSuffix, groupsInfo, markBuffer, unmarkBuffer) {
                 var selected = [];
-                $("#groupListAvailable input[type='checkbox']:checked").each(function() {
-                    var group = getGroupInfoById(availableGroups, parseInt($(this).prop('id'), 10));
-                    markOrUnmarkGroupAsEditing(group, newlyAdded, removed);
+                $("#groupList" + idSuffix + " input[type='checkbox']:checked").each(function(){
+                    var group = extractGroupInfoById(groupsInfo,  parseInt($(this).prop('id'), 10));
+                    markOrUnmarkGroupAsEditing(group, markBuffer, unmarkBuffer);
                     selected.push(group);
                 });
                 return selected;
-            }
-
-            /**
-             * Gets list of groups which was selected in "AlreadyAdded" column
-             * @return {Array} list of selected groups
-             */
-            function getSelectedAlreadyAddedGroups() {
-                var selected = [];
-                $("#groupListAlreadyAdded input[type='checkbox']:checked").each(function() {
-                    var group = getGroupInfoById(selectedGroups, parseInt($(this).prop('id'), 10));
-                    markOrUnmarkGroupAsEditing(group, removed, newlyAdded);
-                    selected.push(group);
-                });
-                return selected;
-            }
-
-            /**
-             * Gets info about group from specified array by id
-             * @param {Array} groupsInfo array in which info about group will be fetched
-             * @param {Number} id identificator of needed group info
-             * @return {GroupDto} founded info about group
-             */
-            function getGroupInfoById(groupsInfo, id) {
-                for (var i = 0; i < groupsInfo.length; i ++) {
-                    if (groupsInfo[i].id == id) {
-                        tmp = groupsInfo[i];
-                        groupsInfo.splice(i, 1);
-                        return tmp;
-                    }
-                }
-            }
-
-            /**
-             * Updates content of popup
-             */
-            function updateContent() {
-                $("#left-container").html(getGroupListHtml("Available", availableGroups, $permissionsGroupAvailable));
-                $("#right-container").html(getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded));
             }
 
             /**
@@ -256,6 +232,48 @@ $(function () {
                     markBuffer.push(group.id);
                 } else {
                     unmarkBuffer.splice(unmarkBuffer.indexOf(group.id), 1);
+                }
+            }
+
+            /**
+             * Gets info about group from specified array by id
+             * @param {Array} groupsInfo array in which info about group will be fetched
+             * @param {Number} id identificator of needed group info
+             * @return {GroupDto} founded info about group
+             */
+            function extractGroupInfoById(groupsInfo, id) {
+                for (var i = 0; i < groupsInfo.length; i ++) {
+                    if (groupsInfo[i].id == id) {
+                        tmp = groupsInfo[i];
+                        groupsInfo.splice(i, 1);
+                        return tmp;
+                    }
+                }
+            }
+
+            /**
+             * Updates content of popup
+             */
+            function updateContent() {
+                $("#left-container").html(getGroupListHtml("Available", availableGroups, $permissionsGroupAvailable));
+                $("#right-container").html(getGroupListHtml("AlreadyAdded", selectedGroups, $permissionsGroupAlreadyAdded));
+
+                $("#selectAllAvailable").bind('click', selectAllAvailableFunc);
+                $("#selectAllAlreadyAdded").bind('click', selectAllAlreadyAddedFunc);
+                enableTooltipsOnLongNamesFor(selectedGroups);
+                enableTooltipsOnLongNamesFor(availableGroups);
+            }
+
+            /**
+             * Enables tooltips on groupsInfo with long names for specified list of groupsInfo
+             * @param {Array} groupsInfo list of groupsInfo for enabling tooltips on long names
+             */
+            function enableTooltipsOnLongNamesFor(groupsInfo) {
+                for (var i = 0; i < groupsInfo.length; i ++) {
+                    targetLabel = $('label[id="label' + groupsInfo[i].id + '"]');
+                    if ($('span[id="span' + groupsInfo[i].id + '"]').width() > targetLabel.width()) {
+                        targetLabel.tooltip();
+                    }
                 }
             }
 
