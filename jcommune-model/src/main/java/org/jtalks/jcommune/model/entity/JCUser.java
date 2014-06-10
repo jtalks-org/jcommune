@@ -186,7 +186,7 @@ public class JCUser extends User {
      * @return read-only user contacts collection
      */
     public Set<UserContact> getUserContacts() {
-        return UnmodifiableSet.decorate(contacts);
+        return contacts;
     }
 
     /**
@@ -246,11 +246,11 @@ public class JCUser extends User {
     public void setAutosubscribe(boolean autosubscribe) {
         this.autosubscribe = autosubscribe;
     }
-    
+
     /**
      * Determines whether email notifications are send to user when he has been mentioned in forum.
      *
-     * @return true user receives email notifications, otherwise false 
+     * @return true user receives email notifications, otherwise false
      */
     public boolean isMentioningNotificationsEnabled() {
         return mentioningNotificationsEnabled;
@@ -258,7 +258,7 @@ public class JCUser extends User {
 
     /**
      * Set whether email notifications are send to user when he has been mentioned in forum.
-     * 
+     *
      * @param mentioningNotificationsEnabled true user receives email notifications, otherwise false
      */
     public void setMentioningNotificationsEnabled(boolean mentioningNotificationsEnabled) {
