@@ -1087,29 +1087,9 @@ pre.prettyprint {
     .image_errorpage {
         display: none;
     }
-
-    .image-500-errorpage {
-        display: none;
-    }
 }
 
 #lang-selector-toggle-li .tooltip {
     white-space: pre-wrap;
     max-width: 61px;
-}
-
-@media (min-width: 640px) {
-    .text-500-errorpage {
-        position: absolute;
-        max-width: 35%;
-    }
-}
-
-.image-500-errorpage {
-    max-height: 500px;
-    padding-left: 25%;
-}
-
-.image-500-errorpage img {
-    max-height: 600px;
 }
