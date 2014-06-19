@@ -35,6 +35,7 @@ import org.jtalks.common.security.acl.ExtendedMutableAcl;
 import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.sids.JtalksSidFactory;
 
+import org.jtalks.common.security.acl.sids.UniversalSid;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.slf4j.Logger;
@@ -121,8 +122,8 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
             aces = ExtendedMutableAcl.castAndCreate(mutableAclService.readAclById(objectIdentity)).getEntries();
             controlEntries = aclManager.getGroupPermissionsOn(objectIdentity);
         } catch (NotFoundException nfe) {
-            aces = new ArrayList<AccessControlEntry>();
-            controlEntries = new ArrayList<GroupAce>();
+            aces = new ArrayList<>();
+            controlEntries = new ArrayList<>();
         }
 
         if (permission == ProfilePermission.EDIT_OWN_PROFILE &&
@@ -238,7 +239,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      */
     private boolean isGrantedForSid(Sid sid, AccessControlEntry ace,
                                     Permission permission, boolean isCheckAllowedGrant) {
-        return sid.getSidId().equals(ace.getSid().getSidId())
+        return ((UniversalSid)sid).getSidId().equals(((UniversalSid)ace.getSid()).getSidId())
                 && permission.equals(ace.getPermission())
                 && (ace.isGranting() == isCheckAllowedGrant);
     }
@@ -274,7 +275,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                     groupAces = ExtendedMutableAcl.castAndCreate(
                             mutableAclService.readAclById(groupIdentity)).getEntries();
                 } catch (NotFoundException nfe) {
-                    groupAces = new ArrayList<AccessControlEntry>();
+                    groupAces = new ArrayList<>();
                 }
                 if (isGrantedForSid(groupSid, groupAces, permission, isCheckAllowedGrant)) {
                     return true;

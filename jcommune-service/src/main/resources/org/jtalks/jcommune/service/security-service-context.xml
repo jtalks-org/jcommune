@@ -74,7 +74,7 @@
   </bean>
 
   <!-- Retrieves, modifies and strores access control lists -->
-  <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
+  <bean id="aclService" class="org.jtalks.common.security.acl.JtalksMutableAcService">
     <constructor-arg ref="dataSource"/>
     <constructor-arg ref="lookupStrategy"/>
     <constructor-arg ref="aclCache"/>
@@ -86,7 +86,7 @@
   <bean id="jtalksSidFactory" class="org.jtalks.common.security.acl.sids.JtalksSidFactory"/>
 
   <!-- Responsible for efficient retrieval of ACLs from database -->
-  <bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
+  <bean id="lookupStrategy" class="org.jtalks.common.security.acl.JtalksLookupStrategy">
     <constructor-arg ref="dataSource"/>
     <constructor-arg ref="aclCache"/>
     <constructor-arg ref="aclAuthorizationStrategy"/>

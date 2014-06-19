@@ -28,6 +28,7 @@ import org.jtalks.common.security.acl.AclManager;
 import org.jtalks.common.security.acl.AclUtil;
 import org.jtalks.common.security.acl.GroupAce;
 import org.jtalks.common.security.acl.builders.AclBuilders;
+import org.jtalks.common.security.acl.sids.UniversalSid;
 import org.jtalks.common.security.acl.sids.UserSid;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
@@ -161,7 +162,7 @@ public class PermissionManager {
             }
             for (AccessControlEntry controlEntry : aclUtil.getAclFor(entity).getEntries()) {
                 if (controlEntry.getPermission().equals(permission)
-                        && controlEntry.getSid().getSidId().equals(UserSid.createAnonymous().getSidId())) {
+                        && ((UniversalSid)controlEntry.getSid()).getSidId().equals(UserSid.createAnonymous().getSidId())) {
                     groupsPermissions.add(permission, AnonymousGroup.ANONYMOUS_GROUP, controlEntry.isGranting());
                 }
             }
