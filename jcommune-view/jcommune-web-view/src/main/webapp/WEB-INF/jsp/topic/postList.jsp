@@ -208,7 +208,7 @@
               <c:when test="${isFirstPost}">
                 <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
                                       permission="BranchPermission.DELETE_OWN_POSTS">
-                    <c:set var="isDeleteButtonAvailable" value="true"/>
+                    <c:set var="isDeleteButtonAvailable" value='${postsPage.numberOfElements == 1}'/>
                 </jtalks:hasPermission>
                 <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                       permission='BranchPermission.DELETE_OTHERS_POSTS'>
