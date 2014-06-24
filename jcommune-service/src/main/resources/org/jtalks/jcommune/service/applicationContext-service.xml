@@ -243,7 +243,7 @@
     <constructor-arg ref="groupDao"/>
     <constructor-arg ref="topicModificationService"/>
     <constructor-arg ref="permissionService"/>
-    <constructor-arg ref="postDao"/>
+    <constructor-arg ref="branchLastPostService"/>
   </bean>
 
   <bean id="branchLastPostService"

@@ -19,13 +19,13 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -55,7 +55,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private TopicDao topicDao;
     private TopicModificationService topicService;
     private PermissionService permissionService;
-    private PostDao postDao;
+    private BranchLastPostService lastPostService;
 
     /**
      * Create an instance of entity based service
@@ -73,14 +73,14 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             GroupDao groupDao,
             TopicModificationService topicService,
             PermissionService permissionService,
-            PostDao postDao) {
+            BranchLastPostService lastPostService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.topicService = topicService;
         this.permissionService = permissionService;
         this.groupDao = groupDao;
-        this.postDao = postDao;
+        this.lastPostService = lastPostService;
     }
 
     /**
@@ -134,7 +134,9 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             jcommuneBranch.setPostsCount(postsCount);
             int topicsCount = topicDao.countTopics(jcommuneBranch);
             jcommuneBranch.setTopicsCount(topicsCount);
-            jcommuneBranch.setLastPost(postDao.getLastPostFor(jcommuneBranch));
+            if (jcommuneBranch.getLastPost() == null) {
+                lastPostService.refreshLastPostInBranch(jcommuneBranch);
+            }
             //TODO Was removed till milestone 2 due to performance issues
 //            JCUser user = userService.getCurrentUser();
 //            if (!user.isAnonymous()) {
