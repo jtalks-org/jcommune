@@ -130,7 +130,7 @@ $(function () {
             'footerContent': '',
             'maxWidth': 300,
             'maxHeight': 400,
-            'overflow': 'hidden',
+            'overflow': 'auto',
             'overflowBody': 'hidden',
             'modal' : true,
             //first element focus
@@ -216,6 +216,8 @@ $(function () {
         //methods to dialogs
         jDialog.resizeDialog = function (dialog) {
             if (dialog) {
+                dialog.css("top","50%");
+                dialog.css("left","50%");
                 dialog.css("margin-top", function () {
                     return $(this).outerHeight() / 2 * (-1)
                 });
