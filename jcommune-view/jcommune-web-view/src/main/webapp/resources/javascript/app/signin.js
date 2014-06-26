@@ -24,8 +24,8 @@ $(function () {
         e.preventDefault();
 
         var bodyContent = '\
-        ' + Utils.createFormElement($labelUsername, 'j_username', 'text', 'first')
-            + Utils.createFormElement($labelPassword, 'j_password', 'password') + ' \
+        ' + Utils.createFormElement($labelUsername, 'j_username', 'text', 'first', 'width:90%')
+            + Utils.createFormElement($labelPassword, 'j_password', 'password', null, 'width:90%') + ' \
             <div id="rememberme-area" class="control-group"> \
                 <label class="rememberme-lbl"><input name="_spring_security_remember_me" class="form-check-radio-box" type="checkbox" checked="checked">' + $labelRememberMe + '</label> \
             </div> \
