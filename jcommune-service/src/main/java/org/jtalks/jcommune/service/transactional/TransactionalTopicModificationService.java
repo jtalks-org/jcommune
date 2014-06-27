@@ -318,7 +318,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
             "#topic.topicStarter.username == principal.username and " +
             "#topic.postCount == 1) or " +
             "(hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
-            "(hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS'))")
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS'))")
     @Override
     public void deleteTopic(Topic topic) throws NotFoundException {
 
