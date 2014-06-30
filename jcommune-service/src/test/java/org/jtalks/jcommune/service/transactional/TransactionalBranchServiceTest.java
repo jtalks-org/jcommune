@@ -24,6 +24,7 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.UserService;
@@ -71,6 +72,8 @@ public class TransactionalBranchServiceTest {
     private UserService userService;
     @Mock
     private PermissionService permissionService;
+    @Mock
+    private BranchLastPostService lastPostService;
 
     private Topic topic;
     private Section section;
@@ -84,7 +87,8 @@ public class TransactionalBranchServiceTest {
                 topicDao,
                 groupDao,
                 topicService,
-                permissionService);
+                permissionService,
+                lastPostService);
         topic = null;
         section = null;
     }

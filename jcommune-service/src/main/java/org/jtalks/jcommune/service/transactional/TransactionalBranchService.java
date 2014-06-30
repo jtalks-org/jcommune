@@ -25,6 +25,7 @@ import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -54,6 +55,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private TopicDao topicDao;
     private TopicModificationService topicService;
     private PermissionService permissionService;
+    private BranchLastPostService lastPostService;
 
     /**
      * Create an instance of entity based service
@@ -70,13 +72,15 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             TopicDao topicDao,
             GroupDao groupDao,
             TopicModificationService topicService,
-            PermissionService permissionService) {
+            PermissionService permissionService,
+            BranchLastPostService lastPostService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.topicService = topicService;
         this.permissionService = permissionService;
         this.groupDao = groupDao;
+        this.lastPostService = lastPostService;
     }
 
     /**
@@ -130,6 +134,9 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             jcommuneBranch.setPostsCount(postsCount);
             int topicsCount = topicDao.countTopics(jcommuneBranch);
             jcommuneBranch.setTopicsCount(topicsCount);
+            if (jcommuneBranch.getLastPost() == null) {
+                lastPostService.refreshLastPostInBranch(jcommuneBranch);
+            }
             //TODO Was removed till milestone 2 due to performance issues
 //            JCUser user = userService.getCurrentUser();
 //            if (!user.isAnonymous()) {

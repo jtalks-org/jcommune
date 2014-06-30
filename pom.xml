@@ -5,7 +5,7 @@
   <groupId>org.jtalks.jcommune</groupId>
   <artifactId>jcommune</artifactId>
   <packaging>pom</packaging>
-  <version>2.9-SNAPSHOT</version>
+  <version>2.10-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <modules>
     <module>jcommune-model</module>
@@ -584,7 +584,7 @@
 
   <properties>
     <hibernateVersion>3.6.6.Final</hibernateVersion>
-    <springVersion>3.2.2.RELEASE</springVersion>
+    <springVersion>3.2.4.RELEASE</springVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <headerBaseDir>${basedir}</headerBaseDir>
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
