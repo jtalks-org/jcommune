@@ -183,8 +183,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         notificationService.sendNotificationAboutTopicCreated(topic);
 
         subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
-        createOrUpdatePoll(topicDto.getPoll(), topic);
-
+        createPoll(topicDto.getPoll(), topic);
 
         userService.notifyAndMarkNewlyMentionedUsers(topic.getFirstPost());
 
@@ -193,6 +192,25 @@ public class TransactionalTopicModificationService implements TopicModificationS
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), topic.getBranch().getId(), currentUser.getUsername()});
         return topic;
+    }
+
+    /**
+     * Creates a poll for the topic or updates an existing one.
+     * On update all poll items with the same name remain unchanged,
+     * except probably their position in list. Users, previously voted
+     * for the deleted items can NOT vote again.
+     *
+     * @param poll            poll data from UI form
+     * @param persistentTopic topic from a database
+     */
+    private void createPoll(Poll poll, Topic persistentTopic) {
+        if (poll != null && poll.isHasPoll()) {
+            if (persistentTopic.getPoll() == null) {
+                persistentTopic.setPoll(poll);
+                poll.setTopic(persistentTopic);
+                pollService.createPoll(poll);
+            }
+        }
     }
 
     /**
@@ -266,35 +284,13 @@ public class TransactionalTopicModificationService implements TopicModificationS
         }
         Post post = topic.getFirstPost();
         post.updateModificationDate();
-        this.createOrUpdatePoll(poll, topic);
+        if (poll != null && poll.getEndingDate() != null) {
+            topic.getPoll().setEndingDate(poll.getEndingDate());
+        }
         dao.saveOrUpdate(topic);
         JCUser currentUser = userService.getCurrentUser();
         subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
         logger.debug("Topic id={} updated", topic.getId());
-    }
-
-    /**
-     * Creates a poll for the topic or updates an existing one.
-     * On update all poll items with the same name remain unchanged,
-     * except probably their position in list. Users, previously voted
-     * for the deleted items can NOT vote again.
-     *
-     * @param poll            poll data from UI form
-     * @param persistentTopic topic from a database
-     */
-    private void createOrUpdatePoll(Poll poll, Topic persistentTopic) {
-        if (poll != null && poll.isHasPoll()) {
-            if (persistentTopic.getPoll() == null) {
-                persistentTopic.setPoll(poll);
-                poll.setTopic(persistentTopic);
-                pollService.createPoll(poll);
-            } else {
-                persistentTopic.getPoll().setTitle(poll.getTitle());
-                persistentTopic.getPoll().setEndingDate(poll.getEndingDate());
-                persistentTopic.getPoll().setMultipleAnswer(poll.isMultipleAnswer());
-                pollService.mergePollItems(persistentTopic.getPoll(), poll.getPollItems());
-            }
-        }
     }
 
     /**

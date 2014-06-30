@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
@@ -564,24 +565,27 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     @Test
-    void testUpdateTopicWithPresetedPoll() throws NotFoundException {
+    void testUpdateTopicWithPresentedPoll() throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
 
+        DateTime endingDateTime = new DateTime();
         Topic topic = createTopic();
         Post post = createPost();
         topic.addPost(post);
         Poll poll = createPoll();
+        poll.setEndingDate(endingDateTime);
         topic.setPoll(poll);
 
         when(userService.getCurrentUser()).thenReturn(user);
 
         topicService.updateTopic(topic, poll);
 
-        verify(pollService).mergePollItems(poll, poll.getPollItems());
+        verify(pollService, never()).mergePollItems(poll, poll.getPollItems());
+        assertEquals(endingDateTime, topic.getPoll().getEndingDate());
     }
 
     @Test
-    void testUpdateTopicWithNotPresetedPoll() throws NotFoundException {
+    void testUpdateTopicWithNotPresentedPoll() throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
 
         Topic topic = createTopic();
@@ -592,7 +596,7 @@ public class TransactionalTopicModificationServiceTest {
 
         topicService.updateTopic(topic, poll);
 
-        verify(pollService).createPoll(poll);
+        verify(pollService, never()).createPoll(poll);
     }
 
     @Test
