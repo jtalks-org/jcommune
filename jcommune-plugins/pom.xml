@@ -11,6 +11,7 @@
     <module>jcommune-dummy-plugin</module>
     <module>poulpe-auth-plugin</module>
     <module>kaptcha-plugin</module>
+    <module>questions-n-answers-plugin</module>
   </modules>
 
   <dependencies>
