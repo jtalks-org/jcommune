@@ -40,11 +40,11 @@ $(function () {
 
         function createRegistrationForm(params) {
             var bodyContent =
-                Utils.createFormElement($labelUsername, 'username', 'text', 'first') +
-                    Utils.createFormElement($labelEmail, 'email', 'text') +
-                    Utils.createFormElement($labelPassword, 'password', 'password') +
-                    Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password') +
-                    Utils.createFormElement($lableHoneypotCaptcha, 'honeypotCaptcha', 'text', 'hide-element');
+                Utils.createFormElement($labelUsername, 'username', 'text', 'first', 'width:90%') +
+                    Utils.createFormElement($labelEmail, 'email', 'text', null, 'width:90%') +
+                    Utils.createFormElement($labelPassword, 'password', 'password', null, 'width:90%') +
+                    Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password', null, 'width:90%') +
+                    Utils.createFormElement($lableHoneypotCaptcha, 'honeypotCaptcha', 'text', 'hide-element', 'width:90%');
             for (var pluginId in params) {
                 bodyContent += params[pluginId];
             }

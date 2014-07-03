@@ -492,11 +492,6 @@ div.anchor {
     cursor: pointer;
 }
 
-#signup-modal-dialog {
-    width: 350px;
-    max-height: none;
-}
-
 #signup-modal-dialog .help-block {
     margin: 0px 5px;
 }
