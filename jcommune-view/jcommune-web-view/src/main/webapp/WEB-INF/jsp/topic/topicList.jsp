@@ -94,22 +94,34 @@
   <%-- Upper pagination --%>
   <div class="row-fluid upper-pagination forum-pagination-container">
     <div class="span4">
-      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
-        <a class="new-topic-btn btn btn-primary space-left-medium-nf"
-           href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-           title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
-          <spring:message code="label.addtopic"/>
+      <div class="dropdown">
+        <a class="dropdown-toggle btn btn-primary" role="button" data-toggle="dropdown" href="#"
+           title="<spring:message code='h.new_topic'/>">
+          <spring:message code="h.new_topic"/>
+          <b class="caret"></b>
         </a>
-      </jtalks:hasPermission>
-      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
-                            permission='BranchPermission.CREATE_CODE_REVIEW'>
-        <a class="new-code-review-btn btn btn-primary space-left-medium-nf"
-           href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
-           title="<spring:message code='label.addCodeReview.tip'/>" data-placement="right">
-          <spring:message code="label.addCodeReview"/>
-        </a>
-      </jtalks:hasPermission>
-      &nbsp; <%-- For proper pagination layout without buttons--%>
+        <ul class="dropdown-menu" role="menu">
+          <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
+            <li role="presentation">
+              <a class=""
+                 href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
+                 title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
+                <spring:message code="label.addtopic"/>
+              </a>
+            </li>
+          </jtalks:hasPermission>
+          <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                                permission='BranchPermission.CREATE_CODE_REVIEW'>
+            <li role="presentation">
+              <a class=""
+                 href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
+                 title="<spring:message code='label.addCodeReview.tip'/>" data-placement="right">
+                <spring:message code="label.addCodeReview"/>
+              </a>
+            </li>
+          </jtalks:hasPermission>
+        </ul>
+      </div>
     </div>
     <div class="span8">
       <div class="pagination pull-right forum-pagination">
@@ -129,22 +141,34 @@
   <%-- Bottom pagination --%>
   <div class="row-fluid upper-pagination forum-pagination-container">
     <div class="span4">
-      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
-        <a class="new-topic-btn btn btn-primary space-left-medium-nf"
-           href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-           title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
-          <spring:message code="label.addtopic"/>
+      <div class="dropdown">
+        <a class="dropdown-toggle btn btn-primary" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#"
+           title="<spring:message code='h.new_topic'/>" data-placement="right">
+          <spring:message code="h.new_topic"/>
+          <b class="caret"></b>
         </a>
-      </jtalks:hasPermission>
-      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
-                            permission='BranchPermission.CREATE_CODE_REVIEW'>
-        <a class="new-code-review-btn btn btn-primary space-left-medium-nf"
-           href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
-           title="<spring:message code="label.addCodeReview.tip"/>" data-placement="right">
-          <spring:message code="label.addCodeReview"/>
-        </a>
-      </jtalks:hasPermission>
-      &nbsp; <%-- For proper pagination layout without buttons--%>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
+            <li role="presentation">
+              <a class=""
+                 href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
+                 title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
+                <spring:message code="label.addtopic"/>
+              </a>
+            </li>
+          </jtalks:hasPermission>
+          <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
+                                permission='BranchPermission.CREATE_CODE_REVIEW'>
+            <li role="presentation">
+              <a class=""
+                 href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
+                 title="<spring:message code='label.addCodeReview.tip'/>" data-placement="right">
+                <spring:message code="label.addCodeReview"/>
+              </a>
+            </li>
+          </jtalks:hasPermission>
+        </ul>
+      </div>
     </div>
 
     <div class="span8">
