@@ -94,13 +94,18 @@
   <%-- Upper pagination --%>
   <div class="row-fluid upper-pagination forum-pagination-container">
     <div class="span4">
-      <div class="dropdown">
-        <a class="dropdown-toggle btn btn-primary" role="button" data-toggle="dropdown" href="#"
-           title="<spring:message code='h.new_topic'/>">
-          <spring:message code="h.new_topic"/>
-          <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu" role="menu">
+      <div class="btn-group">
+        <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
+          <a class="btn btn-primary"
+             href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
+             title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
+            <spring:message code="label.addtopic"/>
+          </a>
+        </jtalks:hasPermission>
+        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
           <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
             <li role="presentation">
               <a class=""
@@ -141,13 +146,18 @@
   <%-- Bottom pagination --%>
   <div class="row-fluid upper-pagination forum-pagination-container">
     <div class="span4">
-      <div class="dropdown">
-        <a class="dropdown-toggle btn btn-primary" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#"
-           title="<spring:message code='h.new_topic'/>" data-placement="right">
-          <spring:message code="h.new_topic"/>
-          <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+      <div class="btn-group">
+        <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
+          <a class="btn btn-primary"
+             href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
+             title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
+            <spring:message code="label.addtopic"/>
+          </a>
+        </jtalks:hasPermission>
+        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
           <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
             <li role="presentation">
               <a class=""
