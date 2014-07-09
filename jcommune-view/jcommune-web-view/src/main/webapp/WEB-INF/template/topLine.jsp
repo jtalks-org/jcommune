@@ -38,26 +38,26 @@
 <span id="titlePrefixHolder" class="hidden"><c:out value="${cmpTitlePrefix}"/></span>
 <span id="copyrightHolder" class="hidden"><c:out value="${copyrightTemplate}"/></span>
 
-<c:set var="toolTip" value="${logoTooltip}"/>
+<c:set var="toolTipKey" value="${logoTooltip}"/>
 <c:if test="${not empty forumComponent}">
   <jtalks:hasPermission permission="GeneralPermission.ADMIN"
                         targetId="${forumComponent.id}" targetType="COMPONENT">
-    <c:if test="${empty toolTip}">
-      <c:set var="toolTip"> <spring:message code="label.changeLogo"/> </c:set>
+    <c:if test="${empty toolTipKey}">
+      <c:set var="toolTipKey"> <spring:message code="label.changeLogo"/> </c:set>
     </c:if>
   </jtalks:hasPermission>
 </c:if>
 
 <div class="logo-container">
-  <a href="${pageContext.request.contextPath}/" title="${fn:escapeXml(toolTip)}"
+  <a href="${pageContext.request.contextPath}/" title="${fn:escapeXml(toolTipKey)}"
      data-toggle="tooltip" data-placement="right">
     <c:choose>
       <c:when test="${sessionScope.adminMode == true}">
         <img id="forumLogo" class="forum-logo cursor-pointer" src='<c:url value="/admin/logo"/>'
-             alt="${fn:escapeXml(toolTip)}"/>
+             alt="${fn:escapeXml(toolTipKey)}"/>
       </c:when>
       <c:otherwise>
-        <img class="forum-logo cursor-pointer" src='<c:url value="/admin/logo"/>' alt="${fn:escapeXml(toolTip)}"/>
+        <img class="forum-logo cursor-pointer" src='<c:url value="/admin/logo"/>' alt="${fn:escapeXml(toolTipKey)}"/>
       </c:otherwise>
     </c:choose>
   </a>

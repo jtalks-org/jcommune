@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.security.PermissionService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
@@ -30,6 +30,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -38,8 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.assertEquals;
@@ -68,6 +70,10 @@ public class BranchControllerTest {
     private UserService userService;
     @Mock
     private PostService postService;
+    @Mock
+    private PermissionEvaluator permissionEvaluator;
+    @Mock
+    private SecurityContextFacade securityContextFacade;
 
     private BranchController controller;
 
@@ -81,7 +87,7 @@ public class BranchControllerTest {
                 userService,
                 breadcrumbBuilder,
                 locationServiceImpl,
-                postService);
+                postService, permissionEvaluator, securityContextFacade);
     }
 
     @Test
@@ -99,6 +105,10 @@ public class BranchControllerTest {
                 .thenReturn(new ArrayList<Breadcrumb>());
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
 
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContextFacade.getContext()).thenReturn(securityContext);
+        Authentication authentication = mock(Authentication.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
         //invoke the object under test
         ModelAndView mav = controller.showPage(branchId, page);
 
@@ -171,6 +181,10 @@ public class BranchControllerTest {
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
         when(topicFetchService.getTopics(branch, page)).thenReturn(topicsPage);
 
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContextFacade.getContext()).thenReturn(securityContext);
+        Authentication authentication = mock(Authentication.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
         ModelAndView mav = controller.showPage(branchId, page);
 
         List<?> actualViewList = assertAndReturnModelAttributeOfType(mav, "viewList", List.class);
