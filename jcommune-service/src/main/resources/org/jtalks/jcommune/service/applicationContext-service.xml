@@ -244,6 +244,7 @@
     <constructor-arg ref="topicModificationService"/>
     <constructor-arg ref="permissionService"/>
     <constructor-arg ref="branchLastPostService"/>
+    <constructor-arg ref="pluginService"/>
   </bean>
 
   <bean id="branchLastPostService"
@@ -391,9 +392,15 @@
     <constructor-arg name="pluginConfigurationDao" ref="pluginConfigurationDao"/>
   </bean>
 
+  <bean id="pluginManager" class="org.jtalks.jcommune.service.plugins.PluginManager">
+    <constructor-arg name="pluginLoader" ref="pluginLoader"/>
+    <constructor-arg name="permissionManager" ref="permissionManager"/>
+  </bean>
+
   <bean id="pluginService" class="org.jtalks.jcommune.service.transactional.TransactionalPluginService">
     <constructor-arg name="dao" ref="pluginConfigurationDao"/>
     <constructor-arg name="pluginLoader" ref="pluginLoader"/>
+    <constructor-arg name="pluginManager" ref="pluginManager"/>
   </bean>
 
   <!--

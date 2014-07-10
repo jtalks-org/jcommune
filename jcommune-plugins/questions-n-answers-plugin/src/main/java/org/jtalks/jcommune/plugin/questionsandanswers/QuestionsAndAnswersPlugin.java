@@ -14,7 +14,9 @@
  */
 package org.jtalks.jcommune.plugin.questionsandanswers;
 
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
+import org.jtalks.jcommune.model.plugins.PluginWithPermissions;
 import org.jtalks.jcommune.model.plugins.StatefullPlugin;
 
 import java.util.Collections;
@@ -22,8 +24,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
-public class QuestionsAndAnswersPlugin extends StatefullPlugin {
+/**
+ * Plugin for question and answer type of topic.
+ *
+ * @author Evgeniy Myslovets
+ */
+public class QuestionsAndAnswersPlugin extends StatefullPlugin implements PluginWithPermissions {
 
     @Override
     public String getName() {
@@ -53,4 +59,10 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin {
     public String translateLabel(String code, Locale locale) {
         return null;
     }
+
+    @Override
+    public List<? extends JtalksPermission> getBranchPermissions() {
+        return QuestionPluginBranchPermission.getAllAsList();
+    }
+
 }

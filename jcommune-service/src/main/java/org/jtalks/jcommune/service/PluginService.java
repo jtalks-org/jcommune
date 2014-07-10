@@ -14,7 +14,10 @@
  */
 package org.jtalks.jcommune.service;
 
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
@@ -88,4 +91,12 @@ public interface PluginService extends EntityService<PluginConfiguration> {
      * @throws NotFoundException if plugin not found
      */
     Plugin getPluginById(String pluginId, PluginFilter... filters) throws NotFoundException;
+
+    /**
+     * Return access lists for branch.
+     *
+     * @param branch branch which will be returned access list
+     * @return access list
+     */
+    GroupsPermissions<JtalksPermission> getPluginsPermissionsFor(Branch branch);
 }

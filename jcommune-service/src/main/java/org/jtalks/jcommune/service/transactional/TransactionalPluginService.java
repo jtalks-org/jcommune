@@ -15,8 +15,11 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.apache.commons.lang.StringUtils;
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
@@ -26,6 +29,7 @@ import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.PluginFilter;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
+import org.jtalks.jcommune.service.plugins.PluginManager;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +48,7 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
         PluginConfigurationDao> implements PluginService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalPluginService.class);
     private PluginLoader pLuginLoader;
+    private PluginManager pluginManager;
 
     /**
      * Constructs an instance with required fields.
@@ -51,10 +56,10 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
      * @param dao          to save/update configurations for plugins
      * @param pluginLoader to load plugins that have been added to the forum
      */
-    public TransactionalPluginService(PluginConfigurationDao dao, PluginLoader pluginLoader) {
+    public TransactionalPluginService(PluginConfigurationDao dao, PluginLoader pluginLoader, PluginManager pluginManager) {
         super(dao);
         this.pLuginLoader = pluginLoader;
-
+        this.pluginManager = pluginManager;
     }
 
     /**
@@ -168,5 +173,10 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
             configuration.setActive(isActivated);
             pluginConfigurationDao.saveOrUpdate(configuration);
         }
+    }
+
+    @Override
+    public GroupsPermissions<JtalksPermission> getPluginsPermissionsFor(Branch branch) {
+        return pluginManager.getPluginsPermissionsMapFor(branch);
     }
 }
