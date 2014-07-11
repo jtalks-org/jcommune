@@ -148,11 +148,11 @@ public class BranchController {
         List<UiElementDto> topicTypes = new ArrayList<>();
 
         if (hasTopicPermission) {
-            topicTypes.add(new UiElementDto("label.addtopic", "label.addtopic.tip", "/topics/new?branchId=" + branchId));
+            topicTypes.add(new UiElementDto("newTopicButton", "label.addtopic", "label.addtopic.tip", "/topics/new?branchId=" + branchId));
         }
 
         if (hasReviewPermission) {
-            topicTypes.add(new UiElementDto("label.addCodeReview", "label.addCodeReview.tip", "/reviews/new?branchId=" + branchId));
+            topicTypes.add(new UiElementDto("newReviewButton", "label.addCodeReview", "label.addCodeReview.tip", "/reviews/new?branchId=" + branchId));
         }
 
         return topicTypes;

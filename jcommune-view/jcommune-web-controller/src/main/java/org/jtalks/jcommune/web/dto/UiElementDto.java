@@ -16,19 +16,29 @@
 package org.jtalks.jcommune.web.dto;
 
 /**
- * Class providing the information about UI element: localization keys for the
+ * Class providing the information about UI element: id, localization keys for the
  * displaying text and tooltip and the http address which will be used by the element
  * @author Andrei Alikov
  */
 public class UiElementDto {
+    private String id;
     private String displayNameKey;
     private String toolTipKey;
     private String link;
 
-    public UiElementDto(String displayNameKey, String toolTipKey, String link) {
+    public UiElementDto(String id, String displayNameKey, String toolTipKey, String link) {
         this.displayNameKey = displayNameKey;
         this.toolTipKey = toolTipKey;
         this.link = link;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getDisplayNameKey() {
