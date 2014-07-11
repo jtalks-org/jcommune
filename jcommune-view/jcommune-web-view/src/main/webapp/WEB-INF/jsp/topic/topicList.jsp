@@ -100,7 +100,7 @@
           &nbsp; <%-- For proper pagination layout without buttons--%>
         </c:when>
         <c:when test="${fn:length(topicTypes) == 1}">
-          <a id="${topicTypes[0].id}" class="btn btn-primary"
+          <a class="${topicTypes[0].id} btn btn-primary"
              href="${pageContext.request.contextPath}${topicTypes[0].link}"
              title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
             <spring:message code='${topicTypes[0].displayNameKey}'/>
@@ -108,18 +108,18 @@
         </c:when>
         <c:otherwise>
           <div class="btn-group">
-            <a id="${topicTypes[0].id}" class="btn btn-primary"
+            <a class="${topicTypes[0].id} btn btn-primary"
                href="${pageContext.request.contextPath}${topicTypes[0].link}"
                title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
               <spring:message code='${topicTypes[0].displayNameKey}'/>
             </a>
-            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <button class="topic-types-dropdown btn btn-primary dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
               <c:forEach var="topicType" items="${topicTypes}">
                 <li role="presentation">
-                  <a id="${topicType.id}"
+                  <a class="${topicType.id}"
                      href="${pageContext.request.contextPath}${topicType.link}"
                      title="<spring:message code='${topicType.toolTipKey}'/>" data-placement="right">
                     <spring:message code='${topicType.displayNameKey}'/>
@@ -154,7 +154,7 @@
           &nbsp; <%-- For proper pagination layout without buttons--%>
         </c:when>
         <c:when test="${fn:length(topicTypes) == 1}">
-          <a id="${topicTypes[0].id}" class="btn btn-primary"
+          <a class="${topicTypes[0].id} btn btn-primary"
              href="${pageContext.request.contextPath}${topicTypes[0].link}"
              title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
             <spring:message code='${topicTypes[0].displayNameKey}'/>
@@ -162,18 +162,18 @@
         </c:when>
         <c:otherwise>
           <div class="btn-group">
-            <a id="${topicTypes[0].id}" class="btn btn-primary"
+            <a class="${topicTypes[0].id} btn btn-primary"
                href="${pageContext.request.contextPath}${topicTypes[0].link}"
                title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
               <spring:message code='${topicTypes[0].displayNameKey}'/>
             </a>
-            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <button class="topic-types-dropdown btn btn-primary dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">
               <c:forEach var="topicType" items="${topicTypes}">
                 <li role="presentation">
-                  <a id="${topicType.id}"
+                  <a class="${topicType.id}"
                      href="${pageContext.request.contextPath}${topicType.link}"
                      title="<spring:message code='${topicType.toolTipKey}'/>" data-placement="right">
                     <spring:message code='${topicType.displayNameKey}'/>
