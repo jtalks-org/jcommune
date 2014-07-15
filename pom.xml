@@ -85,7 +85,6 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
         <version>4.2.0.Final</version>
-        <scope>compile</scope>
       </dependency>
       <!-- JDBC -->
       <dependency>
@@ -414,6 +413,11 @@
         <artifactId>lambdaj</artifactId>
         <version>2.3.3</version>
       </dependency>
+      <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-commons-core</artifactId>
+        <version>1.3.0.RELEASE</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -433,11 +437,6 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>apache-log4j-extras</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-commons-core</artifactId>
-      <version>1.3.0.RELEASE</version>
     </dependency>
   </dependencies>
 
