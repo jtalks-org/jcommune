@@ -21,6 +21,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--Let's define possible beans that are used on the page, this will give us autocompletion and error highlighting--%>
 <jsp:useBean id="branch" type="org.jtalks.jcommune.model.entity.Branch" scope="request"/>
 <jsp:useBean id="cmpDescription" type="java.lang.String" scope="request"/>
@@ -94,22 +95,41 @@
   <%-- Upper pagination --%>
   <div class="row-fluid upper-pagination forum-pagination-container">
     <div class="span4">
-      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
-        <a class="new-topic-btn btn btn-primary space-left-medium-nf"
-           href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-           title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
-          <spring:message code="label.addtopic"/>
-        </a>
-      </jtalks:hasPermission>
-      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
-                            permission='BranchPermission.CREATE_CODE_REVIEW'>
-        <a class="new-code-review-btn btn btn-primary space-left-medium-nf"
-           href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
-           title="<spring:message code='label.addCodeReview.tip'/>" data-placement="right">
-          <spring:message code="label.addCodeReview"/>
-        </a>
-      </jtalks:hasPermission>
-      &nbsp; <%-- For proper pagination layout without buttons--%>
+      <c:choose>
+        <c:when test="${fn:length(topicTypes) == 0}">
+          &nbsp; <%-- For proper pagination layout without buttons--%>
+        </c:when>
+        <c:when test="${fn:length(topicTypes) == 1}">
+          <a class="${topicTypes[0].id} btn btn-primary"
+             href="${pageContext.request.contextPath}${topicTypes[0].link}"
+             title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
+            <spring:message code='${topicTypes[0].displayNameKey}'/>
+          </a>
+        </c:when>
+        <c:otherwise>
+          <div class="btn-group">
+            <a class="${topicTypes[0].id} btn btn-primary"
+               href="${pageContext.request.contextPath}${topicTypes[0].link}"
+               title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
+              <spring:message code='${topicTypes[0].displayNameKey}'/>
+            </a>
+            <button class="topic-types-dropdown btn btn-primary dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <c:forEach var="topicType" items="${topicTypes}">
+                <li role="presentation">
+                  <a class="${topicType.id}"
+                     href="${pageContext.request.contextPath}${topicType.link}"
+                     title="<spring:message code='${topicType.toolTipKey}'/>" data-placement="right">
+                    <spring:message code='${topicType.displayNameKey}'/>
+                  </a>
+                </li>
+              </c:forEach>
+            </ul>
+          </div>
+        </c:otherwise>
+      </c:choose>
     </div>
     <div class="span8">
       <div class="pagination pull-right forum-pagination">
@@ -129,22 +149,41 @@
   <%-- Bottom pagination --%>
   <div class="row-fluid upper-pagination forum-pagination-container">
     <div class="span4">
-      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.CREATE_POSTS'>
-        <a class="new-topic-btn btn btn-primary space-left-medium-nf"
-           href="${pageContext.request.contextPath}/topics/new?branchId=${branch.id}"
-           title="<spring:message code='label.addtopic.tip'/>" data-placement="right">
-          <spring:message code="label.addtopic"/>
-        </a>
-      </jtalks:hasPermission>
-      <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH'
-                            permission='BranchPermission.CREATE_CODE_REVIEW'>
-        <a class="new-code-review-btn btn btn-primary space-left-medium-nf"
-           href="${pageContext.request.contextPath}/reviews/new?branchId=${branch.id}"
-           title="<spring:message code="label.addCodeReview.tip"/>" data-placement="right">
-          <spring:message code="label.addCodeReview"/>
-        </a>
-      </jtalks:hasPermission>
-      &nbsp; <%-- For proper pagination layout without buttons--%>
+      <c:choose>
+        <c:when test="${fn:length(topicTypes) == 0}">
+          &nbsp; <%-- For proper pagination layout without buttons--%>
+        </c:when>
+        <c:when test="${fn:length(topicTypes) == 1}">
+          <a class="${topicTypes[0].id} btn btn-primary"
+             href="${pageContext.request.contextPath}${topicTypes[0].link}"
+             title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
+            <spring:message code='${topicTypes[0].displayNameKey}'/>
+          </a>
+        </c:when>
+        <c:otherwise>
+          <div class="btn-group">
+            <a class="${topicTypes[0].id} btn btn-primary"
+               href="${pageContext.request.contextPath}${topicTypes[0].link}"
+               title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
+              <spring:message code='${topicTypes[0].displayNameKey}'/>
+            </a>
+            <button class="topic-types-dropdown btn btn-primary dropdown-toggle" data-toggle="dropdown">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <c:forEach var="topicType" items="${topicTypes}">
+                <li role="presentation">
+                  <a class="${topicType.id}"
+                     href="${pageContext.request.contextPath}${topicType.link}"
+                     title="<spring:message code='${topicType.toolTipKey}'/>" data-placement="right">
+                    <spring:message code='${topicType.displayNameKey}'/>
+                  </a>
+                </li>
+              </c:forEach>
+            </ul>
+          </div>
+        </c:otherwise>
+      </c:choose>
     </div>
 
     <div class="span8">

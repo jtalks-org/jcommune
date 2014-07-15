@@ -15,6 +15,7 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -24,13 +25,17 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
+import org.jtalks.jcommune.web.dto.UiElementDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.on;
@@ -55,6 +60,8 @@ public class BranchController {
     private UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
+    private final PermissionEvaluator aclEvaluator;
+    private final SecurityContextFacade securityContextFacade;
 
     /**
      * Post count in the RSS for recent posts in the branch
@@ -69,9 +76,10 @@ public class BranchController {
      * @param topicFetchService   for topic-related service actions
      * @param lastReadPostService service to retrieve unread posts information
      * @param userService         to get user currently logged in
-     * @param locationService     to fetch user forum page location info
      * @param breadcrumbBuilder   for creating breadcrumbs
+     * @param locationService     to fetch user forum page location info
      * @param postService         to get separate posts
+     * @param securityContextFacade
      */
     @Autowired
     public BranchController(BranchService branchService,
@@ -80,7 +88,9 @@ public class BranchController {
                             UserService userService,
                             BreadcrumbBuilder breadcrumbBuilder,
                             LocationService locationService,
-                            PostService postService) {
+                            PostService postService,
+                            PermissionEvaluator aclEvaluator,
+                            SecurityContextFacade securityContextFacade) {
         this.branchService = branchService;
         this.topicFetchService = topicFetchService;
         this.lastReadPostService = lastReadPostService;
@@ -88,6 +98,8 @@ public class BranchController {
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
         this.postService = postService;
+        this.aclEvaluator = aclEvaluator;
+        this.securityContextFacade = securityContextFacade;
     }
 
     /**
@@ -117,7 +129,33 @@ public class BranchController {
                 .addObject("branch", branch)
                 .addObject("topicsPage", topicsPage)
                 .addObject("breadcrumbList", breadcrumbs)
+                .addObject("topicTypes", getTopicTypes(branchId))
                 .addObject("subscribed", branch.getSubscribers().contains(currentUser));
+    }
+
+    /**
+     * Get the list of the topic types which are allowed for the current User and specified Branch
+     * @param branchId id of the branch where topic will be created
+     * @return list of the topic type information objects
+     */
+    private List<UiElementDto> getTopicTypes(long branchId) {
+        Authentication authentication = securityContextFacade.getContext().getAuthentication();
+        boolean hasTopicPermission =
+                aclEvaluator.hasPermission(authentication, branchId, "BRANCH", "BranchPermission.CREATE_POSTS");
+        boolean hasReviewPermission =
+                aclEvaluator.hasPermission(authentication, branchId, "BRANCH", "BranchPermission.CREATE_CODE_REVIEW");
+
+        List<UiElementDto> topicTypes = new ArrayList<>();
+
+        if (hasTopicPermission) {
+            topicTypes.add(new UiElementDto("new-topic-btn", "label.addtopic", "label.addtopic.tip", "/topics/new?branchId=" + branchId));
+        }
+
+        if (hasReviewPermission) {
+            topicTypes.add(new UiElementDto("new-code-review-btn", "label.addCodeReview", "label.addCodeReview.tip", "/reviews/new?branchId=" + branchId));
+        }
+
+        return topicTypes;
     }
 
     /**

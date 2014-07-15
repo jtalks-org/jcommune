@@ -114,13 +114,13 @@ Utils.br2lf = function (s) {
 }
 
 /**
- * Create form field with given label(placeholder), id, type
+ * Create form field with given label(placeholder), id, type, class and style.
  */
-Utils.createFormElement = function (label, id, type, cls) {
+Utils.createFormElement = function (label, id, type, cls, style) {
     var elementHtml = ' \
         <div class="control-group"> \
             <div class="controls"> \
-                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge ' + cls + '" /> \
+                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge ' + cls + '" style="'+ style +'"  /> \
             </div> \
         </div> \
     ';

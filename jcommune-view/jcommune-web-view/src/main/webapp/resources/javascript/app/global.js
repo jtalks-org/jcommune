@@ -25,12 +25,24 @@ $(document).ready(function () {
             e.preventDefault();
             var path = window.location.protocol + '//' + window.location.host;
             jDialog.createDialog({
+                title: 'Copy link to clipboard',
                 type: jDialog.alertType,
                 maxWidth: 800,
                 bodyMessage: path + $(this).attr('href')
             });
+            var element = $('.dialog-message h4').attr('contenteditable', true)[0];
+            window.setTimeout(function(){
+                var elemText = element.firstChild;
+                var sel = window.getSelection();
+                var range = document.createRange();
+                range.setStart(elemText, 0);
+                range.setEnd(elemText, elemText.length);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }, 1);
+            element.focus();
         })
-    })
+    });
     // popups to confirm post/topic deletion
     $(document).delegate('a.delete', 'click', function (e) {
         e.preventDefault();
@@ -83,7 +95,7 @@ $(document).ready(function () {
         } else {
             elements.hide();
         }
-    })
+    });
 
     var searchInput = $('#searchText');
     searchInput.on('focus', function (e) {

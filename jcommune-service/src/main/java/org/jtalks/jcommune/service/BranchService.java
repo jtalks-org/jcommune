@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -130,4 +131,13 @@ public interface BranchService extends EntityService<Branch> {
      */
     void changeBranchPermissions(long componentId, long branchId, boolean allowed, PermissionChanges changes)
             throws NotFoundException;
+
+    /**
+     * Gets the list of plugin permissions for given branch
+     * @param componentId ID of the component of the branch (needed only for the authorization purpose)
+     * @param branchId ID of the branch to the permissions
+     * @return information about the plugin permissions of the branch
+     * @throws NotFoundException when branch does not exist
+     */
+    GroupsPermissions<JtalksPermission> getPluginsPermissionsFor(long componentId, long branchId) throws NotFoundException;
 }

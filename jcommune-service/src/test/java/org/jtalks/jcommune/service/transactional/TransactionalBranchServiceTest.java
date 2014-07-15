@@ -18,16 +18,14 @@ import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.*;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.TopicModificationService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
@@ -73,7 +71,9 @@ public class TransactionalBranchServiceTest {
     @Mock
     private PermissionService permissionService;
     @Mock
-    private PostDao postDao;
+    private BranchLastPostService lastPostService;
+    @Mock
+    private PluginService pluginService;
 
     private Topic topic;
     private Section section;
@@ -88,7 +88,8 @@ public class TransactionalBranchServiceTest {
                 groupDao,
                 topicService,
                 permissionService,
-                postDao);
+                lastPostService,
+                pluginService);
         topic = null;
         section = null;
     }
@@ -175,13 +176,11 @@ public class TransactionalBranchServiceTest {
         boolean expectedUnreadPostsCount = true;
         JCUser user = new JCUser("username", "email", "password");
         Branch branch = new Branch(BRANCH_NAME, BRANCH_DESCRIPTION);
-        Post lastPost = new Post(user, "text");
         org.jtalks.common.model.entity.Branch commonBranch = branch;
 
         when(branchDao.getCountPostsInBranch(branch)).thenReturn(expectedPostsCount);
         when(topicDao.countTopics(branch)).thenReturn(expectedTopicsCount);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(postDao.getLastPostFor(branch)).thenReturn(lastPost);
         //TODO Was removed till milestone 2 due to performance issues
 //        when(branchDao.isUnreadPostsInBranch(branch, user)).thenReturn(expectedUnreadPostsCount);
 
@@ -191,7 +190,6 @@ public class TransactionalBranchServiceTest {
                 "Incorrect count of topics");
         assertEquals(branch.getPostCount(), expectedPostsCount,
                 "Incorrect count of posts");
-        assertEquals(branch.getLastPost(),lastPost, "Incorrect last post");
 //        assertEquals(branch.isUnreadPosts(), expectedUnreadPostsCount,
 //                "Incorrect unread posts state");
     }
@@ -383,4 +381,18 @@ public class TransactionalBranchServiceTest {
         branchService.changeBranchPermissions(0, branchId, false, changes);
     }
 
+    @Test
+    public void getPluginsPermissionsShouldReturnPermissionsWhenBranchExist() throws Exception {
+        long branchId = 42;
+        GroupsPermissions<JtalksPermission> expectedPermissions = new GroupsPermissions<>();
+
+        Branch expectedBranch = new Branch("name", "description");
+        when(branchDao.isExist(branchId)).thenReturn(true);
+        when(branchDao.get(branchId)).thenReturn(expectedBranch);
+        when(pluginService.getPluginsPermissionsFor(expectedBranch)).thenReturn(expectedPermissions);
+
+        GroupsPermissions<JtalksPermission> permissions = branchService.getPluginsPermissionsFor(0, branchId);
+        System.out.println(expectedPermissions.getPermissions());
+        assertEquals(permissions, expectedPermissions);
+    }
 }

@@ -16,7 +16,6 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
-import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.model.plugins.Plugin;
@@ -24,6 +23,7 @@ import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
+import org.jtalks.jcommune.service.plugins.PluginManager;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -47,13 +47,15 @@ public class TransactionalPluginServiceTest {
     private PluginConfigurationDao pluginConfigurationDao;
     @Mock
     private PluginLoader pluginLoader;
+    @Mock
+    private PluginManager pluginManager;
 
     private TransactionalPluginService pluginService;
 
     @BeforeMethod
     public void init() throws Exception {
         initMocks(this);
-        pluginService = new TransactionalPluginService(pluginConfigurationDao, pluginLoader);
+        pluginService = new TransactionalPluginService(pluginConfigurationDao, pluginLoader, pluginManager);
     }
 
     @Test

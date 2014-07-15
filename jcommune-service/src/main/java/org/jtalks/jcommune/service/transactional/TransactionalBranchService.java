@@ -18,15 +18,17 @@ import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.SectionDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.BranchService;
+import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
@@ -55,7 +57,8 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private TopicDao topicDao;
     private TopicModificationService topicService;
     private PermissionService permissionService;
-    private PostDao postDao;
+    private BranchLastPostService lastPostService;
+    private PluginService pluginService;
 
     /**
      * Create an instance of entity based service
@@ -65,6 +68,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * @param topicDao          data access object for operations with topics
      * @param topicService      service to perform complex operations with topics
      * @param permissionService service to perform permissions operations
+     * @param pluginService     service to perform plugins operations
      */
     public TransactionalBranchService(
             BranchDao branchDao,
@@ -73,14 +77,16 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             GroupDao groupDao,
             TopicModificationService topicService,
             PermissionService permissionService,
-            PostDao postDao) {
+            BranchLastPostService lastPostService,
+            PluginService pluginService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
         this.topicService = topicService;
         this.permissionService = permissionService;
         this.groupDao = groupDao;
-        this.postDao = postDao;
+        this.lastPostService = lastPostService;
+        this.pluginService = pluginService;
     }
 
     /**
@@ -134,7 +140,9 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             jcommuneBranch.setPostsCount(postsCount);
             int topicsCount = topicDao.countTopics(jcommuneBranch);
             jcommuneBranch.setTopicsCount(topicsCount);
-            jcommuneBranch.setLastPost(postDao.getLastPostFor(jcommuneBranch));
+            if (jcommuneBranch.getLastPost() == null) {
+                lastPostService.refreshLastPostInBranch(jcommuneBranch);
+            }
             //TODO Was removed till milestone 2 due to performance issues
 //            JCUser user = userService.getCurrentUser();
 //            if (!user.isAnonymous()) {
@@ -249,5 +257,15 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         } else {
             permissionService.changeRestrictions(branch, changes);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public GroupsPermissions<JtalksPermission> getPluginsPermissionsFor(long componentId, long branchId)
+            throws NotFoundException {
+        return pluginService.getPluginsPermissionsFor(get(branchId));
     }
 }

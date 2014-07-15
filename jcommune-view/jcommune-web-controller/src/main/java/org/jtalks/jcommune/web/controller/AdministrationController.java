@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -191,9 +192,11 @@ public class AdministrationController {
     public ModelAndView showBranchPermissions(@PathVariable("branchId") long branchId) throws NotFoundException {
         long forumId = componentService.getComponentOfForum().getId();
         GroupsPermissions<BranchPermission> permissions = branchService.getPermissionsFor(forumId, branchId);
+        GroupsPermissions<JtalksPermission> pluginsPermissions = branchService.getPluginsPermissionsFor(forumId, branchId);
         Branch branch = branchService.get(branchId);
         return new ModelAndView("branchPermissions")
                 .addObject("branch", branch)
+                .addObject("pluginsPermissions", pluginsPermissions)
                 .addObject("permissions", permissions);
     }
 

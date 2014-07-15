@@ -4,13 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jtalks.jcommune</groupId>
     <artifactId>jcommune-plugins</artifactId>
-    <version>2.9-SNAPSHOT</version>
+    <version>2.10-SNAPSHOT</version>
     <packaging>pom</packaging>
 
   <modules>
     <module>jcommune-dummy-plugin</module>
     <module>poulpe-auth-plugin</module>
     <module>kaptcha-plugin</module>
+    <module>questions-n-answers-plugin</module>
   </modules>
 
   <dependencies>
