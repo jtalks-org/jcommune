@@ -183,7 +183,7 @@ public class JCUser extends User {
     }
 
     /**
-     * @return read-only user contacts collection
+     * @return read-only user contacts
      */
     public Set<UserContact> getUserContacts() {
         return contacts;
