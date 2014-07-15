@@ -17,12 +17,8 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
-
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <!-- Web-level helper beans -->
-
     <bean name="forumStaticsProvider" class="org.jtalks.jcommune.web.util.ForumStatisticsProvider">
         <constructor-arg index="0" ref="sessionRegistry"/>
         <constructor-arg index="1" ref="sessionStatisticListener"/>
@@ -30,26 +26,8 @@
     </bean>
 
     <bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"/>
-
     <bean id="breadcrumbBuilder" class="org.jtalks.jcommune.web.util.BreadcrumbBuilder"/>
-
     <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.SessionStatisticListener"/>
-
-    <bean id="captchaProducer"
-        class="com.google.code.kaptcha.impl.DefaultKaptcha">
-        <property name="config">
-                <bean class="com.google.code.kaptcha.util.Config">
-                        <constructor-arg type="java.util.Properties">
-                                <props>
-                                        <prop key="kaptcha.image.width">100</prop>
-                                        <prop key="kaptcha.image.height">50</prop>
-                                        <prop key="kaptcha.textproducer.char.string">${CAPTCHA_POSSIBLE_SYMBOLS:0123456789}</prop>
-                                        <prop key="kaptcha.textproducer.char.length">4</prop>
-                                </props>
-                        </constructor-arg>
-                </bean>
-        </property>
-    </bean>
      
     <bean id="jsonUtils" class="org.jtalks.jcommune.web.util.JSONUtils">
         <constructor-arg>
@@ -80,11 +58,9 @@
         <constructor-arg ref="jsonUtils"/>
     </bean>
     
-    <bean id="rememberMeCookieDecoder" 
-          class="org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoderImpl" />
+    <bean id="rememberMeCookieDecoder" class="org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoderImpl" />
     
-    <bean id="rememberMeCheckService" 
-          class="org.jtalks.jcommune.web.rememberme.RememberMeCheckService">
+    <bean id="rememberMeCheckService" class="org.jtalks.jcommune.web.rememberme.RememberMeCheckService">
           <constructor-arg ref="tokenRepository"/>
     </bean>
     
@@ -93,8 +69,7 @@
         <property name="dataSource" ref="dataSource"/>     
     </bean>
     
-    <bean id="loggingConfigurationFilter"
-   	      class="org.jtalks.jcommune.web.filters.LoggingConfigurationFilter" >
+    <bean id="loggingConfigurationFilter" class="org.jtalks.jcommune.web.filters.LoggingConfigurationFilter" >
         <constructor-arg ref="securityService" />
         <constructor-arg>
             <bean class="org.jtalks.jcommune.web.logging.LoggerMdc"/>
