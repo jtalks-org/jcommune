@@ -24,11 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author Kirill Afonin
- * @author Alexandre Teterin
- * @author Max Malakhov
- * @author Eugeny Batov
- * @author masyan
+ * Contains utility methods to be used in tests when Entities persisted in DB are needed.
  */
 public final class PersistedObjectsFactory {
     //todo: refactor this class without using static
