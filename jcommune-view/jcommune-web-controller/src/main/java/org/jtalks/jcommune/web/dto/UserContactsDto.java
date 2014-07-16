@@ -50,7 +50,7 @@ public class UserContactsDto {
      */
     public UserContactsDto(JCUser user) {
         contacts = new ArrayList<>();
-        Set<UserContact> contactList = user.getUserContacts();
+        Set<UserContact> contactList = user.getContacts();
         for (UserContact contact : contactList) {
             contacts.add(new UserContactDto(contact));
         }

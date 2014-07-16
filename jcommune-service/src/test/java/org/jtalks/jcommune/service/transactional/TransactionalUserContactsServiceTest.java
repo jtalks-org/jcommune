@@ -49,17 +49,17 @@ public class TransactionalUserContactsServiceTest {
     private static final String USERNAME = "username";
     private static final String EMAIL = "username@mail.com";
     private static final String PASSWORD = "password";
-    
+
     private UserContactsService userContactsService;
-    
+
     @Mock
     private UserContactsDao userContactsDao;
 
     @Mock
     private UserService userService;
-    
+
     private JCUser user;
-    
+
     @BeforeMethod
     public void setUp() {
         initMocks(this);
@@ -70,12 +70,12 @@ public class TransactionalUserContactsServiceTest {
 
     @Test
     public void testsGetAvailableContactTypes() {
-        
+
         List<UserContactType> expectedTypes = new ArrayList<UserContactType>();
         expectedTypes.add(createUserContactType(1));
-        
+
         when(userContactsDao.getAvailableContactTypes()).thenReturn(expectedTypes);
-        
+
         List<UserContactType> types = userContactsService.getAvailableContactTypes();
         assertTrue(types.containsAll(expectedTypes));
     }
@@ -97,8 +97,8 @@ public class TransactionalUserContactsServiceTest {
         when(userContactsDao.isExist(anyLong())).thenReturn(true);
 
         JCUser resultUser = userContactsService.saveEditedUserContacts(user.getId(), contacts);
-        assertEquals(resultUser.getUserContacts().size(), 1);
-        List<UserContact> resultContacts = new ArrayList<>(resultUser.getUserContacts());
+        assertEquals(resultUser.getContacts().size(), 1);
+        List<UserContact> resultContacts = new ArrayList<>(resultUser.getContacts());
         assertEquals(resultContacts.get(0).getValue(), newValue2, "Value of contact 1 was not changed");
         assertEquals(resultContacts.get(0).getType().getId(), contactTypeId2, "Type of contact 1 was not changed");
     }
@@ -117,7 +117,7 @@ public class TransactionalUserContactsServiceTest {
         when(userContactsDao.isExist(anyLong())).thenReturn(true);
 
         JCUser resultUser = userContactsService.saveEditedUserContacts(user.getId(), contacts);
-        assertEquals(resultUser.getUserContacts().size(), 5);
+        assertEquals(resultUser.getContacts().size(), 5);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class TransactionalUserContactsServiceTest {
         when(userContactsDao.isExist(anyLong())).thenReturn(true);
 
         JCUser resultUser = userContactsService.saveEditedUserContacts(user.getId(), contacts);
-        assertEquals(resultUser.getUserContacts().size(), 4);
+        assertEquals(resultUser.getContacts().size(), 4);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
@@ -149,7 +149,7 @@ public class TransactionalUserContactsServiceTest {
 
     private void prepareContactsMocks() throws NotFoundException {
         when(userService.get(user.getId())).thenReturn(user);
-        List<UserContact> userContactList = Lists.newArrayList(user.getUserContacts());
+        List<UserContact> userContactList = Lists.newArrayList(user.getContacts());
         for (UserContact contact : userContactList) {
             if (contact.getId() != 0) {
                 when(userContactsDao.getContactById(contact.getId())).thenReturn(contact);
@@ -178,7 +178,7 @@ public class TransactionalUserContactsServiceTest {
         List<UserContactContainer> contacts = new ArrayList<>();
         for (int i = 0; i < contactsCount; i++) {
             UserContact contact = new UserContact("contact" + i, createUserContactType(contactTypeId));
-            contact.setId(user.getUserContacts().size() + 1);
+            contact.setId(user.getContacts().size() + 1);
             user.addContact(contact);
             contacts.add(new UserContactContainer(contact.getId(), contact.getValue(), contact.getType().getId()));
         }

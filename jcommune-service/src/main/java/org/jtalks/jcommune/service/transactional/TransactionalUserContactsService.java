@@ -63,7 +63,7 @@ public class TransactionalUserContactsService
             throws NotFoundException {
         JCUser user = userService.get(editedUserId);
         // temporary contact list for excluding concurrent modification ex
-        List<UserContact> tmpContactList = Lists.newArrayList(user.getUserContacts());
+        List<UserContact> tmpContactList = Lists.newArrayList(user.getContacts());
         // Remove deleted contacts
         for (UserContact contact : tmpContactList) {
             if (!contactExistInList(contact, contacts)) {

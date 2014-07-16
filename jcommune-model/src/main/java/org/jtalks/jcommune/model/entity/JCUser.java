@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.apache.commons.collections.set.UnmodifiableSet;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
@@ -183,16 +182,9 @@ public class JCUser extends User {
     }
 
     /**
-     * @return read-only user contacts
-     */
-    public Set<UserContact> getUserContacts() {
-        return contacts;
-    }
-
-    /**
      * @return set contacts of user
      */
-    protected Set<UserContact> getContacts() {
+    public Set<UserContact> getContacts() {
         return contacts;
     }
 
