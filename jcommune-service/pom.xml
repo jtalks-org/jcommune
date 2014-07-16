@@ -103,7 +103,6 @@
       <groupId>oro</groupId>
       <artifactId>oro</artifactId>
     </dependency>
-    <!--Tika-->
     <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
