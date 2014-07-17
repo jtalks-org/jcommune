@@ -93,57 +93,6 @@
         </div>
       </div>
     </c:forEach>
-
-    <%-- TODO: Now there is a simple copy paste, need to be replaced with tag for example--%>
-    <c:forEach items="${pluginsPermissions.permissions}" var="entry">
-      <div class="panel panel-primary">
-        <div class="panel-heading">${entry.name}</div>
-        <div class="panel-body">
-          <div class="pull-left permission-type permission-allowed">
-            <spring:message code="permissions.allowed"/>
-          </div>
-          <div class="pull-right edit-permission">
-            <a class="btn editAllowedPermission"
-               data-permission="${entry.mask}"
-               data-branch="${branch.id}"
-               data-permission-name="${entry.name}"
-               href="#">
-              <span><spring:message code="label.edit"/></span>
-            </a>
-          </div>
-          <div class="permissions-container">
-            <ul class="permissions-list">
-              <c:forEach items="${permissions.accessListMap[entry].allowed}" var="group">
-                <li> ${group.name}</li>
-              </c:forEach>
-            </ul>
-          </div>
-
-          <div class="cleared"></div>
-
-          <div class="pull-left permission-type permission-restricted">
-            <spring:message code="permissions.restricted"/>
-          </div>
-          <div class="pull-right edit-permission">
-            <a class="btn editRestrictedPermission"
-               data-permission="${entry.mask}"
-               data-branch="${branch.id}"
-               data-permission-name="${entry.name}"
-               href="#">
-              <span><spring:message code="label.edit"/></span>
-            </a>
-          </div>
-          <div class="permissions-container">
-            <ul class="permissions-list">
-              <c:forEach items="${permissions.accessListMap[entry].restricted}" var="group">
-                <li> ${group.name}</li>
-              </c:forEach>
-            </ul>
-          </div>
-          <div class="cleared"></div>
-        </div>
-      </div>
-    </c:forEach>
   </div>
 </div>
 </body>

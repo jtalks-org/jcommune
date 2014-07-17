@@ -28,7 +28,6 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.TopicModificationService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
@@ -58,7 +57,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     private TopicModificationService topicService;
     private PermissionService permissionService;
     private BranchLastPostService lastPostService;
-    private PluginService pluginService;
 
     /**
      * Create an instance of entity based service
@@ -68,7 +66,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * @param topicDao          data access object for operations with topics
      * @param topicService      service to perform complex operations with topics
      * @param permissionService service to perform permissions operations
-     * @param pluginService     service to perform plugins operations
      */
     public TransactionalBranchService(
             BranchDao branchDao,
@@ -77,8 +74,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
             GroupDao groupDao,
             TopicModificationService topicService,
             PermissionService permissionService,
-            BranchLastPostService lastPostService,
-            PluginService pluginService) {
+            BranchLastPostService lastPostService) {
         super(branchDao);
         this.sectionDao = sectionDao;
         this.topicDao = topicDao;
@@ -86,7 +82,6 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         this.permissionService = permissionService;
         this.groupDao = groupDao;
         this.lastPostService = lastPostService;
-        this.pluginService = pluginService;
     }
 
     /**
@@ -257,15 +252,5 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
         } else {
             permissionService.changeRestrictions(branch, changes);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public GroupsPermissions<JtalksPermission> getPluginsPermissionsFor(long componentId, long branchId)
-            throws NotFoundException {
-        return pluginService.getPluginsPermissionsFor(get(branchId));
     }
 }

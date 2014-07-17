@@ -28,5 +28,15 @@ public interface PluginWithPermissions extends Plugin {
     /**
      * @return branch permissions for current plugin
      */
-    public List<? extends JtalksPermission> getBranchPermissions();
+    public <T extends JtalksPermission> List<T> getBranchPermissions();
+
+    /**
+     * @return general permissions for current plugin
+     */
+    public <T extends JtalksPermission> List<T> getGeneralPermissions();
+
+    /**
+     * @return profile permissions for current plugin
+     */
+    public <T extends JtalksPermission> List<T> getProfilePermissions();
 }

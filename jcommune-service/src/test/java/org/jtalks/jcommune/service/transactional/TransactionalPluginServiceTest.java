@@ -23,7 +23,6 @@ import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
 import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.dto.PluginActivatingDto;
 import org.jtalks.jcommune.service.plugins.PluginLoader;
-import org.jtalks.jcommune.service.plugins.PluginManager;
 import org.jtalks.jcommune.service.plugins.TypeFilter;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
@@ -47,15 +46,13 @@ public class TransactionalPluginServiceTest {
     private PluginConfigurationDao pluginConfigurationDao;
     @Mock
     private PluginLoader pluginLoader;
-    @Mock
-    private PluginManager pluginManager;
 
     private TransactionalPluginService pluginService;
 
     @BeforeMethod
     public void init() throws Exception {
         initMocks(this);
-        pluginService = new TransactionalPluginService(pluginConfigurationDao, pluginLoader, pluginManager);
+        pluginService = new TransactionalPluginService(pluginConfigurationDao, pluginLoader);
     }
 
     @Test

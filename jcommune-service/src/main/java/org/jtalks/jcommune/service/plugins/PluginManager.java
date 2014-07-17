@@ -14,12 +14,9 @@
  */
 package org.jtalks.jcommune.service.plugins;
 
-import org.jtalks.common.model.entity.Branch;
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.plugins.Plugin;
 import org.jtalks.jcommune.model.plugins.PluginWithPermissions;
-import org.jtalks.jcommune.service.security.PermissionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,32 +28,56 @@ import java.util.List;
  */
 public class PluginManager {
 
-    private PermissionManager permissionManager;
     private PluginLoader pluginLoader;
 
     /**
-     * Constructs {@link org.jtalks.jcommune.service.plugins.PluginManager} with given
-     * {@link PermissionManager} and {@link PluginLoader}
+     * Constructs {@link org.jtalks.jcommune.service.plugins.PluginManager} with given {@link PluginLoader}
      *
-     * @param permissionManager permission manager instance
      * @param pluginLoader plugin loader instance
      */
-    public PluginManager(PermissionManager permissionManager, PluginLoader pluginLoader) {
-        this.permissionManager = permissionManager;
+    public PluginManager(PluginLoader pluginLoader) {
         this.pluginLoader = pluginLoader;
     }
+
     /**
-     * @param branch object identity
-     * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions<JtalksPermission>} for given branch
+     * @return plugin branch permission for given branch
      */
-    public GroupsPermissions<JtalksPermission> getPluginsPermissionsMapFor(Branch branch) {
+    public <T extends JtalksPermission> List<T> getPluginsBranchPermissions() {
         List<Plugin> plugins = pluginLoader.getPlugins();
-        List<JtalksPermission> branchPermissions = new ArrayList<>();
+        List<T> branchPermissions = new ArrayList<>();
         for (Plugin plugin : plugins) {
             if (plugin instanceof PluginWithPermissions && plugin.isEnabled()) {
-                branchPermissions.addAll(((PluginWithPermissions) plugin).getBranchPermissions());
+                branchPermissions.addAll((List<T>) ((PluginWithPermissions) plugin).getBranchPermissions());
             }
         }
-        return permissionManager.getPermissionsMapFor(branchPermissions, branch);
+        return branchPermissions;
+    }
+
+    /**
+     * @return plugin general permission for given component
+     */
+    public <T extends JtalksPermission> List<T> getPluginsGeneralPermissions() {
+        List<Plugin> plugins = pluginLoader.getPlugins();
+        List<T> generalPermissions = new ArrayList<>();
+        for (Plugin plugin : plugins) {
+            if (plugin instanceof PluginWithPermissions && plugin.isEnabled()) {
+                generalPermissions.addAll((List<T>) ((PluginWithPermissions) plugin).getGeneralPermissions());
+            }
+        }
+        return generalPermissions;
+    }
+
+    /**
+     * @return plugin profile permission for given branch
+     */
+    public <T extends JtalksPermission> List<T> getPluginsProfilePermissions() {
+        List<Plugin> plugins = pluginLoader.getPlugins();
+        List<T> profilePermissions = new ArrayList<>();
+        for (Plugin plugin : plugins) {
+            if (plugin instanceof PluginWithPermissions && plugin.isEnabled()) {
+                profilePermissions.addAll((List<T>) ((PluginWithPermissions) plugin).getProfilePermissions());
+            }
+        }
+        return profilePermissions;
     }
 }

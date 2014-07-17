@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * @author Vyacheslav Zhivaev
  */
 public class GroupsPermissions<T extends JtalksPermission> {
-    private final ConcurrentMap<T, GroupAccessList> accessListMap = new ConcurrentSkipListMap<T, GroupAccessList>();
+    private final ConcurrentMap<T, GroupAccessList> accessListMap = new ConcurrentSkipListMap<T, GroupAccessList>(new PermissionComparator());
 
     /**
      * Constructs {@link GroupsPermissions} with empty internal state. Use add* methods to fill this map.
@@ -188,5 +188,13 @@ public class GroupsPermissions<T extends JtalksPermission> {
      */
     public static GroupsPermissions<ProfilePermission> profilePermissions() {
         return new GroupsPermissions<ProfilePermission>(ProfilePermission.getAllAsList());
+    }
+
+    private class PermissionComparator implements Comparator<T> {
+
+        @Override
+        public int compare(T o1, T o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
     }
 }

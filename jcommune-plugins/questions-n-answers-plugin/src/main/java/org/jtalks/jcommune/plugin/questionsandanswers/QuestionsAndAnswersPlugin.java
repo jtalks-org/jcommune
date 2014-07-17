@@ -61,8 +61,18 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements Plugin
     }
 
     @Override
-    public List<? extends JtalksPermission> getBranchPermissions() {
-        return QuestionPluginBranchPermission.getAllAsList();
+    public <T extends JtalksPermission> List<T> getBranchPermissions() {
+        return (List<T>) QuestionPluginBranchPermission.getAllAsList();
+    }
+
+    @Override
+    public <T extends JtalksPermission> List<T> getGeneralPermissions() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public <T extends JtalksPermission> List<T> getProfilePermissions() {
+        return Collections.emptyList();
     }
 
 }

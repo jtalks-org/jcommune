@@ -34,6 +34,7 @@ import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.AnonymousGroup;
+import org.jtalks.jcommune.service.plugins.PluginManager;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
@@ -53,6 +54,7 @@ public class PermissionManager {
     private final AclManager aclManager;
     private final AclUtil aclUtil;
     private final GroupDao groupDao;
+    private final PluginManager pluginManager;
 
     /**
      * Constructs {@link org.jtalks.jcommune.service.security.PermissionManager} with given
@@ -62,10 +64,11 @@ public class PermissionManager {
      * @param groupDao   group dao instance
      */
     public PermissionManager(@Nonnull AclManager aclManager, @Nonnull GroupDao groupDao,
-                             @Nonnull AclUtil aclUtil) {
+                             @Nonnull AclUtil aclUtil, @Nonnull PluginManager pluginManager) {
         this.aclManager = aclManager;
         this.groupDao = groupDao;
         this.aclUtil = aclUtil;
+        this.pluginManager = pluginManager;
     }
 
     /**
@@ -109,7 +112,10 @@ public class PermissionManager {
      * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions <BranchPermission>} for given branch
      */
     public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(Branch branch) {
-        return (GroupsPermissions<T>) getPermissionsMapFor(BranchPermission.getAllAsList(), branch);
+        List<T> branchPermissions = new ArrayList<>();
+        branchPermissions.addAll((List<T>) BranchPermission.getAllAsList());
+        branchPermissions.addAll(pluginManager.<T>getPluginsBranchPermissions());
+        return getPermissionsMapFor(branchPermissions, branch);
     }
 
     /**
@@ -119,7 +125,10 @@ public class PermissionManager {
      * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for {@link org.jtalks.common.model.entity.Component}
      */
     public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(Component component) {
-        return (GroupsPermissions<T>) getPermissionsMapFor(GeneralPermission.getAllAsList(), component);
+        List<T> generalPermissions = new ArrayList<>();
+        generalPermissions.addAll((List<T>) GeneralPermission.getAllAsList());
+        generalPermissions.addAll(pluginManager.<T>getPluginsGeneralPermissions());
+        return getPermissionsMapFor(generalPermissions, component);
     }
 
     /**
@@ -129,10 +138,14 @@ public class PermissionManager {
      * @return for {@link org.jtalks.common.model.entity.Group}
      */
     public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(List<Group> groups) {
-        GroupsPermissions<ProfilePermission> permissions = new GroupsPermissions<>(ProfilePermission.getAllAsList());
+        List<T> profilePermissions = new ArrayList<>();
+        profilePermissions.addAll((List<T>) ProfilePermission.getAllAsList());
+        profilePermissions.addAll(pluginManager.<T>getPluginsProfilePermissions());
+
+        GroupsPermissions<T> permissions = new GroupsPermissions<>(profilePermissions);
         for (Group group : groups) {
-            GroupsPermissions<ProfilePermission> pmGroup = getPermissionsMapFor(ProfilePermission.getAllAsList(), group);
-            for (ProfilePermission permission : pmGroup.getPermissions()) {
+            GroupsPermissions<T> pmGroup = getPermissionsMapFor(profilePermissions, group);
+            for (T permission : pmGroup.getPermissions()) {
                 for (Group groupInsert : pmGroup.getAllowed(permission)) {
                     permissions.addAllowed(permission, groupInsert);
                 }
@@ -141,7 +154,7 @@ public class PermissionManager {
                 }
             }
         }
-        return (GroupsPermissions<T>) permissions;
+        return permissions;
     }
 
     /**
