@@ -13,27 +13,24 @@
         <dependency>
             <groupId>org.jtalks.jcommune</groupId>
             <artifactId>jcommune-model</artifactId>
-            <version>2.10-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
-            <version>2.5</version>
         </dependency>
 
         <!-- TestNG & Mockito -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.8.5</version>
             <scope>test</scope>
         </dependency>
 
@@ -41,17 +38,14 @@
         <dependency>
             <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet</artifactId>
-            <version>2.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.restlet.jee</groupId>
             <artifactId>org.restlet.ext.jaxb</artifactId>
-            <version>2.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.xebialabs.restito</groupId>
             <artifactId>restito</artifactId>
-            <version>0.4-alpha-2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

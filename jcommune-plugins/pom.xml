@@ -14,25 +14,80 @@
     <module>questions-n-answers-plugin</module>
   </modules>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
-      <version>6.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context-support</artifactId>
-      <version>${springVersion}</version>
-    </dependency>
-  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jtalks.jcommune</groupId>
+        <artifactId>jcommune-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jtalks.jcommune</groupId>
+        <artifactId>jcommune-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <scope>provided</scope>
+        <version>2.5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+        <version>${springVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code</groupId>
+        <artifactId>kaptcha</artifactId>
+        <version>2.3.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.velocity</groupId>
+        <artifactId>velocity</artifactId>
+        <version>1.7</version>
+      </dependency>
+
+        <!-- TestNG & Mockito -->
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+          </exclusion>
+        </exclusions>
+        <scope>test</scope>
+        <version>6.3.1</version>
+      </dependency>
+      <dependency>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-all</artifactId>
+          <version>1.8.5</version>
+          <scope>test</scope>
+      </dependency>
+
+      <!-- REST dependencies -->
+      <dependency>
+        <groupId>org.restlet.jee</groupId>
+        <artifactId>org.restlet</artifactId>
+        <version>2.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.restlet.jee</groupId>
+        <artifactId>org.restlet.ext.jaxb</artifactId>
+        <version>2.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.xebialabs.restito</groupId>
+        <artifactId>restito</artifactId>
+        <version>0.4-alpha-2</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <plugins>
