@@ -301,7 +301,7 @@ public class TransactionalBranchServiceTest {
         Branch expectedBranch = new Branch("name", "description");
         when(branchDao.isExist(branchId)).thenReturn(true);
         when(branchDao.get(branchId)).thenReturn(expectedBranch);
-        when(permissionService.getPermissionsFor(expectedBranch)).thenReturn(expectedPermissions);
+        doReturn(expectedPermissions).when(permissionService).getPermissionsFor(expectedBranch);
 
         GroupsPermissions<BranchPermission> permissions = branchService.getPermissionsFor(0, branchId);
         assertEquals(permissions, expectedPermissions);
@@ -324,7 +324,7 @@ public class TransactionalBranchServiceTest {
         Branch expectedBranch = new Branch("name", "description");
         when(branchDao.isExist(branchId)).thenReturn(true);
         when(branchDao.get(branchId)).thenReturn(expectedBranch);
-        when(permissionService.getPermissionsFor(expectedBranch)).thenReturn(expectedPermissions);
+        doReturn(expectedPermissions).when(permissionService).getPermissionsFor(expectedBranch);
 
         List<Group> result = branchService.getPermissionGroupsFor(0, branchId, true, permission);
         assertEquals(result, expectedPermissions.getAllowed(permission));
@@ -340,7 +340,7 @@ public class TransactionalBranchServiceTest {
         Branch expectedBranch = new Branch("name", "description");
         when(branchDao.isExist(branchId)).thenReturn(true);
         when(branchDao.get(branchId)).thenReturn(expectedBranch);
-        when(permissionService.getPermissionsFor(expectedBranch)).thenReturn(expectedPermissions);
+        doReturn(expectedPermissions).when(permissionService).getPermissionsFor(expectedBranch);
 
         List<Group> result = branchService.getPermissionGroupsFor(0, branchId, false, permission);
         assertEquals(result, expectedPermissions.getRestricted(permission));

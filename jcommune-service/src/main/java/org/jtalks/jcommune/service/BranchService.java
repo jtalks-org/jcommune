@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Group;
-import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
@@ -104,7 +103,7 @@ public interface BranchService extends EntityService<Branch> {
      * @return information about the permissions of the branch
      * @throws NotFoundException when branch does not exist
      */
-    GroupsPermissions<BranchPermission> getPermissionsFor(long componentId, long branchId) throws NotFoundException;
+    <T extends JtalksPermission> GroupsPermissions<T> getPermissionsFor(long componentId, long branchId) throws NotFoundException;
 
     /**
      * For given branch and permission get the list of the groups for which permission has been allowed or restricted
@@ -116,7 +115,7 @@ public interface BranchService extends EntityService<Branch> {
      * @return the list of the groups for which permission has been allowed or restricted
      * @throws NotFoundException when branch does not exist
      */
-    List<Group> getPermissionGroupsFor(long componentId, long branchId, boolean allowed, BranchPermission permission)
+    <T extends JtalksPermission> List<Group> getPermissionGroupsFor(long componentId, long branchId, boolean allowed, T permission)
             throws NotFoundException;
 
     /**

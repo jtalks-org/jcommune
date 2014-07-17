@@ -16,10 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.Group;
-import org.jtalks.common.model.permissions.BranchPermission;
-import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
@@ -83,7 +80,7 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public boolean hasBranchPermission(long branchId, BranchPermission permission) {
+    public <T extends JtalksPermission> boolean hasBranchPermission(long branchId, T permission) {
         return hasPermission(branchId, AclClassName.BRANCH, permission);
     }
 
@@ -106,7 +103,7 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public GroupsPermissions<BranchPermission> getPermissionsFor(Branch branch) {
+    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsFor(Branch branch) {
         return permissionManager.getPermissionsMapFor(branch);
     }
 
@@ -130,7 +127,7 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public GroupsPermissions<GeneralPermission> getPermissionsMapFor(Component component) {
+    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(Component component) {
         return permissionManager.getPermissionsMapFor(component);
     }
 
@@ -154,7 +151,7 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public GroupsPermissions<ProfilePermission> getPersonalPermissions(List<Group> groups) {
+    public <T extends JtalksPermission> GroupsPermissions<T> getPersonalPermissions(List<Group> groups) {
         return permissionManager.getPermissionsMapFor(groups);
     }
 

@@ -18,6 +18,7 @@ import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
@@ -36,9 +37,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class TransactionalPermissionServiceTest {
 
@@ -116,7 +115,7 @@ public class TransactionalPermissionServiceTest {
 
     /**
      * Tests whether method constructs data that is going to be passed to the evaluator is correct and thus {@link
-     * PermissionService#hasBranchPermission(long, BranchPermission)} will return same result as evaluator.
+     * PermissionService#hasBranchPermission(long, JtalksPermission)} will return same result as evaluator.
      */
     @Test
     public void hasBranchPermissionIsTrueIfEvaluatorSaidSo() {
@@ -131,7 +130,7 @@ public class TransactionalPermissionServiceTest {
     @Test
     public void testGetPermissionsFor() {
         Branch branch = mock(Branch.class);
-        when(permissionManager.getPermissionsMapFor(branch)).thenReturn(new GroupsPermissions<BranchPermission>());
+        doReturn(new GroupsPermissions<BranchPermission>()).when(permissionManager).getPermissionsMapFor(branch);
         assertNotNull(permissionService.getPermissionsFor(branch));
     }
 
@@ -164,14 +163,14 @@ public class TransactionalPermissionServiceTest {
     @Test
     public void testGetPermissionsMapFor() {
         Component component = mock(Component.class);
-        when(permissionManager.getPermissionsMapFor(component)).thenReturn(new GroupsPermissions<GeneralPermission>());
+        doReturn(new GroupsPermissions<GeneralPermission>()).when(permissionManager).getPermissionsMapFor(component);
         assertNotNull(permissionService.getPermissionsMapFor(component));
     }
 
     @Test
     public void testGetPersonalPermissions() {
         List<Group> groups = mock(List.class);
-        when(permissionManager.getPermissionsMapFor(groups)).thenReturn(new GroupsPermissions<ProfilePermission>());
+        doReturn(new GroupsPermissions<ProfilePermission>()).when(permissionManager).getPermissionsMapFor(groups);
         assertNotNull(permissionService.getPersonalPermissions(groups));
     }
 }

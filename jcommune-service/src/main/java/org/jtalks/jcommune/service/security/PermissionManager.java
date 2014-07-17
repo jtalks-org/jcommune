@@ -108,8 +108,8 @@ public class PermissionManager {
      * @param branch object identity
      * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions <BranchPermission>} for given branch
      */
-    public GroupsPermissions<BranchPermission> getPermissionsMapFor(Branch branch) {
-        return getPermissionsMapFor(BranchPermission.getAllAsList(), branch);
+    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(Branch branch) {
+        return (GroupsPermissions<T>) getPermissionsMapFor(BranchPermission.getAllAsList(), branch);
     }
 
     /**
@@ -118,8 +118,8 @@ public class PermissionManager {
      * @param component the component to obtain PermissionsMap for
      * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for {@link org.jtalks.common.model.entity.Component}
      */
-    public GroupsPermissions<GeneralPermission> getPermissionsMapFor(Component component) {
-        return getPermissionsMapFor(GeneralPermission.getAllAsList(), component);
+    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(Component component) {
+        return (GroupsPermissions<T>) getPermissionsMapFor(GeneralPermission.getAllAsList(), component);
     }
 
     /**
@@ -128,7 +128,7 @@ public class PermissionManager {
      * @param groups the List {@link org.jtalks.common.model.entity.Group}'s to obtain PermissionsMap for
      * @return for {@link org.jtalks.common.model.entity.Group}
      */
-    public GroupsPermissions<ProfilePermission> getPermissionsMapFor(List<Group> groups) {
+    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(List<Group> groups) {
         GroupsPermissions<ProfilePermission> permissions = new GroupsPermissions<>(ProfilePermission.getAllAsList());
         for (Group group : groups) {
             GroupsPermissions<ProfilePermission> pmGroup = getPermissionsMapFor(ProfilePermission.getAllAsList(), group);
@@ -141,7 +141,7 @@ public class PermissionManager {
                 }
             }
         }
-        return permissions;
+        return (GroupsPermissions<T>) permissions;
     }
 
     /**

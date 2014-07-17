@@ -15,12 +15,8 @@
 package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.entity.Component;
-
 import org.jtalks.common.model.entity.Group;
-import org.jtalks.common.model.permissions.BranchPermission;
-import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -78,7 +74,7 @@ public interface PermissionService {
      * @return true if current user is granted to the permission, false if she either she is not granted, or she is
      *         restricted from this permission
      */
-    boolean hasBranchPermission(long branchId, BranchPermission permission);
+    <T extends JtalksPermission> boolean hasBranchPermission(long branchId, T permission);
 
     /**
      * Return access lists for branch.
@@ -86,7 +82,7 @@ public interface PermissionService {
      * @param branch branch which will be returned access list
      * @return access list
      */
-    GroupsPermissions<BranchPermission> getPermissionsFor(Branch branch);
+    <T extends JtalksPermission> GroupsPermissions<T> getPermissionsFor(Branch branch);
 
     /**
      * Change grants for branch.
@@ -112,7 +108,7 @@ public interface PermissionService {
      * @return {@link GroupsPermissions} for defined
      *         {@link Component}
      */
-    GroupsPermissions<GeneralPermission> getPermissionsMapFor(Component component);
+    <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(Component component);
 
     /**
      * Change grants for component.
@@ -137,7 +133,7 @@ public interface PermissionService {
      * @param groups all groups
      * @return access list
      */
-    GroupsPermissions<ProfilePermission> getPersonalPermissions(List<Group> groups);
+    <T extends JtalksPermission> GroupsPermissions<T> getPersonalPermissions(List<Group> groups);
 
     /**
      * Change grants for group.

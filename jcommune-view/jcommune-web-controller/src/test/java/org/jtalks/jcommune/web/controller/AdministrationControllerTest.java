@@ -45,7 +45,10 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 import static org.jgroups.util.Util.assertTrue;
 import static org.mockito.Mockito.*;
@@ -180,7 +183,7 @@ public class AdministrationControllerTest {
         GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
         Branch expectedBranch = new Branch("name", "description");
         when(branchService.get(branchId)).thenReturn(expectedBranch);
-        when(branchService.getPermissionsFor(component.getId(), branchId)).thenReturn(expectedPermissions);
+        doReturn(expectedPermissions).when(branchService).getPermissionsFor(component.getId(), branchId);
 
         mockMvc = MockMvcBuilders.standaloneSetup(administrationController).build();
         this.mockMvc.perform(get("/branch/permissions/42").accept(MediaType.TEXT_HTML))
