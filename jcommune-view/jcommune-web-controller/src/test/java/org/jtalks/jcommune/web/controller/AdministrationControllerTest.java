@@ -180,7 +180,7 @@ public class AdministrationControllerTest {
         long branchId = 42;
         Component component = setupComponentMock();
 
-        GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
+        GroupsPermissions expectedPermissions = new GroupsPermissions();
         Branch expectedBranch = new Branch("name", "description");
         when(branchService.get(branchId)).thenReturn(expectedBranch);
         doReturn(expectedPermissions).when(branchService).getPermissionsFor(component.getId(), branchId);
@@ -197,6 +197,7 @@ public class AdministrationControllerTest {
 
         BranchPermission targetPermission = BranchPermission.CREATE_POSTS;
         BranchPermissionDto dto = createBranchPermissionDto(targetPermission);
+        when(permissionManager.findBranchPermissionByMask(targetPermission.getMask())).thenReturn(targetPermission);
         when(branchService.getPermissionGroupsFor(component.getId(), dto.getBranchId(), dto.isAllowed(), targetPermission))
                 .thenThrow(new NotFoundException());
 
@@ -214,6 +215,7 @@ public class AdministrationControllerTest {
         BranchPermissionDto dto = createBranchPermissionDto(targetPermission);
         when(branchService.getPermissionGroupsFor(component.getId(), dto.getBranchId(), dto.isAllowed(), targetPermission))
                 .thenReturn(Collections.EMPTY_LIST);
+        when(permissionManager.findBranchPermissionByMask(targetPermission.getMask())).thenReturn(targetPermission);
         when(permissionManager.getAllGroupsWithoutExcluded(anyList(), eq(targetPermission))).thenReturn(Collections.EMPTY_LIST);
 
 
@@ -235,6 +237,7 @@ public class AdministrationControllerTest {
 
         List<Group> allGroupList = Arrays.asList(new Group("4"), new Group("5"), new Group("6"));
         when(permissionManager.getAllGroupsWithoutExcluded(selectedGroupList, targetPermission)).thenReturn(allGroupList);
+        when(permissionManager.findBranchPermissionByMask(targetPermission.getMask())).thenReturn(targetPermission);
 
         JsonResponse jsonResponse = administrationController.getGroupsForBranchPermission(dto);
 
@@ -254,6 +257,7 @@ public class AdministrationControllerTest {
 
         dto.setNewlyAddedGroupIds(Arrays.asList(1L, 2L));
         dto.setRemovedGroupIds(Arrays.asList(1L, 2L));
+        when(permissionManager.findBranchPermissionByMask(targetPermission.getMask())).thenReturn(targetPermission);
 
         JsonResponse response = administrationController.editBranchPermissions(dto);
 
@@ -272,6 +276,7 @@ public class AdministrationControllerTest {
         dto.setNewlyAddedGroupIds(Arrays.asList(1L, 2L));
         dto.setRemovedGroupIds(Arrays.asList(1L, 2L));
 
+        when(permissionManager.findBranchPermissionByMask(targetPermission.getMask())).thenReturn(targetPermission);
         doThrow(new NotFoundException()).when(branchService).changeBranchPermissions(anyLong(),
                 eq(dto.getBranchId()), eq(dto.isAllowed()), any(PermissionChanges.class));
 

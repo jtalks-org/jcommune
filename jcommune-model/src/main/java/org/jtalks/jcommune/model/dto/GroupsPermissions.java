@@ -28,8 +28,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
  *
  * @author Vyacheslav Zhivaev
  */
-public class GroupsPermissions<T extends JtalksPermission> {
-    private final ConcurrentMap<T, GroupAccessList> accessListMap = new ConcurrentSkipListMap<T, GroupAccessList>(new PermissionComparator());
+public class GroupsPermissions {
+    private final ConcurrentMap<JtalksPermission, GroupAccessList> accessListMap = new ConcurrentSkipListMap<>(new PermissionComparator());
 
     /**
      * Constructs {@link GroupsPermissions} with empty internal state. Use add* methods to fill this map.
@@ -43,8 +43,8 @@ public class GroupsPermissions<T extends JtalksPermission> {
      *
      * @param permissions to be added to the access lists
      */
-    public GroupsPermissions(List<T> permissions) {
-        for (T permission : permissions) {
+    public <T extends JtalksPermission> GroupsPermissions(List<T> permissions) {
+        for (JtalksPermission permission : permissions) {
             accessListMap.put(permission, new GroupAccessList());
         }
     }
@@ -54,7 +54,7 @@ public class GroupsPermissions<T extends JtalksPermission> {
      *
      * @param accessLists values to initialize this container
      */
-    public GroupsPermissions(Map<T, GroupAccessList> accessLists) {
+    public GroupsPermissions(Map<JtalksPermission, GroupAccessList> accessLists) {
         accessListMap.putAll(accessLists);
     }
 
@@ -66,7 +66,7 @@ public class GroupsPermissions<T extends JtalksPermission> {
      * @param toRestrict group to restrict
      * @return {@code this} instance for providing fluent interface
      */
-    public GroupsPermissions<T> add(T permission, Group toAllow, Group toRestrict) {
+    public GroupsPermissions add(JtalksPermission permission, Group toAllow, Group toRestrict) {
         accessListMap.putIfAbsent(permission, new GroupAccessList());
         accessListMap.get(permission).addAllowed(toAllow).addRestricted(toRestrict);
         return this;
@@ -79,7 +79,7 @@ public class GroupsPermissions<T extends JtalksPermission> {
      * @param group      the group for which permission added
      * @return {@code this} instance for providing fluent interface
      */
-    public GroupsPermissions<T> addAllowed(T permission, Group group) {
+    public GroupsPermissions addAllowed(JtalksPermission permission, Group group) {
         return add(permission, group, null);
     }
 
@@ -90,7 +90,7 @@ public class GroupsPermissions<T extends JtalksPermission> {
      * @param group      the group for which permission added
      * @return {@code this} instance for providing fluent interface
      */
-    public GroupsPermissions<T> addRestricted(T permission, Group group) {
+    public GroupsPermissions addRestricted(JtalksPermission permission, Group group) {
         return add(permission, null, group);
     }
 
@@ -103,7 +103,7 @@ public class GroupsPermissions<T extends JtalksPermission> {
      * @param allow      {@code true} if allowance is needed, {@code false} otherwise
      * @return {@code this} instance for providing fluent interface
      */
-    public GroupsPermissions<T> add(T permission, Group group, boolean allow) {
+    public GroupsPermissions add(JtalksPermission permission, Group group, boolean allow) {
         return (allow) ? addAllowed(permission, group) : addRestricted(permission, group);
     }
 
@@ -113,7 +113,7 @@ public class GroupsPermissions<T extends JtalksPermission> {
      * @param permission the permission to get for
      * @return list of {@link org.jtalks.common.model.entity.Group}, list instance is UNMODIFIABLE
      */
-    public List<Group> getAllowed(T permission) {
+    public List<Group> getAllowed(JtalksPermission permission) {
         GroupAccessList groupAccessList = accessListMap.get(permission);
         if (groupAccessList == null) {
             return Collections.unmodifiableList(new ArrayList<Group>());
@@ -128,7 +128,7 @@ public class GroupsPermissions<T extends JtalksPermission> {
      * @param permission the permission to get for
      * @return list of {@link org.jtalks.common.model.entity.Group}, list instance is UNMODIFIABLE
      */
-    public List<Group> getRestricted(T permission) {
+    public List<Group> getRestricted(JtalksPermission permission) {
         GroupAccessList groupAccessList = accessListMap.get(permission);
         if (groupAccessList == null) {
             return Collections.unmodifiableList(new ArrayList<Group>());
@@ -145,7 +145,7 @@ public class GroupsPermissions<T extends JtalksPermission> {
      * @param allowed    the flag indicating which type of groups needed: allowed (if {@code true}) or restricted
      * @return list of {@link org.jtalks.common.model.entity.Group}, list instance is UNMODIFIABLE
      */
-    public List<Group> get(T permission, boolean allowed) {
+    public List<Group> get(JtalksPermission permission, boolean allowed) {
         return (allowed) ? getAllowed(permission) : getRestricted(permission);
     }
 
@@ -154,7 +154,7 @@ public class GroupsPermissions<T extends JtalksPermission> {
      *
      * @return set of all permissions defined in this map, set instance is UNMODIFIABLE
      */
-    public Set<T> getPermissions() {
+    public Set<JtalksPermission> getPermissions() {
         return Collections.unmodifiableSet(accessListMap.keySet());
     }
 
@@ -167,11 +167,11 @@ public class GroupsPermissions<T extends JtalksPermission> {
      * but they were created with unmodified list with data from the original allowed and restricted group lists.
      * @return copy of the Access List Map
      */
-    public Map<T, GroupAccessList> getAccessListMap() {
-        Map<T, GroupAccessList > accessListMapCopy = new HashMap <T, GroupAccessList>();
+    public Map<JtalksPermission, GroupAccessList> getAccessListMap() {
+        Map<JtalksPermission, GroupAccessList > accessListMapCopy = new HashMap <>();
 
-        Set<T> permissions = getPermissions();
-        for (T permission : permissions) {
+        Set<JtalksPermission> permissions = getPermissions();
+        for (JtalksPermission permission : permissions) {
             GroupAccessList groupAccessList = new GroupAccessList();
             groupAccessList.setAllowed(getAllowed(permission));
             groupAccessList.setRestricted(getRestricted(permission));
@@ -186,14 +186,14 @@ public class GroupsPermissions<T extends JtalksPermission> {
      *
      * @return groups permissions with all the profile permissions but no groups restricted or allowed
      */
-    public static GroupsPermissions<ProfilePermission> profilePermissions() {
-        return new GroupsPermissions<ProfilePermission>(ProfilePermission.getAllAsList());
+    public static GroupsPermissions profilePermissions() {
+        return new GroupsPermissions(ProfilePermission.getAllAsList());
     }
 
-    private class PermissionComparator implements Comparator<T> {
+    private class PermissionComparator implements Comparator<JtalksPermission> {
 
         @Override
-        public int compare(T o1, T o2) {
+        public int compare(JtalksPermission o1, JtalksPermission o2) {
             return o1.getName().compareTo(o2.getName());
         }
     }

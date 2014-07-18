@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Group;
-import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -190,7 +190,7 @@ public class AdministrationController {
     @RequestMapping(value = "/branch/permissions/{branchId}", method = RequestMethod.GET)
     public ModelAndView showBranchPermissions(@PathVariable("branchId") long branchId) throws NotFoundException {
         long forumId = componentService.getComponentOfForum().getId();
-        GroupsPermissions<BranchPermission> permissions = branchService.getPermissionsFor(forumId, branchId);
+        GroupsPermissions permissions = branchService.getPermissionsFor(forumId, branchId);
         Branch branch = branchService.get(branchId);
         return new ModelAndView("branchPermissions")
                 .addObject("branch", branch)
@@ -208,7 +208,7 @@ public class AdministrationController {
         long forumId = componentService.getComponentOfForum().getId();
         PermissionGroupsDto permission = new PermissionGroupsDto();
 
-        BranchPermission branchPermission = BranchPermission.findByMask(permissionInfo.getPermissionMask());
+        JtalksPermission branchPermission = permissionManager.findBranchPermissionByMask(permissionInfo.getPermissionMask());
         List<Group> selectedGroups;
         try {
             selectedGroups = branchService.getPermissionGroupsFor(forumId, permissionInfo.getBranchId(),
@@ -236,7 +236,7 @@ public class AdministrationController {
     @ResponseBody
     public JsonResponse editBranchPermissions(@RequestBody BranchPermissionDto permissionInfo) {
         long forumId = componentService.getComponentOfForum().getId();
-        BranchPermission branchPermission = BranchPermission.findByMask(permissionInfo.getPermissionMask());
+        JtalksPermission branchPermission =  permissionManager.findBranchPermissionByMask(permissionInfo.getPermissionMask());
 
         List<Group> newlyAddedGroups = permissionManager.getGroupsByIds(permissionInfo.getNewlyAddedGroupIds());
         List<Group> removedGroups = permissionManager.getGroupsByIds(permissionInfo.getRemovedGroupIds());

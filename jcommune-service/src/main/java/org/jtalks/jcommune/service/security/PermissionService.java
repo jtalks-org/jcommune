@@ -82,7 +82,7 @@ public interface PermissionService {
      * @param branch branch which will be returned access list
      * @return access list
      */
-    <T extends JtalksPermission> GroupsPermissions<T> getPermissionsFor(Branch branch);
+    GroupsPermissions getPermissionsFor(Branch branch);
 
     /**
      * Change grants for branch.
@@ -108,7 +108,7 @@ public interface PermissionService {
      * @return {@link GroupsPermissions} for defined
      *         {@link Component}
      */
-    <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(Component component);
+    GroupsPermissions getPermissionsMapFor(Component component);
 
     /**
      * Change grants for component.
@@ -133,7 +133,7 @@ public interface PermissionService {
      * @param groups all groups
      * @return access list
      */
-    <T extends JtalksPermission> GroupsPermissions<T> getPersonalPermissions(List<Group> groups);
+    GroupsPermissions getPersonalPermissions(List<Group> groups);
 
     /**
      * Change grants for group.

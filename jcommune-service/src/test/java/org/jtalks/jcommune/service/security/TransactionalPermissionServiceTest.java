@@ -19,7 +19,6 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
@@ -130,7 +129,7 @@ public class TransactionalPermissionServiceTest {
     @Test
     public void testGetPermissionsFor() {
         Branch branch = mock(Branch.class);
-        doReturn(new GroupsPermissions<BranchPermission>()).when(permissionManager).getPermissionsMapFor(branch);
+        doReturn(new GroupsPermissions()).when(permissionManager).getPermissionsMapFor(branch);
         assertNotNull(permissionService.getPermissionsFor(branch));
     }
 
@@ -163,14 +162,14 @@ public class TransactionalPermissionServiceTest {
     @Test
     public void testGetPermissionsMapFor() {
         Component component = mock(Component.class);
-        doReturn(new GroupsPermissions<GeneralPermission>()).when(permissionManager).getPermissionsMapFor(component);
+        doReturn(new GroupsPermissions()).when(permissionManager).getPermissionsMapFor(component);
         assertNotNull(permissionService.getPermissionsMapFor(component));
     }
 
     @Test
     public void testGetPersonalPermissions() {
         List<Group> groups = mock(List.class);
-        doReturn(new GroupsPermissions<ProfilePermission>()).when(permissionManager).getPermissionsMapFor(groups);
+        doReturn(new GroupsPermissions()).when(permissionManager).getPermissionsMapFor(groups);
         assertNotNull(permissionService.getPersonalPermissions(groups));
     }
 }

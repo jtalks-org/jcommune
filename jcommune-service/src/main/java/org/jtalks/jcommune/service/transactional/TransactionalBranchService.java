@@ -219,7 +219,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      */
     @Override
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsFor(long componentId, long branchId)
+    public GroupsPermissions getPermissionsFor(long componentId, long branchId)
             throws NotFoundException {
         return permissionService.getPermissionsFor(get(branchId));
     }
@@ -231,7 +231,7 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
     @PreAuthorize("hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public <T extends JtalksPermission> List<Group> getPermissionGroupsFor(long componentId, long branchId, boolean allowed, T permission)
             throws NotFoundException {
-        GroupsPermissions<T> allPermissions = permissionService.getPermissionsFor(get(branchId));
+        GroupsPermissions allPermissions = permissionService.getPermissionsFor(get(branchId));
         if (allowed) {
             return allPermissions.getAllowed(permission);
         }

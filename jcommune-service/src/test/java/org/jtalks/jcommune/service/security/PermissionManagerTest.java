@@ -188,12 +188,12 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
         Branch branch = PersistedObjectsFactory.getDefaultBranch();
         givenPermissions(branch, BranchPermission.values());
 
-        GroupsPermissions<BranchPermission> groupsPermissions = manager.getPermissionsMapFor(branch);
+        GroupsPermissions groupsPermissions = manager.getPermissionsMapFor(branch);
         verify(aclManager).getGroupPermissionsOn(branch);
         verify(aclUtil, times(BranchPermission.values().length)).getAclFor(branch);
         assertTrue(groupsPermissions.getPermissions().containsAll(permissions));
         for (GroupAce groupAce : groupAces) {
-            List<Group> groups = groupsPermissions.get((BranchPermission) groupAce.getPermission(), groupAce.isGranting());
+            List<Group> groups = groupsPermissions.get(groupAce.getPermission(), groupAce.isGranting());
             assertNotNull(getGroupWithId(groups, groupAce.getGroupId()));
             assertTrue(groups.contains(AnonymousGroup.ANONYMOUS_GROUP));
         }

@@ -103,7 +103,7 @@ public interface BranchService extends EntityService<Branch> {
      * @return information about the permissions of the branch
      * @throws NotFoundException when branch does not exist
      */
-    <T extends JtalksPermission> GroupsPermissions<T> getPermissionsFor(long componentId, long branchId) throws NotFoundException;
+     GroupsPermissions getPermissionsFor(long componentId, long branchId) throws NotFoundException;
 
     /**
      * For given branch and permission get the list of the groups for which permission has been allowed or restricted

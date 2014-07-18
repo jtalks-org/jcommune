@@ -94,12 +94,22 @@
       <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
     </constructor-arg>
     <property name="sidFactory" ref="jtalksSidFactory"/>
-    <property name="permissionFactory" ref="jtalksPermissionFactory"/>
+    <property name="permissionFactory" ref="jcPermissionFactory"/>
   </bean>
 
   <!-- ACL permission factory -->
   <bean name="jtalksPermissionFactory" class="org.jtalks.common.security.acl.JtalksPermissionFactory"
         init-method="init"/>
+
+  <bean name="pluginPermissionFactory" class="org.jtalks.jcommune.service.plugins.PluginPermissionFactory">
+      <constructor-arg ref="pluginManager"/>
+  </bean>
+
+  <bean name="jcPermissionFactory" class="org.jtalks.jcommune.service.security.JCPermissionFactory">
+      <constructor-arg ref="jtalksPermissionFactory"/>
+      <constructor-arg ref="pluginPermissionFactory"/>
+  </bean>
+
 
   <!-- Caching support for ACLs -->
   <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">

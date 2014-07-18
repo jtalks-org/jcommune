@@ -42,13 +42,12 @@ public class PluginManager {
     /**
      * @return plugin branch permission for given branch
      */
-    public <T extends JtalksPermission> List<T> getPluginsBranchPermissions() {
-        List<Plugin> plugins = pluginLoader.getPlugins();
-        List<T> branchPermissions = new ArrayList<>();
+    public List<JtalksPermission> getPluginsBranchPermissions() {
+        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+        List<Plugin> plugins = pluginLoader.getPlugins(filter);
+        List<JtalksPermission> branchPermissions = new ArrayList<>();
         for (Plugin plugin : plugins) {
-            if (plugin instanceof PluginWithPermissions && plugin.isEnabled()) {
-                branchPermissions.addAll((List<T>) ((PluginWithPermissions) plugin).getBranchPermissions());
-            }
+            branchPermissions.addAll(((PluginWithPermissions) plugin).getBranchPermissions());
         }
         return branchPermissions;
     }
@@ -56,13 +55,12 @@ public class PluginManager {
     /**
      * @return plugin general permission for given component
      */
-    public <T extends JtalksPermission> List<T> getPluginsGeneralPermissions() {
-        List<Plugin> plugins = pluginLoader.getPlugins();
-        List<T> generalPermissions = new ArrayList<>();
+    public List<JtalksPermission> getPluginsGeneralPermissions() {
+        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+        List<Plugin> plugins = pluginLoader.getPlugins(filter);
+        List<JtalksPermission> generalPermissions = new ArrayList<>();
         for (Plugin plugin : plugins) {
-            if (plugin instanceof PluginWithPermissions && plugin.isEnabled()) {
-                generalPermissions.addAll((List<T>) ((PluginWithPermissions) plugin).getGeneralPermissions());
-            }
+            generalPermissions.addAll(((PluginWithPermissions) plugin).getGeneralPermissions());
         }
         return generalPermissions;
     }
@@ -70,14 +68,32 @@ public class PluginManager {
     /**
      * @return plugin profile permission for given branch
      */
-    public <T extends JtalksPermission> List<T> getPluginsProfilePermissions() {
-        List<Plugin> plugins = pluginLoader.getPlugins();
-        List<T> profilePermissions = new ArrayList<>();
+    public List<JtalksPermission> getPluginsProfilePermissions() {
+        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+        List<Plugin> plugins = pluginLoader.getPlugins(filter);
+        List<JtalksPermission> profilePermissions = new ArrayList<>();
         for (Plugin plugin : plugins) {
-            if (plugin instanceof PluginWithPermissions && plugin.isEnabled()) {
-                profilePermissions.addAll((List<T>) ((PluginWithPermissions) plugin).getProfilePermissions());
-            }
+            profilePermissions.addAll(((PluginWithPermissions) plugin).getProfilePermissions());
         }
         return profilePermissions;
+    }
+
+    public JtalksPermission findPermissionByMask(int mask) {
+        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+        List<Plugin> plugins = pluginLoader.getPlugins(filter);
+        List<JtalksPermission> allPermissions = new ArrayList<>();
+        for (Plugin plugin : plugins) {
+            allPermissions.addAll(((PluginWithPermissions) plugin).getBranchPermissions());
+            allPermissions.addAll(((PluginWithPermissions) plugin).getGeneralPermissions());
+            allPermissions.addAll(((PluginWithPermissions) plugin).getProfilePermissions());
+        }
+
+        for (JtalksPermission permission : allPermissions) {
+            if (permission.getMask() == mask) {
+                return permission;
+            }
+        }
+
+        return null;
     }
 }

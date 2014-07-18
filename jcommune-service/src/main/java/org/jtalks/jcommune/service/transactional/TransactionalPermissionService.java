@@ -103,7 +103,7 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsFor(Branch branch) {
+    public GroupsPermissions getPermissionsFor(Branch branch) {
         return permissionManager.getPermissionsMapFor(branch);
     }
 
@@ -127,7 +127,7 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(Component component) {
+    public GroupsPermissions getPermissionsMapFor(Component component) {
         return permissionManager.getPermissionsMapFor(component);
     }
 
@@ -151,7 +151,7 @@ public class TransactionalPermissionService implements PermissionService {
      * {@inheritDoc}
      */
     @Override
-    public <T extends JtalksPermission> GroupsPermissions<T> getPersonalPermissions(List<Group> groups) {
+    public GroupsPermissions getPersonalPermissions(List<Group> groups) {
         return permissionManager.getPermissionsMapFor(groups);
     }
 

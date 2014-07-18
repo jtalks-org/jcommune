@@ -295,14 +295,14 @@ public class TransactionalBranchServiceTest {
     @Test
     public void getPermissionsShouldReturnPermissionsWhenBranchExist() throws Exception {
         long branchId = 42;
-        GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
+        GroupsPermissions expectedPermissions = new GroupsPermissions();
 
         Branch expectedBranch = new Branch("name", "description");
         when(branchDao.isExist(branchId)).thenReturn(true);
         when(branchDao.get(branchId)).thenReturn(expectedBranch);
         doReturn(expectedPermissions).when(permissionService).getPermissionsFor(expectedBranch);
 
-        GroupsPermissions<BranchPermission> permissions = branchService.getPermissionsFor(0, branchId);
+        GroupsPermissions permissions = branchService.getPermissionsFor(0, branchId);
         assertEquals(permissions, expectedPermissions);
     }
 
@@ -317,7 +317,7 @@ public class TransactionalBranchServiceTest {
     public void getPermissionGroupsShouldReturnAllowedPermissionGroupsWhenBranchExist() throws Exception {
         long branchId = 42;
         BranchPermission permission = BranchPermission.CLOSE_TOPICS;
-        GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
+        GroupsPermissions expectedPermissions = new GroupsPermissions();
         expectedPermissions.addAllowed(permission, new Group("1"));
 
         Branch expectedBranch = new Branch("name", "description");
@@ -333,7 +333,7 @@ public class TransactionalBranchServiceTest {
     public void getPermissionGroupsShouldReturnRestrictedPermissionGroupsWhenBranchExist() throws Exception {
         long branchId = 42;
         BranchPermission permission = BranchPermission.CLOSE_TOPICS;
-        GroupsPermissions<BranchPermission> expectedPermissions = new GroupsPermissions<>();
+        GroupsPermissions expectedPermissions = new GroupsPermissions();
         expectedPermissions.addRestricted(permission, new Group("1"));
 
         Branch expectedBranch = new Branch("name", "description");

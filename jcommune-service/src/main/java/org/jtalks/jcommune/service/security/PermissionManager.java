@@ -111,11 +111,19 @@ public class PermissionManager {
      * @param branch object identity
      * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions <BranchPermission>} for given branch
      */
-    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(Branch branch) {
-        List<T> branchPermissions = new ArrayList<>();
-        branchPermissions.addAll((List<T>) BranchPermission.getAllAsList());
-        branchPermissions.addAll(pluginManager.<T>getPluginsBranchPermissions());
+    public GroupsPermissions getPermissionsMapFor(Branch branch) {
+        List<JtalksPermission> branchPermissions = new ArrayList<>();
+        branchPermissions.addAll(BranchPermission.getAllAsList());
+        branchPermissions.addAll(pluginManager.getPluginsBranchPermissions());
         return getPermissionsMapFor(branchPermissions, branch);
+    }
+
+    public JtalksPermission findBranchPermissionByMask(int mask) {
+        JtalksPermission permission = BranchPermission.findByMask(mask);
+        if (permission == null) {
+            permission = pluginManager.findPermissionByMask(mask);
+        }
+        return permission;
     }
 
     /**
@@ -124,10 +132,10 @@ public class PermissionManager {
      * @param component the component to obtain PermissionsMap for
      * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for {@link org.jtalks.common.model.entity.Component}
      */
-    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(Component component) {
-        List<T> generalPermissions = new ArrayList<>();
-        generalPermissions.addAll((List<T>) GeneralPermission.getAllAsList());
-        generalPermissions.addAll(pluginManager.<T>getPluginsGeneralPermissions());
+    public GroupsPermissions getPermissionsMapFor(Component component) {
+        List<JtalksPermission> generalPermissions = new ArrayList<>();
+        generalPermissions.addAll(GeneralPermission.getAllAsList());
+        generalPermissions.addAll(pluginManager.getPluginsGeneralPermissions());
         return getPermissionsMapFor(generalPermissions, component);
     }
 
@@ -137,15 +145,15 @@ public class PermissionManager {
      * @param groups the List {@link org.jtalks.common.model.entity.Group}'s to obtain PermissionsMap for
      * @return for {@link org.jtalks.common.model.entity.Group}
      */
-    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(List<Group> groups) {
-        List<T> profilePermissions = new ArrayList<>();
-        profilePermissions.addAll((List<T>) ProfilePermission.getAllAsList());
-        profilePermissions.addAll(pluginManager.<T>getPluginsProfilePermissions());
+    public GroupsPermissions getPermissionsMapFor(List<Group> groups) {
+        List<JtalksPermission> profilePermissions = new ArrayList<>();
+        profilePermissions.addAll(ProfilePermission.getAllAsList());
+        profilePermissions.addAll(pluginManager.getPluginsProfilePermissions());
 
-        GroupsPermissions<T> permissions = new GroupsPermissions<>(profilePermissions);
+        GroupsPermissions permissions = new GroupsPermissions(profilePermissions);
         for (Group group : groups) {
-            GroupsPermissions<T> pmGroup = getPermissionsMapFor(profilePermissions, group);
-            for (T permission : pmGroup.getPermissions()) {
+            GroupsPermissions pmGroup = getPermissionsMapFor(profilePermissions, group);
+            for (JtalksPermission permission : pmGroup.getPermissions()) {
                 for (Group groupInsert : pmGroup.getAllowed(permission)) {
                     permissions.addAllowed(permission, groupInsert);
                 }
@@ -164,10 +172,10 @@ public class PermissionManager {
      * @param entity      the entity to get for
      * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions} for provided {@link org.jtalks.common.model.entity.Entity}
      */
-    public <T extends JtalksPermission> GroupsPermissions<T> getPermissionsMapFor(List<T> permissions, Entity entity) {
-        GroupsPermissions<T> groupsPermissions = new GroupsPermissions<>(permissions);
+    public GroupsPermissions getPermissionsMapFor(List<JtalksPermission> permissions, Entity entity) {
+        GroupsPermissions groupsPermissions = new GroupsPermissions(permissions);
         List<GroupAce> groupAces = aclManager.getGroupPermissionsOn(entity);
-        for (T permission : permissions) {
+        for (JtalksPermission permission : permissions) {
             for (GroupAce groupAce : groupAces) {
                 if (groupAce.getPermissionMask() == permission.getMask()) {
                     groupsPermissions.add(permission, getGroup(groupAce), groupAce.isGranting());
@@ -190,7 +198,7 @@ public class PermissionManager {
      * @return the list of the all group existing in the System except the group in specified group list
      * @see org.jtalks.jcommune.model.entity.AnonymousGroup
      */
-    public List<Group> getAllGroupsWithoutExcluded(List<Group> excludedGroupsList, BranchPermission permission) {
+    public List<Group> getAllGroupsWithoutExcluded(List<Group> excludedGroupsList, JtalksPermission permission) {
         List<Group> allGroups = groupDao.getAll();
         allGroups.removeAll(excludedGroupsList);
         if (permission.equals(BranchPermission.VIEW_TOPICS) && !excludedGroupsList.contains(AnonymousGroup.ANONYMOUS_GROUP)) {
