@@ -16,8 +16,9 @@ package org.jtalks.jcommune.plugin.questionsandanswers;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.plugin.api.plugins.PluginWithPermissions;
+import org.jtalks.jcommune.plugin.api.dto.UiElementDto;
 import org.jtalks.jcommune.plugin.api.plugins.StatefullPlugin;
+import org.jtalks.jcommune.plugin.api.plugins.TopicPlugin;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.Map;
  *
  * @author Evgeniy Myslovets
  */
-public class QuestionsAndAnswersPlugin extends StatefullPlugin implements PluginWithPermissions {
+public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicPlugin {
 
     @Override
     public String getName() {
@@ -75,4 +76,13 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements Plugin
         return Collections.emptyList();
     }
 
+    @Override
+    public UiElementDto getCreateTopicBtnDto(long branchId) {
+        return new UiElementDto("new-question-btn","label.addQuestion","label.addQuestion.tip","/questions/new?branchId=" + branchId);
+    }
+
+    @Override
+    public JtalksPermission getCreateTopicPermission() {
+        return QuestionPluginBranchPermission.CREATE_QUESTIONS;
+    }
 }

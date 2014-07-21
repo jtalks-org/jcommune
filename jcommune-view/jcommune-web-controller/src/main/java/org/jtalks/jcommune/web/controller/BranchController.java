@@ -20,6 +20,10 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
+import org.jtalks.jcommune.plugin.api.plugins.Plugin;
+import org.jtalks.jcommune.plugin.api.plugins.TopicPlugin;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -60,6 +64,7 @@ public class BranchController {
     private UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
+    private PluginLoader pluginLoader;
     private final PermissionEvaluator aclEvaluator;
     private final SecurityContextFacade securityContextFacade;
 
@@ -90,7 +95,8 @@ public class BranchController {
                             LocationService locationService,
                             PostService postService,
                             PermissionEvaluator aclEvaluator,
-                            SecurityContextFacade securityContextFacade) {
+                            SecurityContextFacade securityContextFacade,
+                            PluginLoader pluginLoader) {
         this.branchService = branchService;
         this.topicFetchService = topicFetchService;
         this.lastReadPostService = lastReadPostService;
@@ -100,6 +106,7 @@ public class BranchController {
         this.postService = postService;
         this.aclEvaluator = aclEvaluator;
         this.securityContextFacade = securityContextFacade;
+        this.pluginLoader = pluginLoader;
     }
 
     /**
@@ -155,7 +162,25 @@ public class BranchController {
             topicTypes.add(new UiElementDto("new-code-review-btn", "label.addCodeReview", "label.addCodeReview.tip", "/reviews/new?branchId=" + branchId));
         }
 
+        List<TopicPlugin> topicPlugins = getEnabledTopicPlugins();
+        for (TopicPlugin topicPlugin : topicPlugins) {
+            if (aclEvaluator.hasPermission(authentication, branchId, "BRANCH", topicPlugin.getCreateTopicPermission())) {
+                topicTypes.add(topicPlugin.getCreateTopicBtnDto(branchId));
+            }
+        }
+
         return topicTypes;
+    }
+
+    private List<TopicPlugin> getEnabledTopicPlugins() {
+        List<TopicPlugin> topicPlugins = new ArrayList<>();
+        List<Plugin> plugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class));
+        for (Plugin plugin : plugins) {
+            if (plugin.isEnabled()) {
+                topicPlugins.add((TopicPlugin) plugin);
+            }
+        }
+        return topicPlugins;
     }
 
     /**

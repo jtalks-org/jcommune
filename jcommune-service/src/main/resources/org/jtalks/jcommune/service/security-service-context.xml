@@ -49,6 +49,7 @@
     <constructor-arg name="sidFactory" ref="jtalksSidFactory"/>
     <constructor-arg name="mutableAclService" ref="aclService"/>
     <constructor-arg name="userDao" ref="userDao"/>
+    <constructor-arg name="pluginManager" ref="pluginManager"/>
   </bean>
   <bean id="aclUtils" class="org.jtalks.common.security.acl.AclUtil">
     <constructor-arg name="mutableAclService" ref="aclService"/>

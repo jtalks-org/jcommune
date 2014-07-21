@@ -78,7 +78,6 @@ public class PluginPermissionFactory implements PermissionFactory {
      *
      */
     public void init() {
-        isInitialized = true;
         List<JtalksPermission> allPluginPermissions = new LinkedList<>();
         allPluginPermissions.addAll(pluginManager.getPluginsBranchPermissions());
         allPluginPermissions.addAll(pluginManager.getPluginsGeneralPermissions());

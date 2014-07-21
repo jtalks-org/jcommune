@@ -38,6 +38,7 @@ import org.jtalks.common.security.acl.sids.JtalksSidFactory;
 import org.jtalks.common.security.acl.sids.UniversalSid;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.plugin.api.PluginManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
@@ -68,6 +69,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private final JtalksSidFactory sidFactory;
     private final JdbcMutableAclService mutableAclService;
     private final UserDao userDao;
+    private final PluginManager pluginManager;
 
     /**
      * @param aclManager        for getting permissions on object indentity
@@ -81,13 +83,15 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                                        @Nonnull GroupDao groupDao,
                                        @Nonnull JtalksSidFactory sidFactory,
                                        @Nonnull JdbcMutableAclService mutableAclService,
-                                       @Nonnull UserDao userDao) {
+                                       @Nonnull UserDao userDao,
+                                       @Nonnull PluginManager pluginManager) {
         this.aclManager = aclManager;
         this.aclUtil = aclUtil;
         this.sidFactory = sidFactory;
         this.mutableAclService = mutableAclService;
         this.userDao = userDao;
         this.groupDao = groupDao;
+        this.pluginManager = pluginManager;
     }
 
     /**
@@ -113,7 +117,12 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         Long id = parseTargetId(targetId);
 
         ObjectIdentity objectIdentity = aclUtil.createIdentity(id, targetType);
-        Permission jtalksPermission = getPermission(permission);
+        Permission jtalksPermission;
+        if (permission instanceof Permission) {
+            jtalksPermission = (Permission) permission;
+        } else {
+            jtalksPermission = getPermission(permission);
+        }
         Sid sid = sidFactory.createPrincipal(authentication);
         List<AccessControlEntry> aces;
         List<GroupAce> controlEntries;
@@ -355,8 +364,12 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      */
     private boolean isGrantedForGroup(GroupAce ace, Authentication authentication,
                                       Permission permission, boolean isCheckAllowedGrant) {
+        Permission permissionToComapare = ace.getPermission();
+        if (permissionToComapare == null) {
+            permissionToComapare = pluginManager.findPermissionByMask(ace.getPermissionMask());
+        }
         return ace.isGranting() == isCheckAllowedGrant
-                && permission.equals(ace.getPermission())
+                && permission.equals(permissionToComapare)
                 && ace.getGroup(groupDao).getUsers().
                 contains(authentication.getPrincipal());
     }

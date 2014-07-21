@@ -18,6 +18,7 @@ import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -74,6 +75,8 @@ public class BranchControllerTest {
     private PermissionEvaluator permissionEvaluator;
     @Mock
     private SecurityContextFacade securityContextFacade;
+    @Mock
+    private PluginLoader pluginLoader;
 
     private BranchController controller;
 
@@ -87,7 +90,10 @@ public class BranchControllerTest {
                 userService,
                 breadcrumbBuilder,
                 locationServiceImpl,
-                postService, permissionEvaluator, securityContextFacade);
+                postService,
+                permissionEvaluator,
+                securityContextFacade,
+                pluginLoader);
     }
 
     @Test
@@ -97,13 +103,13 @@ public class BranchControllerTest {
         Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         Pageable pageRequest = new PageRequest(2, 5);
-        Page<Topic> topicsPage = new PageImpl<Topic>(Collections.<Topic> emptyList(), pageRequest, 0);
+        Page<Topic> topicsPage = new PageImpl<>(Collections.<Topic> emptyList(), pageRequest, 0);
         //set expectations
         when(branchService.get(branchId)).thenReturn(branch);
         when(topicFetchService.getTopics(branch, page)).thenReturn(topicsPage);
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
-        when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
+        when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<>());
 
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
@@ -132,7 +138,7 @@ public class BranchControllerTest {
     @Test
     public void recentTopicsPage() throws NotFoundException {
         String page = "1";
-        Page<Topic> topicsPage = new PageImpl<Topic>(new ArrayList<Topic>());
+        Page<Topic> topicsPage = new PageImpl<>(new ArrayList<Topic>());
         //set expectations
         when(topicFetchService.getRecentTopics(page)).thenReturn(topicsPage);
 
@@ -151,7 +157,7 @@ public class BranchControllerTest {
     @Test
     public void unansweredTopicsPage() {
         String page = "1";
-        Page<Topic> topicsPage = new PageImpl<Topic>(new ArrayList<Topic>());
+        Page<Topic> topicsPage = new PageImpl<>(new ArrayList<Topic>());
         //set expectations
         when(topicFetchService.getUnansweredTopics(page)).thenReturn(topicsPage);
 
@@ -171,14 +177,14 @@ public class BranchControllerTest {
         long branchId = 1L;
         String page = "2";
         Pageable pageRequest = new PageRequest(2, 5);
-        Page<Topic> topicsPage = new PageImpl<Topic>(Collections.<Topic> emptyList(), pageRequest, 0);
+        Page<Topic> topicsPage = new PageImpl<>(Collections.<Topic> emptyList(), pageRequest, 0);
         Branch branch = new Branch("name", "description");
         branch.setId(branchId);
         //set expectations
         when(branchService.get(branchId)).thenReturn(branch);
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
-        when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<Object>());
+        when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<>());
         when(topicFetchService.getTopics(branch, page)).thenReturn(topicsPage);
 
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -194,7 +200,7 @@ public class BranchControllerTest {
     @Test
     public void testGetBranchesFromSection() throws NotFoundException {
         long sectionId = 1L;
-        List<Branch> branches = new ArrayList<Branch>();
+        List<Branch> branches = new ArrayList<>();
         Branch branch = createDefaultBranch();
         branches.add(branch);
         when(branchService.getAvailableBranchesInSection(sectionId,
@@ -209,7 +215,7 @@ public class BranchControllerTest {
 
     @Test
     public void testGetAllBranches() throws NotFoundException {
-        List<Branch> branches = new ArrayList<Branch>();
+        List<Branch> branches = new ArrayList<>();
         Branch branch = createDefaultBranch();
         branches.add(branch);
         when(branchService.getAllAvailableBranches(branch.getTopics().get(0).getId())).thenReturn(branches);

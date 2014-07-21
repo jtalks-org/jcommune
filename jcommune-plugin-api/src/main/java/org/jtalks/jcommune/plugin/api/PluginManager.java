@@ -16,7 +16,6 @@ package org.jtalks.jcommune.plugin.api;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.plugin.api.filters.PluginFilter;
-import org.jtalks.jcommune.plugin.api.filters.StateFilter;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.plugins.Plugin;
 import org.jtalks.jcommune.plugin.api.plugins.PluginWithPermissions;
@@ -46,11 +45,13 @@ public class PluginManager {
      * @return plugin branch permission for given branch
      */
     public List<JtalksPermission> getPluginsBranchPermissions() {
-        PluginFilter[] filters = new PluginFilter[]{new TypeFilter(PluginWithPermissions.class), new StateFilter(Plugin.State.ENABLED)};
-        List<Plugin> plugins = pluginLoader.getPlugins(filters);
+        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+        List<Plugin> plugins = pluginLoader.getPlugins(filter);
         List<JtalksPermission> branchPermissions = new ArrayList<>();
         for (Plugin plugin : plugins) {
-            branchPermissions.addAll(((PluginWithPermissions) plugin).getBranchPermissions());
+            if (plugin.isEnabled()) {
+                branchPermissions.addAll(((PluginWithPermissions) plugin).getBranchPermissions());
+            }
         }
         return branchPermissions;
     }
@@ -59,11 +60,13 @@ public class PluginManager {
      * @return plugin general permission for given component
      */
     public List<JtalksPermission> getPluginsGeneralPermissions() {
-        PluginFilter[] filters = new PluginFilter[]{new TypeFilter(PluginWithPermissions.class), new StateFilter(Plugin.State.ENABLED)};
-        List<Plugin> plugins = pluginLoader.getPlugins(filters);
+        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+        List<Plugin> plugins = pluginLoader.getPlugins(filter);
         List<JtalksPermission> generalPermissions = new ArrayList<>();
         for (Plugin plugin : plugins) {
-            generalPermissions.addAll(((PluginWithPermissions) plugin).getGeneralPermissions());
+            if (plugin.isEnabled()) {
+                generalPermissions.addAll(((PluginWithPermissions) plugin).getGeneralPermissions());
+            }
         }
         return generalPermissions;
     }
@@ -72,23 +75,27 @@ public class PluginManager {
      * @return plugin profile permission for given branch
      */
     public List<JtalksPermission> getPluginsProfilePermissions() {
-        PluginFilter[] filters = new PluginFilter[]{new TypeFilter(PluginWithPermissions.class), new StateFilter(Plugin.State.ENABLED)};
-        List<Plugin> plugins = pluginLoader.getPlugins(filters);
+        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+        List<Plugin> plugins = pluginLoader.getPlugins(filter);
         List<JtalksPermission> profilePermissions = new ArrayList<>();
         for (Plugin plugin : plugins) {
-            profilePermissions.addAll(((PluginWithPermissions) plugin).getProfilePermissions());
+            if (plugin.isEnabled()) {
+                profilePermissions.addAll(((PluginWithPermissions) plugin).getProfilePermissions());
+            }
         }
         return profilePermissions;
     }
 
     public JtalksPermission findPermissionByMask(int mask) {
-        PluginFilter[] filters = new PluginFilter[]{new TypeFilter(PluginWithPermissions.class), new StateFilter(Plugin.State.ENABLED)};
-        List<Plugin> plugins = pluginLoader.getPlugins(filters);
+        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+        List<Plugin> plugins = pluginLoader.getPlugins(filter);
         List<JtalksPermission> allPermissions = new ArrayList<>();
         for (Plugin plugin : plugins) {
-            allPermissions.addAll(((PluginWithPermissions) plugin).getBranchPermissions());
-            allPermissions.addAll(((PluginWithPermissions) plugin).getGeneralPermissions());
-            allPermissions.addAll(((PluginWithPermissions) plugin).getProfilePermissions());
+            if (plugin.isEnabled()) {
+                allPermissions.addAll(((PluginWithPermissions) plugin).getBranchPermissions());
+                allPermissions.addAll(((PluginWithPermissions) plugin).getGeneralPermissions());
+                allPermissions.addAll(((PluginWithPermissions) plugin).getProfilePermissions());
+            }
         }
 
         for (JtalksPermission permission : allPermissions) {
