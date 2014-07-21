@@ -16,8 +16,8 @@
 package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
 import org.jtalks.jcommune.model.dto.UserDto;
-import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Authentication;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Errors;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.User;
@@ -112,7 +112,7 @@ public class PoulpeAuthService {
      *
      * @param clientResource response container
      * @return map with user details
-     * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException
      *
      */
     private Map<String, String> getAuthResult(ClientResource clientResource)
@@ -147,7 +147,7 @@ public class PoulpeAuthService {
      * @param clientResource response container
      * @param locale         locale
      * @return errors
-     * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException
      *
      * @throws java.io.IOException
      */

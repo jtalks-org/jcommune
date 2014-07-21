@@ -12,28 +12,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.plugins;
+package org.jtalks.jcommune.plugin.api.filters;
 
-import org.apache.commons.lang.Validate;
-import org.jtalks.jcommune.model.plugins.Plugin;
+import org.jtalks.jcommune.plugin.api.plugins.Plugin;
 
 /**
  *
- * @author Evgeny Naumenko
  */
-public class TypeFilter implements PluginFilter {
-    private final Class<? extends Plugin> type;
+public interface PluginFilter {
 
-    public TypeFilter(Class<? extends Plugin> type) {
-        Validate.notNull(type);
-        this.type = type;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean accept(Plugin plugin) {
-        return type.isInstance(plugin);
-    }
+    public boolean accept(Plugin plugin);
 }

@@ -13,25 +13,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.model.plugins.exceptions;
+package org.jtalks.jcommune.plugin.api.exceptions;
 
 /**
- * Exception, which to be thrown, when some problems happend, while sending request.
+ * Exception, which to be thrown, when some unexpected error happend.
  */
-public class NoConnectionException extends Exception {
+public class UnexpectedErrorException extends Exception {
 
     /**
      * Constructs a new exception similar to the {@link Exception#Exception()} constructor.
      */
-    public NoConnectionException() {
+    public UnexpectedErrorException() {
         super();
-    }
-
-    /**
-     * Constructs a new exception similar to the {@link Exception#Exception(String)} constructor.
-     */
-    public NoConnectionException(String message) {
-        super(message);
     }
 
     /**
@@ -39,7 +32,7 @@ public class NoConnectionException extends Exception {
      *
      * @param ex parent exception
      */
-    public NoConnectionException(Exception ex){
+    public UnexpectedErrorException(Exception ex){
         super(ex);
     }
 }

@@ -18,8 +18,8 @@ package org.jtalks.jcommune.plugin.kaptcha;
 import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

@@ -12,14 +12,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.plugins;
+package org.jtalks.jcommune.plugin.api;
 
 import org.apache.commons.lang.Validate;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
-import org.jtalks.jcommune.model.plugins.Plugin;
-import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.filters.PluginFilter;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
+import org.jtalks.jcommune.plugin.api.plugins.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

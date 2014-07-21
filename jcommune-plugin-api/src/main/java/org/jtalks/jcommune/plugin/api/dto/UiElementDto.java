@@ -13,7 +13,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.web.dto;
+package org.jtalks.jcommune.plugin.api.dto;
 
 /**
  * Class providing the information about UI element: id, localization keys for the

@@ -18,18 +18,18 @@ import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.plugins.ExtendedPlugin;
-import org.jtalks.jcommune.model.plugins.Plugin;
-import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
-import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.plugins.ExtendedPlugin;
+import org.jtalks.jcommune.plugin.api.plugins.Plugin;
+import org.jtalks.jcommune.plugin.api.plugins.RegistrationPlugin;
+import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
-import org.jtalks.jcommune.service.plugins.TypeFilter;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -323,8 +323,8 @@ public class UserController {
      * @param request Servlet request.
      * @param response Servlet response.
      * @return redirect to the login page
-     * @throws org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException
-     * @throws org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException
      */
     @RequestMapping(value = "user/activate/{uuid}")
     public String activateAccount(@PathVariable String uuid, HttpServletRequest request, HttpServletResponse response)

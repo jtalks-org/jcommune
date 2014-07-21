@@ -12,27 +12,31 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.plugin.api.plugins;
 
-package org.jtalks.jcommune.model.plugins.exceptions;
+import org.jtalks.common.model.permissions.JtalksPermission;
+
+import java.util.List;
 
 /**
- * Exception, which to be thrown, when some unexpected error happend.
+ * Provides permissions management by plugin.
+ *
+ * @author Evgeniy Myslovets
  */
-public class UnexpectedErrorException extends Exception {
+public interface PluginWithPermissions extends Plugin {
 
     /**
-     * Constructs a new exception similar to the {@link Exception#Exception()} constructor.
+     * @return branch permissions for current plugin
      */
-    public UnexpectedErrorException() {
-        super();
-    }
+    public <T extends JtalksPermission> List<T> getBranchPermissions();
 
     /**
-     * Constructs a new exception similar to the {@link Exception#Exception(Throwable)} constructor.
-     *
-     * @param ex parent exception
+     * @return general permissions for current plugin
      */
-    public UnexpectedErrorException(Exception ex){
-        super(ex);
-    }
+    public <T extends JtalksPermission> List<T> getGeneralPermissions();
+
+    /**
+     * @return profile permissions for current plugin
+     */
+    public <T extends JtalksPermission> List<T> getProfilePermissions();
 }

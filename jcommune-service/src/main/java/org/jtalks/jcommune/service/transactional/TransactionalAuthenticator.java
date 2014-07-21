@@ -26,18 +26,18 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.plugins.AuthenticationPlugin;
-import org.jtalks.jcommune.model.plugins.Plugin;
-import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
-import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.plugins.AuthenticationPlugin;
+import org.jtalks.jcommune.plugin.api.plugins.Plugin;
+import org.jtalks.jcommune.plugin.api.plugins.RegistrationPlugin;
+import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.service.plugins.PluginLoader;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,8 +157,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     /**
      * Authenticate user by auth plugin and save updated user details to inner database.
      *
-     * @param username username
-     * @param password user password
+     * @param loginUserDto DTO object which represent authentication information
      * @param newUser  is new user or not
      * @return true if authentication was successful, otherwise false
      * @throws UnexpectedErrorException if some unexpected error occurred

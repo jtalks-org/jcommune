@@ -13,26 +13,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package org.jtalks.jcommune.model.plugins;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package org.jtalks.jcommune.plugin.api.exceptions;
 
 /**
- * Provides processing any available actions supported by plugin.
- *
- * @author Andrey Pogorelov
+ * Exception, which to be thrown, when some problems happend, while sending request.
  */
-public interface ExtendedPlugin extends Plugin {
+public class NoConnectionException extends Exception {
 
     /**
-     * Performs supported by plugin specified action.
-     *
-     * @param pluginId plugin id
-     * @param action action name
-     * @param request http request
-     * @param response http response
-     * @return any result provided by plugin
+     * Constructs a new exception similar to the {@link Exception#Exception()} constructor.
      */
-    Object doAction(String pluginId, String action, HttpServletRequest request, HttpServletResponse response);
+    public NoConnectionException() {
+        super();
+    }
+
+    /**
+     * Constructs a new exception similar to the {@link Exception#Exception(String)} constructor.
+     */
+    public NoConnectionException(String message) {
+        super(message);
+    }
+
+    /**
+     * Constructs a new exception similar to the {@link Exception#Exception(Throwable)} constructor.
+     *
+     * @param ex parent exception
+     */
+    public NoConnectionException(Exception ex){
+        super(ex);
+    }
 }

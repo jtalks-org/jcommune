@@ -15,7 +15,11 @@
             <artifactId>jcommune-model</artifactId>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.jtalks.jcommune</groupId>
+            <artifactId>jcommune-plugin-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>

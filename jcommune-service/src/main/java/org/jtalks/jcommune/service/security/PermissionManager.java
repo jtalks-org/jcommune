@@ -34,7 +34,7 @@ import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.AnonymousGroup;
-import org.jtalks.jcommune.service.plugins.PluginManager;
+import org.jtalks.jcommune.plugin.api.PluginManager;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;

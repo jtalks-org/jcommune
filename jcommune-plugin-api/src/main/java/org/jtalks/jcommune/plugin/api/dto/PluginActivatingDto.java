@@ -12,26 +12,38 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.plugins;
-
-import org.jtalks.jcommune.model.plugins.Plugin;
+package org.jtalks.jcommune.plugin.api.dto;
 
 /**
+ * Class using in PluginActivatingListDto
  *
+ * @author Anuar_Nurmakanov
  */
-public class NameFilter implements PluginFilter {
+public class PluginActivatingDto {
+    private String pluginName;
+    private boolean activated = true;
 
-    private String name;
-
-    public NameFilter(String name) {
-        this.name = name;
+    public PluginActivatingDto() {
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean accept(Plugin plugin) {
-        return name.equals(plugin.getName());
+    public PluginActivatingDto(String pluginName, boolean activated) {
+        this.pluginName = pluginName;
+        this.activated = activated;
+    }
+
+    public String getPluginName() {
+        return pluginName;
+    }
+
+    public void setPluginName(String pluginName) {
+        this.pluginName = pluginName;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 }

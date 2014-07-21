@@ -15,7 +15,7 @@
 
 /**
  *
- * This package contains classes to plugins.
+ * This package provide view of exceptions to plugins.
  *
  */
-package org.jtalks.jcommune.model.plugins;
+package org.jtalks.jcommune.plugin.api.exceptions;

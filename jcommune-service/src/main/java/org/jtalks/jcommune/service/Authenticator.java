@@ -15,8 +15,8 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
-import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,9 +33,7 @@ public interface Authenticator {
     /**
      * Authenticate user with specified credentials.
      *
-     * @param username   username
-     * @param password   user password
-     * @param rememberMe remember this user or not
+     * @param loginUserDto DTO which represent information about user
      * @param request    HTTP request
      * @param response   HTTP response
      * @return true if user was logged in. false if there were any errors during

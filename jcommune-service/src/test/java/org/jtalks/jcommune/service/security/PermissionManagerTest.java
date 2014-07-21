@@ -37,7 +37,7 @@ import org.jtalks.jcommune.model.entity.AnonymousGroup;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
-import org.jtalks.jcommune.service.plugins.PluginManager;
+import org.jtalks.jcommune.plugin.api.PluginManager;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;

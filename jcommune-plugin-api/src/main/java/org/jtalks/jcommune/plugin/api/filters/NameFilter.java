@@ -12,21 +12,27 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.plugins;
+package org.jtalks.jcommune.plugin.api.filters;
 
-import org.hibernate.SessionFactory;
+
+import org.jtalks.jcommune.plugin.api.plugins.Plugin;
 
 /**
- * Provides a plugin with database access, if it needs one
  *
- * @author Evgeny Naumenko
  */
-public interface DatabaseAwarePlugin extends Plugin {
+public class NameFilter implements PluginFilter {
+
+    private String name;
+
+    public NameFilter(String name) {
+        this.name = name;
+    }
 
     /**
-     *
-     *
-     * @param factory configured Hibernate session factory
+     * {@inheritDoc}
      */
-    public void setSessionFactory(SessionFactory factory);
+    @Override
+    public boolean accept(Plugin plugin) {
+        return name.equals(plugin.getName());
+    }
 }

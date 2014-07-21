@@ -12,31 +12,28 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.plugins;
+package org.jtalks.jcommune.plugin.api.filters;
 
-import org.jtalks.common.model.permissions.JtalksPermission;
-
-import java.util.List;
+import org.apache.commons.lang.Validate;
+import org.jtalks.jcommune.plugin.api.plugins.Plugin;
 
 /**
- * Provides permissions management by plugin.
  *
- * @author Evgeniy Myslovets
  */
-public interface PluginWithPermissions extends Plugin {
+public class StateFilter implements PluginFilter {
+
+    private Plugin.State state;
+
+    public StateFilter(Plugin.State state) {
+        Validate.notNull(state);
+        this.state = state;
+    }
 
     /**
-     * @return branch permissions for current plugin
+     * {@inheritDoc}
      */
-    public <T extends JtalksPermission> List<T> getBranchPermissions();
-
-    /**
-     * @return general permissions for current plugin
-     */
-    public <T extends JtalksPermission> List<T> getGeneralPermissions();
-
-    /**
-     * @return profile permissions for current plugin
-     */
-    public <T extends JtalksPermission> List<T> getProfilePermissions();
+    @Override
+    public boolean accept(Plugin plugin) {
+        return plugin.getState() == state;
+    }
 }

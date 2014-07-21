@@ -18,8 +18,8 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
@@ -176,9 +176,7 @@ public interface UserService extends EntityService<JCUser> {
      * Perform login logic for provided user. After calling this the method
      * this user will be logged in
      *
-     * @param username   user name of user to login
-     * @param password   password to login
-     * @param rememberMe remember this user or not
+     * @param loginUserDto DTO object which represent authentication information
      * @param request    HTTP request
      * @param response   HTTP response
      * @return true if user was logged in. false if there were any errors during

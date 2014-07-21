@@ -13,7 +13,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jtalks.jcommune</groupId>
-      <artifactId>jcommune-model</artifactId>
+      <artifactId>jcommune-plugin-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

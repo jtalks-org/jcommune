@@ -17,17 +17,15 @@ package org.jtalks.jcommune.plugin.auth.poulpe;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.jtalks.jcommune.model.dto.UserDto;
-import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.model.plugins.AuthenticationPlugin;
-import org.jtalks.jcommune.model.plugins.RegistrationPlugin;
-import org.jtalks.jcommune.model.plugins.StatefullPlugin;
-import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.plugins.AuthenticationPlugin;
+import org.jtalks.jcommune.plugin.api.plugins.RegistrationPlugin;
+import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.plugins.StatefullPlugin;
 import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;

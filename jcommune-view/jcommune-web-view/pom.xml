@@ -51,6 +51,10 @@
             <groupId>org.jtalks.jcommune</groupId>
             <artifactId>jcommune-web-controller</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jtalks.jcommune</groupId>
+            <artifactId>jcommune-service</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>

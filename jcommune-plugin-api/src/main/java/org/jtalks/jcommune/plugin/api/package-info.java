@@ -12,38 +12,4 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.dto;
-
-/**
- * Class using in PluginActivatingListDto
- *
- * @author Anuar_Nurmakanov
- */
-public class PluginActivatingDto {
-    private String pluginName;
-    private boolean activated = true;
-
-    public PluginActivatingDto() {
-    }
-
-    public PluginActivatingDto(String pluginName, boolean activated) {
-        this.pluginName = pluginName;
-        this.activated = activated;
-    }
-
-    public String getPluginName() {
-        return pluginName;
-    }
-
-    public void setPluginName(String pluginName) {
-        this.pluginName = pluginName;
-    }
-
-    public boolean isActivated() {
-        return activated;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-}
+package org.jtalks.jcommune.plugin.api;

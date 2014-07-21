@@ -12,11 +12,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.plugins;
+package org.jtalks.jcommune.plugin.api;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.jcommune.model.plugins.Plugin;
-import org.jtalks.jcommune.model.plugins.PluginWithPermissions;
+import org.jtalks.jcommune.plugin.api.filters.PluginFilter;
+import org.jtalks.jcommune.plugin.api.filters.StateFilter;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
+import org.jtalks.jcommune.plugin.api.plugins.Plugin;
+import org.jtalks.jcommune.plugin.api.plugins.PluginWithPermissions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +34,7 @@ public class PluginManager {
     private PluginLoader pluginLoader;
 
     /**
-     * Constructs {@link org.jtalks.jcommune.service.plugins.PluginManager} with given {@link PluginLoader}
+     * Constructs {@link PluginManager} with given {@link PluginLoader}
      *
      * @param pluginLoader plugin loader instance
      */

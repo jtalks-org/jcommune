@@ -16,8 +16,8 @@ package org.jtalks.jcommune.plugin.questionsandanswers;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.model.plugins.PluginWithPermissions;
-import org.jtalks.jcommune.model.plugins.StatefullPlugin;
+import org.jtalks.jcommune.plugin.api.plugins.PluginWithPermissions;
+import org.jtalks.jcommune.plugin.api.plugins.StatefullPlugin;
 
 import java.util.Collections;
 import java.util.List;

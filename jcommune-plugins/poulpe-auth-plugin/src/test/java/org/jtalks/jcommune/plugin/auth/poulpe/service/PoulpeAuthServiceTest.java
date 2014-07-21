@@ -16,8 +16,8 @@
 package org.jtalks.jcommune.plugin.auth.poulpe.service;
 
 import org.jtalks.jcommune.model.dto.UserDto;
-import org.jtalks.jcommune.model.plugins.exceptions.NoConnectionException;
-import org.jtalks.jcommune.model.plugins.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.*;
 import org.jtalks.jcommune.plugin.auth.poulpe.dto.Error;
 import org.restlet.Request;
