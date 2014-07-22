@@ -63,7 +63,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
 
     @Override
     public <T extends JtalksPermission> List<T> getBranchPermissions() {
-        return (List<T>) QuestionPluginBranchPermission.getAllAsList();
+        return (List<T>) QuestionsPluginBranchPermission.getAllAsList();
     }
 
     @Override
@@ -78,11 +78,11 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
 
     @Override
     public UiElementDto getCreateTopicBtnDto(long branchId) {
-        return new UiElementDto("new-question-btn","label.addQuestion","label.addQuestion.tip","/questions/new?branchId=" + branchId);
+        return new UiElementDto("new-question-btn", "label.addQuestion", "label.addQuestion.tip", "/questions/new?branchId=" + branchId);
     }
 
     @Override
     public JtalksPermission getCreateTopicPermission() {
-        return QuestionPluginBranchPermission.CREATE_QUESTIONS;
+        return QuestionsPluginBranchPermission.CREATE_QUESTIONS;
     }
 }

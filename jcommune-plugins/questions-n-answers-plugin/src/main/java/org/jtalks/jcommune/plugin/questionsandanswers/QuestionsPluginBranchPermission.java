@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Evgeniy Myslovets
  */
-public enum QuestionPluginBranchPermission implements JtalksPermission {
+public enum QuestionsPluginBranchPermission implements JtalksPermission {
 
     /**
      * The ability of users to create question type topics
@@ -48,7 +48,7 @@ public enum QuestionPluginBranchPermission implements JtalksPermission {
      * @param name a textual representation of the permission (usually the same as the constant name), though the
      *             restriction usually starts with the 'RESTRICTION_' word
      */
-    QuestionPluginBranchPermission(int mask, @Nonnull String name) {
+    QuestionsPluginBranchPermission(int mask, @Nonnull String name) {
         this.mask = mask;
         throwIfNameNotValid(name);
         this.name = name;
@@ -62,10 +62,10 @@ public enum QuestionPluginBranchPermission implements JtalksPermission {
      * @param name a textual representation of the permission (usually the same as the constant name)
      * @throws NumberFormatException look at {@link Integer#parseInt(String, int)} for details on this as this method is
      *                               used underneath
-     * @see QuestionPluginBranchPermission#QuestionPluginBranchPermission(int, String)
+     * @see QuestionsPluginBranchPermission#QuestionsPluginBranchPermission(int, String)
      * @see org.springframework.security.acls.domain.BasePermission
      */
-    QuestionPluginBranchPermission(@Nonnull String mask, @Nonnull String name) {
+    QuestionsPluginBranchPermission(@Nonnull String mask, @Nonnull String name) {
         throwIfNameNotValid(name);
         this.mask = Integer.parseInt(mask, 2);
         this.name = name;
@@ -101,8 +101,8 @@ public enum QuestionPluginBranchPermission implements JtalksPermission {
         return null;
     }
 
-    public static QuestionPluginBranchPermission findByMask(int mask) {
-        for (QuestionPluginBranchPermission nextPermission : values()) {
+    public static QuestionsPluginBranchPermission findByMask(int mask) {
+        for (QuestionsPluginBranchPermission nextPermission : values()) {
             if (mask == nextPermission.getMask()) {
                 return nextPermission;
             }
@@ -110,7 +110,7 @@ public enum QuestionPluginBranchPermission implements JtalksPermission {
         return null;
     }
 
-    public static List<QuestionPluginBranchPermission> getAllAsList() {
+    public static List<QuestionsPluginBranchPermission> getAllAsList() {
         return Lists.newArrayList(values());
     }
 }
