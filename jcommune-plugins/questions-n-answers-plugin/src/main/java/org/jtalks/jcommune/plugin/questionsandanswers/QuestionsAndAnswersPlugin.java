@@ -16,9 +16,9 @@ package org.jtalks.jcommune.plugin.questionsandanswers;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 
 import java.util.Collections;
 import java.util.List;
@@ -83,6 +83,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends JtalksPermission> List<T> getBranchPermissions() {
         return (List<T>) QuestionsPluginBranchPermission.getAllAsList();
@@ -93,7 +94,8 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public CreateTopicBtnDto getCreateTopicBtnDto(long branchId) {
-        return new CreateTopicBtnDto("new-question-btn","label.addQuestion","label.addQuestion.tip","/questions/new?branchId=" + branchId);
+        return new CreateTopicBtnDto("new-question-btn", "label.addQuestion", "label.addQuestion.tip",
+                "/questions/new?branchId=" + branchId);
     }
 
     /**

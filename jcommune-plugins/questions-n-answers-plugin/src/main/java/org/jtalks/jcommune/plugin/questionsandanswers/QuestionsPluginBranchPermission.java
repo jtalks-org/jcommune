@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * These are the restrictions that relate only to branches and sections.
+ * These are the permissions that relate only to branches and sections.
  * <p/>
  * Please follow the binary numeration in permissions
  * and do not create numbers more then 1 in comparing to existing ones
