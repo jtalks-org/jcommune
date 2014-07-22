@@ -20,13 +20,13 @@ package org.jtalks.jcommune.plugin.api.dto;
  * displaying text and tooltip and the http address which will be used by the element
  * @author Andrei Alikov
  */
-public class UiElementDto {
+public class CreateTopicBtnDto {
     private String id;
     private String displayNameKey;
     private String toolTipKey;
     private String link;
 
-    public UiElementDto(String id, String displayNameKey, String toolTipKey, String link) {
+    public CreateTopicBtnDto(String id, String displayNameKey, String toolTipKey, String link) {
         this.displayNameKey = displayNameKey;
         this.toolTipKey = toolTipKey;
         this.link = link;

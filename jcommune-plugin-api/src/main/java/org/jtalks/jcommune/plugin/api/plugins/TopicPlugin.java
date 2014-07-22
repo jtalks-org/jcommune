@@ -15,14 +15,14 @@
 package org.jtalks.jcommune.plugin.api.plugins;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.jcommune.plugin.api.dto.UiElementDto;
+import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 
 /**
  * @author Mikhail Stryzhonok
  */
-public interface TopicPlugin extends PluginWithPermissions{
+public interface TopicPlugin extends PluginWithBranchPermissions {
 
-    UiElementDto getCreateTopicBtnDto(long branchId);
+    CreateTopicBtnDto getCreateTopicBtnDto(long branchId);
 
     JtalksPermission getCreateTopicPermission();
 }

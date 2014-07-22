@@ -121,7 +121,7 @@ public class PermissionManager {
     public JtalksPermission findBranchPermissionByMask(int mask) {
         JtalksPermission permission = BranchPermission.findByMask(mask);
         if (permission == null) {
-            permission = pluginManager.findPermissionByMask(mask);
+            permission = pluginManager.findPluginsBranchPermissionByMask(mask);
         }
         return permission;
     }
@@ -135,7 +135,6 @@ public class PermissionManager {
     public GroupsPermissions getPermissionsMapFor(Component component) {
         List<JtalksPermission> generalPermissions = new ArrayList<>();
         generalPermissions.addAll(GeneralPermission.getAllAsList());
-        generalPermissions.addAll(pluginManager.getPluginsGeneralPermissions());
         return getPermissionsMapFor(generalPermissions, component);
     }
 
@@ -148,7 +147,6 @@ public class PermissionManager {
     public GroupsPermissions getPermissionsMapFor(List<Group> groups) {
         List<JtalksPermission> profilePermissions = new ArrayList<>();
         profilePermissions.addAll(ProfilePermission.getAllAsList());
-        profilePermissions.addAll(pluginManager.getPluginsProfilePermissions());
 
         GroupsPermissions permissions = new GroupsPermissions(profilePermissions);
         for (Group group : groups) {

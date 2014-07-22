@@ -18,7 +18,7 @@ import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.plugin.api.filters.PluginFilter;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.plugins.Plugin;
-import org.jtalks.jcommune.plugin.api.plugins.PluginWithPermissions;
+import org.jtalks.jcommune.plugin.api.plugins.PluginWithBranchPermissions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,65 +45,44 @@ public class PluginManager {
      * @return plugin branch permission for given branch
      */
     public List<JtalksPermission> getPluginsBranchPermissions() {
-        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+        PluginFilter filter = new TypeFilter(PluginWithBranchPermissions.class);
         List<Plugin> plugins = pluginLoader.getPlugins(filter);
         List<JtalksPermission> branchPermissions = new ArrayList<>();
         for (Plugin plugin : plugins) {
             if (plugin.isEnabled()) {
-                branchPermissions.addAll(((PluginWithPermissions) plugin).getBranchPermissions());
+                branchPermissions.addAll(((PluginWithBranchPermissions) plugin).getBranchPermissions());
             }
         }
         return branchPermissions;
     }
 
-    /**
-     * @return plugin general permission for given component
-     */
-    public List<JtalksPermission> getPluginsGeneralPermissions() {
-        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+    public JtalksPermission findPluginsBranchPermissionByMask(int mask) {
+        PluginFilter filter = new TypeFilter(PluginWithBranchPermissions.class);
         List<Plugin> plugins = pluginLoader.getPlugins(filter);
-        List<JtalksPermission> generalPermissions = new ArrayList<>();
+        JtalksPermission permission = null;
         for (Plugin plugin : plugins) {
             if (plugin.isEnabled()) {
-                generalPermissions.addAll(((PluginWithPermissions) plugin).getGeneralPermissions());
+                permission = ((PluginWithBranchPermissions)plugin).getBranchPermissionByMask(mask);
+                if (permission != null) {
+                    return permission;
+                }
             }
         }
-        return generalPermissions;
+        return permission;
     }
 
-    /**
-     * @return plugin profile permission for given branch
-     */
-    public List<JtalksPermission> getPluginsProfilePermissions() {
-        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
+    public JtalksPermission findPluginsBranchPermissionByName(String name) {
+        PluginFilter filter = new TypeFilter(PluginWithBranchPermissions.class);
         List<Plugin> plugins = pluginLoader.getPlugins(filter);
-        List<JtalksPermission> profilePermissions = new ArrayList<>();
+        JtalksPermission permission = null;
         for (Plugin plugin : plugins) {
             if (plugin.isEnabled()) {
-                profilePermissions.addAll(((PluginWithPermissions) plugin).getProfilePermissions());
+                permission = ((PluginWithBranchPermissions)plugin).getBranchPermissionByName(name);
+                if (permission != null) {
+                    return permission;
+                }
             }
         }
-        return profilePermissions;
-    }
-
-    public JtalksPermission findPermissionByMask(int mask) {
-        PluginFilter filter = new TypeFilter(PluginWithPermissions.class);
-        List<Plugin> plugins = pluginLoader.getPlugins(filter);
-        List<JtalksPermission> allPermissions = new ArrayList<>();
-        for (Plugin plugin : plugins) {
-            if (plugin.isEnabled()) {
-                allPermissions.addAll(((PluginWithPermissions) plugin).getBranchPermissions());
-                allPermissions.addAll(((PluginWithPermissions) plugin).getGeneralPermissions());
-                allPermissions.addAll(((PluginWithPermissions) plugin).getProfilePermissions());
-            }
-        }
-
-        for (JtalksPermission permission : allPermissions) {
-            if (permission.getMask() == mask) {
-                return permission;
-            }
-        }
-
-        return null;
+        return permission;
     }
 }

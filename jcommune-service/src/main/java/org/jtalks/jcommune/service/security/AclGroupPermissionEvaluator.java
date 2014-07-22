@@ -366,7 +366,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                                       Permission permission, boolean isCheckAllowedGrant) {
         Permission permissionToComapare = ace.getPermission();
         if (permissionToComapare == null) {
-            permissionToComapare = pluginManager.findPermissionByMask(ace.getPermissionMask());
+            permissionToComapare = pluginManager.findPluginsBranchPermissionByMask(ace.getPermissionMask());
         }
         return ace.isGranting() == isCheckAllowedGrant
                 && permission.equals(permissionToComapare)

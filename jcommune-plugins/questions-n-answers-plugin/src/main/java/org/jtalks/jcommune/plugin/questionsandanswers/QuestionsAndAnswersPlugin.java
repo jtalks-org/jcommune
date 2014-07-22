@@ -16,7 +16,7 @@ package org.jtalks.jcommune.plugin.questionsandanswers;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.plugin.api.dto.UiElementDto;
+import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.plugins.StatefullPlugin;
 import org.jtalks.jcommune.plugin.api.plugins.TopicPlugin;
 
@@ -67,22 +67,22 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
     }
 
     @Override
-    public <T extends JtalksPermission> List<T> getGeneralPermissions() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public <T extends JtalksPermission> List<T> getProfilePermissions() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public UiElementDto getCreateTopicBtnDto(long branchId) {
-        return new UiElementDto("new-question-btn","label.addQuestion","label.addQuestion.tip","/questions/new?branchId=" + branchId);
+    public CreateTopicBtnDto getCreateTopicBtnDto(long branchId) {
+        return new CreateTopicBtnDto("new-question-btn","label.addQuestion","label.addQuestion.tip","/questions/new?branchId=" + branchId);
     }
 
     @Override
     public JtalksPermission getCreateTopicPermission() {
         return QuestionPluginBranchPermission.CREATE_QUESTIONS;
+    }
+
+    @Override
+    public JtalksPermission getBranchPermissionByMask(int mask) {
+        return QuestionPluginBranchPermission.findByMask(mask);
+    }
+
+    @Override
+    public JtalksPermission getBranchPermissionByName(String name) {
+        return QuestionPluginBranchPermission.valueOf(name);
     }
 }

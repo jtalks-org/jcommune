@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
+import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.plugins.Plugin;
 import org.jtalks.jcommune.plugin.api.plugins.TopicPlugin;
@@ -29,7 +30,6 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.Breadcrumb;
-import org.jtalks.jcommune.plugin.api.dto.UiElementDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -145,21 +145,21 @@ public class BranchController {
      * @param branchId id of the branch where topic will be created
      * @return list of the topic type information objects
      */
-    private List<UiElementDto> getTopicTypes(long branchId) {
+    private List<CreateTopicBtnDto> getTopicTypes(long branchId) {
         Authentication authentication = securityContextFacade.getContext().getAuthentication();
         boolean hasTopicPermission =
                 aclEvaluator.hasPermission(authentication, branchId, "BRANCH", "BranchPermission.CREATE_POSTS");
         boolean hasReviewPermission =
                 aclEvaluator.hasPermission(authentication, branchId, "BRANCH", "BranchPermission.CREATE_CODE_REVIEW");
 
-        List<UiElementDto> topicTypes = new ArrayList<>();
+        List<CreateTopicBtnDto> topicTypes = new ArrayList<>();
 
         if (hasTopicPermission) {
-            topicTypes.add(new UiElementDto("new-topic-btn", "label.addtopic", "label.addtopic.tip", "/topics/new?branchId=" + branchId));
+            topicTypes.add(new CreateTopicBtnDto("new-topic-btn", "label.addtopic", "label.addtopic.tip", "/topics/new?branchId=" + branchId));
         }
 
         if (hasReviewPermission) {
-            topicTypes.add(new UiElementDto("new-code-review-btn", "label.addCodeReview", "label.addCodeReview.tip", "/reviews/new?branchId=" + branchId));
+            topicTypes.add(new CreateTopicBtnDto("new-code-review-btn", "label.addCodeReview", "label.addCodeReview.tip", "/reviews/new?branchId=" + branchId));
         }
 
         List<TopicPlugin> topicPlugins = getEnabledTopicPlugins();

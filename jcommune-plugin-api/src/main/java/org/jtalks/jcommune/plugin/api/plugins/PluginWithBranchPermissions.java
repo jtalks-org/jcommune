@@ -23,20 +23,14 @@ import java.util.List;
  *
  * @author Evgeniy Myslovets
  */
-public interface PluginWithPermissions extends Plugin {
+public interface PluginWithBranchPermissions extends Plugin {
 
     /**
      * @return branch permissions for current plugin
      */
-    public <T extends JtalksPermission> List<T> getBranchPermissions();
+    <T extends JtalksPermission> List<T> getBranchPermissions();
 
-    /**
-     * @return general permissions for current plugin
-     */
-    public <T extends JtalksPermission> List<T> getGeneralPermissions();
+    JtalksPermission getBranchPermissionByMask(int mask);
 
-    /**
-     * @return profile permissions for current plugin
-     */
-    public <T extends JtalksPermission> List<T> getProfilePermissions();
+    JtalksPermission getBranchPermissionByName(String name);
 }

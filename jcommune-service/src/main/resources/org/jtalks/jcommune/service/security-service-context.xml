@@ -102,7 +102,7 @@
   <bean name="jtalksPermissionFactory" class="org.jtalks.common.security.acl.JtalksPermissionFactory"
         init-method="init"/>
 
-  <bean name="pluginPermissionFactory" class="org.jtalks.jcommune.plugin.api.PluginPermissionFactory">
+  <bean name="pluginPermissionFactory" class="org.jtalks.jcommune.plugin.api.PluginsPermissionFactory">
       <constructor-arg ref="pluginManager"/>
   </bean>
 

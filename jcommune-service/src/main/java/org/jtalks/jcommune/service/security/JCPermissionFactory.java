@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.security.acl.JtalksPermissionFactory;
-import org.jtalks.jcommune.plugin.api.PluginPermissionFactory;
+import org.jtalks.jcommune.plugin.api.PluginsPermissionFactory;
 import org.springframework.security.acls.domain.PermissionFactory;
 import org.springframework.security.acls.model.Permission;
 import ru.javatalks.utils.general.Assert;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class JCPermissionFactory implements PermissionFactory {
     private JtalksPermissionFactory jtalksPermissionFactory;
-    private PluginPermissionFactory pluginPermissionFactory;
+    private PluginsPermissionFactory pluginPermissionFactory;
 
     /**
      * Created to replace permissions from disabled/removed plugins
@@ -38,18 +38,18 @@ public class JCPermissionFactory implements PermissionFactory {
     private enum NullPermission implements JtalksPermission {
         NULL_PERMISSION("0", "NULL_PERMISSION");
 
-        private final String name;
-        private final int mask;
-
+        /**
+         * Constructor for leading to general form of permission.Doesn't perform any operation. Permission mask have
+         * value <b>0</b> and permission name have value <b>"NULL_PERMISSION"</b> independently from input arguments.
+         * @param mask mask of the permission
+         * @param name name of the permission
+         */
         NullPermission(@Nonnull String mask, @Nonnull String name) {
-            throwIfNameNotValid(name);
-            this.mask = Integer.parseInt(mask, 2);
-            this.name = name;
         }
 
         @Override
         public String getName() {
-            return "DUMMY_PERMISSION";
+            return "NULL_PERMISSION";
         }
 
         @Override
@@ -61,13 +61,9 @@ public class JCPermissionFactory implements PermissionFactory {
         public String getPattern() {
             return null;
         }
-
-        private void throwIfNameNotValid(String name) {
-            Assert.throwIfNull(name, "The name can't be null");
-        }
     }
 
-    public JCPermissionFactory(JtalksPermissionFactory jtalksPermissionFactory, PluginPermissionFactory pluginPermissionFactory) {
+    public JCPermissionFactory(JtalksPermissionFactory jtalksPermissionFactory, PluginsPermissionFactory pluginPermissionFactory) {
         this.jtalksPermissionFactory = jtalksPermissionFactory;
         this.pluginPermissionFactory = pluginPermissionFactory;
     }

@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.plugin.api;
 
-import org.jtalks.common.model.permissions.JtalksPermission;
 import org.springframework.security.acls.domain.PermissionFactory;
 import org.springframework.security.acls.model.Permission;
 
@@ -23,13 +22,10 @@ import java.util.*;
 /**
  * @author Mikhail Styzhonok
  */
-public class PluginPermissionFactory implements PermissionFactory {
-    private final Map<Integer, JtalksPermission> permissionsByMask = new HashMap<>();
-    private final Map<String, JtalksPermission> permissionsByName = new HashMap<>();
+public class PluginsPermissionFactory implements PermissionFactory {
     private PluginManager pluginManager;
-    private boolean isInitialized = false;
 
-    public PluginPermissionFactory(PluginManager pluginManager) {
+    public PluginsPermissionFactory(PluginManager pluginManager) {
         this.pluginManager = pluginManager;
     }
 
@@ -38,10 +34,7 @@ public class PluginPermissionFactory implements PermissionFactory {
      */
     @Override
     public Permission buildFromMask(int mask) {
-        if (!isInitialized) {
-            init();
-        }
-        return permissionsByMask.get(mask);
+        return pluginManager.findPluginsBranchPermissionByMask(mask);
     }
 
     /**
@@ -49,10 +42,7 @@ public class PluginPermissionFactory implements PermissionFactory {
      */
     @Override
     public Permission buildFromName(String name) {
-        if (!isInitialized) {
-            init();
-        }
-        return permissionsByName.get(name);
+        return pluginManager.findPluginsBranchPermissionByName(name);
     }
 
     /**
@@ -60,31 +50,13 @@ public class PluginPermissionFactory implements PermissionFactory {
      */
     @Override
     public List<Permission> buildFromNames(List<String> names) {
-        if (!isInitialized) {
-            init();
-        }
         List<Permission> resultingPermissions = new ArrayList<>();
         for (String name : names) {
-            if (permissionsByName.containsKey(name)) {
-                resultingPermissions.add(buildFromName(name));
+            Permission permission = pluginManager.findPluginsBranchPermissionByName(name);
+            if (permission != null) {
+                resultingPermissions.add(permission);
             }
         }
         return resultingPermissions;
-    }
-
-    /**
-     * Initializes the class by loading lists of the permissions from classes like {@link org.jtalks.common.model.permissions.BranchPermission}.
-     *
-     *
-     */
-    public void init() {
-        List<JtalksPermission> allPluginPermissions = new LinkedList<>();
-        allPluginPermissions.addAll(pluginManager.getPluginsBranchPermissions());
-        allPluginPermissions.addAll(pluginManager.getPluginsGeneralPermissions());
-        allPluginPermissions.addAll(pluginManager.getPluginsProfilePermissions());
-        for (JtalksPermission permission : allPluginPermissions) {
-            permissionsByMask.put(permission.getMask(), permission);
-            permissionsByName.put(permission.getName(), permission);
-        }
     }
 }
