@@ -85,7 +85,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public <T extends JtalksPermission> List<T> getBranchPermissions() {
-        return (List<T>) QuestionPluginBranchPermission.getAllAsList();
+        return (List<T>) QuestionsPluginBranchPermission.getAllAsList();
     }
 
     /**
@@ -101,7 +101,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public JtalksPermission getCreateTopicPermission() {
-        return QuestionPluginBranchPermission.CREATE_QUESTIONS;
+        return QuestionsPluginBranchPermission.CREATE_QUESTIONS;
     }
 
     /**
@@ -109,7 +109,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public JtalksPermission getBranchPermissionByMask(int mask) {
-        return QuestionPluginBranchPermission.findByMask(mask);
+        return QuestionsPluginBranchPermission.findByMask(mask);
     }
 
     /**
@@ -117,6 +117,6 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public JtalksPermission getBranchPermissionByName(String name) {
-        return QuestionPluginBranchPermission.valueOf(name);
+        return QuestionsPluginBranchPermission.valueOf(name);
     }
 }

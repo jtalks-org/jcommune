@@ -62,11 +62,11 @@ public class QuestionsAndAnswersPluginPermissionTest {
      */
     @DataProvider(name = "allProjectPermissions")
     protected Object[][] getAllProjectPermissions() {
-        List<JtalksPermission> permissions = new ArrayList<JtalksPermission>();
+        List<JtalksPermission> permissions = new ArrayList<>();
         permissions.addAll(BranchPermission.getAllAsList());
         permissions.addAll(GeneralPermission.getAllAsList());
         permissions.addAll(ProfilePermission.getAllAsList());
-        permissions.addAll(QuestionPluginBranchPermission.getAllAsList());
+        permissions.addAll(QuestionsPluginBranchPermission.getAllAsList());
         return new Object[][]{{permissions}};
     }
 
