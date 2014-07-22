@@ -21,7 +21,7 @@ import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.api.filters.PluginFilter;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
-import org.jtalks.jcommune.plugin.api.plugins.Plugin;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

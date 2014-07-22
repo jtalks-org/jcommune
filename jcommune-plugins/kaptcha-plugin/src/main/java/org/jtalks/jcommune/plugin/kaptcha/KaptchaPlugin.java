@@ -17,11 +17,11 @@ package org.jtalks.jcommune.plugin.kaptcha;
 
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.plugin.api.plugins.ExtendedPlugin;
-import org.jtalks.jcommune.plugin.api.plugins.RegistrationPlugin;
+import org.jtalks.jcommune.plugin.api.core.ExtendedPlugin;
+import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
-import org.jtalks.jcommune.plugin.api.plugins.StatefullPlugin;
+import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

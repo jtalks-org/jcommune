@@ -18,8 +18,8 @@ package org.jtalks.jcommune.plugin.api;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
-import org.jtalks.jcommune.plugin.api.plugins.Plugin;
-import org.jtalks.jcommune.plugin.api.plugins.PluginWithBranchPermissions;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.core.PluginWithBranchPermissions;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 

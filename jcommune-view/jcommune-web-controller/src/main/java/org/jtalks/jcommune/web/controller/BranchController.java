@@ -23,8 +23,8 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
-import org.jtalks.jcommune.plugin.api.plugins.Plugin;
-import org.jtalks.jcommune.plugin.api.plugins.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -175,7 +175,7 @@ public class BranchController {
     /**
      * Gets list of enabled topic plugins
      * @return list of topic plugins
-     * @see org.jtalks.jcommune.plugin.api.plugins.TopicPlugin
+     * @see org.jtalks.jcommune.plugin.api.core.TopicPlugin
      */
     private List<TopicPlugin> getEnabledTopicPlugins() {
         List<TopicPlugin> topicPlugins = new ArrayList<>();

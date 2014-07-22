@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.plugin.api.dto;
 
 
-import org.jtalks.jcommune.plugin.api.plugins.Plugin;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;

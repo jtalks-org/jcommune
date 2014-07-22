@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.plugin.dummy;
 
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.plugin.api.plugins.StatefullPlugin;
+import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
 
 import java.util.*;
 

@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.api.filters;
 
-import org.jtalks.jcommune.plugin.api.plugins.Plugin;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
 
 /**
  *

@@ -12,7 +12,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.plugin.api.core;
+
+import org.hibernate.SessionFactory;
+
 /**
- * Contains interfaces and abstract classes which should be implemented in plugins
+ * Provides a plugin with database access, if it needs one
+ *
+ * @author Evgeny Naumenko
  */
-package org.jtalks.jcommune.plugin.api.plugins;
+public interface DatabaseAwarePlugin extends Plugin {
+
+    /**
+     *
+     *
+     * @param factory configured Hibernate session factory
+     */
+    public void setSessionFactory(SessionFactory factory);
+}

@@ -19,6 +19,7 @@ import org.jtalks.common.security.acl.JtalksPermissionFactory;
 import org.jtalks.jcommune.plugin.api.PluginsPermissionFactory;
 import org.springframework.security.acls.domain.PermissionFactory;
 import org.springframework.security.acls.model.Permission;
+import ru.javatalks.utils.general.Assert;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -47,29 +48,37 @@ public class JCPermissionFactory implements PermissionFactory {
     private enum NullPermission implements JtalksPermission {
         NULL_PERMISSION("0", "NULL_PERMISSION");
 
+        private final String name;
+        private final int mask;
         /**
-         * Constructor for leading to general form of permission.Doesn't perform any operation. Permission mask have
-         * value <b>0</b> and permission name have value <b>"NULL_PERMISSION"</b> independently from input arguments.
+         * Constructor for leading to general form of permission.
          * @param mask mask of the permission
          * @param name name of the permission
          */
         NullPermission(@Nonnull String mask, @Nonnull String name) {
+            this.name = name;
+            this.mask = Integer.parseInt(mask, 2);
         }
 
         @Override
         public String getName() {
-            return "NULL_PERMISSION";
+            return name;
         }
 
         @Override
         public int getMask() {
-            return 0;
+            return mask;
         }
 
         @Override
         public String getPattern() {
             return null;
         }
+
+        private void throwIfNameNotValid(String name) {
+            Assert.throwIfNull(name, "The name can't be null");
+        }
+
     }
 
     public JCPermissionFactory(JtalksPermissionFactory jtalksPermissionFactory, PluginsPermissionFactory pluginPermissionFactory) {

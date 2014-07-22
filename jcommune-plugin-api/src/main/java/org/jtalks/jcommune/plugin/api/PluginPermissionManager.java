@@ -17,8 +17,8 @@ package org.jtalks.jcommune.plugin.api;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.plugin.api.filters.PluginFilter;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
-import org.jtalks.jcommune.plugin.api.plugins.Plugin;
-import org.jtalks.jcommune.plugin.api.plugins.PluginWithBranchPermissions;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.core.PluginWithBranchPermissions;
 
 import java.util.ArrayList;
 import java.util.List;

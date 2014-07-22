@@ -12,21 +12,27 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.plugin.api.plugins;
 
-import org.hibernate.SessionFactory;
+package org.jtalks.jcommune.plugin.api.core;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * Provides a plugin with database access, if it needs one
+ * Provides processing any available actions supported by plugin.
  *
- * @author Evgeny Naumenko
+ * @author Andrey Pogorelov
  */
-public interface DatabaseAwarePlugin extends Plugin {
+public interface ExtendedPlugin extends Plugin {
 
     /**
+     * Performs supported by plugin specified action.
      *
-     *
-     * @param factory configured Hibernate session factory
+     * @param pluginId plugin id
+     * @param action action name
+     * @param request http request
+     * @param response http response
+     * @return any result provided by plugin
      */
-    public void setSessionFactory(SessionFactory factory);
+    Object doAction(String pluginId, String action, HttpServletRequest request, HttpServletResponse response);
 }

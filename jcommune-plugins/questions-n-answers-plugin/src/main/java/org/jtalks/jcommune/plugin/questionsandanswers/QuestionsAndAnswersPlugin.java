@@ -17,8 +17,8 @@ package org.jtalks.jcommune.plugin.questionsandanswers;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
-import org.jtalks.jcommune.plugin.api.plugins.StatefullPlugin;
-import org.jtalks.jcommune.plugin.api.plugins.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
+import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 
 import java.util.Collections;
 import java.util.List;

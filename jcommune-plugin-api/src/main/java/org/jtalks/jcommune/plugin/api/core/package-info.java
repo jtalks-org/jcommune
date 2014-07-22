@@ -12,27 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
-package org.jtalks.jcommune.plugin.api.plugins;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
- * Provides processing any available actions supported by plugin.
- *
- * @author Andrey Pogorelov
+ * Contains interfaces and abstract classes which should be implemented in plugins
  */
-public interface ExtendedPlugin extends Plugin {
-
-    /**
-     * Performs supported by plugin specified action.
-     *
-     * @param pluginId plugin id
-     * @param action action name
-     * @param request http request
-     * @param response http response
-     * @return any result provided by plugin
-     */
-    Object doAction(String pluginId, String action, HttpServletRequest request, HttpServletResponse response);
-}
+package org.jtalks.jcommune.plugin.api.core;
