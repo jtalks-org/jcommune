@@ -15,15 +15,15 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jtalks.jcommune</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jcommune-service</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jtalks.jcommune</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jcommune-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jtalks.jcommune</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jcommune-plugin-api</artifactId>
     </dependency>
     <dependency>

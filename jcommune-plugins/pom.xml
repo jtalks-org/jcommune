@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jtalks.jcommune</groupId>
-    <artifactId>jcommune-plugins</artifactId>
-    <version>2.10-SNAPSHOT</version>
-    <packaging>pom</packaging>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jtalks.jcommune</groupId>
+  <artifactId>jcommune-plugins</artifactId>
+  <version>2.10-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
   <modules>
     <module>jcommune-dummy-plugin</module>
@@ -17,20 +17,20 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.jtalks.jcommune</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jcommune-model</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.jtalks.jcommune</groupId>
+        <groupId>${project.groupId}</groupId>
         <artifactId>jcommune-service</artifactId>
         <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jtalks.jcommune</groupId>
-      <artifactId>jcommune-plugin-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>jcommune-plugin-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>javax.servlet</groupId>
@@ -54,7 +54,7 @@
         <version>1.7</version>
       </dependency>
 
-        <!-- TestNG & Mockito -->
+      <!-- TestNG & Mockito -->
       <dependency>
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>
@@ -68,10 +68,10 @@
         <version>6.3.1</version>
       </dependency>
       <dependency>
-          <groupId>org.mockito</groupId>
-          <artifactId>mockito-all</artifactId>
-          <version>1.8.5</version>
-          <scope>test</scope>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>1.8.5</version>
+        <scope>test</scope>
       </dependency>
 
       <!-- REST dependencies -->
