@@ -32,55 +32,89 @@ import java.util.Map;
  */
 public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicPlugin {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return "Questions and Answers plugin";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<PluginProperty> getConfiguration() {
         return Collections.emptyList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean supportsJCommuneVersion(String version) {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
         return Collections.emptyMap();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<PluginProperty> getDefaultConfiguration() {
         return Collections.emptyList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String translateLabel(String code, Locale locale) {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T extends JtalksPermission> List<T> getBranchPermissions() {
         return (List<T>) QuestionPluginBranchPermission.getAllAsList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CreateTopicBtnDto getCreateTopicBtnDto(long branchId) {
         return new CreateTopicBtnDto("new-question-btn","label.addQuestion","label.addQuestion.tip","/questions/new?branchId=" + branchId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JtalksPermission getCreateTopicPermission() {
         return QuestionPluginBranchPermission.CREATE_QUESTIONS;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JtalksPermission getBranchPermissionByMask(int mask) {
         return QuestionPluginBranchPermission.findByMask(mask);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JtalksPermission getBranchPermissionByName(String name) {
         return QuestionPluginBranchPermission.valueOf(name);

@@ -19,18 +19,32 @@ import org.jtalks.common.model.permissions.JtalksPermission;
 import java.util.List;
 
 /**
- * Provides permissions management by plugin.
+ * Provides plugin which adds own branch permission to common functional
  *
  * @author Evgeniy Myslovets
  */
 public interface PluginWithBranchPermissions extends Plugin {
 
     /**
+     * Gets all branch permissions which this plugin provides
+     *
      * @return branch permissions for current plugin
      */
     <T extends JtalksPermission> List<T> getBranchPermissions();
 
+    /**
+     * Performs branch permission search by mask
+     * @param mask permission mask for search
+     * @return branch permission with specified mask or <b>null/b> if where no branch permissions with specified mask
+     * provided by this plugin
+     */
     JtalksPermission getBranchPermissionByMask(int mask);
 
+    /**
+     * Performs branch permission search by name
+     * @param name permission name for search
+     * @return branch permission with specified mask or <b>null/b> if where no branch permissions with specified mask
+     * provided by this plugin
+     */
     JtalksPermission getBranchPermissionByName(String name);
 }

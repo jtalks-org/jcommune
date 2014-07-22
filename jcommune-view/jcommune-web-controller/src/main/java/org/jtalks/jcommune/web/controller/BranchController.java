@@ -172,6 +172,11 @@ public class BranchController {
         return topicTypes;
     }
 
+    /**
+     * Gets list of enabled topic plugins
+     * @return list of topic plugins
+     * @see org.jtalks.jcommune.plugin.api.plugins.TopicPlugin
+     */
     private List<TopicPlugin> getEnabledTopicPlugins() {
         List<TopicPlugin> topicPlugins = new ArrayList<>();
         List<Plugin> plugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class));

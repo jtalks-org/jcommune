@@ -14,7 +14,7 @@
  */
 /**
  *
- * Package to dummy plugin.
+ * Package for questions-and-answers plugin
  *
  */
 package org.jtalks.jcommune.plugin.questionsandanswers;

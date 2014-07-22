@@ -18,11 +18,24 @@ import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 
 /**
+ * Provides plugin which allow add custom topic types to forum
+ *
  * @author Mikhail Stryzhonok
  */
 public interface TopicPlugin extends PluginWithBranchPermissions {
 
+    /**
+     * Creates dto object for create topic button which will be used for creation of topic type provided by this plugin
+     * (allow use custom text, tooltip, url)
+     * @param branchId id of branch where button should be placed
+     * @return dto object for create topic button
+     * @see org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto
+     */
     CreateTopicBtnDto getCreateTopicBtnDto(long branchId);
 
+    /**
+     * Gets permission which allows to create topic type provided by this plugin
+     * @return permission which allows to create topic
+     */
     JtalksPermission getCreateTopicPermission();
 }

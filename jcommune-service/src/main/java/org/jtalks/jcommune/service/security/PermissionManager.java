@@ -108,6 +108,7 @@ public class PermissionManager {
     }
 
     /**
+     * Gets list of branch permissions for specified branch. Performs search in both of common and plugin permissions
      * @param branch object identity
      * @return {@link org.jtalks.jcommune.model.dto.GroupsPermissions <BranchPermission>} for given branch
      */
@@ -118,6 +119,12 @@ public class PermissionManager {
         return getPermissionsMapFor(branchPermissions, branch);
     }
 
+    /**
+     * Search branch permission by mask. Firstly looks in common permissions then in plugin permissions
+     * @param mask interested permission mask
+     * @return permission with specified mask if it exist
+     *         <b>null</b> otherwise
+     */
     public JtalksPermission findBranchPermissionByMask(int mask) {
         JtalksPermission permission = BranchPermission.findByMask(mask);
         if (permission == null) {

@@ -19,17 +19,26 @@ import org.jtalks.common.security.acl.JtalksPermissionFactory;
 import org.jtalks.jcommune.plugin.api.PluginsPermissionFactory;
 import org.springframework.security.acls.domain.PermissionFactory;
 import org.springframework.security.acls.model.Permission;
-import ru.javatalks.utils.general.Assert;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Permission factory for work with both of common and plugin permissions via their factories
+ *
  * @author Mikhail Stryzhonok
  */
 public class JCPermissionFactory implements PermissionFactory {
+
+    /**
+     * Factory for common permissions
+     */
     private JtalksPermissionFactory jtalksPermissionFactory;
+
+    /**
+     * Factory for plugin permissions
+     */
     private PluginsPermissionFactory pluginPermissionFactory;
 
     /**
@@ -68,6 +77,12 @@ public class JCPermissionFactory implements PermissionFactory {
         this.pluginPermissionFactory = pluginPermissionFactory;
     }
 
+    /**
+     * Gets permission by permission mask. Firstly search in common permissions then in plugin permissions
+     * @param mask mask of interested permissions
+     * @return permission with specified mask if it exist
+     *         <b>NULL_PERMISSION</b> otherwise
+     */
     @Override
     public Permission buildFromMask(int mask) {
         Permission permission = jtalksPermissionFactory.buildFromMask(mask);
@@ -80,6 +95,12 @@ public class JCPermissionFactory implements PermissionFactory {
         return permission;
     }
 
+    /**
+     * Gets permission by permission mask. Firstly search in common permissions then in plugin permissions
+     * @param name name of interested permissions
+     * @return permission with specified name if it exist
+     *         <b>NULL_PERMISSION</b> otherwise
+     */
     @Override
     public Permission buildFromName(String name) {
         Permission permission = jtalksPermissionFactory.buildFromName(name);
@@ -92,6 +113,11 @@ public class JCPermissionFactory implements PermissionFactory {
         return permission;
     }
 
+    /**
+     * Gets list of permissions by names. Searches in common and plugin permissions
+     * @param names list of interested permissions names
+     * @return list of permissions with specified names
+     */
     @Override
     public List<Permission> buildFromNames(List<String> names) {
         List<Permission> permissions = new ArrayList<>();

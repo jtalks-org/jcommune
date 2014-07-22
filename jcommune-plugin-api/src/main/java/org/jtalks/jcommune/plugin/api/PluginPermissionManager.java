@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class manages plugin's extensions.
+ * Class for managing permissions which provided by plugins
  *
  * @author Evgeniy Myslovets
  */
@@ -42,7 +42,8 @@ public class PluginPermissionManager {
     }
 
     /**
-     * @return plugin branch permission for given branch
+     * Gets all branch permissions provided by all <b>enabled</b> plugins
+     * @return list of branch permissions provided by plugins
      */
     public List<JtalksPermission> getPluginsBranchPermissions() {
         PluginFilter filter = new TypeFilter(PluginWithBranchPermissions.class);
@@ -56,6 +57,12 @@ public class PluginPermissionManager {
         return branchPermissions;
     }
 
+    /**
+     * Performs search permissions provided by <b>enabled</b> plugins by permission mask
+     * @param mask permission mask for search
+     * @return permission with specified mask if it exist
+     *         <b>null</b> otherwise
+     */
     public JtalksPermission findPluginsBranchPermissionByMask(int mask) {
         PluginFilter filter = new TypeFilter(PluginWithBranchPermissions.class);
         List<Plugin> plugins = pluginLoader.getPlugins(filter);
@@ -71,6 +78,12 @@ public class PluginPermissionManager {
         return permission;
     }
 
+    /**
+     * Performs search permissions provided by <b>enabled</b> plugins by permission name
+     * @param name permission name for search
+     * @return permission with specified name if it exist
+     *         <b>null</b> otherwise
+     */
     public JtalksPermission findPluginsBranchPermissionByName(String name) {
         PluginFilter filter = new TypeFilter(PluginWithBranchPermissions.class);
         List<Plugin> plugins = pluginLoader.getPlugins(filter);

@@ -20,6 +20,9 @@ import org.springframework.security.acls.model.Permission;
 import java.util.*;
 
 /**
+ * Factory for permissions provided by plugins. Currently works only with branch permissions but in future may be
+ * supplemented to work with other permission types
+ *
  * @author Mikhail Styzhonok
  */
 public class PluginsPermissionFactory implements PermissionFactory {
