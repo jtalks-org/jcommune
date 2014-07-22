@@ -33,7 +33,7 @@ import org.jtalks.common.security.acl.sids.UserGroupSid;
 import org.jtalks.common.security.acl.sids.UserSid;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.plugin.api.PluginManager;
+import org.jtalks.jcommune.plugin.api.PluginPermissionManager;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -72,7 +72,7 @@ public class AclGroupPermissionEvaluatorTest {
     @Mock
     UserDao userDao;
     @Mock
-    PluginManager pluginManager;
+    PluginPermissionManager pluginManager;
 
     private AclGroupPermissionEvaluator evaluator;
     private UserGroupSid groupSid;

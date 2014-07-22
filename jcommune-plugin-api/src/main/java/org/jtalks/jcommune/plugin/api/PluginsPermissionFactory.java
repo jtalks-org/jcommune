@@ -23,10 +23,10 @@ import java.util.*;
  * @author Mikhail Styzhonok
  */
 public class PluginsPermissionFactory implements PermissionFactory {
-    private PluginManager pluginManager;
+    private PluginPermissionManager pluginPermissionManager;
 
-    public PluginsPermissionFactory(PluginManager pluginManager) {
-        this.pluginManager = pluginManager;
+    public PluginsPermissionFactory(PluginPermissionManager pluginPermissionManager) {
+        this.pluginPermissionManager = pluginPermissionManager;
     }
 
     /**
@@ -34,7 +34,7 @@ public class PluginsPermissionFactory implements PermissionFactory {
      */
     @Override
     public Permission buildFromMask(int mask) {
-        return pluginManager.findPluginsBranchPermissionByMask(mask);
+        return pluginPermissionManager.findPluginsBranchPermissionByMask(mask);
     }
 
     /**
@@ -42,7 +42,7 @@ public class PluginsPermissionFactory implements PermissionFactory {
      */
     @Override
     public Permission buildFromName(String name) {
-        return pluginManager.findPluginsBranchPermissionByName(name);
+        return pluginPermissionManager.findPluginsBranchPermissionByName(name);
     }
 
     /**
@@ -52,7 +52,7 @@ public class PluginsPermissionFactory implements PermissionFactory {
     public List<Permission> buildFromNames(List<String> names) {
         List<Permission> resultingPermissions = new ArrayList<>();
         for (String name : names) {
-            Permission permission = pluginManager.findPluginsBranchPermissionByName(name);
+            Permission permission = pluginPermissionManager.findPluginsBranchPermissionByName(name);
             if (permission != null) {
                 resultingPermissions.add(permission);
             }

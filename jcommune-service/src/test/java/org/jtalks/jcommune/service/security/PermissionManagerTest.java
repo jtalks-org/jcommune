@@ -37,7 +37,7 @@ import org.jtalks.jcommune.model.entity.AnonymousGroup;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
-import org.jtalks.jcommune.plugin.api.PluginManager;
+import org.jtalks.jcommune.plugin.api.PluginPermissionManager;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -84,7 +84,7 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
     @Mock
     private PermissionManager manager;
     @Mock
-    private PluginManager pluginManager;
+    private PluginPermissionManager pluginPermissionManager;
     @Autowired
     private SessionFactory sessionFactory;
     private Session session;
@@ -154,7 +154,7 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
         when(mutableAcl.getEntries()).thenReturn(controlEntries);
         when(aclUtil.getAclFor(objectIdentity)).thenReturn(mutableAcl);
 
-        manager = new PermissionManager(aclManager, groupDao, aclUtil, pluginManager);
+        manager = new PermissionManager(aclManager, groupDao, aclUtil, pluginPermissionManager);
     }
 
     @Test(dataProvider = "accessChanges")
@@ -189,6 +189,7 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
         givenPermissions(branch, BranchPermission.values());
 
         GroupsPermissions groupsPermissions = manager.getPermissionsMapFor(branch);
+        verify(pluginPermissionManager).getPluginsBranchPermissions();
         verify(aclManager).getGroupPermissionsOn(branch);
         verify(aclUtil, times(BranchPermission.values().length)).getAclFor(branch);
         assertTrue(groupsPermissions.getPermissions().containsAll(permissions));
@@ -309,6 +310,17 @@ public class PermissionManagerTest extends AbstractTransactionalTestNGSpringCont
 
         List<Group> result = manager.getGroupsByIds(ids);
         assertTrue(result.contains(AnonymousGroup.ANONYMOUS_GROUP));
+    }
+
+    @Test
+    public void findPermissionByMaskShouldReturnPluginBranchPermissionIfNoCommonBranchPermissionFound() {
+        int mask = -1;
+        JtalksPermission targetPermission = BranchPermission.CLOSE_TOPICS;
+        when(pluginPermissionManager.findPluginsBranchPermissionByMask(mask)).thenReturn(targetPermission);
+
+        JtalksPermission result = manager.findBranchPermissionByMask(mask);
+
+        assertEquals(result, targetPermission);
     }
 
     @DataProvider

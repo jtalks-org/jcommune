@@ -28,16 +28,16 @@ import java.util.List;
  *
  * @author Evgeniy Myslovets
  */
-public class PluginManager {
+public class PluginPermissionManager {
 
     private PluginLoader pluginLoader;
 
     /**
-     * Constructs {@link PluginManager} with given {@link PluginLoader}
+     * Constructs {@link PluginPermissionManager} with given {@link PluginLoader}
      *
      * @param pluginLoader plugin loader instance
      */
-    public PluginManager(PluginLoader pluginLoader) {
+    public PluginPermissionManager(PluginLoader pluginLoader) {
         this.pluginLoader = pluginLoader;
     }
 

@@ -34,7 +34,7 @@ import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.AnonymousGroup;
-import org.jtalks.jcommune.plugin.api.PluginManager;
+import org.jtalks.jcommune.plugin.api.PluginPermissionManager;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
@@ -54,7 +54,7 @@ public class PermissionManager {
     private final AclManager aclManager;
     private final AclUtil aclUtil;
     private final GroupDao groupDao;
-    private final PluginManager pluginManager;
+    private final PluginPermissionManager pluginPermissionManager;
 
     /**
      * Constructs {@link org.jtalks.jcommune.service.security.PermissionManager} with given
@@ -64,11 +64,11 @@ public class PermissionManager {
      * @param groupDao   group dao instance
      */
     public PermissionManager(@Nonnull AclManager aclManager, @Nonnull GroupDao groupDao,
-                             @Nonnull AclUtil aclUtil, @Nonnull PluginManager pluginManager) {
+                             @Nonnull AclUtil aclUtil, @Nonnull PluginPermissionManager pluginPermissionManager) {
         this.aclManager = aclManager;
         this.groupDao = groupDao;
         this.aclUtil = aclUtil;
-        this.pluginManager = pluginManager;
+        this.pluginPermissionManager = pluginPermissionManager;
     }
 
     /**
@@ -114,14 +114,14 @@ public class PermissionManager {
     public GroupsPermissions getPermissionsMapFor(Branch branch) {
         List<JtalksPermission> branchPermissions = new ArrayList<>();
         branchPermissions.addAll(BranchPermission.getAllAsList());
-        branchPermissions.addAll(pluginManager.getPluginsBranchPermissions());
+        branchPermissions.addAll(pluginPermissionManager.getPluginsBranchPermissions());
         return getPermissionsMapFor(branchPermissions, branch);
     }
 
     public JtalksPermission findBranchPermissionByMask(int mask) {
         JtalksPermission permission = BranchPermission.findByMask(mask);
         if (permission == null) {
-            permission = pluginManager.findPluginsBranchPermissionByMask(mask);
+            permission = pluginPermissionManager.findPluginsBranchPermissionByMask(mask);
         }
         return permission;
     }

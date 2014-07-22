@@ -38,7 +38,7 @@ import org.jtalks.common.security.acl.sids.JtalksSidFactory;
 import org.jtalks.common.security.acl.sids.UniversalSid;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.plugin.api.PluginManager;
+import org.jtalks.jcommune.plugin.api.PluginPermissionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
@@ -69,7 +69,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private final JtalksSidFactory sidFactory;
     private final JdbcMutableAclService mutableAclService;
     private final UserDao userDao;
-    private final PluginManager pluginManager;
+    private final PluginPermissionManager pluginPermissionManager;
 
     /**
      * @param aclManager        for getting permissions on object indentity
@@ -84,14 +84,14 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                                        @Nonnull JtalksSidFactory sidFactory,
                                        @Nonnull JdbcMutableAclService mutableAclService,
                                        @Nonnull UserDao userDao,
-                                       @Nonnull PluginManager pluginManager) {
+                                       @Nonnull PluginPermissionManager pluginPermissionManager) {
         this.aclManager = aclManager;
         this.aclUtil = aclUtil;
         this.sidFactory = sidFactory;
         this.mutableAclService = mutableAclService;
         this.userDao = userDao;
         this.groupDao = groupDao;
-        this.pluginManager = pluginManager;
+        this.pluginPermissionManager = pluginPermissionManager;
     }
 
     /**
@@ -366,7 +366,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                                       Permission permission, boolean isCheckAllowedGrant) {
         Permission permissionToComapare = ace.getPermission();
         if (permissionToComapare == null) {
-            permissionToComapare = pluginManager.findPluginsBranchPermissionByMask(ace.getPermissionMask());
+            permissionToComapare = pluginPermissionManager.findPluginsBranchPermissionByMask(ace.getPermissionMask());
         }
         return ace.isGranting() == isCheckAllowedGrant
                 && permission.equals(permissionToComapare)

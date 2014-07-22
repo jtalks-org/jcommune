@@ -360,7 +360,7 @@
     <constructor-arg index="0" ref="aclManager"/>
     <constructor-arg index="1" ref="groupDao"/>
     <constructor-arg index="2" ref="aclUtils"/>
-    <constructor-arg index="3" ref="pluginManager"/>
+    <constructor-arg index="3" ref="pluginPermissionManager"/>
   </bean>
 
   <bean id="bannerService" class="org.jtalks.jcommune.service.transactional.TransactionalBannerService">
@@ -392,7 +392,7 @@
     <constructor-arg name="pluginConfigurationDao" ref="pluginConfigurationDao"/>
   </bean>
 
-  <bean id="pluginManager" class="org.jtalks.jcommune.plugin.api.PluginManager">
+  <bean id="pluginPermissionManager" class="org.jtalks.jcommune.plugin.api.PluginPermissionManager">
     <constructor-arg name="pluginLoader" ref="pluginLoader"/>
   </bean>
 
