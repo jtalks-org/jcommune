@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jtalks.jcommune</groupId>
   <artifactId>jcommune-plugins</artifactId>
@@ -13,6 +13,11 @@
     <module>kaptcha-plugin</module>
     <module>questions-n-answers-plugin</module>
   </modules>
+
+  <properties>
+    <springVersion>3.2.2.RELEASE</springVersion>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -146,6 +151,28 @@
         </executions>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.4</version>
+          <configuration>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+          </configuration>
+          <executions>
+            <execution>
+              <id>jar-with-dependencies</id>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <scm>
@@ -153,6 +180,19 @@
     <developerConnection>scm:git:git@github.com:jtalks-org/jcommune.git</developerConnection>
     <url>scm:git:git@github.com:jtalks-org/jcommune.git</url>
   </scm>
+
+  <repositories>
+    <repository>
+      <id>jtalks-nexus</id>
+      <name>jtalks nexus</name>
+      <url>http://repo.jtalks.org/content/groups/public</url>
+    </repository>
+    <repository>
+      <!--For Restlet libs-->
+      <id>terracotta-releases</id>
+      <url>http://www.terracotta.org/download/reflector/releases</url>
+    </repository>
+  </repositories>
 
   <distributionManagement>
     <repository>
@@ -170,7 +210,4 @@
       </url>
     </snapshotRepository>
   </distributionManagement>
-  <properties>
-    <springVersion>3.2.2.RELEASE</springVersion>
-  </properties>
 </project>
