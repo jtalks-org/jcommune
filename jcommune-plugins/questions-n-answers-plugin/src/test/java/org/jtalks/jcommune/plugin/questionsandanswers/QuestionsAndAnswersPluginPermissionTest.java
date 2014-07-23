@@ -18,13 +18,15 @@ import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
-import static org.testng.AssertJUnit.assertNotSame;
+import static org.testng.Assert.assertTrue;
 
 /**
  * TODO: Now this class a copy of org.jtalks.common.model.permissions.JtalksPermissionTest with additional permission enum.
@@ -42,13 +44,11 @@ public class QuestionsAndAnswersPluginPermissionTest {
      */
     @Test(dataProvider = "allProjectPermissions")
     public void testNoIdenticalConstants(List<JtalksPermission> permissions) throws Exception {
-        for (int i = 0; i < permissions.size(); i++) {
-            for (int j = i + 1; j < permissions.size(); j++) {
-                JtalksPermission first = permissions.get(i);
-                JtalksPermission second = permissions.get(j);
-                assertNotSame("Permissions with identical bit mask were encountered: "
-                        + first.getName() + " & " + second.getName(), first.getMask(), second.getMask());
-            }
+        TreeSet<JtalksPermission> uniquePermissions = new TreeSet<>(new GroupsPermissions.PermissionComparator());
+        for (JtalksPermission permission : permissions) {
+            assertTrue(uniquePermissions.add(permission),//returns false if there is already such element
+                    "Permission " + permission + " duplicates the mask of " + uniquePermissions.ceiling(permission)
+                            + " while all the masks must be unique. Their mask is: " + permission.getMask());
         }
     }
 
