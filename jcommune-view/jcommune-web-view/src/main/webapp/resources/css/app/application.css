@@ -779,6 +779,11 @@ div.anchor {
     white-space: nowrap;
 }
 
+.btn-with-dropdown .tooltip {
+    min-width: 300px;
+    white-space: pre-wrap;
+}
+
 .thumbnail-logo {
     max-height: 34px;
     max-width: 31px;
