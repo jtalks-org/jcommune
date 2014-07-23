@@ -20,10 +20,7 @@ import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Plugin for question and answer type of topic.
@@ -77,7 +74,8 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public String translateLabel(String code, Locale locale) {
-        return null;
+        ResourceBundle messages = ResourceBundle.getBundle("messages", locale);
+        return messages.containsKey(code) ? messages.getString(code) : code;
     }
 
     /**
@@ -93,9 +91,9 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      * {@inheritDoc}
      */
     @Override
-    public CreateTopicBtnDto getCreateTopicBtnDto(long branchId) {
-        return new CreateTopicBtnDto("new-question-btn", "label.addQuestion", "label.addQuestion.tip",
-                "/questions/new?branchId=" + branchId);
+    public CreateTopicBtnDto getCreateTopicBtnDto(long branchId, Locale locale) {
+        return new CreateTopicBtnDto("new-question-btn", translateLabel("label.addQuestion", locale),
+                translateLabel("label.addQuestion.tip", locale), "/questions/new?branchId=" + branchId);
     }
 
     /**

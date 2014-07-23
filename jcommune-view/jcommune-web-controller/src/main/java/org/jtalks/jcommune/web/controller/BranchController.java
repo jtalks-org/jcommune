@@ -155,17 +155,20 @@ public class BranchController {
         List<CreateTopicBtnDto> topicTypes = new ArrayList<>();
 
         if (hasTopicPermission) {
-            topicTypes.add(new CreateTopicBtnDto("new-topic-btn", "label.addtopic", "label.addtopic.tip", "/topics/new?branchId=" + branchId));
+            topicTypes.add(new CreateTopicBtnDto("new-topic-btn", "label.addtopic", "label.addtopic.tip",
+                    "/topics/new?branchId=" + branchId));
         }
 
         if (hasReviewPermission) {
-            topicTypes.add(new CreateTopicBtnDto("new-code-review-btn", "label.addCodeReview", "label.addCodeReview.tip", "/reviews/new?branchId=" + branchId));
+            topicTypes.add(new CreateTopicBtnDto("new-code-review-btn", "label.addCodeReview", "label.addCodeReview.tip",
+                    "/reviews/new?branchId=" + branchId));
         }
 
         List<TopicPlugin> topicPlugins = getEnabledTopicPlugins();
         for (TopicPlugin topicPlugin : topicPlugins) {
             if (aclEvaluator.hasPermission(authentication, branchId, "BRANCH", topicPlugin.getCreateTopicPermission())) {
-                topicTypes.add(topicPlugin.getCreateTopicBtnDto(branchId));
+                topicTypes.add(topicPlugin.getCreateTopicBtnDto(branchId,
+                        userService.getCurrentUser().getLanguage().getLocale()));
             }
         }
 

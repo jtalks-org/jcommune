@@ -119,10 +119,13 @@
             <ul class="dropdown-menu">
               <c:forEach var="topicType" items="${topicTypes}">
                 <li role="presentation">
+                    <!--Value should be duplicated in code and text because if we dealing with custom topic
+                    types which provided by plugin it will return plain text instead of message-->
                   <a class="${topicType.id}"
                      href="${pageContext.request.contextPath}${topicType.link}"
-                     title="<spring:message code='${topicType.toolTipKey}'/>" data-placement="right">
-                    <spring:message code='${topicType.displayNameKey}'/>
+                     title="<spring:message code='${topicType.toolTipKey}' text='${topicType.toolTipKey}'/>"
+                     data-placement="right">
+                    <spring:message code='${topicType.displayNameKey}' text='${topicType.displayNameKey}'/>
                   </a>
                 </li>
               </c:forEach>
@@ -173,10 +176,13 @@
             <ul class="dropdown-menu">
               <c:forEach var="topicType" items="${topicTypes}">
                 <li role="presentation">
+                    <!--Value should be duplicated in code and text because if we dealing with custom topic
+                    types which provided by plugin it will return plain text instead of message-->
                   <a class="${topicType.id}"
                      href="${pageContext.request.contextPath}${topicType.link}"
-                     title="<spring:message code='${topicType.toolTipKey}'/>" data-placement="right">
-                    <spring:message code='${topicType.displayNameKey}'/>
+                     title="<spring:message code='${topicType.toolTipKey}' text='${topicType.toolTipKey}'/>"
+                     data-placement="right">
+                      <spring:message code='${topicType.displayNameKey}' text='${topicType.displayNameKey}'/>
                   </a>
                 </li>
               </c:forEach>
