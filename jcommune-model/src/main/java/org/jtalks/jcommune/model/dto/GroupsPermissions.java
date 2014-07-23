@@ -190,11 +190,11 @@ public class GroupsPermissions {
         return new GroupsPermissions(ProfilePermission.getAllAsList());
     }
 
-    private class PermissionComparator implements Comparator<JtalksPermission> {
+    public static class PermissionComparator implements Comparator<JtalksPermission> {
 
         @Override
         public int compare(JtalksPermission o1, JtalksPermission o2) {
-            return o1.getName().compareTo(o2.getName());
+            return o1.getMask() - o2.getMask();
         }
     }
 }
