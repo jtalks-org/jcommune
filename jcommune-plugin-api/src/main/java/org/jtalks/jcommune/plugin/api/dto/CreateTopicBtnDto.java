@@ -85,7 +85,7 @@ public class CreateTopicBtnDto {
         @Override
         public int compare(CreateTopicBtnDto o1, CreateTopicBtnDto o2) {
             int diff = o1.getOrder() - o2.getOrder();
-            return diff == 0 ? o1.getDisplayNameKey().compareTo(o2.displayNameKey) : diff;
+            return diff == 0 ? o1.getDisplayNameKey().compareTo(o2.getDisplayNameKey()) : diff;
         }
     }
 }

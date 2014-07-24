@@ -74,6 +74,13 @@ public class BranchController {
      */
     private static final int RECENT_POST_COUNT = 15;
 
+    /**
+     * Describes order of buttons in dropdown. Buttons will be sorted in ascending order.
+     * If two or more buttons have same order value they will be sorted by text in ascending too.
+     */
+    private static final int CREATE_TOPIC_BUTTON_ORDER = 100;
+    private static final int CREATE_CODE_REVIEW_BUTTON_ORDER = 101;
+
 
     /**
      * Constructor creates MVC controller with specified BranchService
@@ -157,12 +164,12 @@ public class BranchController {
 
         if (hasTopicPermission) {
             topicTypes.add(new CreateTopicBtnDto("new-topic-btn", "label.addtopic", "label.addtopic.tip",
-                    "/topics/new?branchId=" + branchId, 100));
+                    "/topics/new?branchId=" + branchId, CREATE_TOPIC_BUTTON_ORDER));
         }
 
         if (hasReviewPermission) {
             topicTypes.add(new CreateTopicBtnDto("new-code-review-btn", "label.addCodeReview", "label.addCodeReview.tip",
-                    "/reviews/new?branchId=" + branchId, 101));
+                    "/reviews/new?branchId=" + branchId, CREATE_CODE_REVIEW_BUTTON_ORDER));
         }
 
         List<TopicPlugin> topicPlugins = getEnabledTopicPlugins();
