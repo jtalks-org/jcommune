@@ -28,6 +28,8 @@ import java.util.*;
  * @author Evgeniy Myslovets
  */
 public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicPlugin {
+    private static final String ORDER_PROPERTY = "label.Order";
+    private int order = 102;
 
     /**
      * {@inheritDoc}
@@ -42,7 +44,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public List<PluginProperty> getConfiguration() {
-        return Collections.emptyList();
+        return Arrays.asList(new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, String.valueOf(order)));
     }
 
     /**
@@ -58,7 +60,12 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
-        return Collections.emptyMap();
+        if (properties.size() == 1 && ORDER_PROPERTY.equalsIgnoreCase(properties.get(0).getName())) {
+            order = properties.get(0).getValue() == null ? 102 : Integer.parseInt(properties.get(0).getValue());
+            return Collections.EMPTY_MAP;
+        } else {
+            throw new RuntimeException("Can't apply configuration: incorrect parameters count or order not found");
+        }
     }
 
     /**
@@ -66,7 +73,8 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public List<PluginProperty> getDefaultConfiguration() {
-        return Collections.emptyList();
+        PluginProperty order = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, "102");
+        return Arrays.asList(order);
     }
 
     /**
@@ -74,7 +82,8 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public String translateLabel(String code, Locale locale) {
-        ResourceBundle messages = ResourceBundle.getBundle("messages", locale);
+        ResourceBundle messages = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.questionsandanswers.messages",
+                locale);
         return messages.containsKey(code) ? messages.getString(code) : code;
     }
 
@@ -93,7 +102,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
     @Override
     public CreateTopicBtnDto getCreateTopicBtnDto(long branchId, Locale locale) {
         return new CreateTopicBtnDto("new-question-btn", translateLabel("label.addQuestion", locale),
-                translateLabel("label.addQuestion.tip", locale), "/questions/new?branchId=" + branchId);
+                translateLabel("label.addQuestion.tip", locale), "/questions/new?branchId=" + branchId, order);
     }
 
     /**

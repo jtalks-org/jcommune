@@ -15,6 +15,8 @@
 
 package org.jtalks.jcommune.plugin.api.dto;
 
+import java.util.Comparator;
+
 /**
  * Class providing the information about UI element: id, localization keys for the
  * displaying text and tooltip and the http address which will be used by the element
@@ -25,12 +27,18 @@ public class CreateTopicBtnDto {
     private String displayNameKey;
     private String toolTipKey;
     private String link;
+    /**
+     * Order of button in dropdown. Core topic types have order 100 and 101. So if this value will be greater
+     * button will be placed higher than create topic buttons from core topics.
+     */
+    private int order;
 
-    public CreateTopicBtnDto(String id, String displayNameKey, String toolTipKey, String link) {
+    public CreateTopicBtnDto(String id, String displayNameKey, String toolTipKey, String link, int order) {
         this.displayNameKey = displayNameKey;
         this.toolTipKey = toolTipKey;
         this.link = link;
         this.id = id;
+        this.order = order;
     }
 
     public String getId() {
@@ -63,5 +71,21 @@ public class CreateTopicBtnDto {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    public static class CreateTopicBtnDtooComparator implements Comparator<CreateTopicBtnDto> {
+        @Override
+        public int compare(CreateTopicBtnDto o1, CreateTopicBtnDto o2) {
+            int diff = o1.getOrder() - o2.getOrder();
+            return diff == 0 ? o1.getDisplayNameKey().compareTo(o2.displayNameKey) : diff;
+        }
     }
 }

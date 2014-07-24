@@ -150,6 +150,10 @@ public class PluginLoader {
             PluginConfiguration configuration;
             try {
                 configuration = pluginConfigurationDao.get(name);
+                if (configuration.getProperties().isEmpty()) {
+                    // Wee can't use #setProperties method. It will lead to exception
+                    configuration.getProperties().addAll(plugin.getDefaultConfiguration());
+                }
             } catch (NotFoundException e) {
                 configuration = new PluginConfiguration(name, false, plugin.getDefaultConfiguration());
                 pluginConfigurationDao.saveOrUpdate(configuration);

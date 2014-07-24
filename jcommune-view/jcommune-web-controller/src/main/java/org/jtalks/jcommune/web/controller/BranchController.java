@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.on;
@@ -156,12 +157,12 @@ public class BranchController {
 
         if (hasTopicPermission) {
             topicTypes.add(new CreateTopicBtnDto("new-topic-btn", "label.addtopic", "label.addtopic.tip",
-                    "/topics/new?branchId=" + branchId));
+                    "/topics/new?branchId=" + branchId, 100));
         }
 
         if (hasReviewPermission) {
             topicTypes.add(new CreateTopicBtnDto("new-code-review-btn", "label.addCodeReview", "label.addCodeReview.tip",
-                    "/reviews/new?branchId=" + branchId));
+                    "/reviews/new?branchId=" + branchId, 101));
         }
 
         List<TopicPlugin> topicPlugins = getEnabledTopicPlugins();
@@ -171,6 +172,7 @@ public class BranchController {
                         userService.getCurrentUser().getLanguage().getLocale()));
             }
         }
+        Collections.sort(topicTypes, new CreateTopicBtnDto.CreateTopicBtnDtooComparator());
 
         return topicTypes;
     }

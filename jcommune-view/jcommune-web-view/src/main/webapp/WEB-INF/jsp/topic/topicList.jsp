@@ -100,18 +100,22 @@
           &nbsp; <%-- For proper pagination layout without buttons--%>
         </c:when>
         <c:when test="${fn:length(topicTypes) == 1}">
+            <!--Value should be duplicated in code and text because if we dealing with custom topic
+            types which provided by plugin it will return plain text instead of message-->
           <a class="${topicTypes[0].id} btn btn-primary"
              href="${pageContext.request.contextPath}${topicTypes[0].link}"
-             title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
-            <spring:message code='${topicTypes[0].displayNameKey}'/>
+             title="<spring:message code='${topicTypes[0].toolTipKey}' text='${topicTypes[0].toolTipKey}'/>"
+             data-placement="right">
+            <spring:message code='${topicTypes[0].displayNameKey}' text='${topicType.displayNameKey}'/>
           </a>
         </c:when>
         <c:otherwise>
           <div class="btn-group btn-with-dropdown">
             <a class="${topicTypes[0].id} btn btn-primary"
                href="${pageContext.request.contextPath}${topicTypes[0].link}"
-               title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
-              <spring:message code='${topicTypes[0].displayNameKey}'/>
+               title="<spring:message code='${topicTypes[0].toolTipKey}' text='${topicType.toolTipKey}'/>"
+               data-placement="right">
+              <spring:message code='${topicTypes[0].displayNameKey}' text='${topicTypes[0].displayNameKey}'/>
             </a>
             <button class="topic-types-dropdown btn btn-primary dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
@@ -119,8 +123,6 @@
             <ul class="dropdown-menu">
               <c:forEach var="topicType" items="${topicTypes}">
                 <li role="presentation">
-                    <!--Value should be duplicated in code and text because if we dealing with custom topic
-                    types which provided by plugin it will return plain text instead of message-->
                   <a class="${topicType.id}"
                      href="${pageContext.request.contextPath}${topicType.link}"
                      title="<spring:message code='${topicType.toolTipKey}' text='${topicType.toolTipKey}'/>"
@@ -157,18 +159,22 @@
           &nbsp; <%-- For proper pagination layout without buttons--%>
         </c:when>
         <c:when test="${fn:length(topicTypes) == 1}">
+            <!--Value should be duplicated in code and text because if we dealing with custom topic
+            types which provided by plugin it will return plain text instead of message-->
           <a class="${topicTypes[0].id} btn btn-primary"
              href="${pageContext.request.contextPath}${topicTypes[0].link}"
-             title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
-            <spring:message code='${topicTypes[0].displayNameKey}'/>
+             title="<spring:message code='${topicTypes[0].toolTipKey}' text='${topicTypes[0].toolTipKey}'/>"
+             data-placement="right">
+            <spring:message code='${topicTypes[0].displayNameKey}' text='${topicTypes[0].displayNameKey}'/>
           </a>
         </c:when>
         <c:otherwise>
           <div class="btn-group">
             <a class="${topicTypes[0].id} btn btn-primary"
                href="${pageContext.request.contextPath}${topicTypes[0].link}"
-               title="<spring:message code='${topicTypes[0].toolTipKey}'/>" data-placement="right">
-              <spring:message code='${topicTypes[0].displayNameKey}'/>
+               title="<spring:message code='${topicTypes[0].toolTipKey}' text='${topicTypes[0].toolTipKey}'/>"
+               data-placement="right">
+              <spring:message code='${topicTypes[0].displayNameKey}' text='${topicTypes[0].displayNameKey}'/>
             </a>
             <button class="topic-types-dropdown btn btn-primary dropdown-toggle" data-toggle="dropdown">
               <span class="caret"></span>
@@ -176,8 +182,6 @@
             <ul class="dropdown-menu">
               <c:forEach var="topicType" items="${topicTypes}">
                 <li role="presentation">
-                    <!--Value should be duplicated in code and text because if we dealing with custom topic
-                    types which provided by plugin it will return plain text instead of message-->
                   <a class="${topicType.id}"
                      href="${pageContext.request.contextPath}${topicType.link}"
                      title="<spring:message code='${topicType.toolTipKey}' text='${topicType.toolTipKey}'/>"
