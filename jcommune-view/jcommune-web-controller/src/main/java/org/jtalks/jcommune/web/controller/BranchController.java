@@ -175,8 +175,7 @@ public class BranchController {
         List<TopicPlugin> topicPlugins = getEnabledTopicPlugins();
         for (TopicPlugin topicPlugin : topicPlugins) {
             if (aclEvaluator.hasPermission(authentication, branchId, "BRANCH", topicPlugin.getCreateTopicPermission())) {
-                topicTypes.add(topicPlugin.getCreateTopicBtnDto(branchId,
-                        userService.getCurrentUser().getLanguage().getLocale()));
+                topicTypes.add(topicPlugin.getCreateTopicBtnDto(branchId));
             }
         }
         Collections.sort(topicTypes, new CreateTopicBtnDto.CreateTopicBtnDtooComparator());

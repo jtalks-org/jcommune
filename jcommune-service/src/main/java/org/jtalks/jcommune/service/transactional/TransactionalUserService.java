@@ -29,6 +29,7 @@ import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.service.UserReader;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
@@ -67,7 +68,7 @@ import org.jtalks.jcommune.model.dto.LoginUserDto;
  * @author Andrey Pogorelov
  */
 public class TransactionalUserService extends AbstractTransactionalEntityService<JCUser, UserDao>
-        implements UserService {
+        implements UserService, UserReader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
     private final PostDao postDao;

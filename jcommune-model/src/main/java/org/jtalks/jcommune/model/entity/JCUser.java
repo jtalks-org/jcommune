@@ -50,7 +50,7 @@ public class JCUser extends User {
     public static final int[] PAGE_SIZES_AVAILABLE = new int[]{15, 25, 50};
 
     private static final long serialVersionUID = 19981017L;
-    private Set<UserContact> contacts = new HashSet<UserContact>();
+    private Set<UserContact> contacts = new HashSet<>();
 
     private DateTime avatarLastModificationTime = new DateTime(System.currentTimeMillis());
 
@@ -330,5 +330,31 @@ public class JCUser extends User {
         getGroups().add(group);
         group.getUsers().add(this);
         return this;
+    }
+
+    /**
+     * Creates copy of user needed in plugins.
+     * @param user user to be copied
+     */
+    public static JCUser copyUser(JCUser user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User should not be null");
+        }
+        JCUser copy = new JCUser(user.getUsername(), user.getEmail(), user.getPassword());
+        copy.setSalt(user.getSalt());
+        copy.setPostCount(user.getPostCount());
+        copy.setLanguage(user.getLanguage());
+        copy.setPageSize(user.getPageSize());
+        copy.setLocation(user.getLocation());
+        copy.setSignature(user.getSignature());
+        copy.setRegistrationDate(user.getRegistrationDate());
+        copy.setEnabled(user.isEnabled());
+        copy.setAutosubscribe(user.isAutosubscribe());
+        copy.setMentioningNotificationsEnabled(user.isMentioningNotificationsEnabled());
+        copy.setSendPmNotification(user.isSendPmNotification());
+        copy.getContacts().addAll(user.getContacts());
+        copy.setAvatarLastModificationTime(user.getAvatarLastModificationTime());
+        copy.setAllForumMarkedAsReadTime(user.getAllForumMarkedAsReadTime());
+        return copy;
     }
 }

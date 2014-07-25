@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
+import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 
 import java.util.*;
 
@@ -100,7 +101,8 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      * {@inheritDoc}
      */
     @Override
-    public CreateTopicBtnDto getCreateTopicBtnDto(long branchId, Locale locale) {
+    public CreateTopicBtnDto getCreateTopicBtnDto(long branchId) {
+        Locale locale = ReadOnlySecurityService.getInstance().getCopyOfCurrentUser().getLanguage().getLocale();
         return new CreateTopicBtnDto("new-question-btn", translateLabel("label.addQuestion", locale),
                 translateLabel("label.addQuestion.tip", locale), "/questions/new?branchId=" + branchId, order);
     }

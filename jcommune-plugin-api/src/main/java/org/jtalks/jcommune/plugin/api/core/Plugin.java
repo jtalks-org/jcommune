@@ -54,6 +54,8 @@ public interface Plugin {
     boolean isEnabled();
 
     /**
+     * TODO: Replace passing of locale parameter. Use {@link org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService}
+     * TODO: instead of it for gathering information about current user iside of plugin
      * @param code code for translation
      * @param locale locale for translation
      *
