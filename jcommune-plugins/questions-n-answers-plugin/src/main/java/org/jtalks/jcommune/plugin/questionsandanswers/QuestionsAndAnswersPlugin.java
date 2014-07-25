@@ -102,7 +102,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public CreateTopicBtnDto getCreateTopicBtnDto(long branchId) {
-        Locale locale = ReadOnlySecurityService.getInstance().getCopyOfCurrentUser().getLanguage().getLocale();
+        Locale locale = ReadOnlySecurityService.getInstance().getCurrentUser().getLanguage().getLocale();
         return new CreateTopicBtnDto("new-question-btn", translateLabel("label.addQuestion", locale),
                 translateLabel("label.addQuestion.tip", locale), "/questions/new?branchId=" + branchId, order);
     }

@@ -21,12 +21,12 @@ import org.jtalks.jcommune.model.entity.JCUser;
  *
  * @author Mikhail Stryzhonok
  */
-public class ReadOnlySecurityService {
+public class ReadOnlySecurityService implements UserReader {
     private static ReadOnlySecurityService instance = new ReadOnlySecurityService();
 
     private UserReader userReader;
 
-    public static ReadOnlySecurityService getInstance() {
+    public static UserReader getInstance() {
         return instance;
     }
 
@@ -42,7 +42,8 @@ public class ReadOnlySecurityService {
      * @return the copy of user currently logged in
      *         or <b>null</b> if user is anonymous
      */
-    public JCUser getCopyOfCurrentUser() {
+    @Override
+    public JCUser getCurrentUser() {
         JCUser currentUser = userReader.getCurrentUser();
         if (currentUser == null) {
             return null;

@@ -355,6 +355,7 @@ public class JCUser extends User {
         copy.getContacts().addAll(user.getContacts());
         copy.setAvatarLastModificationTime(user.getAvatarLastModificationTime());
         copy.setAllForumMarkedAsReadTime(user.getAllForumMarkedAsReadTime());
+        copy.setUuid(user.getUuid());
         return copy;
     }
 }

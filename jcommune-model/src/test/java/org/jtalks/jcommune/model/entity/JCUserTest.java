@@ -21,7 +21,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static junit.framework.Assert.assertFalse;
+import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertTrue;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Kirill Afonin
@@ -62,6 +64,14 @@ public class JCUserTest {
     @Test
     public void testIsAnonymous() {
         assertFalse(user.isAnonymous());
+    }
+
+    @Test
+    public void copyUserShouldReturnCopyOfUser() {
+        JCUser copy = JCUser.copyUser(user);
+
+        assertNotSame(copy, user);
+        assertReflectionEquals(user, copy);
     }
 
 }
