@@ -145,13 +145,13 @@ public class TopicControllerTest {
     }
 
     @Test
-    public void showTopicPageShouldReturnNullIfIfModifiedSinceOlderThenLastUpdate() throws NotFoundException {
+    public void showTopicPageShouldReturnNullIfModifiedSinceOlderThenLastUpdate() throws NotFoundException {
         String page = "1";
         Topic topic = createTopic();
         prepareViewTopicMocks(topic, page);
 
         WebRequest request = mock(WebRequest.class);
-        when(request.checkNotModified(topic.getModificationDate().getMillis())).thenReturn(true);
+        doReturn(true).when(request).checkNotModified(anyLong());
 
         ModelAndView mav = controller.showTopicPage(request, TOPIC_ID, page);
 
@@ -258,7 +258,7 @@ public class TopicControllerTest {
     @Test
     public void editTopicPageShouldOpenEditFormAndEnableNotificationsIfUserSubcribed() throws NotFoundException {
         Topic topic = this.createTopic();
-        Set<JCUser> subscribers = new HashSet<JCUser>();
+        Set<JCUser> subscribers = new HashSet<>();
         subscribers.add(user);
         topic.setSubscribers(subscribers);
         Post post = new Post(user, "content");
