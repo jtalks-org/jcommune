@@ -21,18 +21,20 @@ import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import java.util.List;
 import java.util.Locale;
 
-/**
- *
- */
 public interface Plugin {
-
-    /**
-     * LOADED - JCommune loads the plugin
-     * CONFIGURED - once configured from a database or from defaults plugin becomes
-     * ENABLED - plugin is disabled
-     * IN_ERROR - plugin has any problem on previous stages
-     */
-    enum State {LOADED, CONFIGURED, ENABLED, IN_ERROR}
+    enum State {
+        /** JCommune loads the plugin. */
+        LOADED,
+        /** Once configured from a database or from defaults plugin becomes configured. */
+        CONFIGURED,
+        /**
+         * Whether the plugins was disabled???
+         * TODO: check that, the name is counter intuitive if it really means disabled as original author said.
+         */
+        ENABLED,
+        /** Plugin has any problem on previous stages */
+        IN_ERROR
+    }
 
     boolean supportsJCommuneVersion(String version);
 
@@ -46,6 +48,7 @@ public interface Plugin {
 
     /**
      * Configuring plugin with specified new parameters
+     *
      * @param configuration new parameters for the plugin
      * @throws UnexpectedErrorException when any RuntimeException was thrown during plugin configuration
      */
@@ -56,9 +59,9 @@ public interface Plugin {
     /**
      * TODO: Replace passing of locale parameter. Use {@link org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService}
      * TODO: instead of it for gathering information about current user iside of plugin
-     * @param code code for translation
-     * @param locale locale for translation
      *
+     * @param code   code for translation
+     * @param locale locale for translation
      * @return translated label
      */
     public String translateLabel(String code, Locale locale);

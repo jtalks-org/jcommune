@@ -30,6 +30,9 @@ import java.util.*;
  */
 public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicPlugin {
     private static final String ORDER_PROPERTY = "label.Order";
+    /**
+     * Default value, thus it will show lower in the list of topics than Discussion and Code Review which are 100 & 101.
+     */
     private int order = 102;
 
     /**
@@ -63,7 +66,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
     protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
         if (properties.size() == 1 && ORDER_PROPERTY.equalsIgnoreCase(properties.get(0).getName())) {
             order = properties.get(0).getValue() == null ? 102 : Integer.parseInt(properties.get(0).getValue());
-            return Collections.EMPTY_MAP;
+            return new HashMap<>();
         } else {
             throw new RuntimeException("Can't apply configuration: incorrect parameters count or order not found");
         }
@@ -83,8 +86,8 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public String translateLabel(String code, Locale locale) {
-        ResourceBundle messages = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.questionsandanswers.messages",
-                locale);
+        ResourceBundle messages = ResourceBundle.getBundle(
+                "org.jtalks.jcommune.plugin.questionsandanswers.messages", locale);
         return messages.containsKey(code) ? messages.getString(code) : code;
     }
 
