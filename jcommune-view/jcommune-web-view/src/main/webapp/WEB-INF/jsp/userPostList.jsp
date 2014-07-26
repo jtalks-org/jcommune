@@ -89,7 +89,7 @@
               <td class='post-content-td'>
                 <jtalks:postContent text="${post.postContent}"/>
                 <br/>
-              </td>
+            </td>
             </tr>
           </c:forEach>
           </tbody>
