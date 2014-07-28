@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
@@ -341,6 +342,18 @@ public class JCUser extends User {
             throw new IllegalArgumentException("User should not be null");
         }
         JCUser copy = new JCUser(user.getUsername(), user.getEmail(), user.getPassword());
+        copy.setId(user.getId());
+        copy.setFirstName(user.getFirstName());
+        copy.setLastName(user.getLastName());
+        copy.setLastLogin(user.getLastLogin());
+        copy.setBanReason(user.getBanReason());
+        copy.setRole(user.getRole());
+        copy.setEncodedUsername(user.getEncodedUsername());
+        copy.setAvatar(user.getAvatar());
+        copy.setVersion(user.getVersion());
+        for (Group group : user.getGroups()) {
+            copy.getGroups().add(copyUserGroup(group,copy));
+        }
         copy.setSalt(user.getSalt());
         copy.setPostCount(user.getPostCount());
         copy.setLanguage(user.getLanguage());
@@ -352,10 +365,51 @@ public class JCUser extends User {
         copy.setAutosubscribe(user.isAutosubscribe());
         copy.setMentioningNotificationsEnabled(user.isMentioningNotificationsEnabled());
         copy.setSendPmNotification(user.isSendPmNotification());
-        copy.getContacts().addAll(user.getContacts());
+        for (UserContact contact : user.getContacts()) {
+            copy.getContacts().add(copyUserContact(contact, copy));
+        }
         copy.setAvatarLastModificationTime(user.getAvatarLastModificationTime());
         copy.setAllForumMarkedAsReadTime(user.getAllForumMarkedAsReadTime());
         copy.setUuid(user.getUuid());
+        return copy;
+    }
+
+    /**
+     * Copies user contact and sets specified owner for copy. Needed for possibility perform deep copy of user.
+     * @param contact contact to be copied
+     * @param owner user which will be set as copy owner
+     *
+     * @return copy of specified user contact
+     */
+    @VisibleForTesting
+    static UserContact copyUserContact(UserContact contact, JCUser owner) {
+        if (contact == null) {
+            throw new IllegalArgumentException("User contact should not be null");
+        }
+        UserContact copy = new UserContact(contact.getValue(), contact.getType());
+        copy.setOwner(owner);
+        copy.setId(contact.getId());
+        copy.setUuid(contact.getUuid());
+        return copy;
+    }
+
+    /**
+     * Copies user group and sets specified user as single user in copied group. We need it to restrict access to users
+     * from plugins.
+     * @param group user group to be copied
+     * @param user user which will be set as single user of copied group
+     *
+     * @return copy of specified user
+     */
+    @VisibleForTesting
+    static Group copyUserGroup(Group group, JCUser user) {
+        if (group == null) {
+            throw new IllegalArgumentException("User group should not be null");
+        }
+        Group copy = new Group(group.getName(), group.getDescription());
+        copy.setId(group.getId());
+        copy.setUuid(group.getUuid());
+        copy.getUsers().add(user);
         return copy;
     }
 }
