@@ -29,11 +29,13 @@ import java.util.*;
  * @author Evgeniy Myslovets
  */
 public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicPlugin {
+
     private static final String ORDER_PROPERTY = "label.Order";
+    private static final int DEFAULT_ORDER_VALUE = 102;
     /**
      * Default value, thus it will show lower in the list of topics than Discussion and Code Review which are 100 & 101.
      */
-    private int order = 102;
+    private int order = DEFAULT_ORDER_VALUE;
 
     /**
      * {@inheritDoc}
@@ -65,7 +67,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
     @Override
     protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
         if (properties.size() == 1 && ORDER_PROPERTY.equalsIgnoreCase(properties.get(0).getName())) {
-            order = properties.get(0).getValue() == null ? 102 : Integer.parseInt(properties.get(0).getValue());
+            order = properties.get(0).getValue() == null ? DEFAULT_ORDER_VALUE : Integer.parseInt(properties.get(0).getValue());
             return new HashMap<>();
         } else {
             throw new RuntimeException("Can't apply configuration: incorrect parameters count or order not found");
@@ -77,7 +79,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public List<PluginProperty> getDefaultConfiguration() {
-        PluginProperty order = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, "102");
+        PluginProperty order = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, String.valueOf(DEFAULT_ORDER_VALUE));
         return Arrays.asList(order);
     }
 
