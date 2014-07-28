@@ -34,6 +34,7 @@
             </type>
         </property>
         <property column="VALUE" name="value" not-null="true"/>
+        <property column="HINT" name="hint" not-null="false"/>
         <many-to-one name="pluginConfiguration" column="PLUGIN_ID" not-null="false"
                      foreign-key="FK_PLUGIN" class="org.jtalks.jcommune.model.entity.PluginConfiguration"/>
     </class>

@@ -21,6 +21,7 @@ jQuery(document).ready(function(){
         jQuery('img.status-img-small').tooltip();
         jQuery("#links_editor").tooltip();
         jQuery("a").tooltip();
+        jQuery("span").tooltip();
         jQuery('.btn').tooltip({placement: 'bottom'});
    		jQuery('.script-has-tooltip').tooltip();
 });

@@ -64,6 +64,12 @@
                     <%-- Content --%>
                     <tbody>
                     <c:forEach var="property" items="${pluginConfiguration.properties}" varStatus="status">
+                        <c:set var="hint" value=""/>
+                        <c:if test="${property.hint != null}">
+                          <c:if test="${labelsTranslation[property.hint] != null}">
+                           <c:set var="hint" value="${labelsTranslation[property.hint]}"/>
+                          </c:if>
+                        </c:if>
                         <%-- Property --%>
                         <tr>
                             <td>
@@ -71,10 +77,14 @@
                                 <form:hidden path="properties[${status.index}].name" />
                                 <c:choose>
                                     <c:when test="${labelsTranslation[property.name] != null}">
+                                      <span title='${hint}'>
                                         <c:out value="${labelsTranslation[property.name]}" />
+                                      </span>
                                     </c:when>
                                     <c:otherwise>
+                                      <span title='${hint}'>
                                         <c:out value="${property.name}" />
+                                      </span>
                                     </c:otherwise>
                                 </c:choose>
                             </td>

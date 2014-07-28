@@ -139,6 +139,10 @@ public class PluginController {
                 for (PluginProperty property : configuration.getProperties()) {
                     String translation = plugin.translateLabel(property.getName(), locale);
                     labels.put(property.getName(), translation);
+                    if (property.getHint() != null) {
+                        String hintTranslation = plugin.translateLabel(property.getHint(), locale);
+                        labels.put(property.getHint(), hintTranslation);
+                    }
                 }
             }
         }
