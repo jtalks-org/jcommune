@@ -780,7 +780,10 @@ div.anchor {
 }
 
 .btn-with-dropdown .tooltip {
-    min-width: 300px;
+    display: inline-block;
+    width: -moz-max-content;  /*firefox*/
+    width: -webkit-max-content;
+    max-width: 500px;
     white-space: pre-wrap;
 }
 
