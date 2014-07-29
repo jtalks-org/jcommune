@@ -31,11 +31,8 @@ import java.util.*;
 public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicPlugin {
 
     private static final String ORDER_PROPERTY = "label.Order";
-<<<<<<< HEAD
     private static final String ORDER_HINT = "label.Order.Hint";
-=======
     private static final int DEFAULT_ORDER_VALUE = 102;
->>>>>>> 1ef5e3dd17182cbff8580e5a4f147a5c645edbd7
     /**
      * Default value, thus it will show lower in the list of topics than Discussion and Code Review which are 100 & 101.
      */
@@ -73,12 +70,9 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
     @Override
     protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
         if (properties.size() == 1 && ORDER_PROPERTY.equalsIgnoreCase(properties.get(0).getName())) {
-<<<<<<< HEAD
-            order = properties.get(0).getValue() == null ? 102 : Integer.parseInt(properties.get(0).getValue());
+            order = properties.get(0).getValue() == null ? DEFAULT_ORDER_VALUE
+                    : Integer.parseInt(properties.get(0).getValue());
             properties.get(0).setHint(ORDER_HINT);
-=======
-            order = properties.get(0).getValue() == null ? DEFAULT_ORDER_VALUE : Integer.parseInt(properties.get(0).getValue());
->>>>>>> 1ef5e3dd17182cbff8580e5a4f147a5c645edbd7
             return new HashMap<>();
         } else {
             throw new RuntimeException("Can't apply configuration: incorrect parameters count or order not found");
@@ -90,12 +84,9 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public List<PluginProperty> getDefaultConfiguration() {
-<<<<<<< HEAD
-        PluginProperty order = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, "102");
+        PluginProperty order = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT,
+                String.valueOf(DEFAULT_ORDER_VALUE));
         order.setHint(ORDER_HINT);
-=======
-        PluginProperty order = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, String.valueOf(DEFAULT_ORDER_VALUE));
->>>>>>> 1ef5e3dd17182cbff8580e5a4f147a5c645edbd7
         return Arrays.asList(order);
     }
 
