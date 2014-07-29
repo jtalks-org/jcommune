@@ -157,8 +157,10 @@ public class PluginController {
         for (PluginProperty property : properties) {
             String translation = plugin.translateLabel(property.getName(), locale);
             labels.put(property.getName(), translation);
-            String hintTranslation = plugin.translateLabel(property.getHint(), locale);
-            labels.put(property.getHint(), hintTranslation);
+            if (property.getHint() != null) {
+                String hintTranslation = plugin.translateLabel(property.getHint(), locale);
+                labels.put(property.getHint(), hintTranslation);
+            }
         }
         return labels;
     }
