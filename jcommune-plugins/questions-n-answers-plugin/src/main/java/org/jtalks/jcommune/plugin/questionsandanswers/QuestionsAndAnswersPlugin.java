@@ -29,9 +29,8 @@ import java.util.*;
  * @author Evgeniy Myslovets
  */
 public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicPlugin {
-
-    private static final String ORDER_PROPERTY = "label.Order";
-    private static final String ORDER_HINT = "label.Order.Hint";
+    private static final String ORDER_PROPERTY = "label.order";
+    private static final String ORDER_HINT = "label.order.hint";
     private static final int DEFAULT_ORDER_VALUE = 102;
     /**
      * Default value, thus it will show lower in the list of topics than Discussion and Code Review which are 100 & 101.
