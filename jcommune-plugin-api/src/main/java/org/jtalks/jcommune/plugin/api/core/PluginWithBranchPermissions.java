@@ -34,6 +34,7 @@ public interface PluginWithBranchPermissions extends Plugin {
 
     /**
      * Performs branch permission search by mask
+     *
      * @param mask permission mask for search
      * @return branch permission with specified mask or <b>null/b> if where no branch permissions with specified mask
      * provided by this plugin
@@ -42,6 +43,7 @@ public interface PluginWithBranchPermissions extends Plugin {
 
     /**
      * Performs branch permission search by name
+     *
      * @param name permission name for search
      * @return branch permission with specified mask or <b>null/b> if where no branch permissions with specified mask
      * provided by this plugin

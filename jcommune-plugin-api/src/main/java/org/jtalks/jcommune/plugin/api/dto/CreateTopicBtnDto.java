@@ -81,7 +81,7 @@ public class CreateTopicBtnDto {
         this.order = order;
     }
 
-    public static class CreateTopicBtnDtooComparator implements Comparator<CreateTopicBtnDto> {
+    public static class CreateTopicBtnDtoComparator implements Comparator<CreateTopicBtnDto> {
         @Override
         public int compare(CreateTopicBtnDto o1, CreateTopicBtnDto o2) {
             int diff = o1.getOrder() - o2.getOrder();

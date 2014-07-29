@@ -21,10 +21,10 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
-import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
-import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -150,6 +150,7 @@ public class BranchController {
 
     /**
      * Get the list of the topic types which are allowed for the current User and specified Branch
+     *
      * @param branchId id of the branch where topic will be created
      * @return list of the topic type information objects
      */
@@ -178,7 +179,7 @@ public class BranchController {
                 topicTypes.add(topicPlugin.getCreateTopicBtnDto(branchId));
             }
         }
-        Collections.sort(topicTypes, new CreateTopicBtnDto.CreateTopicBtnDtooComparator());
+        Collections.sort(topicTypes, new CreateTopicBtnDto.CreateTopicBtnDtoComparator());
 
         return topicTypes;
     }

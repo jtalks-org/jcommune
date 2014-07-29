@@ -88,6 +88,7 @@ public class JCPermissionFactory implements PermissionFactory {
 
     /**
      * Gets permission by permission mask. Firstly search in common permissions then in plugin permissions
+     *
      * @param mask mask of interested permissions
      * @return permission with specified mask if it exist
      *         <b>NULL_PERMISSION</b> otherwise
@@ -106,6 +107,7 @@ public class JCPermissionFactory implements PermissionFactory {
 
     /**
      * Gets permission by permission mask. Firstly search in common permissions then in plugin permissions
+     *
      * @param name name of interested permissions
      * @return permission with specified name if it exist
      *         <b>NULL_PERMISSION</b> otherwise
@@ -124,6 +126,7 @@ public class JCPermissionFactory implements PermissionFactory {
 
     /**
      * Gets list of permissions by names. Searches in common and plugin permissions
+     *
      * @param names list of interested permissions names
      * @return list of permissions with specified names
      */
