@@ -132,23 +132,35 @@ public class PluginController {
     private ModelAndView getModel(PluginConfiguration configuration) {
         Map<String, String> labels = new HashMap<>();
         List<Plugin> plugins = pluginLoader.getPlugins(new NameFilter(configuration.getName()));
-        if (plugins.size() > 0) {
+        if (!plugins.isEmpty()) {
             Plugin plugin = plugins.get(0);
             if (plugin != null) {
-                Locale locale = userService.getCurrentUser().getLanguage().getLocale();
-                for (PluginProperty property : configuration.getProperties()) {
-                    String translation = plugin.translateLabel(property.getName(), locale);
-                    labels.put(property.getName(), translation);
-                    if (property.getHint() != null) {
-                        String hintTranslation = plugin.translateLabel(property.getHint(), locale);
-                        labels.put(property.getHint(), hintTranslation);
-                    }
-                }
+                labels = translatePropertiesLabels(configuration.getProperties(), plugin);
             }
         }
         return new ModelAndView("plugin/pluginConfiguration")
                 .addObject("pluginConfiguration", configuration)
                 .addObject("labelsTranslation", labels);
+    }
+
+    /**
+     * Translate labels for specified plugin into language which selected by current user as forum language.
+     *
+     * @param properties list of properties to translate
+     * @param plugin plugin with have specified properties
+     *
+     * @return map of properties translation depending from name
+     */
+    private Map<String, String> translatePropertiesLabels(List<PluginProperty> properties, Plugin plugin) {
+        Map<String, String> labels = new HashMap<>();
+        Locale locale = userService.getCurrentUser().getLanguage().getLocale();
+        for (PluginProperty property : properties) {
+            String translation = plugin.translateLabel(property.getName(), locale);
+            labels.put(property.getName(), translation);
+            String hintTranslation = plugin.translateLabel(property.getHint(), locale);
+            labels.put(property.getHint(), hintTranslation);
+        }
+        return labels;
     }
 
     /**
