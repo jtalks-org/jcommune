@@ -384,6 +384,7 @@ ul.lang-menu li img {
 }
 
 .post table .top-buttons, .post table .post-date {
+
     padding: 3px;
     line-height: 13px;
 }
@@ -394,9 +395,8 @@ ul.lang-menu li img {
 }
 
 .post table .userinfo {
-    max-width: 175px;
-    min-width: 175px;
     vertical-align: top;
+    width: 20%;
 }
 
 .post table .userinfo p {
