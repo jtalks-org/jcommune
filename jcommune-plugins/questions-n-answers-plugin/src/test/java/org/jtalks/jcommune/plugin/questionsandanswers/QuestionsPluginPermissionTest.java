@@ -26,14 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * TODO: Now this class a copy of org.jtalks.common.model.permissions.JtalksPermissionTest with additional permission enum.
  *
  * @author Evgeniy Myslovets
  */
-public class QuestionsAndAnswersPluginPermissionTest {
+public class QuestionsPluginPermissionTest {
 
     /**
      * Looks for all the permission classes within JTalks, reads all their constants and compares to each other making
@@ -70,4 +70,16 @@ public class QuestionsAndAnswersPluginPermissionTest {
         return new Object[][]{{permissions}};
     }
 
+    @Test
+    public void findByMaskShouldReturnCorrectPermission() {
+        QuestionsPluginBranchPermission expectedPermission = QuestionsPluginBranchPermission.CREATE_QUESTIONS;
+        QuestionsPluginBranchPermission actualPermission = QuestionsPluginBranchPermission.findByMask(31);
+        assertEquals(actualPermission, expectedPermission);
+    }
+
+    @Test
+    public void findByMaskShouldReturnNullIfPermissionNotFound() {
+        QuestionsPluginBranchPermission actualPermission = QuestionsPluginBranchPermission.findByMask(11);
+        assertNull(actualPermission);
+    }
 }

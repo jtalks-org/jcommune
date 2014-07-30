@@ -20,9 +20,10 @@ import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.AuthenticationPlugin;
 import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
-import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
-import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
+import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.auth.poulpe.service.PoulpeAuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -138,8 +139,8 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     }
 
     @Override
-    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
-
+    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties)
+            throws PluginConfigurationException {
         String url = null;
         String login = null;
         String password = null;
@@ -154,9 +155,9 @@ public class PoulpeAuthPlugin extends StatefullPlugin
         }
         if (url == null || url.isEmpty()) {
             // this should be returned as a map, but this mechanism should be implemented in the plugin API first
-            throw new RuntimeException("Can't apply configuration: Url should not be null.");
+            throw new PluginConfigurationException("Can't apply configuration: Url should not be null.");
         } else if (!validateUrl(url)) {
-            throw new RuntimeException("Can't apply configuration: Incorrect format for Url value.");
+            throw new PluginConfigurationException("Can't apply configuration: Incorrect format for Url value.");
         }
         service = new PoulpeAuthService(url, login, password);
         pluginProperties = properties;

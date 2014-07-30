@@ -14,22 +14,27 @@
  */
 package org.jtalks.jcommune.plugin.questionsandanswers;
 
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class QuestionAndAnswersPluginTest {
+public class QuestionsAndAnswersPluginTest {
     private static final String ORDER_PROPERTY = "label.order";
 
     @Test
@@ -83,5 +88,73 @@ public class QuestionAndAnswersPluginTest {
 
         assertEquals(actualConfiguration.size(), 1);
         assertEquals(actualConfiguration.get(0).getValue(), "102");
+    }
+
+    @Test
+    public void testApplyConfiguration() throws PluginConfigurationException {
+        PluginProperty property = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, "103");
+        QuestionsAndAnswersPlugin plugin = new QuestionsAndAnswersPlugin();
+        plugin.applyConfiguration(Arrays.asList(property));
+
+        assertEquals(plugin.getConfiguration().size(), 1);
+        assertEquals(plugin.getConfiguration().get(0).getValue(), "103");
+    }
+
+    @Test(expectedExceptions = PluginConfigurationException.class)
+    public void applyConfigurationShouldThrowRuntimeExceptionIfPassedEmptyProperties() throws PluginConfigurationException {
+        new QuestionsAndAnswersPlugin().applyConfiguration(Collections.<PluginProperty>emptyList());
+    }
+
+    @Test
+    public void testGetDefaultConfiguration() {
+        List<PluginProperty> defaultConfiguration = new QuestionsAndAnswersPlugin().getDefaultConfiguration();
+        assertEquals(defaultConfiguration.size(), 1);
+        assertEquals(defaultConfiguration.get(0).getValue(), "102");
+    }
+
+    @Test
+    public void translateLabelWithExistingTranslation() {
+        assertEquals("Ask Question", new QuestionsAndAnswersPlugin().translateLabel("label.addQuestion", Locale.forLanguageTag("en")));
+    }
+
+    @Test
+    public void translateLabelWithoutExistingTranslation() {
+        assertEquals("label.ask", new QuestionsAndAnswersPlugin().translateLabel("label.ask", Locale.forLanguageTag("en")));
+    }
+
+    @Test
+    public void testGetBranchPermissions() {
+        assertEquals(new QuestionsAndAnswersPlugin().getBranchPermissions(), QuestionsPluginBranchPermission.getAllAsList());
+    }
+
+    @Test
+    public void testCreateTopicPermission() {
+        assertEquals(new QuestionsAndAnswersPlugin().getCreateTopicPermission(), QuestionsPluginBranchPermission.CREATE_QUESTIONS);
+    }
+
+    @Test
+    public void getBranchPermissionByMaskShouldReturnCorrectPermission() {
+        QuestionsPluginBranchPermission expectedPermission = QuestionsPluginBranchPermission.CREATE_QUESTIONS;
+        JtalksPermission actualPermission = new QuestionsAndAnswersPlugin().getBranchPermissionByMask(31);
+        assertEquals(actualPermission, expectedPermission);
+    }
+
+    @Test
+    public void getBranchPermissionByMaskShouldReturnNullIfPermissionNotFound() {
+        JtalksPermission actualPermission = new QuestionsAndAnswersPlugin().getBranchPermissionByMask(30);
+        assertNull(actualPermission);
+    }
+
+    @Test
+    public void getBranchPermissionByNameShouldReturnCorrectPermission() {
+        QuestionsPluginBranchPermission expectedPermission = QuestionsPluginBranchPermission.CREATE_QUESTIONS;
+        JtalksPermission actualPermission = new QuestionsAndAnswersPlugin().getBranchPermissionByName("CREATE_QUESTIONS");
+        assertEquals(actualPermission, expectedPermission);
+    }
+
+    @Test
+    public void getBranchPermissionByNameShouldReturnNullIfPermissionNotFound() {
+        JtalksPermission actualPermission = new QuestionsAndAnswersPlugin().getBranchPermissionByName("ASK_QUESTIONS");
+        assertNull(actualPermission);
     }
 }

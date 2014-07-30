@@ -16,19 +16,19 @@ package org.jtalks.jcommune.plugin.api.core;
 
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
+import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
-
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Mikhail Stryzhonok
@@ -91,7 +91,7 @@ public class StateFullPluginTest {
     }
 
     @Test
-    public void getStateShouldReturnInErrorStateWhenConfigurationErrorOccurs() {
+    public void getStateShouldReturnInErrorStateWhenConfigurationErrorOccurs() throws PluginConfigurationException {
         List<PluginProperty> properties = Arrays.asList(new PluginProperty());
         when(configuration.getProperties()).thenReturn(properties);
         when(plugin.applyConfiguration(properties)).thenThrow(new RuntimeException());

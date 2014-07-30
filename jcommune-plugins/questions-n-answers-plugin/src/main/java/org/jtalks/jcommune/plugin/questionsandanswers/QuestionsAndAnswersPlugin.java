@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
+import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 
 import java.util.*;
@@ -67,14 +68,16 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      * {@inheritDoc}
      */
     @Override
-    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
+    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties)
+            throws PluginConfigurationException {
         if (properties.size() == 1 && ORDER_PROPERTY.equalsIgnoreCase(properties.get(0).getName())) {
             order = properties.get(0).getValue() == null ? DEFAULT_ORDER_VALUE
                     : Integer.parseInt(properties.get(0).getValue());
             properties.get(0).setHint(ORDER_HINT);
             return new HashMap<>();
         } else {
-            throw new RuntimeException("Can't apply configuration: incorrect parameters count or order not found");
+            throw new PluginConfigurationException(
+                    "Can't apply configuration: incorrect parameters count or order not found");
         }
     }
 
@@ -83,10 +86,10 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public List<PluginProperty> getDefaultConfiguration() {
-        PluginProperty order = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT,
+        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT,
                 String.valueOf(DEFAULT_ORDER_VALUE));
-        order.setHint(ORDER_HINT);
-        return Arrays.asList(order);
+        orderProperty.setHint(ORDER_HINT);
+        return Arrays.asList(orderProperty);
     }
 
     /**
@@ -139,6 +142,10 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public JtalksPermission getBranchPermissionByName(String name) {
-        return QuestionsPluginBranchPermission.valueOf(name);
+        try {
+            return QuestionsPluginBranchPermission.valueOf(name);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }
