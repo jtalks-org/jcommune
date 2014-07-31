@@ -320,15 +320,15 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         UserDto userDto = registerUserDto.getUserDto();
         String encodedPassword = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
                 : encryptionService.encryptPassword(userDto.getPassword());
-        registerByPlugin(registerUserDto.getUserDto(), true, result);
+        userDto.setPassword(encodedPassword);
+        registerByPlugin(userDto, true, result);
         mergeValidationErrors(jcErrors, result);
         if (!result.hasErrors()) {
-            registerByPlugin(registerUserDto.getUserDto(), false, result);
+            registerByPlugin(userDto, false, result);
             // because next http call can fail (in the interim another user was registered)
             // we need to double check it
             if (!result.hasErrors()) {
-                userDto.setPassword(encodedPassword);
-                storeRegisteredUser(registerUserDto.getUserDto());
+                storeRegisteredUser(userDto);
             }
         } 
         return result;
