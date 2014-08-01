@@ -46,6 +46,8 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     protected static final String HEIGHT_PROPERTY = "Height";
     protected static final String LENGTH_PROPERTY = "Length";
     protected static final String POSSIBLE_SYMBOLS_PROPERTY = "Possible Symbols";
+    private static final String MESSAGE_PATH = "org.jtalks.jcommune.plugin.kaptcha.messages";
+    private static final String DEFAULT_LOCALE_CODE = "en";
 
     private List<PluginProperty> pluginProperties;
     private KaptchaPluginService service;
@@ -114,8 +116,13 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     @Override
     public String translateLabel(String code, Locale locale) {
         String fullCode = "label.plugins.plugin.kaptcha.property.name." + code.replaceAll(" ", "_");
-        ResourceBundle messages = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", locale);
-        return messages.containsKey(fullCode) ? messages.getString(fullCode) : code;
+        ResourceBundle messages = ResourceBundle.getBundle(MESSAGE_PATH, locale);
+        if (messages.containsKey(fullCode)) {
+            return  messages.getString(fullCode);
+        } else {
+            ResourceBundle defaultMessages = ResourceBundle.getBundle(MESSAGE_PATH, new Locale(DEFAULT_LOCALE_CODE));
+            return defaultMessages.containsKey(fullCode) ? defaultMessages.getString(fullCode) : code;
+        }
     }
 
     @Override

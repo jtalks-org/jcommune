@@ -67,9 +67,10 @@
   </bean>
 
   <!--Cookie-based locale resolver, chosen as we can't guarantee sessioin existence for any request-->
-  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+  <bean id="localeResolver" class="org.jtalks.jcommune.web.locale.JcLocaleResolver">
     <!--Russian locale is set by default if nothing has been chosen by user-->
     <property name="defaultLocale" value="ru"/>
+    <property name="userService" ref="userService"/>
   </bean>
 
   <bean id="handlerMapping"

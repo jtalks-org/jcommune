@@ -50,6 +50,8 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     private static final String PASSWORD_PROPERTY = "Password";
     private static final String URL_PATTERN = "(((http|https)://)?" +
             "([\\w\\-_]+(\\.[\\w\\-_]+)+|localhost)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?)";
+    private static final String MESSAGE_PATH = "messages";
+    private static final String DEFAULT_LOCALE_CODE = "en";
     private PoulpeAuthService service;
     private List<PluginProperty> pluginProperties;
 
@@ -177,7 +179,12 @@ public class PoulpeAuthPlugin extends StatefullPlugin
     @Override
     public String translateLabel(String code, Locale locale) {
         String fullCode = "label.plugins.plugin.poulpe.property.name." + code;
-        ResourceBundle messages = ResourceBundle.getBundle("messages", locale);
-        return messages.containsKey(fullCode) ? messages.getString(fullCode) : code;
+        ResourceBundle messages = ResourceBundle.getBundle(MESSAGE_PATH, locale);
+        if (messages.containsKey(fullCode)) {
+            return  messages.getString(fullCode);
+        } else {
+            ResourceBundle defaultMessages = ResourceBundle.getBundle(MESSAGE_PATH, new Locale(DEFAULT_LOCALE_CODE));
+            return defaultMessages.containsKey(fullCode) ? defaultMessages.getString(fullCode) : code;
+        }
     }
 }
