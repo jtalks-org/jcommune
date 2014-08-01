@@ -41,6 +41,7 @@ import org.mockito.Mock;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
@@ -381,6 +382,25 @@ public class TransactionalAuthenticatorTest {
         authenticator.register(userDto);
 
         verify(bindingResult, never()).rejectValue(anyString(), anyString(), anyString());
+    }
+
+    @Test
+    public void userShouldBeRegisteredUsingEncryptedPassword() throws Exception{
+        String password = "password";
+        RegisterUserDto registerUserDto = createRegisterUserDto("username", password, "email@email.em", null);
+        EncryptionService realEncryptionService = new EncryptionService(new Md5PasswordEncoder());
+        TransactionalAuthenticator authenticatorSpy = spy(new TransactionalAuthenticator(pluginLoader, userDao, groupDao,
+                realEncryptionService, mailService, avatarService, pluginService,
+                securityFacade, rememberMeServices, sessionStrategy, validator, authenticationManager));
+
+        authenticatorSpy.register(registerUserDto);
+        UserDto expected = new UserDto();
+        expected.setEmail("email@email.em");
+        expected.setUsername("username");
+        expected.setPassword(realEncryptionService.encryptPassword(password));
+
+        verify(authenticatorSpy).registerByPlugin(refEq(expected), eq(true), any(BindingResult.class));
+        verify(authenticatorSpy).storeRegisteredUser(refEq(expected));
     }
 
     private RegisterUserDto createRegisterUserDto(String username, String password, String email, String honeypotCaptcha) {
