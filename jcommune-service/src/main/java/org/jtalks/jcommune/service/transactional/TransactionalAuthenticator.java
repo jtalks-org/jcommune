@@ -334,6 +334,17 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         return result;
     }
 
+    /**
+     * Performs registration or validation by available registration plugins
+     *
+     * @param userDto {@link UserDto} object
+     * @param dryRun flag which determines registration or validation will be performed. If set to <code>true</code>
+     *               validation will be performed. Otherwise - registration
+     * @param bindingResult validation result
+     *
+     * @throws UnexpectedErrorException if plugin returns unexpected response
+     * @throws NoConnectionException if plugin can't connect to registration service
+     */
     public void registerByPlugin(UserDto userDto, boolean dryRun, BindingResult bindingResult)
             throws UnexpectedErrorException, NoConnectionException {
         Map<Long, RegistrationPlugin> registrationPlugins = pluginService.getRegistrationPlugins();
