@@ -80,6 +80,7 @@
                      back="${pageContext.request.contextPath}/branches/${branchId}"/>
     <br/>
     <br/>
+    <c:if test="${topicId eq null || topicDto.poll != null}">
     <div class='well hide-on-preview'>
       <fieldset id="editPoll">
         <legend>
@@ -124,7 +125,7 @@
             <form:input path="topic.poll.endingDate" tabindex="900" id="datepicker" type="text"
                        readonly="true" placeholder="${datePlaceholder}"
                        class="cursor-pointer script-confirm-unsaved space-left-small"/>
-            <c:if test="${topicDto.poll eq null}">
+            <c:if test="${topicId eq null}">
               &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
             </c:if>
             <br>
@@ -134,6 +135,7 @@
         <div class="cleared"></div>
       </fieldset>
     </div>
+    </c:if>
   </form:form>
 
   <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
