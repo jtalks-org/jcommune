@@ -31,6 +31,7 @@ import com.google.common.base.Joiner;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Size;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,11 +45,11 @@ import static ch.lambdaj.Lambda.sumFrom;
  * Poll is tied to the life cycle of the topic({@link Topic}).
  *
  * @author Anuar Nurmakanov
+ * @author Andrey Ivanov
  */
 @PollTitleNotBlankIfItemsFilled
 @PollItemsNotEmptyIfTitleFilled
 public class Poll extends Entity {
-    private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("dd-MM-yyyy");
     private static final String SEPARATOR = System.getProperty("line.separator");
     
     public static final int MIN_TITLE_LENGTH = 3;
@@ -68,8 +69,7 @@ public class Poll extends Entity {
     private Topic topic;
     //transient fields
     private String pollItemsValue;
-    private String endingDateValue;
-    
+
 
     /**
      * Used only by Hibernate.
@@ -229,26 +229,7 @@ public class Poll extends Entity {
         return StringUtils.isNotBlank(getTitle()) &&
                 !CollectionUtils.isEmpty(pollItems);
     }
-    
-    /**
-     * Set string representation of poll ending date. Parse this string and set
-     * ending date.
-     * 
-     * @param endingDateValue poll ending date in string representation
-     */
-    public void setEndingDateValue(String endingDateValue) {
-        if (endingDateValue != null) {
-            setEndingDate(FORMAT.parseDateTime(endingDateValue));
-        }
-    }
-    
-    /**
-     * @return poll ending date in string representation
-     */
-    public String getEndingDateValue() {
-        return endingDateValue;
-    }
-   
+
     /**
      * Set string representation of poll options. Parse this string and fill
      * poll items list.

@@ -21,6 +21,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="joda" uri="http://www.joda.org/joda/time/tags" %>
+<c:set value="false" var="disablePollData"/>
+<c:if test ="${topicId != null}">
+  <c:set value="true" var="disablePollData"/>
+</c:if>
 <head>
   <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
   <title>
@@ -60,15 +64,13 @@
       </div>
     </jtalks:hasPermission>
 
-    <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
-                          permission='BranchPermission.CREATE_ANNOUNCEMENTS'>
+    <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH' permission='BranchPermission.CREATE_ANNOUNCEMENTS'>
       <div class='control-group hide-on-preview'>
         <form:checkbox id="announcement" path="topic.announcement" value="true" tabindex="102"
                        class="script-confirm-unsaved form-check-radio-box"/>
         <label for='announcement' class='string optional'>
           <spring:message code="label.announcement"/>
         </label>
-
         <form:errors path="topic.announcement"/>
       </div>
     </jtalks:hasPermission>
@@ -78,71 +80,60 @@
                      back="${pageContext.request.contextPath}/branches/${branchId}"/>
     <br/>
     <br/>
+    <div class='well hide-on-preview'>
+      <fieldset id="editPoll">
+        <legend>
+            <c:choose>
+                <c:when test="${disablePollData}">
+                    <spring:message code="label.poll.title"/>
+                </c:when>
+                <c:otherwise>
+                    <spring:message code="label.poll.header"/>
+                </c:otherwise>
+            </c:choose>
+            </legend>
+          <div class='control-group'>
+            <spring:message code='label.poll.title' var='pollTitlePlaceholder'/>
+            <form:input path="topic.poll.title" tabindex="600" type="text" id="pollTitle"
+                        size="45" maxlength="255" placeholder="${pollTitlePlaceholder}"
+                        class="post script-confirm-unsaved" disabled="${disablePollData}"/>
+            <br>
+            <form:errors path="topic.poll.title" cssClass="help-inline"/>
+          </div>
+          <div class='control-group'>
+            <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
+            <form:textarea path="topic.poll.pollItemsValue" tabindex="700" rows="8" id="pollItems"
+                           class="post script-confirm-unsaved" placeholder="${optionsPlaceholder}"
+                           disabled="${disablePollData}"/>
+            <br>
+            <form:errors path="topic.poll.pollItems" cssClass="help-inline"/>
+          </div>
 
-    <c:choose>
-        <c:when test ="${topicId eq null}">
-            <div class='well hide-on-preview'>
-                <fieldset id="editPoll">
-                    <legend><spring:message code="label.poll.header"/></legend>
+          <div class='control-group'>
+            <form:checkbox path="topic.poll.multipleAnswer" id="multipleChecker"
+                           class="form-check-radio-box script-confirm-unsaved"
+                           tabindex="800" value="${topicDto.poll.multipleAnswer}" disabled="${disablePollData}"/>
+            <label for='multipleChecker' class='string optional'>
+            <spring:message code="label.poll.multiple.title"/>
+            </label>
+          </div>
 
-                    <div class='control-group'>
-                        <spring:message code='label.poll.title' var='pollTitlePlaceholder'/>
-                        <form:input path="topic.poll.title" tabindex="600" type="text" id="pollTitle"
-                                    size="45" maxlength="255" placeholder="${pollTitlePlaceholder}"
-                                    class="post script-confirm-unsaved"/>
-                        <br>
-                        <form:errors path="topic.poll.title" cssClass="help-inline"/>
-                    </div>
-
-                    <div class='control-group'>
-                        <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
-                        <form:textarea path="topic.poll.pollItemsValue" tabindex="700" rows="8" id="pollItems"
-                                       class="post script-confirm-unsaved" placeholder="${optionsPlaceholder}"/>
-                        <br>
-                        <form:errors path="topic.poll.pollItems" cssClass="help-inline"/>
-                    </div>
-
-                    <div class='control-group'>
-                        <form:checkbox path="topic.poll.multipleAnswer" id="multipleChecker"
-                                       class="form-check-radio-box script-confirm-unsaved"
-                                       tabindex="800" value="${topicDto.poll.multipleAnswer}"/>
-                        <label for='multipleChecker' class='string optional'>
-                            <spring:message code="label.poll.multiple.title"/>
-                        </label>
-                    </div>
-
-                    <div class="control-group right-aligned">
-                        <spring:message code="label.poll.date"/>
-                        <spring:message code='label.poll.date.set' var='datePlaceholder'/>
-                        <form:input path="topic.poll.endingDateValue" tabindex="900" id="datepicker" type="text"
-                                    readonly="true" placeholder="${datePlaceholder}"
-                                    class="cursor-pointer script-confirm-unsaved space-left-small"/>
-                        &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
-                        <br>
-                        <form:errors path="topic.poll.endingDate" cssClass="help-inline"/>
-                    </div>
-                        <%--Make parent div include floated divs explicitly, or they'll be shown out of parent container--%>
-                    <div class="cleared"></div>
-                </fieldset>
-            </div>
-        </c:when>
-        <c:otherwise>
-            <c:if test="${not empty topicDto.topic.poll}">
-            <fieldset id="editPoll">
-                <legend><spring:message code="label.poll.title"/></legend>
-                <spring:message code="label.poll.current_end_date"/>:<joda:format value="${topicDto.poll.endingDate}"
-                                                                                  pattern="dd MMM YYYY" />
-                <div class="control-group right-aligned">
-                    <spring:message code="label.poll.date"/>
-                    <spring:message code='label.poll.date.set' var='datePlaceholder'/>
-                    <form:input path="topic.poll.endingDateValue" tabindex="900" id="datepicker" type="text"
-                                readonly="true" placeholder="${datePlaceholder}"
-                                class="cursor-pointer script-confirm-unsaved space-left-small"/>
-                </div>
-            </fieldset>
+          <div class="control-group right-aligned">
+            <spring:message code="label.poll.date"/>
+            <spring:message code='label.poll.date.set' var='datePlaceholder'/>
+            <form:input path="topic.poll.endingDate" tabindex="900" id="datepicker" type="text"
+                       readonly="true" placeholder="${datePlaceholder}"
+                       class="cursor-pointer script-confirm-unsaved space-left-small"/>
+            <c:if test="${topicDto.poll eq null}">
+              &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
             </c:if>
-        </c:otherwise>
-    </c:choose>
+            <br>
+            <form:errors path="topic.poll.endingDate" cssClass="help-inline"/>
+          </div>
+          <%--Make parent div include floated divs explicitly, or they'll be shown out of parent container--%>
+        <div class="cleared"></div>
+      </fieldset>
+    </div>
   </form:form>
 
   <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>

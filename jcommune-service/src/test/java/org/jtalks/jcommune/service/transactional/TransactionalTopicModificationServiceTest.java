@@ -167,7 +167,7 @@ public class TransactionalTopicModificationServiceTest {
 
         assertFalse(answeredTopic.userSubscribed(user));
     }
-    
+
     @Test
     public void replyTopicShouldNotifyMentionedInReplyUsers() throws NotFoundException {
         Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
@@ -175,9 +175,9 @@ public class TransactionalTopicModificationServiceTest {
         when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
         String answerWithUserMentioning = "[user]Shogun[/user] was mentioned";
-        
+
         Post answerPost = topicService.replyToTopic(TOPIC_ID, answerWithUserMentioning, BRANCH_ID);
-        
+
         verify(userService).notifyAndMarkNewlyMentionedUsers(answerPost);
     }
 
@@ -244,7 +244,7 @@ public class TransactionalTopicModificationServiceTest {
         createTopicVerifications(createdTopic);
         verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
     }
-    
+
     @Test
     public void createTopicShouldNotifyMentionedUsers() throws NotFoundException {
         Branch branch = createBranch();
@@ -252,9 +252,9 @@ public class TransactionalTopicModificationServiceTest {
         createTopicStubs(branch);
         String answerBodyWithUserMentioning = "[user]Shogun[/user] you are mentioned";
         Topic topicWithUserNotification = createTopic();
-        
+
         Topic createdTopic = topicService.createTopic(topicWithUserNotification, answerBodyWithUserMentioning);
-        
+
         verify(userService).notifyAndMarkNewlyMentionedUsers(createdTopic.getFirstPost());
     }
 
@@ -371,7 +371,7 @@ public class TransactionalTopicModificationServiceTest {
         verify(notificationService).sendNotificationAboutTopicCreated(topic);
         verify(lastReadPostService).markTopicAsRead(topic);
     }
-    
+
     @Test
     public void testDeleteTopic() throws NotFoundException {
         Collection<JCUser> subscribers = new ArrayList<JCUser>();
@@ -585,6 +585,29 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     @Test
+    void testUpdateTopicPollWithNewEndingDate() throws NotFoundException {
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        DateTime endingDateTime = new DateTime();
+        Topic topic = createTopic();
+        Post post = createPost();
+        topic.addPost(post);
+        Poll poll = createPoll();
+        poll.setEndingDate(endingDateTime);
+        topic.setPoll(poll);
+        DateTime newEndingDateTime = new DateTime().plusDays(10);
+        Poll pollWithNewEndingDate = createPoll();
+        pollWithNewEndingDate.setEndingDate(newEndingDateTime);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        topicService.updateTopic(topic, pollWithNewEndingDate);
+
+        verify(pollService, never()).mergePollItems(poll, poll.getPollItems());
+        assertEquals(newEndingDateTime, topic.getPoll().getEndingDate());
+    }
+
+    @Test
     void testUpdateTopicWithNotPresentedPoll() throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
 
@@ -718,7 +741,7 @@ public class TransactionalTopicModificationServiceTest {
         return branch;
     }
 
-    private Poll createPoll(){
+    private Poll createPoll() {
         Poll poll = new Poll();
         poll.setTitle("title");
 

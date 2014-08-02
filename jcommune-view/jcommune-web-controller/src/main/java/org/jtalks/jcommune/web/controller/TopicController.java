@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.NotFoundException;
@@ -21,9 +22,11 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.web.dto.TopicDto;
 import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.validation.editors.DateTimeEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
@@ -37,6 +40,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -62,6 +67,7 @@ public class TopicController {
     private static final String REDIRECT_URL = "redirect:/topics/";
     public static final String POST_DTO = "postDto";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    public static final String POLL = "poll";
 
     private TopicModificationService topicModificationService;
     private TopicFetchService topicFetchService;
@@ -84,6 +90,7 @@ public class TopicController {
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+        binder.registerCustomEditor(DateTime.class, new DateTimeEditor("dd-MM-yyyy"));
     }
 
     /**
@@ -255,6 +262,7 @@ public class TopicController {
         return new ModelAndView(TOPIC_VIEW)
                 .addObject(BRANCH_ID, topic.getBranch().getId())
                 .addObject(TOPIC_DTO, topicDto)
+                .addObject(POLL, topic.getPoll())
                 .addObject(SUBMIT_URL, "/topics/" + topicId + "/edit")
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }
@@ -277,6 +285,7 @@ public class TopicController {
             return new ModelAndView(TOPIC_VIEW)
                     .addObject(BRANCH_ID, topic.getBranch().getId())
                     .addObject(TOPIC_DTO, topicDto)
+                    .addObject(POLL, topic.getPoll())
                     .addObject(SUBMIT_URL, "/topics/" + topicId + "/edit")
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         }
