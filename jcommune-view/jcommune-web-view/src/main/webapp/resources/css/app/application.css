@@ -1096,3 +1096,7 @@ pre.prettyprint {
     white-space: pre-wrap;
     max-width: 61px;
 }
+
+.full-width {
+    width: 100%;
+}
