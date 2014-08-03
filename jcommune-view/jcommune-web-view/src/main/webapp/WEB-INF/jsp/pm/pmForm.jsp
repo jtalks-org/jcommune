@@ -56,7 +56,7 @@
         <div class='control-group'>
           <div class='controls'>
             <spring:message code="label.pm.title" var="placeholderTitle"/>
-            <form:input class="span8 script-confirm-unsaved" path="title" tabindex="101"
+            <form:input class="script-confirm-unsaved full-width" path="title" tabindex="101"
                         placeholder="${placeholderTitle}"/>
             <br/>
             <form:errors path="title" cssClass="help-inline"/>
