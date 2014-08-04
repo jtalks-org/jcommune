@@ -44,11 +44,18 @@ public class JcLocaleResolver extends CookieLocaleResolver {
      */
     @Override
     public Locale resolveLocale(HttpServletRequest request) {
+        Locale locale = (Locale)request.getAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME);
+        if (locale != null) {
+            return locale;
+        }
+
         JCUser currentUser = userService.getCurrentUser();
         if (currentUser.isAnonymous()) {
-            return super.resolveLocale(request);
+            locale = super.resolveLocale(request);
         } else {
-            return currentUser.getLanguage().getLocale();
+            locale = currentUser.getLanguage().getLocale();
         }
+        request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, locale);
+        return locale;
     }
 }

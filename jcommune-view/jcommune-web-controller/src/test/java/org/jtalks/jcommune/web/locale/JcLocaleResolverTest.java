@@ -18,6 +18,7 @@ import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.service.UserService;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -70,5 +71,17 @@ public class JcLocaleResolverTest {
         Locale result = localeResolver.resolveLocale(request);
 
         assertEquals(result, defaultLocale);
+    }
+
+    @Test
+    public void resolveLocaleShouldNotRetrieveCurrentUserIfRequestLocaleAttributeNotNull() {
+        JcLocaleResolver localeResolver = new JcLocaleResolver(userService);
+        Locale locale = new Locale("en");
+        when(request.getAttribute(CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME)).thenReturn(locale);
+
+        Locale result = localeResolver.resolveLocale(request);
+
+        assertEquals(result, locale);
+        verify(userService, never()).getCurrentUser();
     }
 }
