@@ -31,6 +31,10 @@ public class JcLocaleResolver extends CookieLocaleResolver {
 
     private UserService userService;
 
+    public JcLocaleResolver(UserService userService) {
+        this.userService = userService;
+    }
+
     /**
      * Resolves user locale. If user is logged in locale will be read from database. If user is anonymous locale will be
      * resolved form request and cookies using standard {@link CookieLocaleResolver} mechanism
@@ -46,13 +50,5 @@ public class JcLocaleResolver extends CookieLocaleResolver {
         } else {
             return currentUser.getLanguage().getLocale();
         }
-    }
-
-    public UserService getUserService() {
-        return userService;
-    }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
     }
 }

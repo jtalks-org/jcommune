@@ -48,8 +48,7 @@ public class JcLocaleResolverTest {
 
     @Test
     public void resolveLocaleShouldReturnUserLocaleIfUserLoggedIn() {
-        JcLocaleResolver localeResolver = new JcLocaleResolver();
-        localeResolver.setUserService(userService);
+        JcLocaleResolver localeResolver = new JcLocaleResolver(userService);
         JCUser currentUser = new JCUser("username", "email@mail.ru", "password");
         currentUser.setLanguage(Language.ENGLISH);
         when(userService.getCurrentUser()).thenReturn(currentUser);
@@ -61,8 +60,7 @@ public class JcLocaleResolverTest {
 
     @Test
     public void resolveLocaleShouldReturnRequestLocaleIfUserAnonymous() {
-        JcLocaleResolver localeResolver = new JcLocaleResolver();
-        localeResolver.setUserService(userService);
+        JcLocaleResolver localeResolver = new JcLocaleResolver(userService);
         AnonymousUser user = new AnonymousUser();
         user.setLanguage(Language.SPANISH);
         Locale defaultLocale = Language.ENGLISH.getLocale();
