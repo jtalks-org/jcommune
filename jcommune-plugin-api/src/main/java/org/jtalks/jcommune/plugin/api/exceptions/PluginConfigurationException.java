@@ -21,25 +21,10 @@ package org.jtalks.jcommune.plugin.api.exceptions;
 public class PluginConfigurationException extends Exception {
 
     /**
-     * Constructs a new exception similar to the {@link Exception#Exception()} constructor.
-     */
-    public PluginConfigurationException() {
-        super();
-    }
-
-    /**
      * Constructs a new exception similar to the {@link Exception#Exception(String)} constructor.
      */
     public PluginConfigurationException(String message) {
         super(message);
     }
 
-    /**
-     * Constructs a new exception similar to the {@link Exception#Exception(Throwable)} constructor.
-     *
-     * @param ex parent exception
-     */
-    public PluginConfigurationException(Exception ex){
-        super(ex);
-    }
 }

@@ -53,7 +53,8 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public List<PluginProperty> getConfiguration() {
-        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, String.valueOf(order));
+        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT,
+                String.valueOf(order));
         orderProperty.setHint(ORDER_HINT);
         return Arrays.asList(orderProperty);
     }
