@@ -74,8 +74,7 @@ $(function () {
                                 type: jDialog.alertType,
                                 bodyMessage: $labelRegistrationSuccess
                             });
-                        }
-                        else {
+                        } else {
                             if (!resp.result.customError) {
                                 // we need to remove complex part (userDto. and userDto.captchas[..]) of complex fields,
                                 // such as userDto.email, because these fields are used as elements ids,
@@ -92,6 +91,7 @@ $(function () {
                                 jDialog.prepareDialog(jDialog.dialog);
                                 refreshCaptcha(jDialog.dialog);
                                 jDialog.showErrors(jDialog.dialog, resp.result, '', '');
+                                jDialog.focusFirstElement();
                             } else {
                                 jDialog.createDialog({
                                     type: jDialog.alertType,
