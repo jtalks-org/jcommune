@@ -41,4 +41,14 @@ public class DateTimeEditorTest {
         editor.setAsText("02-08-2014");
         assertEquals("02-08-2014", editor.getAsText());
     }
+
+    @Test
+    public void setAsTextNotMatchingFormatStingShouldNotSetValue() {
+        try {
+            editor.setAsText("99999-08-2014");
+        } catch (Exception ex) {
+        }
+
+        assertEquals(null, editor.getValue());
+    }
 }
