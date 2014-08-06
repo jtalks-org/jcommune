@@ -240,6 +240,7 @@
 
     <%-- Language chooser --%>
         <%-- Language chooser --%>
+      <sec:authorize access="permitAll()">
         <li id="lang-selector-toggle-li" class="dropdown">
             <div id="lang-selector-toggle" class="dropdown-toggle topline-dropdown-menu"
                  data-toggle="dropdown"
@@ -281,6 +282,7 @@
                 </li>
             </ul>
         </li>
+      </sec:authorize>
         <%-- END OF Language chooser --%>
   </ul>
 </div>

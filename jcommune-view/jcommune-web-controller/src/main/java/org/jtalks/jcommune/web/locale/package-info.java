@@ -12,19 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
-package org.jtalks.jcommune.plugin.api.exceptions;
-
 /**
- * Exception, which to be thrown, when some problems happened with plugin configuration.
+ * Provides package with custom locale resolvers
  */
-public class PluginConfigurationException extends Exception {
-
-    /**
-     * Constructs a new exception similar to the {@link Exception#Exception(String)} constructor.
-     */
-    public PluginConfigurationException(String message) {
-        super(message);
-    }
-
-}
+package org.jtalks.jcommune.web.locale;

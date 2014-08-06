@@ -33,6 +33,8 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
     private static final String ORDER_PROPERTY = "label.order";
     private static final String ORDER_HINT = "label.order.hint";
     private static final int DEFAULT_ORDER_VALUE = 102;
+    private static final String MESSAGE_PATH = "org.jtalks.jcommune.plugin.questionsandanswers.messages";
+    private static final String DEFAULT_LOCALE_CODE = "en";
     /**
      * Default value, thus it will show lower in the list of topics than Discussion and Code Review which are 100 & 101.
      */
@@ -51,7 +53,8 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public List<PluginProperty> getConfiguration() {
-        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, String.valueOf(order));
+        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT,
+                String.valueOf(order));
         orderProperty.setHint(ORDER_HINT);
         return Arrays.asList(orderProperty);
     }
@@ -97,9 +100,13 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public String translateLabel(String code, Locale locale) {
-        ResourceBundle messages = ResourceBundle.getBundle(
-                "org.jtalks.jcommune.plugin.questionsandanswers.messages", locale);
-        return messages.containsKey(code) ? messages.getString(code) : code;
+        ResourceBundle messages = ResourceBundle.getBundle(MESSAGE_PATH, locale);
+        if (messages.containsKey(code)) {
+            return  messages.getString(code);
+        } else {
+            ResourceBundle defaultMessages = ResourceBundle.getBundle(MESSAGE_PATH, new Locale(DEFAULT_LOCALE_CODE));
+            return defaultMessages.containsKey(code) ? defaultMessages.getString(code) : code;
+        }
     }
 
     /**

@@ -82,4 +82,16 @@ public class QuestionsPluginPermissionTest {
         QuestionsPluginBranchPermission actualPermission = QuestionsPluginBranchPermission.findByMask(11);
         assertNull(actualPermission);
     }
+
+    @Test
+    public void testGetName() {
+        QuestionsPluginBranchPermission permission = QuestionsPluginBranchPermission.CREATE_QUESTIONS;
+        assertEquals("CREATE_QUESTIONS", permission.getName());
+    }
+
+    @Test
+    public void getPatternShouldReturnNull() {
+        QuestionsPluginBranchPermission permission = QuestionsPluginBranchPermission.CREATE_QUESTIONS;
+        assertNull(permission.getPattern());
+    }
 }

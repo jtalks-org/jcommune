@@ -12,19 +12,33 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.web.validation.editors;
 
-package org.jtalks.jcommune.plugin.api.exceptions;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import static org.testng.AssertJUnit.assertEquals;
 
 /**
- * Exception, which to be thrown, when some problems happened with plugin configuration.
+ * @author Andrey Ivanov
  */
-public class PluginConfigurationException extends Exception {
+public class DateTimeEditorTest {
+    DateTimeEditor editor;
 
-    /**
-     * Constructs a new exception similar to the {@link Exception#Exception(String)} constructor.
-     */
-    public PluginConfigurationException(String message) {
-        super(message);
+    @BeforeMethod
+    public void init() {
+        editor = new DateTimeEditor("dd-MM-yyyy");
     }
 
+    @Test
+    public void valueIsInvalid() {
+        editor.setAsText(null);
+        assertEquals(null, editor.getValue());
+    }
+
+    @Test
+    public void setValueAsText() {
+        editor.setAsText("02-08-2014");
+        assertEquals("02-08-2014", editor.getAsText());
+    }
 }
