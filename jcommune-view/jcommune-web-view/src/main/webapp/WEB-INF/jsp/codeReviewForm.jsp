@@ -50,6 +50,8 @@
       <form:textarea path="bodyText" id="postBody" name="body" tabindex="200" style="width:100%;height: 350px"
                      placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"/>
       <br>
+      <span class="keymaps-caption"><spring:message code="label.keymaps.post"/></span>
+      <br>
       <form:errors path="bodyText" cssClass="help-inline"/>
     </div>
 
