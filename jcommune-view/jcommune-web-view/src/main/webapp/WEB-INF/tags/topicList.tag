@@ -5,14 +5,16 @@
 <%@ attribute name="topics" required="true" type="java.util.List" %>
 <%@ attribute name="messageToShowIfNoTopics" required="true" type="java.lang.String" rtexprvalue="true" %>
 <%@ attribute name="showBranchColumn" required="false" type="java.lang.Boolean" rtexprvalue="true" %>
+<c:set var="authenticated" value="false"/>
+<sec:authorize access="isAuthenticated()">
+    <c:set var="authenticated" value="true"/>
+</sec:authorize>
 <table id="topics-table" class="table table-row table-bordered">
   <c:choose>
     <c:when test="${!(empty topics)}">
       <thead>
       <tr>
-        <sec:authorize access="isAuthenticated()">
-          <th class="status-col-small"></th>
-        </sec:authorize>
+        <th class="status-col-small"></th>
         <th><spring:message code="label.branch.header.topics"/></th>
         <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
         <c:if test="${showBranchColumn}">
@@ -29,9 +31,7 @@
       <tbody>
       <c:forEach var="topic" items="${topics}">
         <tr>
-          <sec:authorize access="isAuthenticated()">
-            <td class="status-col-small"><jtalks:topicIconSmall topic="${topic}"/></td>
-          </sec:authorize>
+          <td class="status-col-small"><jtalks:topicIconSmall topic="${topic}" authenticated="${authenticated}"/></td>
           <td class="posts-td-small posts-td-small_2">
             <h2 class="h-nostyle">
                 <%--Some topic types should have a special prefix when displayed--%>
