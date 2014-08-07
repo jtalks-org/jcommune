@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -152,7 +153,7 @@ public class KaptchaPluginTest {
     }
 
     @Test
-    public void applyConfigurationWithCorrectValuesShouldBeSuccessful() {
+    public void applyConfigurationWithCorrectValuesShouldBeSuccessful() throws PluginConfigurationException {
         List<PluginProperty> properties = new ArrayList<>();
         properties.add(new PluginProperty(KaptchaPlugin.WIDTH_PROPERTY, PluginProperty.Type.INT, "400"));
         properties.add(new PluginProperty(KaptchaPlugin.HEIGHT_PROPERTY, PluginProperty.Type.INT, "400"));
@@ -165,8 +166,8 @@ public class KaptchaPluginTest {
         assertEquals(errors.size(), 0);
     }
 
-    @Test(expectedExceptions = RuntimeException.class)
-    public void applyConfigurationWithInvalidPropertiesShouldBeFailed() {
+    @Test(expectedExceptions = PluginConfigurationException.class)
+    public void applyConfigurationWithInvalidPropertiesShouldBeFailed() throws PluginConfigurationException {
         List<PluginProperty> properties = new ArrayList<>();
         properties.add(new PluginProperty(KaptchaPlugin.WIDTH_PROPERTY, PluginProperty.Type.INT, "400"));
         properties.add(new PluginProperty(KaptchaPlugin.HEIGHT_PROPERTY, PluginProperty.Type.INT, "400"));

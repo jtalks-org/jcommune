@@ -19,9 +19,10 @@ import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.ExtendedPlugin;
 import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
-import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
-import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
+import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,12 +46,15 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     protected static final String HEIGHT_PROPERTY = "Height";
     protected static final String LENGTH_PROPERTY = "Length";
     protected static final String POSSIBLE_SYMBOLS_PROPERTY = "Possible Symbols";
+    private static final String MESSAGE_PATH = "org.jtalks.jcommune.plugin.kaptcha.messages";
+    private static final String DEFAULT_LOCALE_CODE = "en";
 
     private List<PluginProperty> pluginProperties;
     private KaptchaPluginService service;
 
     @Override
-    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
+    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties)
+            throws PluginConfigurationException {
         int width = 0;
         int height = 0;
         int length = 0;
@@ -77,7 +81,7 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
         }
         if (width < 1 || height < 1 || length < 1 || possibleSymbols.length() < 1) {
             // this should be returned as a map, but this mechanism should be implemented in the plugin API first
-            throw new RuntimeException(
+            throw new PluginConfigurationException(
                     "Can't apply configuration: Width, height, length and possible symbols properties should not be empty.");
         }
         service = new KaptchaPluginService(width, height, length, possibleSymbols);
@@ -112,8 +116,13 @@ public class KaptchaPlugin extends StatefullPlugin implements RegistrationPlugin
     @Override
     public String translateLabel(String code, Locale locale) {
         String fullCode = "label.plugins.plugin.kaptcha.property.name." + code.replaceAll(" ", "_");
-        ResourceBundle messages = ResourceBundle.getBundle("org.jtalks.jcommune.plugin.kaptcha.messages", locale);
-        return messages.containsKey(fullCode) ? messages.getString(fullCode) : code;
+        ResourceBundle messages = ResourceBundle.getBundle(MESSAGE_PATH, locale);
+        if (messages.containsKey(fullCode)) {
+            return  messages.getString(fullCode);
+        } else {
+            ResourceBundle defaultMessages = ResourceBundle.getBundle(MESSAGE_PATH, new Locale(DEFAULT_LOCALE_CODE));
+            return defaultMessages.containsKey(fullCode) ? defaultMessages.getString(fullCode) : code;
+        }
     }
 
     @Override

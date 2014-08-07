@@ -320,20 +320,31 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         UserDto userDto = registerUserDto.getUserDto();
         String encodedPassword = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
                 : encryptionService.encryptPassword(userDto.getPassword());
-        registerByPlugin(registerUserDto.getUserDto(), true, result);
+        userDto.setPassword(encodedPassword);
+        registerByPlugin(userDto, true, result);
         mergeValidationErrors(jcErrors, result);
         if (!result.hasErrors()) {
-            registerByPlugin(registerUserDto.getUserDto(), false, result);
+            registerByPlugin(userDto, false, result);
             // because next http call can fail (in the interim another user was registered)
             // we need to double check it
             if (!result.hasErrors()) {
-                userDto.setPassword(encodedPassword);
-                storeRegisteredUser(registerUserDto.getUserDto());
+                storeRegisteredUser(userDto);
             }
         } 
         return result;
     }
 
+    /**
+     * Performs registration or validation by available registration plugins
+     *
+     * @param userDto {@link UserDto} object
+     * @param dryRun flag which determines registration or validation will be performed. If set to <code>true</code>
+     *               validation will be performed. Otherwise - registration
+     * @param bindingResult validation result
+     *
+     * @throws UnexpectedErrorException if plugin returns unexpected response
+     * @throws NoConnectionException if plugin can't connect to registration service
+     */
     public void registerByPlugin(UserDto userDto, boolean dryRun, BindingResult bindingResult)
             throws UnexpectedErrorException, NoConnectionException {
         Map<Long, RegistrationPlugin> registrationPlugins = pluginService.getRegistrationPlugins();

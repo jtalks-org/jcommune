@@ -17,8 +17,6 @@ package org.jtalks.jcommune.model.entity;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.validation.annotations.PollItemsNamesLength;
 import org.jtalks.jcommune.model.validation.annotations.PollItemsNotEmptyIfTitleFilled;
@@ -44,11 +42,11 @@ import static ch.lambdaj.Lambda.sumFrom;
  * Poll is tied to the life cycle of the topic({@link Topic}).
  *
  * @author Anuar Nurmakanov
+ * @author Andrey Ivanov
  */
 @PollTitleNotBlankIfItemsFilled
 @PollItemsNotEmptyIfTitleFilled
 public class Poll extends Entity {
-    private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("dd-MM-yyyy");
     private static final String SEPARATOR = System.getProperty("line.separator");
     
     public static final int MIN_TITLE_LENGTH = 3;
@@ -64,12 +62,11 @@ public class Poll extends Entity {
     @PollItemsSize
     @PollItemsNamesLength
     @PollItemsWithoutDuplicates
-    private List<PollItem> pollItems = new ArrayList<PollItem>();
+    private List<PollItem> pollItems = new ArrayList<>();
     private Topic topic;
     //transient fields
     private String pollItemsValue;
-    private String endingDateValue;
-    
+
 
     /**
      * Used only by Hibernate.
@@ -229,26 +226,7 @@ public class Poll extends Entity {
         return StringUtils.isNotBlank(getTitle()) &&
                 !CollectionUtils.isEmpty(pollItems);
     }
-    
-    /**
-     * Set string representation of poll ending date. Parse this string and set
-     * ending date.
-     * 
-     * @param endingDateValue poll ending date in string representation
-     */
-    public void setEndingDateValue(String endingDateValue) {
-        if (endingDateValue != null) {
-            setEndingDate(FORMAT.parseDateTime(endingDateValue));
-        }
-    }
-    
-    /**
-     * @return poll ending date in string representation
-     */
-    public String getEndingDateValue() {
-        return endingDateValue;
-    }
-   
+
     /**
      * Set string representation of poll options. Parse this string and fill
      * poll items list.
@@ -279,7 +257,7 @@ public class Poll extends Entity {
      * @return processed poll items list
      */
     private List<PollItem> parseItems(String pollItems) {
-        List<PollItem> result = new ArrayList<PollItem>();
+        List<PollItem> result = new ArrayList<>();
         if (pollItems == null) {
             return result;
         }

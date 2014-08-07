@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2011  JTalks.org Team
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -13,15 +13,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+package org.jtalks.jcommune.plugin.api.exceptions;
+
 /**
- *  Effects for tables/lists and forms in forum
+ * Exception, which to be thrown, when some problems happened with plugin configuration.
  */
-jQuery(document).ready(function(){
-        // Tooltips on status images
-        jQuery('img.status-img-small').tooltip();
-        jQuery("#links_editor").tooltip();
-        jQuery("a").tooltip();
-        jQuery("span").tooltip();
-        jQuery('.btn').tooltip({placement: 'bottom'});
-   		jQuery('.script-has-tooltip').tooltip();
-});
+public class PluginConfigurationException extends Exception {
+
+    /**
+     * Constructs a new exception similar to the {@link Exception#Exception(String)} constructor.
+     */
+    public PluginConfigurationException(String message) {
+        super(message);
+    }
+
+}

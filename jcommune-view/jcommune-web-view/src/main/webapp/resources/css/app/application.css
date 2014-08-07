@@ -780,7 +780,10 @@ div.anchor {
 }
 
 .btn-with-dropdown .tooltip {
-    min-width: 300px;
+    display: inline-block;
+    width: -moz-max-content;  /*firefox*/
+    width: -webkit-max-content;
+    max-width: 500px;
     white-space: pre-wrap;
 }
 
@@ -1092,4 +1095,8 @@ pre.prettyprint {
 #lang-selector-toggle-li .tooltip {
     white-space: pre-wrap;
     max-width: 61px;
+}
+
+.full-width {
+    width: 100%;
 }

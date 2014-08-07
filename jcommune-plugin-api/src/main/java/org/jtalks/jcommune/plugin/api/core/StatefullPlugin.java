@@ -17,6 +17,7 @@ package org.jtalks.jcommune.plugin.api.core;
 
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
+import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,7 @@ public abstract class StatefullPlugin implements Plugin {
                 state = State.CONFIGURED;
                 LOGGER.debug("Plugin {} is configured", this.getName());
             }
-        } catch (RuntimeException e) {
+        } catch (PluginConfigurationException | RuntimeException e) {
             state = State.IN_ERROR;
             LOGGER.warn("Plugin {} configuration failed", this.getName(), e);
             throw new UnexpectedErrorException(e);
@@ -70,9 +71,10 @@ public abstract class StatefullPlugin implements Plugin {
      *
      * @param properties configuration for plugin to apply
      * @return configuration errors mapped for PCP given, empty map means OK
+     * @throws PluginConfigurationException if error occurred during configuration applying
      */
-    protected abstract Map<PluginProperty, String> applyConfiguration(
-            List<PluginProperty> properties);
+    protected abstract Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties)
+            throws PluginConfigurationException;
 
     /**
      * {@inheritDoc}

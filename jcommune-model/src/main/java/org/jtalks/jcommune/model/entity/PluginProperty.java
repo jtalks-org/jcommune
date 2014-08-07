@@ -24,6 +24,7 @@ public class PluginProperty extends Entity {
     private String name;
     private Type type;
     private String value;
+    private String hint;
     private PluginConfiguration pluginConfiguration;
 
     public static enum Type {INT, BOOLEAN, STRING}
@@ -67,5 +68,13 @@ public class PluginProperty extends Entity {
 
     public void setPluginConfiguration(PluginConfiguration pluginConfiguration) {
         this.pluginConfiguration = pluginConfiguration;
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
     }
 }

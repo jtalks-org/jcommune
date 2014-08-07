@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
+import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 
 import java.util.*;
@@ -29,11 +30,15 @@ import java.util.*;
  * @author Evgeniy Myslovets
  */
 public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicPlugin {
-    private static final String ORDER_PROPERTY = "label.Order";
+    private static final String ORDER_PROPERTY = "label.order";
+    private static final String ORDER_HINT = "label.order.hint";
+    private static final int DEFAULT_ORDER_VALUE = 102;
+    private static final String MESSAGE_PATH = "org.jtalks.jcommune.plugin.questionsandanswers.messages";
+    private static final String DEFAULT_LOCALE_CODE = "en";
     /**
      * Default value, thus it will show lower in the list of topics than Discussion and Code Review which are 100 & 101.
      */
-    private int order = 102;
+    private int order = DEFAULT_ORDER_VALUE;
 
     /**
      * {@inheritDoc}
@@ -48,7 +53,10 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public List<PluginProperty> getConfiguration() {
-        return Arrays.asList(new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, String.valueOf(order)));
+        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT,
+                String.valueOf(order));
+        orderProperty.setHint(ORDER_HINT);
+        return Arrays.asList(orderProperty);
     }
 
     /**
@@ -63,12 +71,16 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      * {@inheritDoc}
      */
     @Override
-    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties) {
+    protected Map<PluginProperty, String> applyConfiguration(List<PluginProperty> properties)
+            throws PluginConfigurationException {
         if (properties.size() == 1 && ORDER_PROPERTY.equalsIgnoreCase(properties.get(0).getName())) {
-            order = properties.get(0).getValue() == null ? 102 : Integer.parseInt(properties.get(0).getValue());
+            order = properties.get(0).getValue() == null ? DEFAULT_ORDER_VALUE
+                    : Integer.parseInt(properties.get(0).getValue());
+            properties.get(0).setHint(ORDER_HINT);
             return new HashMap<>();
         } else {
-            throw new RuntimeException("Can't apply configuration: incorrect parameters count or order not found");
+            throw new PluginConfigurationException(
+                    "Can't apply configuration: incorrect parameters count or order not found");
         }
     }
 
@@ -77,8 +89,10 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public List<PluginProperty> getDefaultConfiguration() {
-        PluginProperty order = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, "102");
-        return Arrays.asList(order);
+        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT,
+                String.valueOf(DEFAULT_ORDER_VALUE));
+        orderProperty.setHint(ORDER_HINT);
+        return Arrays.asList(orderProperty);
     }
 
     /**
@@ -86,9 +100,13 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public String translateLabel(String code, Locale locale) {
-        ResourceBundle messages = ResourceBundle.getBundle(
-                "org.jtalks.jcommune.plugin.questionsandanswers.messages", locale);
-        return messages.containsKey(code) ? messages.getString(code) : code;
+        ResourceBundle messages = ResourceBundle.getBundle(MESSAGE_PATH, locale);
+        if (messages.containsKey(code)) {
+            return  messages.getString(code);
+        } else {
+            ResourceBundle defaultMessages = ResourceBundle.getBundle(MESSAGE_PATH, new Locale(DEFAULT_LOCALE_CODE));
+            return defaultMessages.containsKey(code) ? defaultMessages.getString(code) : code;
+        }
     }
 
     /**
@@ -131,6 +149,10 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      */
     @Override
     public JtalksPermission getBranchPermissionByName(String name) {
-        return QuestionsPluginBranchPermission.valueOf(name);
+        try {
+            return QuestionsPluginBranchPermission.valueOf(name);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

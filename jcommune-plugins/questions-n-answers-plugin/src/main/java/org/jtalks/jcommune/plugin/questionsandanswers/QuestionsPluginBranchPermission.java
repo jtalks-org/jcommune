@@ -81,6 +81,11 @@ public enum QuestionsPluginBranchPermission implements JtalksPermission {
         return name;
     }
 
+    /**
+     * Throws exception if permission name is not valid.
+     *
+     * @param name a textual representation of the permission (usually the same as the constant name)
+     */
     private void throwIfNameNotValid(String name) {
         Assert.throwIfNull(name, "The name can't be null");
     }
@@ -101,6 +106,12 @@ public enum QuestionsPluginBranchPermission implements JtalksPermission {
         return null;
     }
 
+    /**
+     * Finds permission by its int mask.
+     *
+     * @param mask a bit mask that represents the permission
+     * @return permission with specified mask
+     */
     public static QuestionsPluginBranchPermission findByMask(int mask) {
         for (QuestionsPluginBranchPermission nextPermission : values()) {
             if (mask == nextPermission.getMask()) {
@@ -110,6 +121,9 @@ public enum QuestionsPluginBranchPermission implements JtalksPermission {
         return null;
     }
 
+    /**
+     * @return all questions-n-answers plugin branch permission
+     */
     public static List<QuestionsPluginBranchPermission> getAllAsList() {
         return Lists.newArrayList(values());
     }

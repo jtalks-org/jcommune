@@ -113,7 +113,7 @@
           <div class="btn-group btn-with-dropdown">
             <a class="${topicTypes[0].id} btn btn-primary"
                href="${pageContext.request.contextPath}${topicTypes[0].link}"
-               title="<spring:message code='${topicTypes[0].toolTipKey}' text='${topicType.toolTipKey}'/>"
+               title="<spring:message code='${topicTypes[0].toolTipKey}' text='${topicTypes[0].toolTipKey}'/>"
                data-placement="right">
               <spring:message code='${topicTypes[0].displayNameKey}' text='${topicTypes[0].displayNameKey}'/>
             </a>

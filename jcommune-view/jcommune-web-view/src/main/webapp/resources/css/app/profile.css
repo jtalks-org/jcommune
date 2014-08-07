@@ -121,3 +121,7 @@ li.contact .control-group {
 .notification-control {
   margin-left: 80px;
 }
+
+.notification-control .tooltip {
+  max-width: 40em;
+}

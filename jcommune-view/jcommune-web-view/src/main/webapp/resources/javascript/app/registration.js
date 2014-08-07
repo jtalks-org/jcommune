@@ -39,12 +39,14 @@ $(function () {
         });
 
         function createRegistrationForm(params) {
+
+            var widthStyle = 'width:90%'; //The class may be overridden by other classes. But the attribute Style has highest priority.
             var bodyContent =
-                Utils.createFormElement($labelUsername, 'username', 'text', 'first', 'width:90%') +
-                    Utils.createFormElement($labelEmail, 'email', 'text', null, 'width:90%') +
-                    Utils.createFormElement($labelPassword, 'password', 'password', null, 'width:90%') +
-                    Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password', null, 'width:90%') +
-                    Utils.createFormElement($lableHoneypotCaptcha, 'honeypotCaptcha', 'text', 'hide-element', 'width:90%');
+                Utils.createFormElement($labelUsername, 'username', 'text', 'first', widthStyle) +
+                    Utils.createFormElement($labelEmail, 'email', 'text', null, widthStyle) +
+                    Utils.createFormElement($labelPassword, 'password', 'password', null, widthStyle) +
+                    Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password', null, widthStyle) +
+                    Utils.createFormElement($lableHoneypotCaptcha, 'honeypotCaptcha', 'text', 'hide-element', widthStyle);
             for (var pluginId in params) {
                 bodyContent += params[pluginId];
             }
@@ -72,8 +74,7 @@ $(function () {
                                 type: jDialog.alertType,
                                 bodyMessage: $labelRegistrationSuccess
                             });
-                        }
-                        else {
+                        } else {
                             if (!resp.result.customError) {
                                 // we need to remove complex part (userDto. and userDto.captchas[..]) of complex fields,
                                 // such as userDto.email, because these fields are used as elements ids,
@@ -90,6 +91,7 @@ $(function () {
                                 jDialog.prepareDialog(jDialog.dialog);
                                 refreshCaptcha(jDialog.dialog);
                                 jDialog.showErrors(jDialog.dialog, resp.result, '', '');
+                                jDialog.focusFirstElement();
                             } else {
                                 jDialog.createDialog({
                                     type: jDialog.alertType,

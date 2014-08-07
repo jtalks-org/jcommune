@@ -27,7 +27,7 @@
     <c:set var="visibleBranchesCount" value="${visibleBranchesCount + 1}"/>
   </jtalks:hasPermission>
 </c:forEach>
-<%--We must show the section that contains at least one visible branch --%>
-<c:if test="${visibleBranchesCount > 0}">
+<%--We must show the section that contains at least one visible branch or in admin mode--%>
+<c:if test="${visibleBranchesCount > 0 || sessionScope.adminMode == true}">
   <jsp:doBody/>
 </c:if>

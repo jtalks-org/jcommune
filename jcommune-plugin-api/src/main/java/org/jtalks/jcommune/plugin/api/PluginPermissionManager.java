@@ -15,10 +15,10 @@
 package org.jtalks.jcommune.plugin.api;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.jcommune.plugin.api.filters.PluginFilter;
-import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.PluginWithBranchPermissions;
+import org.jtalks.jcommune.plugin.api.filters.PluginFilter;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +43,7 @@ public class PluginPermissionManager {
 
     /**
      * Gets all branch permissions provided by all <b>enabled</b> plugins
+     *
      * @return list of branch permissions provided by plugins
      */
     public List<JtalksPermission> getPluginsBranchPermissions() {
@@ -59,6 +60,7 @@ public class PluginPermissionManager {
 
     /**
      * Performs search permissions provided by <b>enabled</b> plugins by permission mask
+     *
      * @param mask permission mask for search
      * @return permission with specified mask if it exist
      *         <b>null</b> otherwise
@@ -66,20 +68,20 @@ public class PluginPermissionManager {
     public JtalksPermission findPluginsBranchPermissionByMask(int mask) {
         PluginFilter filter = new TypeFilter(PluginWithBranchPermissions.class);
         List<Plugin> plugins = pluginLoader.getPlugins(filter);
-        JtalksPermission permission = null;
         for (Plugin plugin : plugins) {
             if (plugin.isEnabled()) {
-                permission = ((PluginWithBranchPermissions)plugin).getBranchPermissionByMask(mask);
+                JtalksPermission permission = ((PluginWithBranchPermissions) plugin).getBranchPermissionByMask(mask);
                 if (permission != null) {
                     return permission;
                 }
             }
         }
-        return permission;
+        return null;
     }
 
     /**
      * Performs search permissions provided by <b>enabled</b> plugins by permission name
+     *
      * @param name permission name for search
      * @return permission with specified name if it exist
      *         <b>null</b> otherwise
@@ -87,15 +89,14 @@ public class PluginPermissionManager {
     public JtalksPermission findPluginsBranchPermissionByName(String name) {
         PluginFilter filter = new TypeFilter(PluginWithBranchPermissions.class);
         List<Plugin> plugins = pluginLoader.getPlugins(filter);
-        JtalksPermission permission = null;
         for (Plugin plugin : plugins) {
             if (plugin.isEnabled()) {
-                permission = ((PluginWithBranchPermissions)plugin).getBranchPermissionByName(name);
+                JtalksPermission permission = ((PluginWithBranchPermissions)plugin).getBranchPermissionByName(name);
                 if (permission != null) {
                     return permission;
                 }
             }
         }
-        return permission;
+        return null;
     }
 }

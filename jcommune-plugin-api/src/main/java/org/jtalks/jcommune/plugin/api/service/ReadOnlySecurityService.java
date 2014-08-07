@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.api.service;
 
+import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 
 /**
@@ -47,13 +48,14 @@ public class ReadOnlySecurityService implements UserReader {
      * Gets copy of user currently logged in. This is done so that Plugins won't be able to modify objects and
      * break core forum.
      *
-     * @return the copy of user currently logged in or {@code null} if user is anonymous
+     * @return the copy of user currently logged in or {@link AnonymousUser} if user is anonymous
+     * @see AnonymousUser
      */
     @Override
     public JCUser getCurrentUser() {
         JCUser currentUser = userReader.getCurrentUser();
         if (currentUser == null) {
-            return null;
+            return new AnonymousUser();
         } else {
             return JCUser.copyUser(currentUser);
         }

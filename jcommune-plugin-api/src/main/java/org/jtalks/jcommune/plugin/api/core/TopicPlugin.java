@@ -28,6 +28,7 @@ public interface TopicPlugin extends PluginWithBranchPermissions {
     /**
      * Creates dto object for create topic button which will be used for creation of topic type provided by this plugin
      * (allow use custom text, tooltip, url)
+     *
      * @param branchId id of branch where button should be placed
      * @return dto object for create topic button
      * @see org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto
@@ -36,6 +37,7 @@ public interface TopicPlugin extends PluginWithBranchPermissions {
 
     /**
      * Gets permission which allows to create topic type provided by this plugin
+     *
      * @return permission which allows to create topic
      */
     JtalksPermission getCreateTopicPermission();
