@@ -35,8 +35,6 @@
     </div>
     <span class="inline-block"></span>
     <%-- List of plugins. --%>
-    <form:form action="${pageContext.request.contextPath}/plugins/update/activating" method="POST"
-               modelAttribute="pluginsActivatingListDto">
         <table id="plugins-table" class="table table-row table-bordered">
             <c:choose>
                 <c:when test="${!(empty plugins)}">
@@ -57,8 +55,9 @@
                     <c:forEach var="plugin" items="${plugins}" varStatus="status">
                         <%-- Plugin --%>
                         <tr>
+                            <form:form action="${pageContext.request.contextPath}/plugins/activate" method="POST">
                             <td>
-                                <form:hidden path="activatingPlugins[${status.index}].pluginName"/>
+                                <form:hidden path="pluginName"/>
                                 <c:out value="${plugin.name}"/>
                             </td>
                             <td>
@@ -70,9 +69,10 @@
                                 </a>
                             </td>
                             <td>
-                                <form:checkbox path="activatingPlugins[${status.index}].activated"
+                                <form:checkbox path="activated"
                                                value="${plugin.enabled}"/>
                             </td>
+                            </form:form>
                         </tr>
                     </c:forEach>
                     </tbody>
@@ -82,6 +82,5 @@
         <c:if test="${!(empty plugins)}">
             <input type="submit" value="<spring:message code="label.plugins.save"/>"/>
         </c:if>
-    </form:form>
 </div>
 </body>

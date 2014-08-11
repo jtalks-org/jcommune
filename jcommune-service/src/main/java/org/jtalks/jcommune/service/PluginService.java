@@ -71,6 +71,15 @@ public interface PluginService extends EntityService<PluginConfiguration> {
      * @throws NotFoundException when one of plugins that should be activated/deactivated doesn't exist
      */
     void updatePluginsActivating(List<PluginActivatingDto> pluginActivatingDtoList, long forumComponentId) throws NotFoundException;
+    
+    /**
+     * Activate/deactivate one particular plugin
+     * 
+     * @param pluginActivatingDto contains the plugin that should be activated/deactivated
+     * @param forumComponentId        an identifier of forum component id, that is needed to check permissions
+     * @throws NotFoundException when one of plugins that should be activated/deactivated doesn't exist
+     */
+    void updatePluginActivating(PluginActivatingDto pluginActivatingDto, long forumComponentId) throws NotFoundException;
 
     /**
      * Get all enabled registration plugins {@link RegistrationPlugin}.

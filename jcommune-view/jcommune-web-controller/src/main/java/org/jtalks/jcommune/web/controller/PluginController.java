@@ -23,6 +23,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.plugin.api.dto.PluginActivatingDto;
 import org.jtalks.jcommune.plugin.api.dto.PluginActivatingListDto;
 import org.jtalks.jcommune.plugin.api.filters.NameFilter;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
@@ -81,9 +83,7 @@ public class PluginController {
     public ModelAndView getPlugins() {
         long componentId = getForumComponentId();
         List<Plugin> plugins = pluginService.getPlugins(componentId);
-        return new ModelAndView("plugin/pluginList")
-                .addObject("plugins", plugins)
-                .addObject("pluginsActivatingListDto", PluginActivatingListDto.valueOf(plugins));
+        return new ModelAndView("plugin/pluginList", "plugins", plugins);
     }
 
     /**
@@ -177,6 +177,16 @@ public class PluginController {
             @ModelAttribute PluginActivatingListDto pluginsActivatingListDto) throws NotFoundException {
         long componentId = getForumComponentId();
         pluginService.updatePluginsActivating(pluginsActivatingListDto.getActivatingPlugins(), componentId);
+        return "redirect:/plugins/list";
+    }
+    
+    @RequestMapping(value = "/activate", method = RequestMethod.POST)
+    public String activatePlugin(@RequestParam(value="pluginName", required = true) String pluginName, @RequestParam(value = "activated", required = true) boolean activated) throws NotFoundException {
+    	long componentId = getForumComponentId();
+    	PluginActivatingDto pluginActivatingDto = new PluginActivatingDto();
+    	pluginActivatingDto.setPluginName(pluginName);
+    	pluginActivatingDto.setActivated(activated);
+    	pluginService.updatePluginActivating(pluginActivatingDto, componentId);
         return "redirect:/plugins/list";
     }
 
