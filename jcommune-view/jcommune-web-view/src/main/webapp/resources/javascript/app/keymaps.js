@@ -65,7 +65,7 @@ Keymaps.registrationPassConfirm = function (e) {
 Keymaps.signinSubmit = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();
-        $('#signin-modal-dialog').find("#j_username").focus();
+        $('#signin-modal-dialog').find("#userName").focus();
     }
 }
 

@@ -37,18 +37,18 @@
       <legend><spring:message code="label.signin"/></legend>
 
       <div class="control-group">
-        <label for="j_username" class="control-label"><spring:message code="label.username"/> </label>
+        <label for="userName" class="control-label"><spring:message code="label.username"/> </label>
 
         <div class="controls">
-          <form:input class="reg_input" type="text" name="j_username" path="userName" id="j_username"/>
+          <form:input class="reg_input" type="text" path="userName" id="userName"/>
         </div>
       </div>
 
       <div class="control-group">
-        <label for="j_password" class="control-label"><spring:message code="label.password"/> </label>
+        <label for="password" class="control-label"><spring:message code="label.password"/> </label>
 
         <div class="controls">
-            <form:input type="password" name="j_password" path="password" id="j_password"/>
+            <form:input type="password" path="password" id="password"/>
           <c:if test="${not empty param.login_error}">
             <span class="help-inline">
               <c:choose>
