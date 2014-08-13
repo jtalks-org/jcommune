@@ -1100,3 +1100,7 @@ pre.prettyprint {
 .full-width {
     width: 100%;
 }
+
+.plugin-checkbox {
+	/* This style uses to select all plugin activating checkboxes from plugins list page*/
+}

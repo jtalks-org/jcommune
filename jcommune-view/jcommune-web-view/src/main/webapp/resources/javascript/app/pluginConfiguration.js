@@ -57,4 +57,23 @@ $(function () {
             handle: ".modal-header"
         });
     }
+    
+    $(".plugin-checkbox").on('change', function (e) {
+        $(this).prop( "disabled", true );
+        var id = $(this).attr('id');
+        var pluginName = $("#"+id+"-name").val();
+        var activated = $(this).is(':checked');
+        
+        var query = "pluginName=" + pluginName + "&activated=" + activated;
+        
+        $.ajax({
+            type: 'POST',
+            url: $root + '/plugins/activate',
+            data: query,
+            dataType: 'json',
+            complete: function () {
+                $("#" + id).attr('disabled', false);
+            }
+        });
+    });
 })

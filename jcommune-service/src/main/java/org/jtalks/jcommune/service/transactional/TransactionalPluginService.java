@@ -159,14 +159,7 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
     public void updatePluginsActivating(List<PluginActivatingDto> updatedPlugins,
                                         long forumComponentId) throws NotFoundException {
         for (PluginActivatingDto updatedPlugin : updatedPlugins) {
-        	updatePluginActivating(updatedPlugin, forumComponentId);
-            /*PluginConfigurationDao pluginConfigurationDao = getDao();
-            String pluginName = updatedPlugin.getPluginName();
-            PluginConfiguration configuration = pluginConfigurationDao.get(pluginName);
-            boolean isActivated = updatedPlugin.isActivated();
-            LOGGER.debug("Plugin activation for {} will be changed to {}.", pluginName, isActivated);
-            configuration.setActive(isActivated);
-            pluginConfigurationDao.saveOrUpdate(configuration);*/
+            updatePluginActivating(updatedPlugin, forumComponentId);
         }
     }
 
@@ -176,12 +169,12 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
     @Override
     @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public void updatePluginActivating(PluginActivatingDto updatedPlugin, long forumComponentId) throws NotFoundException {
-    	PluginConfigurationDao pluginConfigurationDao = getDao();
-    	String pluginName = updatedPlugin.getPluginName();
-    	PluginConfiguration configuration = pluginConfigurationDao.get(pluginName);
-    	boolean isActivated = updatedPlugin.isActivated();
-    	LOGGER.debug("Plugin activation for {} will be changed to {}.", pluginName, isActivated);
-    	configuration.setActive(isActivated);
-    	pluginConfigurationDao.saveOrUpdate(configuration);
+        PluginConfigurationDao pluginConfigurationDao = getDao();
+        String pluginName = updatedPlugin.getPluginName();
+        PluginConfiguration configuration = pluginConfigurationDao.get(pluginName);
+        boolean isActivated = updatedPlugin.isActivated();
+        LOGGER.debug("Plugin activation for {} will be changed to {}.", pluginName, isActivated);
+        configuration.setActive(isActivated);
+        pluginConfigurationDao.saveOrUpdate(configuration);
     }
 }
