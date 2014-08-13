@@ -121,7 +121,7 @@ SET @banned_group_sid_id := (select id from acl_sid where sid=@banned_group_sid)
 SET @moderator_group_sid_id := (select id from acl_sid where sid=@moderator_group_sid);
 SET @anonymous_sid_id := (select id from acl_sid where sid='user:anonymousUser');
 
---PERMISSIONS BEGIN
+-- PERMISSIONS BEGIN
 SET @SEND_PRIVATE_MESSAGES_MASK := 14;
 SET @CREATE_FORUM_FAQ_MASK := 20;
 SET @EDIT_OWN_PROFILE_MASK := 15;
@@ -141,11 +141,11 @@ SET @CREATE_CODE_REVIEW_MASK := 21;
 SET @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK := 22;
 
 SET @ADMIN_MASK := 16;
---PERMISSIONS END
+-- PERMISSIONS END
 
 insert ignore into acl_object_identity
-	SELECT BranchTable.BRANCH_ID, @branch_acl_class, BranchTable.BRANCH_ID, NULL, 1, 1
-	FROM (SELECT BRANCH_ID FROM BRANCHES) BranchTable;
+ SELECT BranchTable.BRANCH_ID, @branch_acl_class, BranchTable.BRANCH_ID, NULL, 1, 1
+ FROM (SELECT BRANCH_ID FROM BRANCHES) BranchTable;
 
 set @branches_count = (SELECT COUNT(*) FROM BRANCHES);
 set @registered_group_object_identity=@branches_count + 1;
