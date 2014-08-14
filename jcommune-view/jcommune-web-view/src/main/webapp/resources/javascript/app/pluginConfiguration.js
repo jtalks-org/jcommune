@@ -62,15 +62,40 @@ $(function () {
         $(this).prop( "disabled", true );
         var id = $(this).attr('id');
         var pluginName = $("#"+id+"-name").val();
-        var activated = $(this).is(':checked');
+        activated = $(this).is(':checked');
         
         var query = "pluginName=" + pluginName + "&activated=" + activated;
+        
+        function activationStatus(status){
+            if (status == "SUCCESS"){
+                $("#"+id+"-status-failed").addClass("hide");
+                if (activated){
+                    $("#"+id+"-status-deactivated").addClass("hide");
+                    $("#"+id+"-status-activated").removeClass("hide");
+                    $("#"+id+"-status-indicator").attr("class", "icon-play");
+                } else {
+                    $("#"+id+"-status-activated").addClass("hide");
+                    $("#"+id+"-status-deactivated").removeClass("hide");
+                    $("#"+id+"-status-indicator").attr("class", "icon-stop");
+                }
+            } else {
+                $("#"+id+"-status-failed").removeClass("hide");
+                $("#"+id+"-status-activated").addClass("hide");
+                $("#"+id+"-status-deactivated").addClass("hide");
+            }
+        }
         
         $.ajax({
             type: 'POST',
             url: $root + '/plugins/activate',
             data: query,
             dataType: 'json',
+            success: function (resp) {
+                activationStatus(resp.status);
+            },
+            error: function () {
+                activationStatus("FAILED");
+            },
             complete: function () {
                 $("#" + id).attr('disabled', false);
             }

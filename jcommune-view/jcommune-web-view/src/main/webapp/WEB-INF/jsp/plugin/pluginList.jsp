@@ -57,6 +57,15 @@
                         <%-- Plugin --%>
                         <tr>
                             <td>
+                                <c:choose>
+                                    <c:when test="${plugin.enabled}">
+                                        <c:set var="pluginStatusClass" value="icon-play" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="pluginStatusClass" value="icon-stop" />
+                                    </c:otherwise>
+                                </c:choose>
+                                <i id="plugin-${status.index}-status-indicator" class="${pluginStatusClass}"></i>
                                 <form:hidden id="plugin-${status.index}-name" path="activatingPlugins[${status.index}].pluginName"/>
                                 <c:out value="${plugin.name}"/>
                             </td>
@@ -68,9 +77,17 @@
                                     <spring:message code="label.plugins.plugin.configure"/>
                                 </a>
                             </td>
-                            <td>
+                            <td class="plugin-checkbox-column">
                                 <form:checkbox id ="plugin-${status.index}" class="plugin-checkbox" path="activatingPlugins[${status.index}].activated" value="${plugin.enabled}"/>
-                                
+                                <span id="plugin-${status.index}-status-activated" class="label label-success hide">
+                                    <spring:message code="label.plugins.plugin.status.activated"/>
+                                </span>
+                                <span id="plugin-${status.index}-status-deactivated" class="label label-success hide">
+                                    <spring:message code="label.plugins.plugin.status.deactivated"/>
+                                </span>
+                                <span id="plugin-${status.index}-status-failed" class="label label-important hide">
+                                    <spring:message code="label.plugins.plugin.status.failed"/>
+                                </span>
                             </td>
                         </tr>
                     </c:forEach>
