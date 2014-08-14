@@ -23,7 +23,8 @@ import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.plugin.api.dto.PluginActivatingListDto;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.plugin.api.dto.PluginActivatingDto;
 import org.jtalks.jcommune.plugin.api.filters.NameFilter;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
@@ -162,18 +163,18 @@ public class PluginControllerTest {
     }
 
     @Test
-    public void updateEnablingShouldUpdateAllPassedPlugins() throws NotFoundException {
+    public void updateEnablingShouldUpdatePassedPlugin() throws NotFoundException {
         long componentId = 25L;
         Component component = new Component();
         component.setId(componentId);
         when(componentService.getComponentOfForum()).thenReturn(component);
-        List<PluginActivatingDto> pluginActivatingDtoList = new ArrayList<>();
-        PluginActivatingListDto pluginsEnablingDto = new PluginActivatingListDto(pluginActivatingDtoList);
-
-        String destinationUrl = pluginController.updateActivating(pluginsEnablingDto);
-
-        assertEquals(destinationUrl, "redirect:/plugins/list", "After correct update of plugins enabling, user should see updated plugins");
-        verify(pluginService).updatePluginsActivating(pluginActivatingDtoList, componentId);
+        PluginActivatingDto pluginActivatingDto = new PluginActivatingDto("Dummy plugin", true);
+        
+        String expectedStatus = new JsonResponse(JsonResponseStatus.SUCCESS).getStatus().name();
+        
+        String actualStatus = pluginController.activatePlugin(pluginActivatingDto.getPluginName(), pluginActivatingDto.isActivated()).getStatus().name();
+        
+        assertEquals(actualStatus, expectedStatus);
     }
 
     /**
