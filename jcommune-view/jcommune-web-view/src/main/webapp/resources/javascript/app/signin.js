@@ -24,8 +24,8 @@ $(function () {
         e.preventDefault();
 
         var bodyContent = '\
-        ' + Utils.createFormElement($labelUsername, 'j_username', 'text', 'first', 'width:90%')
-            + Utils.createFormElement($labelPassword, 'j_password', 'password', null, 'width:90%') + ' \
+        ' + Utils.createFormElement($labelUsername, 'userName', 'text', 'first', 'width:90%')
+            + Utils.createFormElement($labelPassword, 'password', 'password', null, 'width:90%') + ' \
             <div id="rememberme-area" class="control-group"> \
                 <label class="rememberme-lbl"><input name="_spring_security_remember_me" class="form-check-radio-box" type="checkbox" checked="checked">' + $labelRememberMe + '</label> \
             </div> \
@@ -39,15 +39,15 @@ $(function () {
         var submitDialog = function (e) {
             if (e.keyCode == enterCode) {
                 //if focus on username then select password field
-                if ($(e.target).is('#j_username')) {
+                if ($(e.target).is('#userName')) {
                     e.preventDefault();
                     if ($.browser.mozilla) {
                         setTimeout(function () {
-                            jDialog.dialog.find('#j_password').focus();
+                            jDialog.dialog.find('#password').focus();
                         }, 0);
                     }
                     else {
-                        jDialog.dialog.find('#j_password').focus();
+                        jDialog.dialog.find('#password').focus();
                     }
                 }
             }
@@ -62,7 +62,7 @@ $(function () {
             bodyContent: bodyContent,
             footerContent: footerContent,
             maxWidth: 350,
-            tabNavigation: ['#j_username', '#j_password', '#rememberme-area input', '#restore-passwd a',
+            tabNavigation: ['#userName', '#password', '#rememberme-area input', '#restore-passwd a',
                 '#signin-submit-button'],
             handlers: {
                 '#signin-modal-dialog': {'submit': sendLoginPost}
@@ -114,8 +114,8 @@ $(function () {
 function sendLoginPost(e) {
     e.preventDefault();
     var rememberMeElement = jDialog.dialog.find('input[name=_spring_security_remember_me]');
-    var usernameElement = jDialog.dialog.find('#j_username');
-    var passwordElement = jDialog.dialog.find('#j_password');
+    var usernameElement = jDialog.dialog.find('#userName');
+    var passwordElement = jDialog.dialog.find('#password');
 
     var remember_me = rememberMeElement.is(':checked');
     var username = usernameElement.val();
@@ -123,7 +123,7 @@ function sendLoginPost(e) {
 
     jDialog.dialog.find('*').attr('disabled', true);
 
-    var query = 'j_username=' + encodeURIComponent(username) + '&' + 'j_password=' + encodeURIComponent(password);
+    var query = 'userName=' + encodeURIComponent(username) + '&' + 'password=' + encodeURIComponent(password);
     if (remember_me) {
         query = query + '&_spring_security_remember_me=on';
     }
@@ -148,8 +148,8 @@ function sendLoginPost(e) {
                 } else {
                     jDialog.prepareDialog(jDialog.dialog);
 
-                    ErrorUtils.addErrorStyles('#j_username');
-                    ErrorUtils.addErrorStyles('#j_password');
+                    ErrorUtils.addErrorStyles('#userName');
+                    ErrorUtils.addErrorStyles('#password');
 
                     passwordElement.val("");
                     passwordElement.parent().append('<span class="help-inline _error">' + $labelLoginError + '</span>');
