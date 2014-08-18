@@ -67,22 +67,31 @@ $(function () {
         var query = "pluginName=" + pluginName + "&activated=" + activated;
         
         function successActivationHandler(){
-            $("#"+id+"-status-failed").addClass("hide");
+            $("#"+id+"-status-failed").hide();
             if (activated){
-                $("#"+id+"-status-deactivated").addClass("hide");
-                $("#"+id+"-status-activated").removeClass("hide");
+                $("#"+id+"-status-deactivated").hide();
+                $("#"+id+"-status-activated").show();
                 $("#"+id+"-status-indicator").attr("class", "icon-play");
+                setTimeout(function() {
+                    $("#"+id+"-status-activated").fadeOut('slow');
+                }, 3000);
             } else {
-                $("#"+id+"-status-activated").addClass("hide");
-                $("#"+id+"-status-deactivated").removeClass("hide");
+                $("#"+id+"-status-activated").hide();
+                $("#"+id+"-status-deactivated").show();
                 $("#"+id+"-status-indicator").attr("class", "icon-stop");
+                setTimeout(function() {
+                    $("#"+id+"-status-deactivated").fadeOut('slow');
+                }, 3000);
             }
         }
         
         function errorActivationHandler(){
-            $("#"+id+"-status-failed").removeClass("hide");
-            $("#"+id+"-status-activated").addClass("hide");
-            $("#"+id+"-status-deactivated").addClass("hide");
+            $("#"+id+"-status-failed").show();
+            $("#"+id+"-status-activated").hide();
+            $("#"+id+"-status-deactivated").hide();
+            setTimeout(function() {
+                $("#"+id+"-status-failed").fadeOut('slow');
+            }, 3000);
         }
         
         $.ajax({
