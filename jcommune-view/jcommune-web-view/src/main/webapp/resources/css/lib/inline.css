@@ -65,7 +65,6 @@ input.form-check-radio-box[type="radio"] {
 
 .table .post-content-td {
     vertical-align: top;
-    word-break: break-all;
     word-wrap: break-word;
     width: 80%;
     
