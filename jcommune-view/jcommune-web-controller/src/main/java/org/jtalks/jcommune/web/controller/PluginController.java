@@ -21,19 +21,19 @@ import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.WebControllerPlugin;
+import org.jtalks.jcommune.plugin.api.dto.PluginActivatingDto;
 import org.jtalks.jcommune.plugin.api.dto.PluginActivatingListDto;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.api.filters.NameFilter;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -167,19 +167,13 @@ public class PluginController {
         return labels;
     }
 
-    /**
-     * Update activating state of plugins.
-     *
-     * @param pluginsActivatingListDto contains activating state for the list of plugins
-     * @return redirect to the list of plugins
-     * @throws NotFoundException if configured plugin wasn't found
-     */
-    @RequestMapping(value = "/update/activating", method = RequestMethod.POST)
-    public String updateActivating(
-            @ModelAttribute PluginActivatingListDto pluginsActivatingListDto) throws NotFoundException {
+    @RequestMapping(value = "/activate", method = RequestMethod.POST, produces="application/json")
+    @ResponseBody
+    public JsonResponse activatePlugin(@RequestParam(value="pluginName", required = true) String pluginName, @RequestParam(value = "activated", required = true) boolean activated) throws NotFoundException {
         long componentId = getForumComponentId();
-        pluginService.updatePluginsActivating(pluginsActivatingListDto.getActivatingPlugins(), componentId);
-        return "redirect:/plugins/list";
+        PluginActivatingDto pluginActivatingDto = new PluginActivatingDto(pluginName, activated);
+        pluginService.updatePluginActivating(pluginActivatingDto, componentId);
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
     @RequestMapping(value = "/request/{pluginSubPath}/*", method=RequestMethod.GET)
