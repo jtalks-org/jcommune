@@ -23,7 +23,7 @@ import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
  *
  * @author Mikhail Stryzhonok
  */
-public interface TopicPlugin extends PluginWithBranchPermissions {
+public interface TopicPlugin extends PluginWithBranchPermissions, WebControllerPlugin {
 
     /**
      * Creates dto object for create topic button which will be used for creation of topic type provided by this plugin

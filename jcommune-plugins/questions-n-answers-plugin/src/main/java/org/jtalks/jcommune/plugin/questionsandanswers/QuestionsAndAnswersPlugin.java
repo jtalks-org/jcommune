@@ -22,6 +22,7 @@ import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -125,7 +126,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
     public CreateTopicBtnDto getCreateTopicBtnDto(long branchId) {
         Locale locale = ReadOnlySecurityService.getInstance().getCurrentUser().getLanguage().getLocale();
         return new CreateTopicBtnDto("new-question-btn", translateLabel("label.addQuestion", locale),
-                translateLabel("label.addQuestion.tip", locale), "/questions/new?branchId=" + branchId, order);
+                translateLabel("label.addQuestion.tip", locale), "plugins/questions/new?branchId=" + branchId, order);
     }
 
     /**
@@ -154,5 +155,21 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
         } catch (IllegalArgumentException e) {
             return null;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String processHttpRequest(HttpServletRequest request) {
+        return "";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getRequestSubPath() {
+        return "questions";
     }
 }
