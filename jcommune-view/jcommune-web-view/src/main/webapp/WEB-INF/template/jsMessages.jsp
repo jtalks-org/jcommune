@@ -148,3 +148,8 @@ $restrictPermission = '<spring:message code="permissions.restrict" htmlEscape="t
 $permissionsGroupAvailable = '<spring:message code="permissions.group.available" htmlEscape="true"/>';
 $permissionsGroupAlreadyAdded = '<spring:message code="permissions.group.already.added" htmlEscape="true"/>';
 $labelFailedToLoadGroups = '<spring:message code="permissions.group.load.failed" htmlEscape="true"/>';
+
+$pluginStatusTitle = '<spring:message code="label.plugins.plugin.status.title" htmlEscape="true"/>';
+$pluginStatusActivated = '<spring:message code="label.plugins.plugin.status.activated" htmlEscape="true"/>';
+$pluginStatusDeactivated = '<spring:message code="label.plugins.plugin.status.deactivated" htmlEscape="true"/>';
+$pluginStatusFailed = '<spring:message code="label.plugins.plugin.status.failed" htmlEscape="true"/>';

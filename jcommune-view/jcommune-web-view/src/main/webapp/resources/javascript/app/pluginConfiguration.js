@@ -66,32 +66,39 @@ $(function () {
         
         var query = "pluginName=" + pluginName + "&activated=" + activated;
         
+        function showPopup(title, message, status){
+            var body = "<div class=\"alert ";
+            if (status == "success")
+                body += "alert-success";
+            else
+                body += "alert-error";
+            body = body + "\">" + message + "</div>";
+            jDialog.createDialog({
+                dialogId: 'plugin-activation-popup',
+                title: title,
+                bodyContent: body,
+                footerContent: '',
+                maxWidth: 350,
+                tabNavigation: ['']
+            });
+            
+            setTimeout(function() {
+                jDialog.closeDialog({
+                    dialogId: 'plugin-activation-popup'
+                })
+            }, 1000);
+        }
+        
         function successActivationHandler(){
-            $("#"+id+"-status-failed").hide();
             if (activated){
-                $("#"+id+"-status-deactivated").hide();
-                $("#"+id+"-status-activated").show();
-                $("#"+id+"-status-indicator").attr("class", "icon-play");
-                setTimeout(function() {
-                    $("#"+id+"-status-activated").fadeOut('slow');
-                }, 3000);
+                showPopup($pluginStatusTitle, $pluginStatusActivated, "success");
             } else {
-                $("#"+id+"-status-activated").hide();
-                $("#"+id+"-status-deactivated").show();
-                $("#"+id+"-status-indicator").attr("class", "icon-stop");
-                setTimeout(function() {
-                    $("#"+id+"-status-deactivated").fadeOut('slow');
-                }, 3000);
+                showPopup($pluginStatusTitle, $pluginStatusDeactivated, "success");
             }
         }
         
         function errorActivationHandler(){
-            $("#"+id+"-status-failed").show();
-            $("#"+id+"-status-activated").hide();
-            $("#"+id+"-status-deactivated").hide();
-            setTimeout(function() {
-                $("#"+id+"-status-failed").fadeOut('slow');
-            }, 3000);
+            showPopup($pluginStatusTitle, $pluginStatusFailed, "failed");
         }
         
         $.ajax({
