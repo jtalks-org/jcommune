@@ -57,4 +57,53 @@ $(function () {
             handle: ".modal-header"
         });
     }
+    
+    $(".plugin-checkbox").on('change', function (e) {
+        $(this).prop( "disabled", true );
+        var id = $(this).attr('id');
+        var pluginName = $("#"+id+"-name").val();
+        activated = $(this).is(':checked');
+        
+        var query = "pluginName=" + pluginName + "&activated=" + activated;
+        
+        function successActivationHandler(){
+            $("#"+id+"-status-failed").hide();
+            if (activated){
+                $("#"+id+"-status-deactivated").hide();
+                $("#"+id+"-status-activated").show();
+                $("#"+id+"-status-indicator").attr("class", "icon-play");
+                setTimeout(function() {
+                    $("#"+id+"-status-activated").fadeOut('slow');
+                }, 3000);
+            } else {
+                $("#"+id+"-status-activated").hide();
+                $("#"+id+"-status-deactivated").show();
+                $("#"+id+"-status-indicator").attr("class", "icon-stop");
+                setTimeout(function() {
+                    $("#"+id+"-status-deactivated").fadeOut('slow');
+                }, 3000);
+            }
+        }
+        
+        function errorActivationHandler(){
+            $("#"+id+"-status-failed").show();
+            $("#"+id+"-status-activated").hide();
+            $("#"+id+"-status-deactivated").hide();
+            setTimeout(function() {
+                $("#"+id+"-status-failed").fadeOut('slow');
+            }, 3000);
+        }
+        
+        $.ajax({
+            type: 'POST',
+            url: $root + '/plugins/activate',
+            data: query,
+            dataType: 'json',
+            success: successActivationHandler,
+            error: errorActivationHandler,
+            complete: function () {
+                $("#" + id).attr('disabled', false);
+            }
+        });
+    });
 })

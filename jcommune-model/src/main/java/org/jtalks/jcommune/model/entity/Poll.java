@@ -17,8 +17,6 @@ package org.jtalks.jcommune.model.entity;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.validation.annotations.PollItemsNamesLength;
 import org.jtalks.jcommune.model.validation.annotations.PollItemsNotEmptyIfTitleFilled;
@@ -31,7 +29,6 @@ import com.google.common.base.Joiner;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Size;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,7 +62,7 @@ public class Poll extends Entity {
     @PollItemsSize
     @PollItemsNamesLength
     @PollItemsWithoutDuplicates
-    private List<PollItem> pollItems = new ArrayList<PollItem>();
+    private List<PollItem> pollItems = new ArrayList<>();
     private Topic topic;
     //transient fields
     private String pollItemsValue;
@@ -260,7 +257,7 @@ public class Poll extends Entity {
      * @return processed poll items list
      */
     private List<PollItem> parseItems(String pollItems) {
-        List<PollItem> result = new ArrayList<PollItem>();
+        List<PollItem> result = new ArrayList<>();
         if (pollItems == null) {
             return result;
         }

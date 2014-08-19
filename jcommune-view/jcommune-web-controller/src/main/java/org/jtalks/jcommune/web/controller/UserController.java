@@ -401,8 +401,8 @@ public class UserController {
      */
     @RequestMapping(value = "/login_ajax", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse loginAjax(@RequestParam("j_username") String username,
-                                  @RequestParam("j_password") String password,
+    public JsonResponse loginAjax(@RequestParam("userName") String username,
+                                  @RequestParam("password") String password,
                                   @RequestParam(value = "_spring_security_remember_me", defaultValue = "off")
                                   String rememberMe,
                                   HttpServletRequest request, HttpServletResponse response) {

@@ -205,6 +205,12 @@ in the future.
       <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
     </c:if>
 
+    <%--Should be added to compose pm pages because common code performes preview of topics, and private messages--%>
+    <c:if test="${fn:contains(uriString, 'pm') or fn:contains(uriString, 'reply') or fn:contains(uriString, 'quote')}">
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
+    </c:if>
+
     <c:if test="${fn:contains(uriString, 'posts')}">
       <script src="${pageContext.request.contextPath}/resources/javascript/app/leaveConfirm.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>

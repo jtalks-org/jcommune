@@ -35,8 +35,7 @@
     </div>
     <span class="inline-block"></span>
     <%-- List of plugins. --%>
-    <form:form action="${pageContext.request.contextPath}/plugins/update/activating" method="POST"
-               modelAttribute="pluginsActivatingListDto">
+    <form:form modelAttribute="pluginsActivatingListDto">
         <table id="plugins-table" class="table table-row table-bordered">
             <c:choose>
                 <c:when test="${!(empty plugins)}">
@@ -58,7 +57,16 @@
                         <%-- Plugin --%>
                         <tr>
                             <td>
-                                <form:hidden path="activatingPlugins[${status.index}].pluginName"/>
+                                <c:choose>
+                                    <c:when test="${plugin.enabled}">
+                                        <c:set var="pluginStatusClass" value="icon-play" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:set var="pluginStatusClass" value="icon-stop" />
+                                    </c:otherwise>
+                                </c:choose>
+                                <i id="plugin-${status.index}-status-indicator" class="${pluginStatusClass}"></i>
+                                <form:hidden id="plugin-${status.index}-name" path="activatingPlugins[${status.index}].pluginName"/>
                                 <c:out value="${plugin.name}"/>
                             </td>
                             <td>
@@ -69,9 +77,17 @@
                                     <spring:message code="label.plugins.plugin.configure"/>
                                 </a>
                             </td>
-                            <td>
-                                <form:checkbox path="activatingPlugins[${status.index}].activated"
-                                               value="${plugin.enabled}"/>
+                            <td class="plugin-checkbox-column">
+                                <form:checkbox id ="plugin-${status.index}" class="plugin-checkbox" path="activatingPlugins[${status.index}].activated" value="${plugin.enabled}"/>
+                                <span id="plugin-${status.index}-status-activated" class="label label-success hide">
+                                    <spring:message code="label.plugins.plugin.status.activated"/>
+                                </span>
+                                <span id="plugin-${status.index}-status-deactivated" class="label label-success hide">
+                                    <spring:message code="label.plugins.plugin.status.deactivated"/>
+                                </span>
+                                <span id="plugin-${status.index}-status-failed" class="label label-important hide">
+                                    <spring:message code="label.plugins.plugin.status.failed"/>
+                                </span>
                             </td>
                         </tr>
                     </c:forEach>
@@ -79,9 +95,6 @@
                 </c:when>
             </c:choose>
         </table>
-        <c:if test="${!(empty plugins)}">
-            <input type="submit" value="<spring:message code="label.plugins.save"/>"/>
-        </c:if>
     </form:form>
 </div>
 </body>

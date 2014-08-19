@@ -12,19 +12,26 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.jtalks.jcommune.plugin.api.core;
 
-package org.jtalks.jcommune.plugin.api.exceptions;
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * Exception, which to be thrown, when some problems happened with plugin configuration.
+ * Interface for the plugin which can process http request and generate content for the response
+ * @author Andrei Alikov
  */
-public class PluginConfigurationException extends Exception {
+public interface WebControllerPlugin {
 
     /**
-     * Constructs a new exception similar to the {@link Exception#Exception(String)} constructor.
+     * Processes the http request in the plugin
+     * @param request http request to process
+     * @return content which will be used to create response page (decorator will be applied)
      */
-    public PluginConfigurationException(String message) {
-        super(message);
-    }
+    String processHttpRequest(HttpServletRequest request);
 
+    /**
+     * @return part of request path that should be processed by the plugin - all requests
+     * plugins/[getRequestSubPath()]/* should be processed by the plugin
+     */
+    String getRequestSubPath();
 }

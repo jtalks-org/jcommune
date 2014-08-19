@@ -57,6 +57,7 @@ public class JcLocaleResolverTest {
         Locale result = localeResolver.resolveLocale(request);
 
         assertEquals(result, currentUser.getLanguage().getLocale());
+        verify(request).setAttribute(CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME, Locale.ENGLISH);
     }
 
     @Test
@@ -73,10 +74,14 @@ public class JcLocaleResolverTest {
         assertEquals(result, defaultLocale);
     }
 
+    /**
+     * It is important that we don't access DB if we have enough data from the Request, we had performance issues
+     * because of that when user locale was fetched from DB for every label on the page.
+     */
     @Test
     public void resolveLocaleShouldNotRetrieveCurrentUserIfRequestLocaleAttributeNotNull() {
         JcLocaleResolver localeResolver = new JcLocaleResolver(userService);
-        Locale locale = new Locale("en");
+        Locale locale = Locale.ENGLISH;
         when(request.getAttribute(CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME)).thenReturn(locale);
 
         Locale result = localeResolver.resolveLocale(request);

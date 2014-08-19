@@ -79,7 +79,8 @@
             </a>&thinsp;
             <spring:message code="label.topic.last_post_by"/>
             <a class="space-left-small"
-               href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}">
+               href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}"
+               title="<spring:message code='label.tips.view_profile'/>">
               <c:out value="${topic.lastPost.userCreated.username}"/>
             </a>
           </td>

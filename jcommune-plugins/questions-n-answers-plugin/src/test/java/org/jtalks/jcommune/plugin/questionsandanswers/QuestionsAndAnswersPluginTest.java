@@ -15,11 +15,16 @@
 package org.jtalks.jcommune.plugin.questionsandanswers;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
+import org.jtalks.jcommune.plugin.api.service.UserReader;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -27,14 +32,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.*;
 
 
 /**
  * @author Mikhail Stryzhonok
  */
 public class QuestionsAndAnswersPluginTest {
+
     private static final String ORDER_PROPERTY = "label.order";
 
     @Test
@@ -156,5 +163,23 @@ public class QuestionsAndAnswersPluginTest {
     public void getBranchPermissionByNameShouldReturnNullIfPermissionNotFound() {
         JtalksPermission actualPermission = new QuestionsAndAnswersPlugin().getBranchPermissionByName("ASK_QUESTIONS");
         assertNull(actualPermission);
+    }
+
+    @Test
+    public void supportsJCommuneVersionShouldReturnTrue() {
+        assertTrue(new QuestionsAndAnswersPlugin().supportsJCommuneVersion(""));
+    }
+
+    @Test
+    public void testGetCreateTopicBtnDto() {
+        JCUser currentUser = new JCUser("name", "email@example.com", "password");
+        currentUser.setLanguage(Language.ENGLISH);
+        UserReader userReader = mock(UserReader.class);
+        when(userReader.getCurrentUser()).thenReturn(currentUser);
+        ReadOnlySecurityService service = (ReadOnlySecurityService) ReadOnlySecurityService.getInstance();
+        service.setUserReader(userReader);
+
+        CreateTopicBtnDto createTopicBtnDto = new QuestionsAndAnswersPlugin().getCreateTopicBtnDto(1);
+        assertEquals("Ask Question", createTopicBtnDto.getDisplayNameKey());
     }
 }
