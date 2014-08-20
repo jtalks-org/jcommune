@@ -79,7 +79,8 @@ in the future.
     <script src="${pageContext.request.contextPath}/resources/wro/main.js?${project.version}"></script>
 
     <c:if test="${fn:contains(uriString, 'inbox') or fn:contains(uriString, 'outbox')
-      or fn:contains(uriString, 'drafts') or fn:contains(uriString, 'pm')}">
+      or fn:contains(uriString, 'drafts') or fn:contains(uriString, 'pm') or fn:contains(uriString, 'reply')
+      or fn:contains(uriString, 'quote')}">
       <script language="javascript"
               src="${pageContext.request.contextPath}/resources/wro/pm.js?${project.version}"></script>
     </c:if>
