@@ -154,6 +154,7 @@ function sendLoginPost(e) {
                     passwordElement.val("");
                     passwordElement.parent().append('<span class="help-inline _error">' + $labelLoginError + '</span>');
                     jDialog.resizeDialog(jDialog.dialog);
+                    jDialog.focusFirstElement();
                 }
             }
         },
