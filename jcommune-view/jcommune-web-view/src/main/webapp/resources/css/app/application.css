@@ -1108,4 +1108,6 @@ pre.prettyprint {
 .plugin-popup-message {
     position: absolute;
     left: 50%;
+    height: 22px;
+    font-size: 15px;
 }

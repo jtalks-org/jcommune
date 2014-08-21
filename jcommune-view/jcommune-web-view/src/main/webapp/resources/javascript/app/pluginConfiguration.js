@@ -83,11 +83,15 @@ $(function () {
             }, 1000);
         }
         
-        function successActivationHandler(){
+        function successActivationHandler(resp){
             if (activated){
                 showPopup(pluginName, $pluginStatusActivated, "success");
             } else {
                 showPopup(pluginName, $pluginStatusDeactivated, "success");
+            }
+            if (resp.status == "FAILED"){
+                $("#" + id).attr("checked", "none");
+                $("#" + id).hide();
             }
         }
         
@@ -100,7 +104,9 @@ $(function () {
             url: $root + '/plugins/activate',
             data: query,
             dataType: 'json',
-            success: successActivationHandler,
+            success: function (resp) {
+                successActivationHandler(resp);
+            },
             error: errorActivationHandler,
             complete: function () {
                 $("#" + id).attr('disabled', false);
