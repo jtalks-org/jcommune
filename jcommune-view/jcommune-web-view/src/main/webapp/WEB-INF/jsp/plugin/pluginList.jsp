@@ -29,6 +29,7 @@
 </head>
 <body>
 <div class="container">
+    <div id="status-message" class="alert plugin-popup-message hide"></div>
     <%-- List of plugins. --%>
     <div id="plugins-list-header">
         <h2><spring:message code="label.plugins.installed"/></h2>
@@ -68,7 +69,7 @@
                                     <spring:message code="label.plugins.plugin.configure"/>
                                 </a>
                             </td>
-                            <td class="plugin-checkbox-column">
+                            <td>
                                 <form:checkbox id ="plugin-${status.index}" class="plugin-checkbox" path="activatingPlugins[${status.index}].activated" value="${plugin.enabled}"/>
                             </td>
                         </tr>

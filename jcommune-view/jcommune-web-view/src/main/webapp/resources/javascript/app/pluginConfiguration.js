@@ -66,39 +66,33 @@ $(function () {
         
         var query = "pluginName=" + pluginName + "&activated=" + activated;
         
-        function showPopup(title, message, status){
-            var body = "<div class=\"alert ";
+        function showPopup(plugin, message, status){
+            $("#status-message").html(plugin + " " + message);
             if (status == "success")
-                body += "alert-success";
+                $("#status-message").addClass("alert-success");
             else
-                body += "alert-error";
-            body = body + "\">" + message + "</div>";
-            jDialog.createDialog({
-                dialogId: 'plugin-activation-popup',
-                title: title,
-                bodyContent: body,
-                footerContent: '',
-                maxWidth: 350,
-                tabNavigation: ['']
-            });
+                $("#status-message").addClass("alert-error");
+            
+            var width = $("#status-message").width();
+            $("#status-message").css("margin-left", "-" + width / 2 + 'px');
+                
+            $("#status-message").show();
             
             setTimeout(function() {
-                jDialog.closeDialog({
-                    dialogId: 'plugin-activation-popup'
-                })
+                $("#status-message").hide();
             }, 1000);
         }
         
         function successActivationHandler(){
             if (activated){
-                showPopup($pluginStatusTitle, $pluginStatusActivated, "success");
+                showPopup(pluginName, $pluginStatusActivated, "success");
             } else {
-                showPopup($pluginStatusTitle, $pluginStatusDeactivated, "success");
+                showPopup(pluginName, $pluginStatusDeactivated, "success");
             }
         }
         
         function errorActivationHandler(){
-            showPopup($pluginStatusTitle, $pluginStatusFailed, "failed");
+            showPopup(pluginName, $pluginStatusFailed, "failed");
         }
         
         $.ajax({

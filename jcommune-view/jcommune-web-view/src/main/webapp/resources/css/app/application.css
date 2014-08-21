@@ -1102,9 +1102,10 @@ pre.prettyprint {
 }
 
 .plugin-checkbox {
-	/* This style uses to select all plugin activating checkboxes from plugins list page*/
+    /* This style uses to select all plugin activating checkboxes from plugins list page*/
 }
 
-.plugin-checkbox-column {
-	width: 200px;
+.plugin-popup-message {
+    position: absolute;
+    left: 50%;
 }
