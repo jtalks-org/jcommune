@@ -16,13 +16,13 @@ package org.jtalks.jcommune.plugin.questionsandanswers;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.core.WebControllerPlugin;
 import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
+import org.jtalks.jcommune.plugin.questionsandanswers.controller.QuestionsAndAnswersController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author Evgeniy Myslovets
  */
-public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicPlugin {
+public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements TopicPlugin {
     private static final String ORDER_PROPERTY = "label.order";
     private static final String ORDER_HINT = "label.order.hint";
     private static final int DEFAULT_ORDER_VALUE = 102;
@@ -161,15 +161,7 @@ public class QuestionsAndAnswersPlugin extends StatefullPlugin implements TopicP
      * {@inheritDoc}
      */
     @Override
-    public String processHttpRequest(HttpServletRequest request) {
-        return "";
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getRequestSubPath() {
-        return "questions";
+    public Object getController() {
+        return new QuestionsAndAnswersController();
     }
 }

@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
-import org.jtalks.jcommune.plugin.api.core.WebControllerPlugin;
 import org.jtalks.jcommune.plugin.api.dto.PluginActivatingDto;
 import org.jtalks.jcommune.plugin.api.dto.PluginActivatingListDto;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
@@ -36,7 +35,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -174,21 +172,6 @@ public class PluginController {
         PluginActivatingDto pluginActivatingDto = new PluginActivatingDto(pluginName, activated);
         pluginService.updatePluginActivating(pluginActivatingDto, componentId);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
-    }
-
-    @RequestMapping(value = "/request/{pluginSubPath}/*", method=RequestMethod.GET)
-    public String processPluginRequest(Model model, HttpServletRequest request, @PathVariable String pluginSubPath) {
-        long componentId = getForumComponentId();
-        List<Plugin> plugins = pluginService.getPlugins(componentId);
-        for (Plugin plugin: plugins) {
-            if (plugin instanceof WebControllerPlugin) {
-                WebControllerPlugin webControllerPlugin = (WebControllerPlugin)plugin;
-                if (webControllerPlugin.getRequestSubPath().equals(pluginSubPath)) {
-                    model.addAttribute("content", webControllerPlugin.processHttpRequest(request));
-                }
-            }
-        }
-        return "plugin/plugin";
     }
 
     private long getForumComponentId() {

@@ -14,24 +14,33 @@
  */
 package org.jtalks.jcommune.plugin.api.core;
 
-import javax.servlet.http.HttpServletRequest;
+import org.jtalks.jcommune.model.entity.PluginConfiguration;
+import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.web.PluginHandlerMapping;
 
 /**
  * Interface for the plugin which can process http request and generate content for the response
  * @author Andrei Alikov
  */
-public interface WebControllerPlugin {
+public abstract class WebControllerPlugin extends StatefullPlugin {
 
     /**
-     * Processes the http request in the plugin
-     * @param request http request to process
-     * @return content which will be used to create response page (decorator will be applied)
+     * {@inheritDoc}
      */
-    String processHttpRequest(HttpServletRequest request);
+    @Override
+    public void configure(PluginConfiguration configuration) throws UnexpectedErrorException {
+        super.configure(configuration);
+        if (this.isEnabled()) {
+            PluginHandlerMapping.getInstance().addController(getController());
+        } else {
+            //TODO: figure out how to unmap handler
+        }
+    }
 
     /**
-     * @return part of request path that should be processed by the plugin - all requests
-     * plugins/[getRequestSubPath()]/* should be processed by the plugin
+     * Gets controller object which will handle HTTP requests to plugin
+     *
+     * @return controller object
      */
-    String getRequestSubPath();
+    public abstract Object getController();
 }
