@@ -53,7 +53,8 @@ public class UserDataInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
         //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
-        if (modelAndView != null && !modelAndView.getViewName().contains("redirect:")) {
+        if (modelAndView != null
+                && (modelAndView.getViewName() == null || !modelAndView.getViewName().contains("redirect:"))) {
             int newPmCount = service.currentUserNewPmCount();
             request.setAttribute("newPmCount", newPmCount);
         }

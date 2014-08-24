@@ -14,20 +14,58 @@
  */
 package org.jtalks.jcommune.plugin.questionsandanswers.controller;
 
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.JstlView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mikhail Stryzhonok
  */
 @Controller
-public class QuestionsAndAnswersController {
+public class QuestionsAndAnswersController implements ApplicationContextAware {
+    private ApplicationContext applicationContext;
 
-    @RequestMapping(value = "/question", method = RequestMethod.GET)
-    public String show(Model model) {
+    @RequestMapping(value = "/question/new", method = RequestMethod.GET)
+    public View show(Model model, HttpServletRequest request) {
+        List<Post> posts = new ArrayList<>();
+        JCUser user = new JCUser("user", "", "");
+        posts.add(new Post(user, "test"));
+        Page<Post> postPage = new PageImpl<Post>(posts);
+
         model.addAttribute("content", "Coming soon");
-        return "plugin/plugin";
+        model.addAttribute("viewList", new ArrayList<JCUser>());
+        model.addAttribute("usersOnline", new ArrayList<Object>());
+        model.addAttribute("postsPage", postPage);
+        model.addAttribute("question", new Topic(user, "Test"));
+        model.addAttribute("postDto", null);
+        model.addAttribute("subscribed", false);
+        //model.addAttribute("breadcrumbList", );
+        //JstlView view = new JstlView("/org/jtalks/jcommune/plugin/questionsandanswers/views/questionForm.jsp");
+        JstlView view = new JstlView("/WEB-INF/jsp/plugin/question.jsp");
+        view.setPreventDispatchLoop(true);
+        String contentType = request.getContentType();
+        view.setContentType(contentType);
+        view.setApplicationContext(applicationContext);
+        return view;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }
