@@ -15,13 +15,13 @@
 
 package org.jtalks.jcommune.web.interceptors;
 
+import org.joda.time.LocalDateTime;
 import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.joda.time.LocalDateTime;
 
 /**
  * Injects different JCommune properties into pages so that they can be 
@@ -90,7 +90,8 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
         //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
-        if (modelAndView != null && !modelAndView.getViewName().contains("redirect:")) {
+        if (modelAndView != null
+                && (modelAndView.getViewName() == null || !modelAndView.getViewName().contains("redirect:"))) {
             modelAndView.addObject(PARAM_CMP_NAME, componentNameProperty.getValueOfComponent());
             modelAndView.addObject(PARAM_CMP_DESCRIPTION, componentDescriptionProperty.getValueOfComponent());
             modelAndView.addObject(PARAM_SHOW_DUMMY_LINKS, sapeShowDummyLinksProperty.booleanValue());

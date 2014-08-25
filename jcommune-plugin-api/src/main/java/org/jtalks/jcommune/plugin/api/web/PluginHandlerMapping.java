@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.api.web;
 
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import java.util.ArrayList;
@@ -35,6 +36,12 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         return INSTANCE;
     }
 
+    // need to run tests without context
+    @Override
+    protected boolean isContextRequired() {
+        return false;
+    }
+
     /**
      * Adds handlers from controller to handler mapping
      * Note: class should be annotated with {@link org.springframework.stereotype.Controller} annotation and all
@@ -46,6 +53,9 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         if (!mappedClasses.contains(controller.getClass().getName())) {
             mappedClasses.add(controller.getClass().getName());
             INSTANCE.detectHandlerMethods(controller);
+            if (controller instanceof ApplicationContextAware) {
+                ((ApplicationContextAware) controller).setApplicationContext(getApplicationContext());
+            }
         }
     }
 
