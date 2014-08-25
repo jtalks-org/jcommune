@@ -14,9 +14,12 @@
  */
 package org.jtalks.jcommune.plugin.api.web;
 
+import org.jtalks.jcommune.plugin.api.dto.HandlerStateDto;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +29,7 @@ import java.util.List;
 public class PluginHandlerMapping extends RequestMappingHandlerMapping {
 
     private static final PluginHandlerMapping INSTANCE = new PluginHandlerMapping();
-    private List<String> mappedClasses = new ArrayList<>();
+    private List<HandlerStateDto> handlerStateDtos = new ArrayList<>();
 
     private PluginHandlerMapping() {
 
@@ -50,13 +53,57 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      * @param controller controller object to map
      */
     public void addController(Object controller) {
-        if (!mappedClasses.contains(controller.getClass().getName())) {
-            mappedClasses.add(controller.getClass().getName());
+        HandlerStateDto handlerStateDto = getHandlerStateDto(controller.getClass().getName());
+        if (handlerStateDto == null) {
+            handlerStateDtos.add(new HandlerStateDto(controller.getClass().getName(), true));
             INSTANCE.detectHandlerMethods(controller);
             if (controller instanceof ApplicationContextAware) {
                 ((ApplicationContextAware) controller).setApplicationContext(getApplicationContext());
             }
+        } else if (!handlerStateDto.isEnabled()) {
+            handlerStateDto.setEnabled(true);
         }
+    }
+
+    /**
+     * Disables handlers from specified controller
+     *
+     * @param controller controller bean to disable handlers
+     */
+    public void deactivateController(Object controller) {
+        HandlerStateDto handlerStateDto = getHandlerStateDto(controller.getClass().getName());
+        if (handlerStateDto != null) {
+            handlerStateDto.setEnabled(false);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
+        HandlerMethod handlerMethod = super.getHandlerInternal(request);
+        HandlerStateDto handlerStateDto = getHandlerStateDto(handlerMethod.getBean().getClass().getName());
+        if (handlerStateDto != null && !handlerStateDto.isEnabled()) {
+            return null;
+        } else {
+            return handlerMethod;
+        }
+    }
+
+    /**
+     * Search in handlerStateDtos for {@link HandlerStateDto} with specified name
+     *
+     * @param beanClassName name to search
+     * @return {@link HandlerStateDto} with specified name or <code>null</code> if not found
+     */
+    private HandlerStateDto getHandlerStateDto(String beanClassName) {
+        for (HandlerStateDto handlerStateDto : handlerStateDtos) {
+            if (handlerStateDto.getBeanClassName().equals(beanClassName)) {
+                return handlerStateDto;
+            }
+        }
+        return null;
     }
 
 }
