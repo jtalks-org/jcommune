@@ -217,7 +217,6 @@ in the future.
       <script src="${pageContext.request.contextPath}/resources/javascript/app/bbeditorEffects.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"></script>
     </c:if>
 
     <c:if test="${fn:contains(uriString, 'reviews')}">
