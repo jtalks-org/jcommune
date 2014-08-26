@@ -109,167 +109,55 @@
 <div class="anchor">
   <a id="${post.id}">anchor</a>
 </div>
-<table class="table table-row table-bordered table-condensed">
-  <tr class="post-header">
-    <td class="post-date">
-      <i class="icon-calendar"></i>
-      <jtalks:format value="${post.creationDate}"/>
-    </td>
-    <td class="top-buttons">
-      &nbsp;
-      <div class="btn-toolbar post-btn-toolbar">
-        <div class="btn-group">
 
-          <c:choose>
-            <c:when test="${isFirstPost}">
-              <%-- first post - urls to delete & edit topic --%>
-              <c:set var="delete_url"
-                     value="${pageContext.request.contextPath}/topics/${question.id}"/>
-              <c:set var="edit_url"
-                     value="${pageContext.request.contextPath}/topics/${question.id}/edit"/>
-              <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
-            </c:when>
-            <c:otherwise>
-              <%-- url to delete & edit post --%>
-              <c:set var="delete_url"
-                     value="${pageContext.request.contextPath}/posts/${post.id}"/>
-              <c:set var="edit_url"
-                     value="${pageContext.request.contextPath}/posts/${post.id}/edit"/>
-              <c:set var="confirm_message" value="label.deletePostConfirmation"/>
-            </c:otherwise>
-          </c:choose>
-          <sec:authorize access="isAuthenticated()">
-            <sec:authentication property="principal.id" var="userId"/>
-            <%--Edit post button start --%>
-            <c:set var="isEditButtonAvailable" value="false"/>
-            <%--  An ability to edit posts for author of this posts --%>
-            <c:if test='${userId == post.userCreated.id}'>
-              <c:set var="isEditButtonAvailable" value="true"/>
-            </c:if>
-            <%--  An ability to edit posts for administrators and branch moderators --%>
-            <c:if test='${userId != post.userCreated.id}'>
-              <c:set var="isEditButtonAvailable" value="true"/>
-            </c:if>
-            <c:set var="hasCloseTopicPermission" value="true"/>
-
-            <c:if test="${isEditButtonAvailable}">
-              <a href="${edit_url}" data-rel="${question.branch.id}"
-                 class="edit_button btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
-                <i class="icon-edit"></i>
-                <spring:message code="label.edit"/>
-              </a>
-            </c:if>
-          </sec:authorize>
-            <%--Edit post button end --%>
-            <%--Delete post button start --%>
-          <sec:authorize access="isAuthenticated()">
-            <sec:authentication property="principal.id" var="userId"/>
-            <c:set var="isDeleteButtonAvailable" value="false"/>
-            <c:choose>
-              <%--Controls for the first post, they affect topic--%>
-              <c:when test="${isFirstPost}">
-                <c:set var="isDeleteButtonAvailable"
-                       value='${userId == post.userCreated.id && postsPage.numberOfElements == 1}'/>
-                <c:set var="isDeleteButtonAvailable" value="true"/>
-              </c:when>
-              <%--Controls for the any other ordinaru post--%>
-              <c:otherwise>
-                <%--The ability of users to remove their own posts--%>
-                <c:if test='${userId == post.userCreated.id}'>
-                    <c:set var="isDeleteButtonAvailable" value="true"/>
-                </c:if>
-                <%--The ability of users to remove posts of the other users(for moderators and admins)--%>
-                <c:if test='${userId != post.userCreated.id}'>
-                  <c:set var="isDeleteButtonAvailable" value="true"/>
-                </c:if>
-              </c:otherwise>
-            </c:choose>
-            <c:if test="${isDeleteButtonAvailable}">
-              <a href="${delete_url}" class="btn btn-mini btn-danger delete"
-                 title="<spring:message code='label.tips.remove_post'/>"
-                 data-confirmationMessage="<spring:message code='${confirm_message}'/>">
-                <i class="icon-remove icon-white"></i>
-                <spring:message code="label.delete"/>
-              </a>
-            </c:if>
-          </sec:authorize>
-            <%--Delete post button end --%>
-        </div>
-
-
-        <div class="btn-group">
-          <a class="btn btn-mini postLink"
-             title="<spring:message code='label.tips.link_to_post'/>"
-             href="${pageContext.request.contextPath}/posts/${post.id}">
-            <i class="icon-link"></i>
-          </a>
-          <c:if test='${!question.closed || hasCloseTopicPermission}'>
-              <a class="btn btn-mini" onmousedown="quote(${post.id}, ${i.index})"
-                 title="<spring:message code='label.tips.quote_post'/>">
-                <i class="icon-quote"></i><spring:message code="label.quotation"/>
-              </a>
-          </c:if>
-        </div>
+<div class="question">
+  <div class="question-left-panel pull-left">
+    <div class="thumbnail wraptocenter">
+      <img src="${pageContext.request.contextPath}/users/${post.userCreated.id}/avatar" alt=""/>
+    </div>
+    <div class="question-votes">
+      <div class="vote-up"><i class="icon-arrow-up"></i></div>
+      <span class="vote-result">13</span>
+      <div class="vote-down"><i class="icon-arrow-down"></i></div>
+    </div>
+  </div>
+  <div class="question-right-panel">
+    <div class="question-header">
+      <div class="question-date pull-right">
+        <i class="icon-calendar"></i>
+        <jtalks:format value="${post.creationDate}"/>
       </div>
-    </td>
-  </tr>
-  <tr class="post-content-tr">
-    <td class="userinfo">
-      <div>
-        <p>
-          <spring:message var="onlineTip" code="label.tips.user_online"/>
-          <spring:message var="offlineTip" code="label.tips.user_offline"/>
-          <c:set var="online" value='<i class="icon-online" title="${onlineTip}"></i>'/>
-          <c:set var="offline" value='<i class="icon-offline" title="${offlineTip}"></i>'/>
-          <jtalks:ifContains collection="${usersOnline}" object="${post.userCreated}"
-                             successMessage="${online}" failMessage="${offline}"/>
-          <a class='post-userinfo-username'
-             href="${pageContext.request.contextPath}/users/${post.userCreated.id}"
-             title="<spring:message code='label.tips.view_profile'/>">
-            <c:out value="${post.userCreated.username}"/>
-          </a>
-        </p>
+      <div class="question-author">
+        <a class='post-userinfo-username'
+           href="${pageContext.request.contextPath}/users/${post.userCreated.id}"
+           title="<spring:message code='label.tips.view_profile'/>">
+          <c:out value="${post.userCreated.username}"/>
+        </a>
       </div>
-             
-                   <span class="thumbnail post-userinfo-avatal wraptocenter">
-                        <img src="${pageContext.request.contextPath}/users/${post.userCreated.id}/avatar" alt=""/>
-                   </span>
-
-      <div>
-        &nbsp;<br/>
-        <div>
-          <spring:message code="label.topic.message_count"/>
-          <span class="space-left-small"><c:out value="${post.userCreated.postCount}"/></span>
-        </div>
-        <sec:authorize access="isAuthenticated()">
-          <sec:authentication property="principal.id" var="userId"/>
-          <jtalks:hasPermission targetId='${userId}' targetType='USER'
-                                permission='ProfilePermission.SEND_PRIVATE_MESSAGES'>
-            <c:if test='${userId != post.userCreated.id}'>
-              <div>
-                <a href="${pageContext.request.contextPath}/pm/new?recipientId=${post.userCreated.id}"
-                   title='<spring:message code="label.pm.send"/>'>
-                  <img alt='<spring:message code="label.pm.send"/>' src="${pageContext.request.contextPath}/resources/images/message-icon.png"/>
-                </a>
-              </div>
-            </c:if>
-          </jtalks:hasPermission>
-        </sec:authorize>
-      </div>
-    </td>
-    <td class='post-content-td'>
+    </div>
+    <div class="question-content">
       <jtalks:postContent text="${post.postContent}"
                           signature="${post.userCreated.signature}"/>
-    </td>
-  </tr>
-  <tr class="post-header">
-    <td>
-    </td>
-    <td class="left-border">
-      <jtalks:postFooterContent modificationDate="${post.modificationDate}"/>
-    </td>
-  </tr>
-</table>
+    </div>
+    <div class="question-footer">
+      <div class="btn-toolbar post-btn-toolbar">
+        <div class="btn-group">
+          <a href="${edit_url}" data-rel="${question.branch.id}"
+           class="edit_button btn btn-mini" title="<spring:message code='label.tips.edit_post'/>">
+            <i class="icon-edit"></i>
+            <spring:message code="label.edit"/>
+          </a>
+          <a href="${delete_url}" class="btn btn-mini btn-danger delete"
+             title="<spring:message code='label.tips.remove_post'/>"
+             data-confirmationMessage="">
+            <i class="icon-remove icon-white"></i>
+            <spring:message code="label.delete"/>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 <%-- END OF Post --%>
 </c:forEach>

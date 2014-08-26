@@ -44,7 +44,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware {
     public View show(Model model, HttpServletRequest request) {
         List<Post> posts = new ArrayList<>();
         JCUser user = new JCUser("user", "", "");
-        posts.add(new Post(user, "test"));
+        posts.add(new Post(user, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
         Page<Post> postPage = new PageImpl<Post>(posts);
 
         model.addAttribute("content", "Coming soon");

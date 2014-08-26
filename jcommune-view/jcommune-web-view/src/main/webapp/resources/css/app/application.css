@@ -1111,3 +1111,52 @@ pre.prettyprint {
     height: 22px;
     font-size: 15px;
 }
+
+.question-left-panel {
+    width: 115px;
+    padding: 5px 10px;
+    border: 1px solid #bebec5;
+}
+
+.question-right-panel {
+    margin-left: 140px;
+    border: 1px solid #bebec5;
+}
+
+.question-content {
+    min-height: 135px;
+}
+
+.question-author {
+    margin-right: 140px;
+}
+
+.question-date {
+    width: 140px;
+}
+
+.question-header {
+    padding: 5px;
+}
+
+.question-footer {
+    border: 1px solid #bebec5;
+}
+
+.vote-result {
+    font-size: 2em;
+    text-align: center;
+    display: block;
+    margin: 5px 0px;
+}
+
+.question-votes {
+    width: 25%;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+.vote-up i, .vote-down i {
+    display:block;
+    margin:auto;
+}
