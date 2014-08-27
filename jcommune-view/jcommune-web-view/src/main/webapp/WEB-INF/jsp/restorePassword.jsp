@@ -42,6 +42,7 @@
 
         <div class='controls'>
           <form:input path="userEmail" type="text" size="20"/>
+            <br>
           <form:errors path="userEmail" cssClass="help-inline"/>
           <c:if test="${not empty message}">
             <input id="restorePassSuccess" type="hidden" value="<spring:message code="${message}"/>"/>
