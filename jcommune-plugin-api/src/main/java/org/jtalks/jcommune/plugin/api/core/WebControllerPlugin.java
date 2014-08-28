@@ -33,7 +33,7 @@ public abstract class WebControllerPlugin extends StatefullPlugin {
         if (this.isEnabled()) {
             PluginHandlerMapping.getInstance().addController(getController());
         } else {
-            //TODO: figure out how to unmap handler
+            PluginHandlerMapping.getInstance().deactivateController(getController());
         }
     }
 
