@@ -241,8 +241,11 @@ public class PrivateMessageController {
      * @return redirect to "drafts" folder if saved successfully or show form with error message
      */
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
-    public String saveDraft(@ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
+    public String saveDraft(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         String targetView = "redirect:/drafts";
+        if (result.hasErrors()) {
+            return PM_FORM;
+        }
 
         JCUser userFrom = userService.getCurrentUser();
         try {
