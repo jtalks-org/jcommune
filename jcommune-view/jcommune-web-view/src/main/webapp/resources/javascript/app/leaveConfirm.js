@@ -24,7 +24,7 @@
 $(document).ready(function () {
 
     var mark_class = ".script-confirm-unsaved";
-    var allowed_transitions = "input[type=submit]";
+    var allowed_transitions = ["input[type=submit]", "form[id=topicForm"];
     var currentData = "";
     var newData;
 
@@ -37,6 +37,10 @@ $(document).ready(function () {
     });
 
     $(document).on('click', allowed_transitions, function (event) {
+        $(window).off('beforeunload');
+    });
+    
+    $(document).on('submit', allowed_transitions, function (event) {
         $(window).off('beforeunload');
     });
 
