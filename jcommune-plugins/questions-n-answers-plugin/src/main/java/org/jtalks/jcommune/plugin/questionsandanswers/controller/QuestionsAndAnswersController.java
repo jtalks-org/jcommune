@@ -70,6 +70,11 @@ public class QuestionsAndAnswersController implements ApplicationContextAware {
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
         Map<String, Object> data = new HashMap<>();
+        List<Post> posts = new ArrayList<>();
+        JCUser user = new JCUser("user", "", "");
+        posts.add(new Post(user, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
+        Page<Post> postPage = new PageImpl<>(posts);
+        data.put("postPage", postPage);
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", data));
         return "plugin/plugin";

@@ -41,7 +41,74 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   </div>
 
   <div>
-    Main content
+    #foreach(${post} in ${postPage.getContent()})
+      #set($isFirstPost = false)
+      #if(${postPage.getNumber()} == 1 && $velocityCount == 1)
+        #set($isFirstPost = true)
+      #end
+      #set($postClass = "")
+      #if($isFirstPost)
+        #set($postClass = "script-first-post")
+      #end
+
+      <div class="post ${postClass}">
+        <div class="anchor">
+          <a id="${post.getId()}">anchor</a>
+        </div>
+        <div class="question">
+          <div class="question-left-panel pull-left">
+            <div class="thumbnail wraptocenter">
+              <img src="/users/${post.getUserCreated().getId()}/avatar" alt=""/>
+            </div>
+            <div class="question-votes">
+              <div class="vote-up"><i class="icon-arrow-up"></i></div>
+              <span class="vote-result">13</span>
+              <div class="vote-down"><i class="icon-arrow-down"></i></div>
+            </div>
+          </div>
+
+          <div class="question-right-panel">
+            <div class="question-header">
+              <div class="question-date pull-right">
+                <i class="icon-calendar"></i>
+                ${post.getCreationDate().toString()}
+              </div>
+
+              <div class="question-author">
+                <a class="post-userinfo-username"
+                   href="/users/${post.getUserCreated().getI()}"
+                   title="View profile">
+                  ${post.getUserCreated().getUsername()}
+                </a>
+              </div>
+            </div>
+
+            <div class="question-content">
+              ${post.getPostContent()}
+            </div>
+
+            <div class="question-footer">
+              <div class="btn-toolbar post-btn-toolbar">
+                <div class="btn-group">
+                  <a href="/edit" data-rel=""
+                     class="edit_button btn btn-mini" title="Edit">
+                    <i class="icon-edit"></i>
+                    Edit
+                  </a>
+                  <a href="/delete" class="btn btn-mini btn-danger delete"
+                     title="Delete"
+                     data-confirmationMessage="">
+                    <i class="icon-remove icon-white"></i>
+                    Delete
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    #end
   </div>
 
   <div class="row-fluid forum-pagination-container">
