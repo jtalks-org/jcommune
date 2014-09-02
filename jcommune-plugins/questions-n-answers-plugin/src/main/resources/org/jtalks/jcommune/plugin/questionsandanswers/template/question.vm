@@ -50,7 +50,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #if($isFirstPost)
         #set($postClass = "script-first-post")
       #end
-
       <div class="post ${postClass}">
         <div class="anchor">
           <a id="${post.getId()}">anchor</a>
@@ -58,7 +57,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         <div class="question">
           <div class="question-left-panel pull-left">
             <div class="thumbnail wraptocenter">
-              <img src="/users/${post.getUserCreated().getId()}/avatar" alt=""/>
+              <img src="${request.getContextPath()}/users/${post.getUserCreated().getId()}/avatar" alt=""/>
             </div>
             <div class="question-votes">
               <div class="vote-up"><i class="icon-arrow-up"></i></div>
@@ -76,7 +75,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
               <div class="question-author">
                 <a class="post-userinfo-username"
-                   href="/users/${post.getUserCreated().getI()}"
+                   href="${request.getContextPath()}/users/${post.getUserCreated().getId()}"
                    title="View profile">
                   ${post.getUserCreated().getUsername()}
                 </a>
@@ -90,6 +89,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <div class="question-footer">
               <div class="btn-toolbar post-btn-toolbar">
                 <div class="btn-group">
+                  #if($isFirstPost == true)
+                    <a href="/answer" data-rel=""
+                       class="edit_button btn btn-mini" title="Answer">
+                      Answer
+                    </a>
+                  #end
                   <a href="/edit" data-rel=""
                      class="edit_button btn btn-mini" title="Edit">
                     <i class="icon-edit"></i>
