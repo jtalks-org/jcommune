@@ -31,8 +31,8 @@
 
   <jtalks:breadcrumb breadcrumbList="${breadcrumbList}"/>
 
-  <form:form id="topicForm" action="${pageContext.request.contextPath}${submitUrl}"
-             method="POST" modelAttribute="topicDto" class="well anti-multipost" enctype="multipart/form-data">
+  <form:form action="${pageContext.request.contextPath}${submitUrl}"
+             method="POST" modelAttribute="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
     <div class='control-group hide-on-preview'>
       <div class='controls'>
         <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>

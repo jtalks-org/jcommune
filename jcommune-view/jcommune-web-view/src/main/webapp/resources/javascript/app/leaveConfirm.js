@@ -24,7 +24,7 @@
 $(document).ready(function () {
 
     var mark_class = ".script-confirm-unsaved";
-    var allowed_transitions = ["input[type=submit]", "form[id=topicForm"];
+    var allowed_transitions = ["input[type=submit]", ".submit-form"];
     var currentData = "";
     var newData;
 

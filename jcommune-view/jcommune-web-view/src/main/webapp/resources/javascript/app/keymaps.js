@@ -184,7 +184,7 @@ Keymaps.bbeditor = function (e) {
     if (e.ctrlKey && e.keyCode == enterCode) {
         e.preventDefault();
         if($('.keymaps-caption:visible').length > 0){
-            $('form[id=topicForm]').submit();
+            $('.submit-form').submit();
         }
     }
     //check bb-editor toolbar
