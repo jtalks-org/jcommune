@@ -85,7 +85,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <div class="question-header">
               <div class="question-date pull-right">
                 <i class="icon-calendar"></i>
-                ${post.getCreationDate().toString()}
+                ${dateTool.format(${post.creationDate})}
               </div>
 
               <div class="question-author">

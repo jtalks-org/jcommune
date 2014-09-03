@@ -43,5 +43,9 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
     </dependency>
+    <dependency>
+       <groupId>velocity-tools</groupId>
+        <artifactId>velocity-tools-generic</artifactId>
+    </dependency>
   </dependencies>
 </project>

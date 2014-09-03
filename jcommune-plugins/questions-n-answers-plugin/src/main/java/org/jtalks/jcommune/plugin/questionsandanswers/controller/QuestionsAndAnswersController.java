@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
+import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -78,6 +79,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware {
         posts.add(new Post(user, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
         Page<Post> postPage = new PageImpl<>(posts);
         JCUser currentUser = ReadOnlySecurityService.getInstance().getCurrentUser();
+        data.put("dateTool", new JodaDateTimeTool(request));
         data.put("postPage", postPage);
         data.put("request", request);
         data.put("messages", getLocalizedMessagesBundle(currentUser));
