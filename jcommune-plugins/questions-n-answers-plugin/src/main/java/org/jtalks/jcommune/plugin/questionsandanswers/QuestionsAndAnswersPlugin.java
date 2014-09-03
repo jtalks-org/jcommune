@@ -34,8 +34,9 @@ public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements To
     private static final String ORDER_PROPERTY = "label.order";
     private static final String ORDER_HINT = "label.order.hint";
     private static final int DEFAULT_ORDER_VALUE = 102;
-    private static final String MESSAGE_PATH = "org.jtalks.jcommune.plugin.questionsandanswers.messages";
     private static final String DEFAULT_LOCALE_CODE = "en";
+
+    public static final String MESSAGE_PATH = "org.jtalks.jcommune.plugin.questionsandanswers.messages";
     /**
      * Default value, thus it will show lower in the list of topics than Discussion and Code Review which are 100 & 101.
      */

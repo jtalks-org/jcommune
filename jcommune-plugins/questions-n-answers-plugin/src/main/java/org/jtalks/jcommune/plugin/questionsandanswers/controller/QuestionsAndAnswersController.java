@@ -18,6 +18,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -33,6 +34,8 @@ import org.springframework.web.servlet.view.JstlView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+
+import static org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin.MESSAGE_PATH;
 
 /**
  * @author Mikhail Stryzhonok
@@ -74,12 +77,22 @@ public class QuestionsAndAnswersController implements ApplicationContextAware {
         JCUser user = new JCUser("user", "", "");
         posts.add(new Post(user, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
         Page<Post> postPage = new PageImpl<>(posts);
+        JCUser currentUser = ReadOnlySecurityService.getInstance().getCurrentUser();
         data.put("postPage", postPage);
         data.put("request", request);
+        data.put("messages", getLocalizedMessagesBundle(currentUser));
+        data.put("currentUser", currentUser);
+        data.put("question", new Topic(user, "Test title"));
+        data.put("subscribed", false);
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", data));
         return "plugin/plugin";
     }
+
+    private ResourceBundle getLocalizedMessagesBundle(JCUser currentUser) {
+        return ResourceBundle.getBundle(MESSAGE_PATH, currentUser.getLanguage().getLocale());
+    }
+
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

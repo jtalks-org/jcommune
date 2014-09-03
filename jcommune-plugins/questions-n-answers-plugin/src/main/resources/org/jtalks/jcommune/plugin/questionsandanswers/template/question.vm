@@ -17,14 +17,28 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="container">
   <div id="branch-header">
     <h1>
-      <a class="invisible-link" href="#">Question title</a>
+      <a class="invisible-link" href="${request.contextPath}/topics/${question.id}">${question.title}</a>
     </h1>
 
     <div id="right-block">
-      <span id="subscribe">
-        <i class="icon-star"></i>
-        <a id="subscription" class="button top_button" href="#">Subscribe/Unsubscribe</a>
-      </span>
+      #if(!${currentUser.anonymous})
+        <span id="subscribe">
+          <i class="icon-star"></i>
+          #if(${subscribed})
+            <a id="subscription" class="button top_button"
+               href="${request.contextPath}/topics/${question.id}/unsubscribe"
+               title="${messages.getString("label.unsubscribe.tooltip")}">
+              ${messages.getString("label.unsubscribe")}
+            </a>
+          #else
+            <a id="subscription" class="button top_button"
+               href="${request.contextPath}/topics/${question.id}/subscribe"
+               title='${message.getString("label.subscribe.tooltip")}'>
+              ${messages.getString("label.subscribe")}
+            </a>
+          #end
+        </span>
+      #end
     </div>
     <span class="inline-block"></span>
   </div>
@@ -41,9 +55,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   </div>
 
   <div>
-    #foreach(${post} in ${postPage.getContent()})
+    #foreach(${post} in ${postPage.content})
       #set($isFirstPost = false)
-      #if(${postPage.getNumber()} == 1 && $velocityCount == 1)
+      ##dummy version. should be == 1 in future
+      #if(${postPage.number} < 2 && $velocityCount == 1)
         #set($isFirstPost = true)
       #end
       #set($postClass = "")
@@ -57,7 +72,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         <div class="question">
           <div class="question-left-panel pull-left">
             <div class="thumbnail wraptocenter">
-              <img src="${request.getContextPath()}/users/${post.getUserCreated().getId()}/avatar" alt=""/>
+              <img src="${request.contextPath}/users/${post.userCreated.id}/avatar" alt=""/>
             </div>
             <div class="question-votes">
               <div class="vote-up"><i class="icon-arrow-up"></i></div>
@@ -75,36 +90,36 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
               <div class="question-author">
                 <a class="post-userinfo-username"
-                   href="${request.getContextPath()}/users/${post.getUserCreated().getId()}"
+                   href="${request.contextPath}/users/${post.userCreated.id}"
                    title="View profile">
-                  ${post.getUserCreated().getUsername()}
+                  ${post.userCreated.username}
                 </a>
               </div>
             </div>
 
             <div class="question-content">
-              ${post.getPostContent()}
+              ${post.postContent}
             </div>
 
             <div class="question-footer">
               <div class="btn-toolbar post-btn-toolbar">
                 <div class="btn-group">
-                  #if($isFirstPost == true)
+                  #if($isFirstPost)
                     <a href="/answer" data-rel=""
                        class="edit_button btn btn-mini" title="Answer">
-                      Answer
+                      ${messages.getString("label.answer")}
                     </a>
                   #end
                   <a href="/edit" data-rel=""
                      class="edit_button btn btn-mini" title="Edit">
                     <i class="icon-edit"></i>
-                    Edit
+                    ${messages.getString("label.edit")}
                   </a>
                   <a href="/delete" class="btn btn-mini btn-danger delete"
                      title="Delete"
                      data-confirmationMessage="">
                     <i class="icon-remove icon-white"></i>
-                    Delete
+                    ${messages.getString("label.delete")}
                   </a>
                 </div>
               </div>
@@ -129,7 +144,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
   <div id="users-stats" class="well forum-user-stats-container">
     <br/>
-      <strong>Now browsing:<strong>
+      <strong>${messages.getString("label.topic.now_browsing")}<strong>
   </div>
 
   <form id="deleteForm" method="DELETE"/>
