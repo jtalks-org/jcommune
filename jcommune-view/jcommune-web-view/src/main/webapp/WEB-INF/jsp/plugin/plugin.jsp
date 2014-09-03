@@ -18,14 +18,5 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 
-<head>
-  <title>
-    <c:out value="${cmpTitlePrefix}"/>
-    <spring:message code="label.plugins.list.title"/>
-  </title>
-</head>
-<body>
-<div class="container">
-  ${content}
-</div>
-</body>
+
+${content}

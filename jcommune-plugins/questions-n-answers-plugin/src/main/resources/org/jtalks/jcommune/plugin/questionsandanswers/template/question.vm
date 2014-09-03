@@ -14,6 +14,12 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
+<head>
+  <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
+  <title>Question Tilte</title>
+</head>
+<body>
+
 <div class="container">
   <div id="branch-header">
     <h1>
@@ -103,7 +109,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
             <div class="question-footer">
               <div class="btn-toolbar post-btn-toolbar">
-                <div class="btn-group">
+                <div class="btn-group question-btn-group">
                   #if($isFirstPost)
                     <a href="/answer" data-rel=""
                        class="edit_button btn btn-mini" title="Answer">
@@ -150,3 +156,4 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <form id="deleteForm" method="DELETE"/>
 
 </div>
+</body>
