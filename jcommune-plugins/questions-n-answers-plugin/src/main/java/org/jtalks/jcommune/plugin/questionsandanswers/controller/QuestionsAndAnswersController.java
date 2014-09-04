@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
+import org.jtalks.jcommune.plugin.api.web.velocity.tool.PermissionTool;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -125,8 +126,10 @@ public class QuestionsAndAnswersController implements ApplicationContextAware {
         model.put("dateTool", new JodaDateTimeTool(request));
         model.put("esc", new EscapeTool());
         JCUser currentUser = ReadOnlySecurityService.getInstance().getCurrentUser();
+        PermissionTool tool = new PermissionTool(applicationContext);
         model.put("currentUser", currentUser);
         model.put("messages", getLocalizedMessagesBundle(currentUser));
+        model.put("permissionTool", tool);
         return model;
     }
 }

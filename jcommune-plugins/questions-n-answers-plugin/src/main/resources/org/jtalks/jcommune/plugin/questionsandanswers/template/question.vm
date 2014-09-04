@@ -120,23 +120,38 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <div class="question-footer">
               <div class="btn-toolbar post-btn-toolbar">
                 <div class="btn-group question-btn-group">
-                  #if($isFirstPost)
+                  ##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
+                  #set($targedId = 3)
+                  #if($isFirstPost && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CREATE_POSTS")})
                     <a href="/answer" data-rel=""
                        class="edit_button btn btn-mini" title="Answer">
+                      <i class="icon-pencil"></i>
                       ${esc.html(${messages.getString("label.answer")})}
                     </a>
                   #end
-                  <a href="/edit" data-rel=""
-                     class="edit_button btn btn-mini" title="Edit">
-                    <i class="icon-edit"></i>
-                    ${esc.html(${messages.getString("label.edit")})}
-                  </a>
-                  <a href="/delete" class="btn btn-mini btn-danger delete"
-                     title="Delete"
-                     data-confirmationMessage="">
-                    <i class="icon-remove icon-white"></i>
-                    ${esc.html(${messages.getString("label.delete")})}
-                  </a>
+                  #if(!${currentUser.anonymous})
+                    #if((${currentUser.id} == ${post.post.userCreated.id}
+                    && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OWN_POSTS")})
+                    || (${currentUser.id} != ${post.post.userCreated.id}
+                    && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OTHERS_POSTS")}))
+                      <a href="/edit" data-rel=""
+                        class="edit_button btn btn-mini" title="Edit">
+                        <i class="icon-edit"></i>
+                        ${esc.html(${messages.getString("label.edit")})}
+                      </a>
+                    #end
+                    #if((${currentUser.id} == ${post.post.userCreated.id}
+                    && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OWN_POSTS")})
+                    ||(${currentUser.id} != ${post.post.userCreated.id}
+                    &&${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OTHERS_POSTS")}))
+                      <a href="/delete" class="btn btn-mini btn-danger delete"
+                        title="Delete"
+                        data-confirmationMessage="">
+                        <i class="icon-remove icon-white"></i>
+                        ${esc.html(${messages.getString("label.delete")})}
+                      </a>
+                    #end
+                  #end
                 </div>
               </div>
             </div>
