@@ -40,10 +40,12 @@ public class JodaDateTimeTool {
     public JodaDateTimeTool(HttpServletRequest request) {
         if (request != null) {
             Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(GMT_COOKIE_NAME)) {
-                    offset = this.convertTimeZoneOffset(cookie.getValue());
-                    break;
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals(GMT_COOKIE_NAME)) {
+                        offset = this.convertTimeZoneOffset(cookie.getValue());
+                        break;
+                    }
                 }
             }
         }

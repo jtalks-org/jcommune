@@ -73,6 +73,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         #set($postClass = "question")
       #elseif($velocityCount == 2)
         #set($postClass = "first-answer")
+      #elseif($velocityCount == ${postPage.getContent().size()} && $velocityCount != 1)
+        #set($postClass = "last-answer")
       #else
         #set($postClass = "answer")
       #end
