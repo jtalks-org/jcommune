@@ -9,12 +9,10 @@
 .question-left-panel {
     width: 115px;
     padding: 10px;
-/*    border: 1px solid #bebec5;*/
 }
 
 .question-right-panel {
     margin-left: 140px;
-/*    border: 1px solid #bebec5;*/
 }
 
 .question-content {
@@ -57,9 +55,20 @@
     margin: 10px 0px;
 }
 
-.vote-up i, .vote-down i {
-    display:block;
-    margin:auto;
+.vote-up, .vote-down {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    margin-left: 33.3333333%;
+}
+
+.vote-up {
+    border-bottom: 20px solid #5bb75b;
+}
+
+.vote-down {
+    border-top: 20px solid #da4f49;
 }
 
 #answerCounter {

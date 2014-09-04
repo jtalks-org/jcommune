@@ -81,11 +81,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           <h3>$answersCount Answers</h3>
         </div>
       #end
-      <div class="post">
+      <div class="post $postClass">
         <div class="anchor">
           <a id="${post.getId()}">anchor</a>
         </div>
-        <div class="$postClass">
+        <div>
           <div class="question-left-panel pull-left">
             <div class="thumbnail wraptocenter">
               <img src="${request.contextPath}/users/${post.userCreated.id}/avatar" alt=""/>
@@ -146,7 +146,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       </div>
     #end
   </div>
-
+  <br/>
   <div class="row-fluid forum-pagination-container">
     <div class="span3">
       &nbsp;
