@@ -76,13 +76,16 @@ public class QuestionsAndAnswersController implements ApplicationContextAware {
         engine.init();
         Map<String, Object> data = new HashMap<>();
         List<Post> posts = new ArrayList<>();
-        JCUser user = new JCUser("user", "", "");
-        posts.add(new Post(user, "Lorem ipsum <strong>dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
+        JCUser mrVasiliy = new JCUser("Mr. Vasiliy", "", "");
+        posts.add(new Post(mrVasiliy, "Lorem ipsum <strong>dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
+        JCUser mrKakashka = new JCUser("Mr. Kakashka", "", "");
+        posts.add(new Post(mrKakashka, "Lorem ipsum <strong>dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
+        JCUser mrTolik = new JCUser("Mr. Tolik", "", "");
+        posts.add(new Post(mrTolik, "Lorem ipsum <strong>dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
         Page<Post> postPage = new PageImpl<>(posts);
-        JCUser currentUser = ReadOnlySecurityService.getInstance().getCurrentUser();
         data.putAll(getDefaultModel(request));
         data.put("postPage", postPage);
-        data.put("question", new Topic(user, "Test title"));
+        data.put("question", new Topic(mrVasiliy, "Test title"));
         data.put("subscribed", false);
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", data));

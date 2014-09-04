@@ -61,6 +61,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   </div>
 
   <div>
+    #set($answersCount = ${postPage.getContent().size()} - 1)
     #foreach(${post} in ${postPage.content})
       #set($isFirstPost = false)
       ##dummy version. should be == 1 in future
@@ -69,21 +70,30 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #end
       #set($postClass = "")
       #if($isFirstPost)
-        #set($postClass = "script-first-post")
+        #set($postClass = "question")
+      #elseif($velocityCount == 2)
+        #set($postClass = "first-answer")
+      #else
+        #set($postClass = "answer")
       #end
-      <div class="post ${postClass}">
+      #if($velocityCount == 2)
+        <div id="answerCounter">
+          <h3>$answersCount Answers</h3>
+        </div>
+      #end
+      <div class="post">
         <div class="anchor">
           <a id="${post.getId()}">anchor</a>
         </div>
-        <div class="question">
+        <div class="$postClass">
           <div class="question-left-panel pull-left">
             <div class="thumbnail wraptocenter">
               <img src="${request.contextPath}/users/${post.userCreated.id}/avatar" alt=""/>
             </div>
             <div class="question-votes">
-              <div class="vote-up"><i class="icon-arrow-up"></i></div>
+              <div class="vote-up"></div>
               <span class="vote-result">13</span>
-              <div class="vote-down"><i class="icon-arrow-down"></i></div>
+              <div class="vote-down"></div>
             </div>
           </div>
 
@@ -149,8 +159,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   </div>
 
   <div id="users-stats" class="well forum-user-stats-container">
+    <strong>${esc.html(${messages.getString("permissions.moderators")})}</strong>
     <br/>
-      <strong>${esc.html(${messages.getString("label.topic.now_browsing")})}<strong>
+    <strong>${esc.html(${messages.getString("label.topic.now_browsing")})}<strong>
   </div>
 
   <form id="deleteForm" method="DELETE"/>

@@ -1,12 +1,20 @@
+.question, .first-answer {
+    border-top: 1px solid rgba(7, 7, 7, 0.87);
+}
+
+.answer, .question, .first-answer {
+    background: rgb(247, 247, 247);
+    border-bottom: 1px solid rgba(7, 7, 7, 0.87);
+}
 .question-left-panel {
     width: 115px;
-    padding: 5px 10px;
-    border: 1px solid #bebec5;
+    padding: 10px;
+/*    border: 1px solid #bebec5;*/
 }
 
 .question-right-panel {
     margin-left: 140px;
-    border: 1px solid #bebec5;
+/*    border: 1px solid #bebec5;*/
 }
 
 .question-content {
@@ -25,11 +33,11 @@
 }
 
 .question-header {
-    padding: 5px;
+    padding: 10px;
 }
 
 .question-footer {
-    border: 1px solid #bebec5;
+
 }
 
 .question-votes {
@@ -52,4 +60,9 @@
 .vote-up i, .vote-down i {
     display:block;
     margin:auto;
+}
+
+#answerCounter {
+    width: 100%;
+    padding: 15px 0px 5px 10px;
 }
