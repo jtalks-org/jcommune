@@ -56,7 +56,7 @@ public class ReadOnlySecurityServiceTest {
 
     @Test
     public void getCurrentUserShouldReturnAnonymousUserIfCurrentUserNotFound() {
-        when(userReader.getCurrentUser()).thenReturn(null);
+        when(userReader.getCurrentUser()).thenReturn(new AnonymousUser());
         ReadOnlySecurityService service = (ReadOnlySecurityService)ReadOnlySecurityService.getInstance();
         service.setUserReader(userReader);
 

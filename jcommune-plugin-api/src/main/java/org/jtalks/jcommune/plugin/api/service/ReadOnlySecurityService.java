@@ -54,7 +54,7 @@ public class ReadOnlySecurityService implements UserReader {
     @Override
     public JCUser getCurrentUser() {
         JCUser currentUser = userReader.getCurrentUser();
-        if (currentUser == null) {
+        if (currentUser.isAnonymous()) {
             return new AnonymousUser();
         } else {
             return JCUser.copyUser(currentUser);

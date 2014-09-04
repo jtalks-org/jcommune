@@ -55,7 +55,7 @@ public interface UserService extends EntityService<JCUser> {
     /**
      * Gets user currently logged in.
      *
-     * @return logged in user or null, if user hasn't yet log in
+     * @return logged in user or {@link org.jtalks.jcommune.model.entity.AnonymousUser}, if user hasn't yet log in
      */
     JCUser getCurrentUser();
 
