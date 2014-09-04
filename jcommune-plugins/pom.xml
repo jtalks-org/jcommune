@@ -63,6 +63,11 @@
         <artifactId>velocity</artifactId>
         <version>1.7</version>
       </dependency>
+      <dependency>
+        <groupId>velocity-tools</groupId>
+        <artifactId>velocity-tools-generic</artifactId>
+        <version>1.4</version>
+      </dependency>
 
       <!-- TestNG & Mockito -->
       <dependency>

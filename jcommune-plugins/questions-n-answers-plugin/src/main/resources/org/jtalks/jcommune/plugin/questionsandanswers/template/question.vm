@@ -16,14 +16,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *#
 <head>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
-  <title>Question Tilte</title>
+  <title>${esc.html("Question Tilte")}</title>
 </head>
 <body>
 
 <div class="container">
   <div id="branch-header">
     <h1>
-      <a class="invisible-link" href="${request.contextPath}/topics/${question.id}">${question.title}</a>
+      <a class="invisible-link" href="${request.contextPath}/topics/${question.id}">${esc.html(${question.title})}</a>
     </h1>
 
     <div id="right-block">
@@ -34,13 +34,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <a id="subscription" class="button top_button"
                href="${request.contextPath}/topics/${question.id}/unsubscribe"
                title="${messages.getString("label.unsubscribe.tooltip")}">
-              ${messages.getString("label.unsubscribe")}
+              ${esc.html(${messages.getString("label.unsubscribe")})}
             </a>
           #else
             <a id="subscription" class="button top_button"
                href="${request.contextPath}/topics/${question.id}/subscribe"
                title='${message.getString("label.subscribe.tooltip")}'>
-              ${messages.getString("label.subscribe")}
+              $esc.html(${messages.getString("label.subscribe")})
             </a>
           #end
         </span>
@@ -98,13 +98,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 <a class="post-userinfo-username"
                    href="${request.contextPath}/users/${post.userCreated.id}"
                    title="View profile">
-                  ${post.userCreated.username}
+                  ${esc.html(${post.userCreated.username})}
                 </a>
               </div>
             </div>
 
             <div class="question-content">
-              ${post.postContent}
+              ${esc.html(${post.postContent})}
             </div>
 
             <div class="question-footer">
@@ -113,19 +113,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                   #if($isFirstPost)
                     <a href="/answer" data-rel=""
                        class="edit_button btn btn-mini" title="Answer">
-                      ${messages.getString("label.answer")}
+                      ${esc.html(${messages.getString("label.answer")})}
                     </a>
                   #end
                   <a href="/edit" data-rel=""
                      class="edit_button btn btn-mini" title="Edit">
                     <i class="icon-edit"></i>
-                    ${messages.getString("label.edit")}
+                    ${esc.html(${messages.getString("label.edit")})}
                   </a>
                   <a href="/delete" class="btn btn-mini btn-danger delete"
                      title="Delete"
                      data-confirmationMessage="">
                     <i class="icon-remove icon-white"></i>
-                    ${messages.getString("label.delete")}
+                    ${esc.html(${messages.getString("label.delete")})}
                   </a>
                 </div>
               </div>
@@ -150,7 +150,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
   <div id="users-stats" class="well forum-user-stats-container">
     <br/>
-      <strong>${messages.getString("label.topic.now_browsing")}<strong>
+      <strong>${esc.html(${messages.getString("label.topic.now_browsing")})}<strong>
   </div>
 
   <form id="deleteForm" method="DELETE"/>

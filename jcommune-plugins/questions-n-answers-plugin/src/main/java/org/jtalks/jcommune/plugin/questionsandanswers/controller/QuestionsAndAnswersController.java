@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.plugin.questionsandanswers.controller;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.tools.generic.EscapeTool;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -76,14 +77,11 @@ public class QuestionsAndAnswersController implements ApplicationContextAware {
         Map<String, Object> data = new HashMap<>();
         List<Post> posts = new ArrayList<>();
         JCUser user = new JCUser("user", "", "");
-        posts.add(new Post(user, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
+        posts.add(new Post(user, "Lorem ipsum <strong>dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
         Page<Post> postPage = new PageImpl<>(posts);
         JCUser currentUser = ReadOnlySecurityService.getInstance().getCurrentUser();
-        data.put("dateTool", new JodaDateTimeTool(request));
+        data.putAll(getDefaultModel(request));
         data.put("postPage", postPage);
-        data.put("request", request);
-        data.put("messages", getLocalizedMessagesBundle(currentUser));
-        data.put("currentUser", currentUser);
         data.put("question", new Topic(user, "Test title"));
         data.put("subscribed", false);
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
@@ -109,5 +107,23 @@ public class QuestionsAndAnswersController implements ApplicationContextAware {
         properties.put("jar.resource.loader.path", "jar:file:" + jarPath);
         properties.put("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
         return properties;
+    }
+
+    /**
+     * Create map with default objects needed in velocity template (e.g. request, current user, messages bundle etc.)
+     *
+     * @param request HttpServletRequest
+     *
+     * @return Map which will be passed into velocity template
+     */
+    private Map<String, Object> getDefaultModel(HttpServletRequest request) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("request", request);
+        model.put("dateTool", new JodaDateTimeTool(request));
+        model.put("esc", new EscapeTool());
+        JCUser currentUser = ReadOnlySecurityService.getInstance().getCurrentUser();
+        model.put("currentUser", currentUser);
+        model.put("messages", getLocalizedMessagesBundle(currentUser));
+        return model;
     }
 }
