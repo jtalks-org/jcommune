@@ -5,6 +5,7 @@
 .answer, .question, .first-answer {
     background: rgb(247, 247, 247);
     border-bottom: 1px solid rgba(7, 7, 7, 0.87);
+    overflow: auto;
 }
 .question-left-panel {
     width: 115px;
