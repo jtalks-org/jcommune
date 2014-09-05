@@ -17,11 +17,12 @@ package org.jtalks.jcommune.plugin.api.web;
 import org.jtalks.jcommune.plugin.api.dto.HandlerStateDto;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * @author Mikhail Stryzhonok
@@ -30,6 +31,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
 
     private static final PluginHandlerMapping INSTANCE = new PluginHandlerMapping();
     private List<HandlerStateDto> handlerStateDtos = new ArrayList<>();
+    private final Map<String, HandlerMethod> pluginHandlerMethods = new HashMap<>();
 
     private PluginHandlerMapping() {
 
@@ -45,6 +47,26 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         return false;
     }
 
+
+    @Override
+    protected void registerHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
+        if (PluginController.class.isAssignableFrom(method.getDeclaringClass())) {
+            registerPluginHandlerMethod(handler, method, mapping);
+        } else {
+            super.registerHandlerMethod(handler, method, mapping);
+        }
+    }
+
+
+    private void registerPluginHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
+        Set<String> patterns = getMappingPathPatterns(mapping);
+        if (patterns.size() > 1) {
+            throw new IllegalStateException("Controller method " + method.getName() + " mapped to more than one url");
+        }
+        pluginHandlerMethods.put(patterns.iterator().next(), createHandlerMethod(handler, method));
+    }
+
+
     /**
      * Adds handlers from controller to handler mapping
      * Note: class should be annotated with {@link org.springframework.stereotype.Controller} annotation and all
@@ -55,13 +77,13 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
     public void addController(Object controller) {
         HandlerStateDto handlerStateDto = getHandlerStateDto(controller.getClass().getName());
         if (handlerStateDto == null) {
-            handlerStateDtos.add(new HandlerStateDto(controller.getClass().getName(), true));
-            INSTANCE.detectHandlerMethods(controller);
-            if (controller instanceof ApplicationContextAware) {
-                ((ApplicationContextAware) controller).setApplicationContext(getApplicationContext());
-            }
-        } else if (!handlerStateDto.isEnabled()) {
+            handlerStateDtos.add( new HandlerStateDto(controller.getClass().getName(), true));
+        } else {
             handlerStateDto.setEnabled(true);
+        }
+        INSTANCE.detectHandlerMethods(controller);
+        if (controller instanceof ApplicationContextAware) {
+            ((ApplicationContextAware) controller).setApplicationContext(getApplicationContext());
         }
     }
 
@@ -82,12 +104,17 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      */
     @Override
     protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
-        HandlerMethod handlerMethod = super.getHandlerInternal(request);
-        HandlerStateDto handlerStateDto = getHandlerStateDto(handlerMethod.getBean().getClass().getName());
-        if (handlerStateDto != null && !handlerStateDto.isEnabled()) {
-            return null;
+        String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
+        HandlerMethod handlerMethod = pluginHandlerMethods.get(lookupPath);
+        if (handlerMethod != null) {
+            HandlerStateDto handlerStateDto = getHandlerStateDto(handlerMethod.getBean().getClass().getName());
+            if (handlerStateDto != null && !handlerStateDto.isEnabled()) {
+                return null;
+            } else {
+                return handlerMethod;
+            }
         } else {
-            return handlerMethod;
+            return super.getHandlerInternal(request);
         }
     }
 

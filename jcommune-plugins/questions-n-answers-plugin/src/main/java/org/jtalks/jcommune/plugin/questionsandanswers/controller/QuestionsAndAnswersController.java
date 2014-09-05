@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
+import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.PermissionTool;
 import org.springframework.beans.BeansException;
@@ -44,7 +45,7 @@ import static org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswers
  * @author Mikhail Stryzhonok
  */
 @Controller
-public class QuestionsAndAnswersController implements ApplicationContextAware {
+public class QuestionsAndAnswersController implements ApplicationContextAware, PluginController {
     private ApplicationContext applicationContext;
 
     @RequestMapping(value = "/question/new", method = RequestMethod.GET)
