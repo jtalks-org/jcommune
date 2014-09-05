@@ -71,16 +71,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #set($postClass = "")
       #if($isFirstPost)
         #set($postClass = "question")
-      #elseif($velocityCount == 2)
-        #set($postClass = "first-answer")
-      #elseif($velocityCount == ${postPage.getContent().size()} && $velocityCount != 1)
-        #set($postClass = "last-answer")
       #else
         #set($postClass = "answer")
       #end
       #if($velocityCount == 2)
         <div id="answerCounter">
-          <h3>$answersCount Answers</h3>
+          <h3>${esc.html(${messages.getString("label.answers.count")})} $answersCount</h3>
         </div>
       #end
       <div class="post $postClass">
@@ -103,7 +99,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <div class="question-header">
               <div class="question-date pull-right">
                 <i class="icon-calendar"></i>
-                ${dateTool.format(${post.creationDate})}
+                <a href="${request.contextPath}/answers/${post.id}">
+                  ${dateTool.format(${post.creationDate})}
+                </a>
               </div>
 
               <div class="question-author">
@@ -163,7 +161,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       </div>
     #end
   </div>
-  <br/>
   <div class="row-fluid forum-pagination-container">
     <div class="span3">
       &nbsp;
