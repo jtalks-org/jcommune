@@ -14,12 +14,14 @@
  */
 package org.jtalks.jcommune.plugin.api.web.velocity.tool;
 
-import org.apache.velocity.tools.generic.DateTool;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,8 +36,8 @@ public class JodaDateTimeTool {
     public static final String GMT_COOKIE_NAME = "GMT";
     public static final int DEFAULT_OFFSET = 0;
 
+    private DateTimeFormatter formatter = DateTimeFormat.forPattern(DATE_FORMAT_PATTERN);
     private long offset = DEFAULT_OFFSET;
-    private DateTool dateTool = new DateTool();
 
     public JodaDateTimeTool(HttpServletRequest request) {
         if (request != null) {
@@ -51,14 +53,14 @@ public class JodaDateTimeTool {
         }
     }
 
-    public String format(DateTime dateTime) {
+    public String format(DateTime dateTime, Locale locale) {
         if (dateTime == null) {
             return "";
         }
         DateTimeZone timeZone = dateTime.getZone();
         long utcTime = timeZone.convertLocalToUTC(dateTime.getMillis(), false);
         dateTime = new DateTime(utcTime + offset);
-        return dateTool.format(DATE_FORMAT_PATTERN, dateTime.toDate());
+        return formatter.withLocale(locale).print(dateTime);
     }
 
     /**
