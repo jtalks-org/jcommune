@@ -14,9 +14,11 @@
  */
 package org.jtalks.jcommune.plugin.api.web;
 
-import org.jtalks.jcommune.plugin.api.dto.HandlerStateDto;
+import com.google.common.annotations.VisibleForTesting;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.method.HandlerMethodSelector;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -30,7 +32,6 @@ import java.util.*;
 public class PluginHandlerMapping extends RequestMappingHandlerMapping {
 
     private static final PluginHandlerMapping INSTANCE = new PluginHandlerMapping();
-    private List<HandlerStateDto> handlerStateDtos = new ArrayList<>();
     private final Map<String, HandlerMethod> pluginHandlerMethods = new HashMap<>();
 
     private PluginHandlerMapping() {
@@ -57,8 +58,8 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         }
     }
 
-
-    private void registerPluginHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
+    @VisibleForTesting
+    void registerPluginHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
         Set<String> patterns = getMappingPathPatterns(mapping);
         if (patterns.size() > 1) {
             throw new IllegalStateException("Controller method " + method.getName() + " mapped to more than one url");
@@ -75,16 +76,31 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      * @param controller controller object to map
      */
     public void addController(Object controller) {
-        HandlerStateDto handlerStateDto = getHandlerStateDto(controller.getClass().getName());
-        if (handlerStateDto == null) {
-            handlerStateDtos.add( new HandlerStateDto(controller.getClass().getName(), true));
-        } else {
-            handlerStateDto.setEnabled(true);
-        }
         INSTANCE.detectHandlerMethods(controller);
         if (controller instanceof ApplicationContextAware) {
             ((ApplicationContextAware) controller).setApplicationContext(getApplicationContext());
         }
+    }
+
+    private List<String> getControllerUrls(Object controller) {
+        List<String> urls = new ArrayList<>();
+        final Class controllerType = controller.getClass();
+        Set<Method> methods = HandlerMethodSelector.selectMethods(controllerType, new ReflectionUtils.MethodFilter() {
+            public boolean matches(Method method) {
+                return getMappingForMethod(method, controllerType) != null;
+            }
+        });
+
+        for (Method method : methods) {
+            RequestMappingInfo mapping = getMappingForMethod(method, controllerType);
+            Set<String> patterns = getMappingPathPatterns(mapping);
+            if (patterns.size() > 1) {
+                throw new IllegalStateException("Controller method " + method.getName() + " mapped to more than one url");
+            }
+            urls.add(patterns.iterator().next());
+        }
+
+        return urls;
     }
 
     /**
@@ -93,9 +109,9 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      * @param controller controller bean to disable handlers
      */
     public void deactivateController(Object controller) {
-        HandlerStateDto handlerStateDto = getHandlerStateDto(controller.getClass().getName());
-        if (handlerStateDto != null) {
-            handlerStateDto.setEnabled(false);
+        List<String> urls = getControllerUrls(controller);
+        for (String url : urls) {
+            pluginHandlerMethods.remove(url);
         }
     }
 
@@ -107,30 +123,10 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
         HandlerMethod handlerMethod = pluginHandlerMethods.get(lookupPath);
         if (handlerMethod != null) {
-            HandlerStateDto handlerStateDto = getHandlerStateDto(handlerMethod.getBean().getClass().getName());
-            if (handlerStateDto != null && !handlerStateDto.isEnabled()) {
-                return null;
-            } else {
-                return handlerMethod;
-            }
+            return handlerMethod;
         } else {
             return super.getHandlerInternal(request);
         }
-    }
-
-    /**
-     * Search in handlerStateDtos for {@link HandlerStateDto} with specified name
-     *
-     * @param beanClassName name to search
-     * @return {@link HandlerStateDto} with specified name or <code>null</code> if not found
-     */
-    private HandlerStateDto getHandlerStateDto(String beanClassName) {
-        for (HandlerStateDto handlerStateDto : handlerStateDtos) {
-            if (handlerStateDto.getBeanClassName().equals(beanClassName)) {
-                return handlerStateDto;
-            }
-        }
-        return null;
     }
 
 }
