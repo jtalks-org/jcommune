@@ -74,6 +74,7 @@
     <js>/resources/javascript/app/leaveConfirm.js</js>
     <js>/resources/javascript/app/bbeditorEffects.js</js>
     <js>/resources/javascript/app/contextMenu.js</js>
+    <js>/resources/javascript/app/pollPreview.js</js>
     <js>/resources/javascript/lib/purl.js</js>
   </group>
 
