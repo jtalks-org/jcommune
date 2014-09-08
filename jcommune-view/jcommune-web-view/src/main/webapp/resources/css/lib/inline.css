@@ -306,7 +306,7 @@ input.form-check-radio-box[type="radio"] {
 }
 
 .table {
-    word-break: break-word;
+    word-break: break-all;
     width: 100%;
 }
 
