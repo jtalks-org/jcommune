@@ -105,7 +105,7 @@ public class BBCodeServiceTest {
                 //images
                 {"[img]http://narod.ru/avatar.jpg[/img]",
                         "<a title=\"\" href=\"http://narod.ru/avatar.jpg\" class=\"pretty-photo\">" +
-                                "<img class=\"thumbnail\" alt=\"\" src=\"http://narod.ru/avatar.jpg\"/></a>"},
+                                "<img class=\"thumbnail\" alt=\"\" src=\"http://narod.ru/avatar.jpg\" onError=\"imgError(this)\" /></a>"},
                 //code
                 {"[code=sql]println(\"Hi!\");[/code]", "<pre class=\"prettyprint linenums sql\">println(&quot;Hi!&quot;);</pre>"},
                 //qoutes
