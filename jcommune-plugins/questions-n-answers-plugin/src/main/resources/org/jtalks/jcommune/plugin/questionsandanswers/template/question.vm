@@ -39,7 +39,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           #else
             <a id="subscription" class="button top_button"
                href="${request.contextPath}/topics/${question.id}/subscribe"
-               title='${message.getString("label.subscribe.tooltip")}'>
+               title='${messages.getString("label.subscribe.tooltip")}'>
               $esc.html(${messages.getString("label.subscribe")})
             </a>
           #end
@@ -47,17 +47,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #end
     </div>
     <span class="inline-block"></span>
-  </div>
-
-  <div class="row-fluid upper-pagination forum-pagination-container">
-    <div class="span3">
-      &nbsp;
-    </div>
-    <div class="span9">
-      <div class="pagination pull-right forum-pagination">
-        Pagination wanted
-      </div>
-    </div>
   </div>
 
   <div>
@@ -160,16 +149,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
       </div>
     #end
-  </div>
-  <div class="row-fluid forum-pagination-container">
-    <div class="span3">
-      &nbsp;
-    </div>
-    <div class="span9">
-      <div class="pagination pull-right forum-pagination">
-        Pagination wanted
-      </div>
-    </div>
   </div>
 
   <div id="users-stats" class="well forum-user-stats-container">
