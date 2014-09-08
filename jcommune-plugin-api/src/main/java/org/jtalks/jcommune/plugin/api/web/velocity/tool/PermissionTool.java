@@ -33,6 +33,15 @@ public class PermissionTool {
         securityContextFacade = ctx.getBean(SecurityContextFacade.class);
     }
 
+
+    /**
+     * Checks if current user has specified permission on specified target
+     *
+     * @param targetId id of the target
+     * @param targetType type of the target. Example - "BRANCH"
+     * @param permission permission to be checked. Example - "BranchPermission.CREATE_POSTS"
+     * @return true if user have specified permission. false otherwise
+     */
     public boolean hasPermission(Long targetId, String targetType, String permission) {
         Authentication authentication = securityContextFacade.getContext().getAuthentication();
         if (authentication == null) {

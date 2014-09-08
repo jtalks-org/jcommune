@@ -53,6 +53,14 @@ public class JodaDateTimeTool {
         }
     }
 
+    /**
+     * Represents dateTime object as string in specified locale and user's timezone.
+     * Example: 01 Jan 2011 05:13
+     *
+     * @param dateTime Date and time to be converted to string
+     * @param locale locale to be used
+     * @return dateTime string representation
+     */
     public String format(DateTime dateTime, Locale locale) {
         if (dateTime == null) {
             return "";
