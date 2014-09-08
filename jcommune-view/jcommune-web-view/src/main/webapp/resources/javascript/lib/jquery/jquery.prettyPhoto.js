@@ -176,7 +176,7 @@
                             _showContent();
                         };
                         imgPreloader.onerror = function () {
-                            alert('The image cannot be displayed. Probably it does not exist anymore.');
+                            alert('Image cannot be loaded. Make sure the path is correct and image exist.');
                             $.prettyPhoto.close();
                         };
                         imgPreloader.src = pp_images[set_position];

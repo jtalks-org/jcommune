@@ -127,12 +127,3 @@ Utils.createFormElement = function (label, id, type, cls, style) {
 
     return elementHtml;
 }
-
-/**
- * Handling "onError" event for images if it's can't loaded. Use in config kefirbb.xml for [img] bbtag.
- * */
-function imgError(image) {
-    image.onerror = "";
-    image.src = "http://localhost:8080/resources/images/noimage.jpg";
-    return true;
-}
