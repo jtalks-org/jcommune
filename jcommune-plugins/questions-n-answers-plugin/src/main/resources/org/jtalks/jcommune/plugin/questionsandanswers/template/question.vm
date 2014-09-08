@@ -52,6 +52,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <div>
     #set($answersCount = ${postPage.getContent().size()} - 1)
     #foreach(${post} in ${postPage.content})
+      ##dummy version. should be something like post.rating in future
+      #set($rating = 2 - $velocityCount)
+      #set($voteResultClass = "")
+      #if($rating > 0)
+        #set($voteResultClass = "positive")
+      #elseif($rating < 0)
+        #set($voteResultClass = "negative")
+      #end
       #set($isFirstPost = false)
       ##dummy version. should be == 1 in future
       #if(${postPage.number} < 2 && $velocityCount == 1)
@@ -79,7 +87,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             </div>
             <div class="question-votes">
               <div class="vote-up"></div>
-              <span class="vote-result">13</span>
+              <span class="vote-result $voteResultClass">$rating</span>
               <div class="vote-down"></div>
             </div>
           </div>

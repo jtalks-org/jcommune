@@ -67,18 +67,26 @@
     height: 0;
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    margin-left: 33.3333333%;
+    margin-left: 32.5%;
 }
 
 .vote-up {
-    border-bottom: 20px solid rgba(0, 0, 0, 0.65);
+    border-bottom: 20px solid rgba(115, 115, 115, 0.65);
 }
 
 .vote-down {
-    border-top: 20px solid rgba(0, 0, 0, 0.65);
+    border-top: 20px solid rgba(115, 115, 115, 0.65);
 }
 
 #answerCounter {
     width: 100%;
     padding: 15px 0px 5px 10px;
+}
+
+.positive {
+    color: #367d36;
+}
+
+.negative {
+    color: #b03a34;
 }
