@@ -251,7 +251,7 @@ get XSS attacks.</p>-->
     <!-- Insert image -->
     <code name="img1" priority="2">
         <pattern>[img]<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="addr" scope="escapeXmlAndBr"/>[/img]</pattern>
-        <template><![CDATA[<a title="" href="]]><var name="protocol"/>/<var name="addr"/><![CDATA[" class="pretty-photo"><img class="thumbnail" alt="" src="]]><var name="protocol"/>/<var name="addr"/><![CDATA["/></a>]]></template>
+        <template><![CDATA[<a title="" href="]]><var name="protocol"/>/<var name="addr"/><![CDATA[" class="pretty-photo"><img class="thumbnail" alt="" src="]]><var name="protocol"/>/<var name="addr"/><![CDATA[" onError="imgError(this)" /></a>]]></template>
     </code>
 
 
