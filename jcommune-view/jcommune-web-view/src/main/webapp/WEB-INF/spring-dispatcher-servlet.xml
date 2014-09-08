@@ -74,7 +74,9 @@
   </bean>
 
   <bean id="handlerMapping"
-        class="org.jtalks.jcommune.plugin.api.web.PluginHandlerMapping" factory-method="getInstance"/>
+        class="org.jtalks.jcommune.plugin.api.web.PluginHandlerMapping" factory-method="getInstance">
+    <property name="pluginLoader" ref="pluginLoader"/>
+  </bean>
 
   <!-- Interceptors -->
   <mvc:interceptors>

@@ -15,6 +15,9 @@
 package org.jtalks.jcommune.plugin.api.web;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
+import org.jtalks.jcommune.plugin.api.core.WebControllerPlugin;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -35,6 +38,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
 
     private static final PluginHandlerMapping INSTANCE = new PluginHandlerMapping();
     private final Map<String, HandlerMethod> pluginHandlerMethods = new HashMap<>();
+    private PluginLoader pluginLoader;
 
     private PluginHandlerMapping() {
 
@@ -137,6 +141,8 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      */
     @Override
     protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
+        //We should update Web plugins before resolving handler
+        pluginLoader.getPlugins(new TypeFilter(WebControllerPlugin.class));
         String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
         HandlerMethod handlerMethod = pluginHandlerMethods.get(lookupPath);
         if (handlerMethod != null) {
@@ -150,5 +156,13 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
     @VisibleForTesting
     Map<String, HandlerMethod> getPluginHandlerMethods() {
         return pluginHandlerMethods;
+    }
+
+    public PluginLoader getPluginLoader() {
+        return pluginLoader;
+    }
+
+    public void setPluginLoader(PluginLoader pluginLoader) {
+        this.pluginLoader = pluginLoader;
     }
 }
