@@ -27,6 +27,8 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
+ * Custom handler mapping. Needed to map plugin handlers separately from application handlers
+ *
  * @author Mikhail Stryzhonok
  */
 public class PluginHandlerMapping extends RequestMappingHandlerMapping {
@@ -48,7 +50,9 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         return false;
     }
 
-
+    /**
+     *  {@inheritDoc}
+     */
     @Override
     protected void registerHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
         if (PluginController.class.isAssignableFrom(method.getDeclaringClass())) {
@@ -58,6 +62,13 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         }
     }
 
+    /**
+     * Registers new plugin handler or updates existence
+     *
+     * @param handler controller object
+     * @param method method to be registered
+     * @param mapping information about request
+     */
     @VisibleForTesting
     void registerPluginHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
         Set<String> patterns = getMappingPathPatterns(mapping);
@@ -82,6 +93,12 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         }
     }
 
+    /**
+     * Get list of URLs which can be handled by controller
+     *
+     * @param controller controller object
+     * @return list of URLs
+     */
     private List<String> getControllerUrls(Object controller) {
         List<String> urls = new ArrayList<>();
         final Class controllerType = controller.getClass();
@@ -129,4 +146,9 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         }
     }
 
+    //Needed for tests only
+    @VisibleForTesting
+    Map<String, HandlerMethod> getPluginHandlerMethods() {
+        return pluginHandlerMethods;
+    }
 }

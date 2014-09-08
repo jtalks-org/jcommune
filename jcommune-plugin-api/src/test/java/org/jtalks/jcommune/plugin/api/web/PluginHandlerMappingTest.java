@@ -15,15 +15,22 @@
 package org.jtalks.jcommune.plugin.api.web;
 
 import org.mockito.Mock;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Mikhail Stryzhonok
@@ -52,8 +59,34 @@ public class PluginHandlerMappingTest {
                 mappingInfo);
     }
 
+    @Test
+    public void addControllerShouldMapAllControllerMethods() throws Exception {
+        PluginHandlerMapping mapping = PluginHandlerMapping.getInstance();
+        TestPluginController controller = new TestPluginController();
+        mapping.addController(controller);
+
+        Map<String, HandlerMethod> result = mapping.getPluginHandlerMethods();
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get("/test").getMethod(), controller.getClass().getMethod("testMethod"));
+    }
+
+    @Test
+    public void deactivateControllerShouldRemoveAllControllerMethods() {
+        PluginHandlerMapping mapping = PluginHandlerMapping.getInstance();
+        TestPluginController controller = new TestPluginController();
+        mapping.addController(controller);
+        mapping.deactivateController(controller);
+
+        Map<String, HandlerMethod> result = mapping.getPluginHandlerMethods();
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Controller
     private class TestPluginController implements PluginController {
 
+        @RequestMapping(value = "/test", method = RequestMethod.GET)
         public void testMethod() {
 
         }
