@@ -33,8 +33,6 @@ import org.springframework.ui.Model;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.JstlView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -46,31 +44,8 @@ import static org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswers
  */
 @Controller
 public class QuestionsAndAnswersController implements ApplicationContextAware, PluginController {
+
     private ApplicationContext applicationContext;
-
-    @RequestMapping(value = "/question/new", method = RequestMethod.GET)
-    public View show(Model model, HttpServletRequest request) {
-        List<Post> posts = new ArrayList<>();
-        JCUser user = new JCUser("user", "", "");
-        posts.add(new Post(user, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
-        Page<Post> postPage = new PageImpl<>(posts);
-
-        model.addAttribute("content", "Coming soon");
-        model.addAttribute("viewList", new ArrayList<JCUser>());
-        model.addAttribute("usersOnline", new ArrayList<>());
-        model.addAttribute("postsPage", postPage);
-        model.addAttribute("question", new Topic(user, "Test"));
-        model.addAttribute("postDto", null);
-        model.addAttribute("subscribed", false);
-        //model.addAttribute("breadcrumbList", );
-        //JstlView view = new JstlView("/org/jtalks/jcommune/plugin/questionsandanswers/views/questionForm.jsp");
-        JstlView view = new JstlView("/WEB-INF/jsp/plugin/question.jsp");
-        view.setPreventDispatchLoop(true);
-        String contentType = request.getContentType();
-        view.setContentType(contentType);
-        view.setApplicationContext(applicationContext);
-        return view;
-    }
 
     @RequestMapping(value = "/question", method = RequestMethod.GET)
     public String showVelocity(Model model, HttpServletRequest request) {
