@@ -83,10 +83,26 @@
     padding: 15px 0px 5px 10px;
 }
 
+.vote-up-pressed {
+    border-bottom-color: #3966A0;
+}
+
+.vote-down-pressed {
+    border-top-color: #3966A0;
+}
+
+.vote-up-unpressed:hover {
+    border-bottom-color: #0d7d1f;
+}
+
+.vote-down-unpressed:hover {
+    border-top-color: #b01513;
+}
+
 .positive {
-    color: #367d36;
+    color: #0d7d1f;
 }
 
 .negative {
-    color: #b03a34;
+    color: #b01513;
 }
