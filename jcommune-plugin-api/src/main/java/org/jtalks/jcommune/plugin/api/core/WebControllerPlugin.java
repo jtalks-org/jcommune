@@ -16,6 +16,7 @@ package org.jtalks.jcommune.plugin.api.core;
 
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.PluginHandlerMapping;
 
 /**
@@ -42,5 +43,5 @@ public abstract class WebControllerPlugin extends StatefullPlugin {
      *
      * @return controller object
      */
-    public abstract Object getController();
+    public abstract PluginController getController();
 }

@@ -60,7 +60,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
     @Override
     protected void registerHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
         if (PluginController.class.isAssignableFrom(method.getDeclaringClass())) {
-            registerPluginHandlerMethod(handler, method, mapping);
+            registerPluginHandlerMethod((PluginController)handler, method, mapping);
         } else {
             super.registerHandlerMethod(handler, method, mapping);
         }
@@ -74,7 +74,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      * @param mapping information about request
      */
     @VisibleForTesting
-    void registerPluginHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
+    void registerPluginHandlerMethod(PluginController handler, Method method, RequestMappingInfo mapping) {
         Set<String> patterns = getMappingPathPatterns(mapping);
         if (patterns.size() > 1) {
             throw new IllegalStateException("Controller method " + method.getName() + " mapped to more than one url");
@@ -90,10 +90,22 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      *
      * @param controller controller object to map
      */
-    public void addController(Object controller) {
+    public void addController(PluginController controller) {
         INSTANCE.detectHandlerMethods(controller);
         if (controller instanceof ApplicationContextAware) {
             ((ApplicationContextAware) controller).setApplicationContext(getApplicationContext());
+        }
+    }
+
+    /**
+     * Disables handlers from specified controller
+     *
+     * @param controller controller bean to disable handlers
+     */
+    public void deactivateController(PluginController controller) {
+        List<String> urls = getPluginControllerUrls(controller);
+        for (String url : urls) {
+            pluginHandlerMethods.remove(url);
         }
     }
 
@@ -103,7 +115,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      * @param controller controller object
      * @return list of URLs
      */
-    private List<String> getControllerUrls(Object controller) {
+    private List<String> getPluginControllerUrls(PluginController controller) {
         List<String> urls = new ArrayList<>();
         final Class controllerType = controller.getClass();
         Set<Method> methods = HandlerMethodSelector.selectMethods(controllerType, new ReflectionUtils.MethodFilter() {
@@ -122,18 +134,6 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         }
 
         return urls;
-    }
-
-    /**
-     * Disables handlers from specified controller
-     *
-     * @param controller controller bean to disable handlers
-     */
-    public void deactivateController(Object controller) {
-        List<String> urls = getControllerUrls(controller);
-        for (String url : urls) {
-            pluginHandlerMethods.remove(url);
-        }
     }
 
     /**

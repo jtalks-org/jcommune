@@ -21,6 +21,7 @@ import org.jtalks.jcommune.plugin.api.core.WebControllerPlugin;
 import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
+import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.questionsandanswers.controller.QuestionsAndAnswersController;
 
 import java.util.*;
@@ -162,7 +163,7 @@ public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements To
      * {@inheritDoc}
      */
     @Override
-    public Object getController() {
+    public PluginController getController() {
         return new QuestionsAndAnswersController();
     }
 }
