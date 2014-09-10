@@ -27,7 +27,11 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Custom handler mapping. Needed to map plugin handlers separately from application handlers
@@ -76,10 +80,11 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
     @VisibleForTesting
     void registerPluginHandlerMethod(PluginController handler, Method method, RequestMappingInfo mapping) {
         Set<String> patterns = getMappingPathPatterns(mapping);
-        if (patterns.size() > 1) {
-            throw new IllegalStateException("Controller method " + method.getName() + " mapped to more than one url");
+        if (patterns.size() != 1) {
+            throw new IllegalStateException("Controller method " + method.getName() + " mapped to " + patterns.size()
+                    + " urls. Expected 1 url");
         }
-        pluginHandlerMethods.put(patterns.iterator().next(), createHandlerMethod(handler, method));
+        pluginHandlerMethods.put(getUniformUrl(patterns.iterator().next()), createHandlerMethod(handler, method));
     }
 
 
@@ -126,11 +131,15 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
 
         for (Method method : methods) {
             RequestMappingInfo mapping = getMappingForMethod(method, controllerType);
-            Set<String> patterns = getMappingPathPatterns(mapping);
-            if (patterns.size() > 1) {
-                throw new IllegalStateException("Controller method " + method.getName() + " mapped to more than one url");
+            //Method have {@link RequestMapping} annotation
+            if (mapping != null) {
+                Set<String> patterns = getMappingPathPatterns(mapping);
+                if (patterns.size() != 1) {
+                    throw new IllegalStateException("Controller method " + method.getName() + " mapped to "
+                            + patterns.size() + " urls. Expected 1 url");
+                }
+                urls.add(getUniformUrl(patterns.iterator().next()));
             }
-            urls.add(patterns.iterator().next());
         }
 
         return urls;
@@ -141,15 +150,27 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      */
     @Override
     protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
+        //We should clear map in case if plugin version was changed
+        pluginHandlerMethods.clear();
         //We should update Web plugins before resolving handler
         pluginLoader.getPlugins(new TypeFilter(WebControllerPlugin.class));
         String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
-        HandlerMethod handlerMethod = pluginHandlerMethods.get(lookupPath);
+        HandlerMethod handlerMethod = pluginHandlerMethods.get(getUniformUrl(lookupPath));
         if (handlerMethod != null) {
             return handlerMethod;
         } else {
             return super.getHandlerInternal(request);
         }
+    }
+
+    /**
+     * Adds "/" to the end of url if it necessary. Needed to support optional "/" at the end
+     */
+    private String getUniformUrl(String url) {
+        if (url.endsWith("/")) {
+            return url;
+        }
+        return url + "/";
     }
 
     //Needed for tests only

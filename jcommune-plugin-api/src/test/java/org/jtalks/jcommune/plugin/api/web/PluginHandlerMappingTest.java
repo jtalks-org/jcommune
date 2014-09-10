@@ -25,6 +25,7 @@ import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Set;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -60,6 +61,27 @@ public class PluginHandlerMappingTest {
     }
 
     @Test
+    public void pluginHandlerMethodsShouldNotContainMappingsIfNoHandlersMapped() {
+        PluginHandlerMapping mapping = PluginHandlerMapping.getInstance();
+
+        Map<String, HandlerMethod> result = mapping.getPluginHandlerMethods();
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void pluginHandlerMethodsShouldNotContainMappingsIfOnlyApplicationControllersWereMapped() {
+        PluginHandlerMapping mapping = PluginHandlerMapping.getInstance();
+        TestController controller = new TestController();
+        RequestMappingInfo mappingInfo = new RequestMappingInfo(null, null, null, null, null, null, null);
+
+        mapping.registerHandlerMethod(controller, TestController.class.getMethods()[0], mappingInfo);
+        Map<String, HandlerMethod> result = mapping.getPluginHandlerMethods();
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
     public void addControllerShouldMapAllControllerMethods() throws Exception {
         PluginHandlerMapping mapping = PluginHandlerMapping.getInstance();
         TestPluginController controller = new TestPluginController();
@@ -68,7 +90,7 @@ public class PluginHandlerMappingTest {
         Map<String, HandlerMethod> result = mapping.getPluginHandlerMethods();
 
         assertEquals(result.size(), 1);
-        assertEquals(result.get("/test").getMethod(), controller.getClass().getMethod("testMethod"));
+        assertEquals(result.get("/test/").getMethod(), controller.getClass().getMethod("testMethod"));
     }
 
     @Test
@@ -83,8 +105,30 @@ public class PluginHandlerMappingTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    public void allMappedUrlsShouldEndsWithSlash() {
+        PluginHandlerMapping mapping = PluginHandlerMapping.getInstance();
+        TestPluginController controller = new TestPluginController();
+        mapping.addController(controller);
+
+        Set<String> urls = mapping.getPluginHandlerMethods().keySet();
+
+        for (String url : urls) {
+            assertTrue(url.endsWith("/"));
+        }
+    }
+
     @Controller
     private class TestPluginController implements PluginController {
+
+        @RequestMapping(value = "/test", method = RequestMethod.GET)
+        public void testMethod() {
+
+        }
+    }
+
+    @Controller
+    private class TestController {
 
         @RequestMapping(value = "/test", method = RequestMethod.GET)
         public void testMethod() {

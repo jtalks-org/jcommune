@@ -36,6 +36,7 @@ public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements To
     private static final String ORDER_HINT = "label.order.hint";
     private static final int DEFAULT_ORDER_VALUE = 102;
     private static final String DEFAULT_LOCALE_CODE = "en";
+    public static final String CONTEXT = "/question";
 
     public static final String MESSAGE_PATH = "org.jtalks.jcommune.plugin.questionsandanswers.messages";
     /**
@@ -128,7 +129,7 @@ public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements To
     public CreateTopicBtnDto getCreateTopicBtnDto(long branchId) {
         Locale locale = ReadOnlySecurityService.getInstance().getCurrentUser().getLanguage().getLocale();
         return new CreateTopicBtnDto("new-question-btn", translateLabel("label.addQuestion", locale),
-                translateLabel("label.addQuestion.tip", locale), "plugins/questions/new?branchId=" + branchId, order);
+                translateLabel("label.addQuestion.tip", locale), CONTEXT + "/new?branchId=" + branchId, order);
     }
 
     /**

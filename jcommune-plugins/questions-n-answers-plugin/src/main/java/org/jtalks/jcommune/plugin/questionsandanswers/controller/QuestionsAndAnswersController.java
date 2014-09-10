@@ -23,6 +23,7 @@ import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.PermissionTool;
+import org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -43,11 +44,12 @@ import static org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswers
  * @author Mikhail Stryzhonok
  */
 @Controller
+@RequestMapping(QuestionsAndAnswersPlugin.CONTEXT)
 public class QuestionsAndAnswersController implements ApplicationContextAware, PluginController {
 
     private ApplicationContext applicationContext;
 
-    @RequestMapping(value = "/question", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public String showVelocity(Model model, HttpServletRequest request) {
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
