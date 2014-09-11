@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
-import org.jtalks.jcommune.plugin.api.dto.PluginActivatingDto;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.mockito.Mock;
@@ -31,7 +30,6 @@ import org.testng.annotations.Test;
 import java.util.*;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.*;
@@ -124,43 +122,6 @@ public class TransactionalPluginServiceTest {
         when(pluginLoader.getPlugins()).thenReturn(Collections.<Plugin> emptyList());
         //WHEN
         pluginService.updateConfiguration(configuration, FAKE_COMPONENT_ID);
-    }
-
-    @Test
-    public void updatePluginsEnablingShouldUpdatePluginsEnabling() throws NotFoundException {
-        //GIVEN
-        String pluginName = "plugin";
-        PluginConfiguration pluginConfiguration = new PluginConfiguration();
-        pluginConfiguration.setActive(false);
-        when(pluginConfigurationDao.get(pluginName)).thenReturn(pluginConfiguration);
-        List<PluginActivatingDto> pluginsActivatingDtoList = new ArrayList<>();
-        pluginsActivatingDtoList.add(new PluginActivatingDto(pluginName, true));
-        //
-        when(pluginLoader.getPlugins()).thenReturn(Collections.<Plugin> emptyList());
-        //WHEN
-        pluginService.updatePluginsActivating(pluginsActivatingDtoList, FAKE_COMPONENT_ID);
-        //THEN
-        verify(pluginConfigurationDao).saveOrUpdate(pluginConfiguration);
-        assertTrue(pluginConfiguration.isActive(), "Plugin must be activated.");
-    }
-
-    @Test
-    public void updatePluginsEnablingShouldUpdateAllPassedPlugins() throws NotFoundException {
-        //GIVEN
-        int pluginsCount = 10;
-        String pluginName = "plugin";
-        PluginConfiguration pluginConfiguration = new PluginConfiguration();
-        when(pluginConfigurationDao.get(anyString())).thenReturn(pluginConfiguration);
-        List<PluginActivatingDto> pluginsActivatingDtoList = new ArrayList<>();
-        for (int i=0; i< pluginsCount; i++) {
-            pluginsActivatingDtoList.add(new PluginActivatingDto(pluginName + i, true));
-        }
-        //
-        when(pluginLoader.getPlugins()).thenReturn(Collections.<Plugin> emptyList());
-        //WHEN
-        pluginService.updatePluginsActivating(pluginsActivatingDtoList, FAKE_COMPONENT_ID);
-        //THEN
-        verify(pluginConfigurationDao, times(pluginsCount)).saveOrUpdate(pluginConfiguration);
     }
 
     @Test

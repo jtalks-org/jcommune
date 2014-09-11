@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.filters.NameFilter;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.plugin.api.dto.PluginActivatingDto;
 import org.jtalks.jcommune.plugin.api.filters.PluginFilter;
@@ -156,18 +157,6 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
      */
     @Override
     @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
-    public void updatePluginsActivating(List<PluginActivatingDto> updatedPlugins,
-                                        long forumComponentId) throws NotFoundException {
-        for (PluginActivatingDto updatedPlugin : updatedPlugins) {
-            updatePluginActivating(updatedPlugin, forumComponentId);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public void updatePluginActivating(PluginActivatingDto updatedPlugin, long forumComponentId) throws NotFoundException {
         PluginConfigurationDao pluginConfigurationDao = getDao();
         String pluginName = updatedPlugin.getPluginName();
@@ -176,5 +165,6 @@ public class TransactionalPluginService extends AbstractTransactionalEntityServi
         LOGGER.debug("Plugin activation for {} will be changed to {}.", pluginName, isActivated);
         configuration.setActive(isActivated);
         pluginConfigurationDao.saveOrUpdate(configuration);
+        pLuginLoader.reloadPlugins(new NameFilter(updatedPlugin.getPluginName()));
     }
 }

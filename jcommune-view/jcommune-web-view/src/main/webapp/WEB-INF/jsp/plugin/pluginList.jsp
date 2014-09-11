@@ -29,7 +29,7 @@
 </head>
 <body>
 <div class="container">
-    <div id="status-message" class="alert plugin-popup-message hide"></div>
+    <div id="status-message" class="alert plugin-popup hide"></div>
     <%-- List of plugins. --%>
     <div id="plugins-list-header">
         <h2><spring:message code="label.plugins.installed"/></h2>

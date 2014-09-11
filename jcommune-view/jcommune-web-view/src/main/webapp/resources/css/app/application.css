@@ -1105,9 +1105,13 @@ pre.prettyprint {
     /* This style uses to select all plugin activating checkboxes from plugins list page*/
 }
 
-.plugin-popup-message {
+.plugin-popup {
     position: absolute;
     left: 50%;
     height: 22px;
     font-size: 15px;
+}
+
+.plugin-popup-message {
+    margin-left: 1em;
 }

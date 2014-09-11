@@ -86,6 +86,19 @@ public class PluginLoader {
     }
 
     /**
+     * Reloads plugin by calling {@link #getPlugins(org.jtalks.jcommune.plugin.api.filters.PluginFilter...)} method
+     *
+     * @param filters determines which plugins will be reloaded
+     *
+     * @see org.jtalks.jcommune.plugin.api.filters.TypeFilter
+     * @see org.jtalks.jcommune.plugin.api.filters.NameFilter
+     * @see org.jtalks.jcommune.plugin.api.filters.StateFilter
+     */
+    public void reloadPlugins(PluginFilter... filters) {
+        getPlugins(filters);
+    }
+
+    /**
      * Returns actual list of plugins available. Client code should not cache the plugin
      * references and always use this method to obtain a plugin reference as needed.
      * Violation of this simple rule may cause memory leaks.

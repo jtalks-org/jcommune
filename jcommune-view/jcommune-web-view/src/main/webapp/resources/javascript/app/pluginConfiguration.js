@@ -63,11 +63,13 @@ $(function () {
         var id = $(this).attr('id');
         var pluginName = $("#"+id+"-name").val();
         activated = $(this).is(':checked');
-        
-        var query = "pluginName=" + pluginName + "&activated=" + activated;
+        var pluginActivatingDto = {
+            pluginName: pluginName,
+            activated: activated
+        }
         
         function showPopup(plugin, message, status){
-            $("#status-message").html(plugin + " " + message);
+            $("#status-message").html("<span class='plugin-popup-message'>" + plugin + " " + message + "</span>");
             if (status == "success")
                 $("#status-message").addClass("alert-success");
             else
@@ -80,7 +82,7 @@ $(function () {
             
             setTimeout(function() {
                 $("#status-message").hide();
-            }, 1000);
+            }, 2000);
         }
         
         function successActivationHandler(resp){
@@ -89,21 +91,19 @@ $(function () {
             } else {
                 showPopup(pluginName, $pluginStatusDeactivated, "success");
             }
-            if (resp.status == "FAILED"){
-                $("#" + id).attr("checked", "none");
-                $("#" + id).hide();
-            }
         }
         
         function errorActivationHandler(){
             showPopup(pluginName, $pluginStatusFailed, "failed");
+            $("#" + id).removeAttr("checked");
         }
         
         $.ajax({
             type: 'POST',
             url: $root + '/plugins/activate',
-            data: query,
-            dataType: 'json',
+            data: JSON.stringify(pluginActivatingDto),
+            contentType: "application/json",
+            async: false,
             success: function (resp) {
                 successActivationHandler(resp);
             },

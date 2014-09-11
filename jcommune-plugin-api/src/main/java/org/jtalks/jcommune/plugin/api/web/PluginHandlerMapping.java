@@ -153,7 +153,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         //We should clear map in case if plugin version was changed
         pluginHandlerMethods.clear();
         //We should update Web plugins before resolving handler
-        pluginLoader.getPlugins(new TypeFilter(WebControllerPlugin.class));
+        pluginLoader.reloadPlugins(new TypeFilter(WebControllerPlugin.class));
         String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
         HandlerMethod handlerMethod = pluginHandlerMethods.get(getUniformUrl(lookupPath));
         if (handlerMethod != null) {

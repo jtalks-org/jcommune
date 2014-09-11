@@ -172,7 +172,7 @@ public class PluginControllerTest {
         
         String expectedStatus = new JsonResponse(JsonResponseStatus.SUCCESS).getStatus().name();
         
-        String actualStatus = pluginController.activatePlugin(pluginActivatingDto.getPluginName(), pluginActivatingDto.isActivated()).getStatus().name();
+        String actualStatus = pluginController.activatePlugin(pluginActivatingDto).getStatus().name();
         
         assertEquals(actualStatus, expectedStatus);
     }

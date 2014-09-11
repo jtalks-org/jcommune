@@ -34,10 +34,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
@@ -170,11 +170,10 @@ public class PluginController {
         return labels;
     }
 
-    @RequestMapping(value = "/activate", method = RequestMethod.POST, produces="application/json")
+    @RequestMapping(value = "/activate", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse activatePlugin(@RequestParam(value="pluginName", required = true) String pluginName, @RequestParam(value = "activated", required = true) boolean activated) throws NotFoundException {
+    public JsonResponse activatePlugin(@RequestBody PluginActivatingDto pluginActivatingDto) throws NotFoundException {
         long componentId = getForumComponentId();
-        PluginActivatingDto pluginActivatingDto = new PluginActivatingDto(pluginName, activated);
         pluginService.updatePluginActivating(pluginActivatingDto, componentId);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
