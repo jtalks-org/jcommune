@@ -34,7 +34,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Custom handler mapping. Needed to map plugin handlers separately from application handlers
+ * Custom handler mapping. Needed to map plugin handlers separately from application handlers. It's necessary to allow
+ * update handlers without application restart.
  *
  * @author Mikhail Stryzhonok
  */

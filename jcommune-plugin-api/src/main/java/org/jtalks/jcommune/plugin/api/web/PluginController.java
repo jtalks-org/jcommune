@@ -15,9 +15,13 @@
 package org.jtalks.jcommune.plugin.api.web;
 
 /**
- * Interface-marker. Plugin controllers should implement this interface to be mapped correctly.
+ * Interface-marker. Plugin controller should implement this interface to allow {@link PluginHandlerMapping} distinguish
+ * them from application controllers. It's necessary because we should map plugin controllers separately from
+ * application controllers. It allow us to change plugin version without application restart.
  *
  * @author Mikhail Stryzhonok
+ *
+ * @see PluginHandlerMapping
  */
 public interface PluginController {
 }
