@@ -69,7 +69,7 @@ $(function () {
         }
         
         function showPopup(plugin, message, status){
-            $("#status-message").html("<span class='plugin-popup-message'>" + plugin + " " + message + "</span>");
+            $("#status-message").html("<span>" + plugin + " " + message + "</span>");
             if (status == "success")
                 $("#status-message").addClass("alert-success");
             else
