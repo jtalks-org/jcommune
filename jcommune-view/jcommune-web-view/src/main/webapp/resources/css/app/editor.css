@@ -1,4 +1,4 @@
-﻿﻿.editorWYSIWYG {
+﻿.editorWYSIWYG {
     /* font: 10pt Tahoma;
  border-bottom: 1px solid #b2b2b2;*/
 }
@@ -172,8 +172,14 @@ blockquote:after {
 }
 
 .thumbnail {
-    max-height: 150px;
-    max-width: 150px;
+     max-height: 150px;
+     max-width: 150px;
+ }
+
+.thumbnail-default {
+    max-height: 100px;
+    max-width: 100px;
+    border: 1px solid silver;
 }
 
 pre {
