@@ -132,7 +132,7 @@ Utils.createFormElement = function (label, id, type, cls, style) {
  * Handling "onError" event for images if it's can't loaded. Invoke in config kefirbb.xml for [img] bbtag.
  * */
 function imgError(image) {
-    var imageDefault = window.location.protocol + "//" + window.location.host + "/resources/images/noimage.jpg";
+    var imageDefault = baseUrl + "/resources/images/noimage.jpg";
     image.src = imageDefault;
     image.className = "thumbnail-default";
     image.parentNode.href = imageDefault;
