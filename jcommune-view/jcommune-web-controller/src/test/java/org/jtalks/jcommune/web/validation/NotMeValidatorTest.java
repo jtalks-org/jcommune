@@ -66,4 +66,13 @@ public class NotMeValidatorTest {
 
         assertFalse(validator.isValid(username, null));
     }
+
+
+    @Test
+    public void testIsValidForTheSameUserInAnotherCase() throws Exception {
+        when(service.getCurrentUser()).thenReturn(user);
+
+        assertFalse(validator.isValid(username.toUpperCase(), null));
+    }
 }
+

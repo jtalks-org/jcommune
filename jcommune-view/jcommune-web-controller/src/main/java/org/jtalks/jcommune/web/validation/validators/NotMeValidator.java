@@ -55,6 +55,6 @@ public class NotMeValidator implements ConstraintValidator<NotMe, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         JCUser user = service.getCurrentUser();
-        return user.isAnonymous() || !user.getUsername().equals(value);
+        return user.isAnonymous() || !user.getUsername().equalsIgnoreCase(value);
     }
 }
