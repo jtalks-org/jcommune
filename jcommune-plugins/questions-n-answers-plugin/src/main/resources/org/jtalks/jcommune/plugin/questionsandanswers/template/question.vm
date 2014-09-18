@@ -120,7 +120,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
               <div class="question-author">
                 <a class="post-userinfo-username"
                    href="${request.contextPath}/users/${post.userCreated.id}"
-                   title="View profile">
+                   title="${esc.html(${messages.getString("label.tips.view_profile")})}">
                   ${esc.html(${post.userCreated.username})}
                 </a>
               </div>
@@ -137,7 +137,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                   #set($targedId = 3)
                   #if($isFirstPost && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CREATE_POSTS")})
                     <a href="/answer" data-rel=""
-                       class="edit_button btn btn-mini" title="Answer">
+                       class="edit_button btn btn-mini"
+                       title="${esc.html(${messages.getString("label.tips.answer")})}">
                       <i class="icon-pencil"></i>
                       ${esc.html(${messages.getString("label.answer")})}
                     </a>
@@ -148,7 +149,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                     || (${currentUser.id} != ${post.post.userCreated.id}
                     && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OTHERS_POSTS")}))
                       <a href="/edit" data-rel=""
-                        class="edit_button btn btn-mini" title="Edit">
+                        class="edit_button btn btn-mini" title="${esc.html(${messages.getString("label.tips.edit.$postClass")})}">
                         <i class="icon-edit"></i>
                         ${esc.html(${messages.getString("label.edit")})}
                       </a>
@@ -158,8 +159,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                     ||(${currentUser.id} != ${post.post.userCreated.id}
                     &&${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OTHERS_POSTS")}))
                       <a href="/delete" class="btn btn-mini btn-danger delete"
-                        title="Delete"
-                        data-confirmationMessage="">
+                        title="${esc.html(${messages.getString("label.tips.remove.$postClass")})}"
+                        data-confirmationMessage="${esc.html(${messages.getString("label.confirm.delete.$postClass")})}">
                         <i class="icon-remove icon-white"></i>
                         ${esc.html(${messages.getString("label.delete")})}
                       </a>
@@ -178,7 +179,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <div id="users-stats" class="well forum-user-stats-container">
     <strong>${esc.html(${messages.getString("permissions.moderators")})}</strong>
     <br/>
-    <strong>${esc.html(${messages.getString("label.topic.now_browsing")})}<strong>
+    <strong>${esc.html(${messages.getString("label.topic.now_browsing")})}</strong>
   </div>
 
   <form id="deleteForm" method="DELETE"/>
