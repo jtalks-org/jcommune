@@ -14,6 +14,32 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
+#macro(topicActions $targetId)
+  <div class="row-fluid upper-pagination forum-pagination-container">
+    <div class="span3">
+      #if(${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.MOVE_TOPICS")})
+        <a href="#" class="move_topic btn space-left-medium-nf" title="${esc.html(${messages.getString("label.tips.move")})}"
+          data-topicId="${question.id}">
+          ${esc.html(${messages.getString("label.question.move")})}
+        </a>
+      #end
+      #if(${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CLOSE_TOPICS")})
+        #if(${question.closed})
+          <a href="${request.contextPath}/questions/${question.id}/open"
+            class="open_topic btn space-left-medium-nf">
+            ${esc.html(${messages.getString("label.question.open")})}
+          </a>
+        #else
+          <a href="${request.contextPath}/questions/${question.id}/close"
+            class="open_topic btn space-left-medium-nf">
+            ${esc.html(${messages.getString("label.question.close")})}
+          </a>
+        #end
+      #end
+    </div>
+  </div>
+#end
+
 <head>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <title>${esc.html("Question Tilte")}</title>
@@ -48,6 +74,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     </div>
     <span class="inline-block"></span>
   </div>
+
+  ##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
+  #set($targedId = 3)
+  #topicActions($targedId)
 
   <div>
     #set($answersCount = ${postPage.getContent().size()} - 1)
@@ -110,12 +140,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
           <div class="question-right-panel">
             <div class="question-header">
-              <div class="question-date pull-right">
-                <i class="icon-calendar"></i>
-                <a href="${request.contextPath}/answers/${post.id}">
-                  ${dateTool.format(${post.creationDate}, ${currentUser.language.locale})}
-                </a>
-              </div>
 
               <div class="question-author">
                 <a class="post-userinfo-username"
@@ -124,6 +148,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                   ${esc.html(${post.userCreated.username})}
                 </a>
               </div>
+
+              <div class="question-date pull-right">
+                <i class="icon-calendar"></i>
+                <a href="${request.contextPath}/answers/${post.id}">
+                  ${dateTool.format(${post.creationDate}, ${currentUser.language.locale})}
+                </a>
+              </div>
+
             </div>
 
             <div class="question-content">
@@ -133,8 +165,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <div class="question-footer">
               <div class="btn-toolbar post-btn-toolbar">
                 <div class="btn-group question-btn-group">
-                  ##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
-                  #set($targedId = 3)
+
                   #if($isFirstPost && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CREATE_POSTS")})
                     <a href="/answer" data-rel=""
                        class="edit_button btn btn-mini"
@@ -175,6 +206,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       </div>
     #end
   </div>
+
+  #topicActions($targedId)
 
   <div id="users-stats" class="well forum-user-stats-container">
     <strong>${esc.html(${messages.getString("permissions.moderators")})}</strong>

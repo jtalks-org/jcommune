@@ -29,16 +29,18 @@
 
 .question-author {
     margin-right: 140px;
+    float: left;
 }
 
 .question-date {
-    width: auto;
+    text-align: right;
     padding-right: 5px;
 }
 
 .question-header {
     padding: 10px 10px 5px 10px;
     border-bottom: 1px solid #ddd;
+    overflow: hidden;
 }
 
 .question-footer {
