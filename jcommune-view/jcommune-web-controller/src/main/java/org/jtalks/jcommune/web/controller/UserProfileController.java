@@ -24,7 +24,7 @@ import org.jtalks.jcommune.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.*;
-import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.validation.editors.DefaultAvatarEditor;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.jtalks.jcommune.web.validation.editors.PageSizeEditor;
@@ -110,7 +110,7 @@ public class UserProfileController {
 
     /**
      * @param userService       to get current user and user by id
-     * @param breadcrumbBuilder the object which provides actions on {@link org.jtalks.jcommune.web.util.BreadcrumbBuilder} entity
+     * @param breadcrumbBuilder the object which provides actions on {@link org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder} entity
      * @param imageConverter    to prepare user avatar for view
      * @param postService       to get all user's posts
      * @param contactsService   for edit user contacts

@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.plugin.api.core;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
+import org.jtalks.jcommune.plugin.api.web.dto.CreateTopicBtnDto;
 
 
 /**
@@ -31,7 +31,7 @@ public interface TopicPlugin extends PluginWithBranchPermissions {
      *
      * @param branchId id of branch where button should be placed
      * @return dto object for create topic button
-     * @see org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto
+     * @see org.jtalks.jcommune.plugin.api.web.dto.CreateTopicBtnDto
      */
     CreateTopicBtnDto getCreateTopicBtnDto(long branchId);
 

@@ -18,7 +18,7 @@ import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.core.WebControllerPlugin;
-import org.jtalks.jcommune.plugin.api.dto.CreateTopicBtnDto;
+import org.jtalks.jcommune.plugin.api.web.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 import org.jtalks.jcommune.plugin.api.web.PluginController;

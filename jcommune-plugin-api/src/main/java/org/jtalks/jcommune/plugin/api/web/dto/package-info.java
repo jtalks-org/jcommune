@@ -12,36 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto;
-
 /**
- * Enumerates all possible location on the forum
+ * Package for view layer plugin DTOs.
  */
-public enum BreadcrumbLocation {
-
-    FORUM("sections"),
-    BRANCH("branches"),
-    SECTION("sections"),
-    TOPIC("topics");
-
-    //Displayed value for the HTML link
-    private String name;
-
-    /**
-     * Set the Breadcrumb URL location
-     *
-     * @param name Breadcrumb URL location
-     */
-    private BreadcrumbLocation(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Return the Breadcrumb URL location
-     *
-     * @return name Breadcrumb URL location
-     */
-    public String getName() {
-        return name;
-    }
-}
+package org.jtalks.jcommune.plugin.api.web.dto;

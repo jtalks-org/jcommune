@@ -21,6 +21,8 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 import org.jtalks.jcommune.plugin.api.web.PluginController;
+import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
+import org.jtalks.jcommune.plugin.api.web.dto.BreadcrumbLocation;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.PermissionTool;
 import org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin;
@@ -54,6 +56,13 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
         Map<String, Object> data = new HashMap<>();
+        List<Breadcrumb> breadcrumbList = new ArrayList<>();
+        Breadcrumb forum = new Breadcrumb(1L, BreadcrumbLocation.FORUM, "Forum");
+        breadcrumbList.add(forum);
+        Breadcrumb section = new Breadcrumb(1L, BreadcrumbLocation.SECTION, "Sport");
+        breadcrumbList.add(section);
+        Breadcrumb branch = new Breadcrumb(1L, BreadcrumbLocation.BRANCH, "Russian Hockey");
+        breadcrumbList.add(branch);
         List<Post> posts = new ArrayList<>();
         JCUser mrVasiliy = new JCUser("Mr. Vasiliy", "", "");
         posts.add(new Post(mrVasiliy, "Lorem ipsum <strong>dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
@@ -66,6 +75,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put("postPage", postPage);
         data.put("question", new Topic(mrVasiliy, "Test title"));
         data.put("subscribed", false);
+        data.put("breadcrumbList", breadcrumbList);
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", data));
         return "plugin/plugin";

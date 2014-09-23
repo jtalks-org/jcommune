@@ -12,21 +12,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.util;
+package org.jtalks.jcommune.plugin.api.web.util;
 
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.web.dto.Breadcrumb;
-import org.jtalks.jcommune.web.dto.BreadcrumbLocation;
+import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
+import org.jtalks.jcommune.plugin.api.web.dto.BreadcrumbLocation;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DTO builder for {@link org.jtalks.jcommune.web.dto.Breadcrumb} objects.
+ * DTO builder for {@link org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb} objects.
  * Used for preparing breadcrumbs for the different JSP views.
  *
  * @author Alexandre Teterin
@@ -41,7 +41,7 @@ public class BreadcrumbBuilder {
      * @return the breadcrumb list for the Forum location. Contains one (root) breadcrumb.
      */
     public List<Breadcrumb> getForumBreadcrumb() {
-        List<Breadcrumb> breadcrumbList = new ArrayList<Breadcrumb>();
+        List<Breadcrumb> breadcrumbList = new ArrayList<>();
         breadcrumbList.add(prepareForumBreadcrumb());
 
         return breadcrumbList;

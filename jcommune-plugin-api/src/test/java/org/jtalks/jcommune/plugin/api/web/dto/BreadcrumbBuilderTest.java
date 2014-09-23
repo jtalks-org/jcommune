@@ -12,14 +12,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto;
+package org.jtalks.jcommune.plugin.api.web.dto;
 
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -69,7 +69,7 @@ public class BreadcrumbBuilderTest {
         //init
         Breadcrumb expectedBreadcrumb = new Breadcrumb(Breadcrumb.STUB_BREADCRUMB_ID,
                 BreadcrumbLocation.FORUM, Breadcrumb.ROOT_BREADCRUMB_LOCATION_VALUE);
-        List<Breadcrumb> expectedResult = new ArrayList<Breadcrumb>();
+        List<Breadcrumb> expectedResult = new ArrayList<>();
         expectedResult.add(expectedBreadcrumb);
 
         //invoke the object under test

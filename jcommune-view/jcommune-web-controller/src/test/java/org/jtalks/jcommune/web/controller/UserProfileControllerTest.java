@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.UserService;
@@ -27,7 +28,7 @@ import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.*;
-import org.jtalks.jcommune.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
@@ -519,9 +520,9 @@ public class UserProfileControllerTest {
         user.setPageSize(5);
         Post post = mock(Post.class);
         Topic topic = mock(Topic.class);
-        List<Post> posts = new ArrayList<Post>();
+        List<Post> posts = new ArrayList<>();
         posts.add(post);
-        Page<Post> postsPage = new PageImpl<Post>(posts);
+        Page<Post> postsPage = new PageImpl<>(posts);
         //
         when(userService.getByUsername("username")).thenReturn(user);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(new ArrayList<Breadcrumb>());

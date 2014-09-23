@@ -26,7 +26,7 @@
     </bean>
 
     <bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"/>
-    <bean id="breadcrumbBuilder" class="org.jtalks.jcommune.web.util.BreadcrumbBuilder"/>
+    <bean id="breadcrumbBuilder" class="org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder"/>
     <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.SessionStatisticListener"/>
      
     <bean id="jsonUtils" class="org.jtalks.jcommune.web.util.JSONUtils">
