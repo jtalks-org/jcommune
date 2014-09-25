@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #parse("org/jtalks/jcommune/plugin/questionsandanswers/template/breadcrumb.vm")
 <head>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
+  <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
   <title>${esc.html("Question Tilte")}</title>
 </head>
 <body>
@@ -178,8 +179,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             </div>
           </div>
         </div>
-
       </div>
+      <div class="comments">
+        <div class="comment-prompt">
+          <i class="icon-comment"></i>
+          <span class="comment-prompt-label">Add your comment...</span>
+        </div>
+        <div class="comment-container">
+          <textarea name="commentBody" class="comment-textarea" placeholder="Add your comment..." rows="3"></textarea>
+          <div class="comment-buttons-container">
+            <div class="pull-right">
+              <a class="btn btn-primary comment-submit">Comment</a>
+              <a class="btn comment-cancel">Cancel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
     #end
   </div>
 
