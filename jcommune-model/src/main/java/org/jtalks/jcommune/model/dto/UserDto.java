@@ -20,7 +20,6 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
-
 import org.jtalks.jcommune.model.validation.annotations.Unique;
 
 import javax.validation.constraints.Size;
@@ -45,6 +44,7 @@ public class UserDto {
     @Unique(entity = JCUser.class, field = "email", message = "{user.email.already_exists}", ignoreCase = true)
     private String email;
 
+    @NotBlank(message = "{validation.not_null}")
     @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH,
             message = "{user.password.length_constraint_violation}")
     private String password;
