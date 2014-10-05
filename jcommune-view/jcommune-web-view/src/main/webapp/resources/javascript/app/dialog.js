@@ -216,14 +216,22 @@ $(function () {
         //methods to dialogs
         jDialog.resizeDialog = function (dialog) {
             if (dialog) {
-                dialog.css("top","50%"); //The bootstrup .modal class has this styles, but ...
-                dialog.css("left","50%"); //... has not correct behavior when the screen is small.
+                dialog.css("top","50%");
                 dialog.css("margin-top", function () {
                     return $(this).outerHeight() / 2 * (-1)
                 });
-                dialog.css("margin-left", function () {
-                    return $(this).outerWidth() / 2 * (-1)
-                });
+
+                // Starting from 480px class "modal" has new properties (see details in bootstrap-responsive.css).
+                // In this case when we call the resizeDialog function right after the dialog creation
+                // actually size of the dialog is not calculated yet so we should just leave
+                // default value for the "left" = 10px. New value will be calculated
+                // during the next window resize event.
+                if ($(window).width() > 480) { //The bootstrup .modal class has this styles, but ...
+                    dialog.css("left","50%"); //... has not correct behavior when the screen is small.
+                    dialog.css("margin-left", function () {
+                        return $(this).outerWidth() / 2 * (-1)
+                    });
+                }
             }
         };
 

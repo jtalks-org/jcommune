@@ -161,5 +161,14 @@ $(document).ready(function () {
 
     // html5 placeholder emulation for old IE
     $('input[placeholder]').placeholder();
+
+    $( window ).resize(function() {
+        var dialog = $("form.modal.in");
+        dialog.css("left","50%");
+
+        dialog.css("margin-left", function () {
+            return dialog.outerWidth() / 2 * (-1)
+        });
+    });
 });
 
