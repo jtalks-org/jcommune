@@ -14,9 +14,11 @@
   <!-- Please, don't use these credentials if possible (and don't use it for bad things ;)), -->
   <!-- but if you want just to quickly try the app or you're a part of dev team, feel free to use these credentials -->
   <Environment name="SMTP_HOST" value="smtp.mail.ru" type="java.lang.String"/>
-  <Environment name="SMTP_PORT" value="25" type="java.lang.String"/>
+  <!--for smtp default port value is 25, for smtps - 465-->
+  <Environment name="SMTP_PORT" value="465" type="java.lang.String"/>
   <Environment name="MAIL_USERNAME" value="jtalks@inbox.ru" type="java.lang.String"/>
   <Environment name="MAIL_PASSWORD" value="javatalks" type="java.lang.String"/>
+  <Environment name="SSL_ENABLED" value="true" type="java.lang.String" />
   <!--This is where you need to put plugins jar files if you need to install any. -->
   <!--This property is used in jcommune-service\src\main\resources\org\jtalks\jcommune\service\applicationContext-service.xml -->
   <Environment name="JCOMMUNE_PLUGIN_FOLDER" value="~" type="java.lang.String"/>
