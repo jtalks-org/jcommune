@@ -19,6 +19,8 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.search.BbCodeFilterBridge;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,6 +43,12 @@ public class Post extends Entity {
     private JCUser userCreated;
     private String postContent;
     private Topic topic;
+
+    /**
+     * Needed for prototyping QA page. In future it may be some different instance (not {@link CodeReviewComment})
+     * Now we not store comments in database but everything has its time.
+     */
+    private List<CodeReviewComment> comments = new ArrayList<>();
 
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 2;
@@ -186,5 +194,13 @@ public class Post extends Entity {
      */
     public Set<JCUser> getTopicSubscribers() {
         return getTopic().getSubscribers();
+    }
+
+    public List<CodeReviewComment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CodeReviewComment> comments) {
+        this.comments = comments;
     }
 }

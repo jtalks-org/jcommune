@@ -137,3 +137,19 @@
     font-size: 13px;
     padding: 5px 10px;
 }
+
+.comment-header {
+    margin-top: 5px;
+}
+.comment-author {
+    font-size: 13px;
+    color: #3b73af;
+}
+
+.comment-list {
+    color: #707070;
+}
+
+.comment-body {
+    margin-bottom: 5px;
+}
