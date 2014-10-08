@@ -57,6 +57,41 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     public String showVelocity(Model model, HttpServletRequest request) {
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
+        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
+                "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", getModel(request)));
+        return "plugin/plugin";
+    }
+
+    @RequestMapping(value = "inside", method = RequestMethod.GET)
+    public String showCommentsInside(Model model, HttpServletRequest request) {
+        VelocityEngine engine = new VelocityEngine(getProperties());
+        engine.init();
+        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
+                "org/jtalks/jcommune/plugin/questionsandanswers/template/questionInside.vm", "UTF-8", getModel(request)));
+        return "plugin/plugin";
+    }
+
+    private ResourceBundle getLocalizedMessagesBundle(JCUser currentUser) {
+        return ResourceBundle.getBundle(MESSAGE_PATH, currentUser.getLanguage().getLocale());
+    }
+
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    protected Properties getProperties() {
+        Properties properties = new Properties();
+        properties.put("resource.loader", "jar");
+        properties.put("jar.resource.loader.class", "org.apache.velocity.runtime.resource.loader.JarResourceLoader");
+        String jarPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+        properties.put("jar.resource.loader.path", "jar:file:" + jarPath);
+        properties.put("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
+        return properties;
+    }
+
+    private Map<String, Object> getModel(HttpServletRequest request) {
         Map<String, Object> data = new HashMap<>();
         List<Breadcrumb> breadcrumbList = new ArrayList<>();
         Breadcrumb forum = new Breadcrumb(1L, BreadcrumbLocation.FORUM, "Forum");
@@ -85,29 +120,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put("question", new Topic(mrVasiliy, "Test title"));
         data.put("subscribed", false);
         data.put("breadcrumbList", breadcrumbList);
-        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
-                "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", data));
-        return "plugin/plugin";
-    }
-
-    private ResourceBundle getLocalizedMessagesBundle(JCUser currentUser) {
-        return ResourceBundle.getBundle(MESSAGE_PATH, currentUser.getLanguage().getLocale());
-    }
-
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-
-    protected Properties getProperties() {
-        Properties properties = new Properties();
-        properties.put("resource.loader", "jar");
-        properties.put("jar.resource.loader.class", "org.apache.velocity.runtime.resource.loader.JarResourceLoader");
-        String jarPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-        properties.put("jar.resource.loader.path", "jar:file:" + jarPath);
-        properties.put("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
-        return properties;
+        return data;
     }
 
     /**

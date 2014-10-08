@@ -1,0 +1,50 @@
+#*
+
+Copyright (C) 2011  JTalks.org Team
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+*#
+#macro(comments $post)
+  #if($post.comments.size() > 0)
+  <div class="comment-list">
+    #foreach($comment in $post.comments)
+      <div>
+        <div class="comment-header">
+          <a class="comment-author"
+             href="${request.contextPath}/users/$comment.author.id"
+             title="${esc.html(${messages.getString("label.tips.view_profile")})}">
+            ${esc.html($comment.author.username)}
+          </a>,${dateTool.format($comment.creationDate, ${currentUser.language.locale})} &nbsp;
+          <i class="icon-pencil"></i>&nbsp;<i class="icon-trash"></i>
+        </div>
+        <div class="comment-body">
+          ${esc.html($comment.body)}
+        </div>
+      </div>
+    #end
+  </div>
+  #end
+  <div class="comment-prompt">
+    <i class="icon-comment"></i>
+    <span class="comment-prompt-label">Add your comment...</span>
+  </div>
+  <div class="comment-container">
+    <textarea name="commentBody" class="comment-textarea" placeholder="Add your comment..." rows="3"></textarea>
+    <div class="comment-buttons-container">
+      <div class="pull-right">
+        <a class="btn btn-primary comment-submit">Comment</a>
+        <a class="btn comment-cancel">Cancel</a>
+      </div>
+    </div>
+  </div>
+#end

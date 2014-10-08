@@ -108,7 +108,19 @@
 
 .comments {
     margin-left: 140px;
-    margin-bottom: 18px;
+    margin-bottom: 8px;
+    background: rgb(247, 247, 247);
+    padding: 10px;
+    font-family: Arial,Liberation Sans,DejaVu Sans,sans-serif;
+    border-radius: 4px;
+    -webkit-border-bottom-left-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    -moz-border-bottom-left-radius: 4px;
+    -moz-border-bottom-right-radius: 4px;
+    -o-border-bottom-left-radius: 4px;
+    -o-border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
 .comment-container {
