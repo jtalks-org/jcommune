@@ -165,3 +165,23 @@
 .comment-body {
     margin-bottom: 5px;
 }
+
+.expand {
+    width: 100%;
+    color: #428bca;
+    border: none;
+    font-size: 13px;
+    background-color: transparent;
+}
+
+.btn-container:hover {
+    background-color: buttonface;
+}
+
+.btn-container {
+    padding: 5px 0px;
+}
+
+.bordered {
+    border-bottom: dotted 1px #484848;
+}

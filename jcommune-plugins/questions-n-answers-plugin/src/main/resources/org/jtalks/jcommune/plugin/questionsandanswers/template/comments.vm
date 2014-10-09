@@ -15,24 +15,40 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
 #macro(comments $post)
+  #set($shownComments = 3)
   #if($post.comments.size() > 0)
-  <div class="comment-list">
-    #foreach($comment in $post.comments)
-      <div>
-        <div class="comment-header">
-          <a class="comment-author"
-             href="${request.contextPath}/users/$comment.author.id"
-             title="${esc.html(${messages.getString("label.tips.view_profile")})}">
-            ${esc.html($comment.author.username)}
-          </a>,${dateTool.format($comment.creationDate, ${currentUser.language.locale})} &nbsp;
-          <i class="icon-pencil"></i>&nbsp;<i class="icon-trash"></i>
-        </div>
-        <div class="comment-body">
-          ${esc.html($comment.body)}
-        </div>
+    #if($post.comments.size() > $shownComments)
+      <div class="btn-container">
+        <button type="button" class="expand togglable" style="display: block"><span>Show all comments</span></button>
+        <button type="button" class="expand togglable" style="display: none"><span>Hide</span></button>
       </div>
     #end
-  </div>
+    <div class="comment-list">
+      #foreach($comment in $post.comments)
+        #set($commentClass = "")
+        #if($velocityCount != $post.comments.size() && $post.comments.size() != 0)
+          #set($commentClass = "bordered")
+        #end
+        #if($post.comments.size() - $velocityCount >= $shownComments)
+          <div class="togglable $commentClass" style="display: none">
+
+        #else
+          <div class="$commentClass">
+        #end
+          <div class="comment-header">
+            <a class="comment-author"
+              href="${request.contextPath}/users/$comment.author.id"
+              title="${esc.html(${messages.getString("label.tips.view_profile")})}">
+              ${esc.html($comment.author.username)}
+            </a>,${dateTool.format($comment.creationDate, ${currentUser.language.locale})} &nbsp;
+            <i class="icon-pencil"></i>&nbsp;<i class="icon-trash"></i>
+          </div>
+          <div class="comment-body">
+            ${esc.html($comment.body)}
+          </div>
+        </div>
+      #end
+    </div>
   #end
   <div class="comment-prompt">
     <i class="icon-comment"></i>
