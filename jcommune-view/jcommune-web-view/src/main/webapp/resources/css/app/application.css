@@ -223,6 +223,7 @@ ul.lang-menu li img {
 
 #topics-table .latest-by {
     font-size: 10px;
+    width: 100px;
 }
 
 #topics-table .latest-by p {
@@ -343,10 +344,6 @@ ul.lang-menu li img {
         white-space: normal;
     }
 
-    .created-by {
-        display: none;
-    }
-
     #topics-table .posts-views {
         display: table-cell;
     }
@@ -358,7 +355,6 @@ ul.lang-menu li img {
     }
 
     #topics-table .posts-td-small {
-       width:70%;
        word-wrap: break-word;
        word-break: break-all;
        white-space: normal;
