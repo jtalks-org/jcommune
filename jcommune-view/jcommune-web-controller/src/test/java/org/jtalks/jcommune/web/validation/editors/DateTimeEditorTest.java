@@ -44,11 +44,13 @@ public class DateTimeEditorTest {
 
     @Test
     public void setAsTextNotMatchingFormatStingShouldNotSetValue() {
-        try {
-            editor.setAsText("99999-08-2014");
-        } catch (Exception ex) {
-        }
+        editor.setAsText("99999-08-2014");
+        assertEquals(null, editor.getValue());
+    }
 
+    @Test
+    public void setValueAsSimpleString() {
+        editor.setAsText("string");
         assertEquals(null, editor.getValue());
     }
 }

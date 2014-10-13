@@ -44,7 +44,11 @@ public class DateTimeEditor extends PropertyEditorSupport {
     @Override
     public void setAsText(String text) {
         if (text != null && !text.equals("")) {
-            setValue(DateTimeFormat.forPattern(this.format).parseDateTime(text));
+            try {
+              setValue(DateTimeFormat.forPattern(this.format).parseDateTime(text));
+            } catch (IllegalArgumentException e) {
+              setValue(null);
+            }
         }
     }
 }
