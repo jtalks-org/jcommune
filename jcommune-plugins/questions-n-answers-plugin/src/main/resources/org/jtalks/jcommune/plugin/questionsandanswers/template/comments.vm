@@ -17,19 +17,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #macro(comments $post)
   #set($shownComments = 3)
   #if($post.comments.size() > 0)
-    #if($post.comments.size() > $shownComments)
-      <div class="btn-container">
-        <button type="button" class="expand togglable" style="display: block"><span>Show all comments</span></button>
-        <button type="button" class="expand togglable" style="display: none"><span>Hide</span></button>
-      </div>
-    #end
     <div class="comment-list">
       #foreach($comment in $post.comments)
         #set($commentClass = "")
         #if($velocityCount != $post.comments.size() && $post.comments.size() != 0)
           #set($commentClass = "bordered")
         #end
-        #if($post.comments.size() - $velocityCount >= $shownComments)
+        #if($velocityCount <= $shownComments)
           <div class="togglable $commentClass" style="display: none">
 
         #else
@@ -52,6 +46,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         </div>
       #end
     </div>
+    #if($post.comments.size() > $shownComments)
+      <div class="btn-container">
+        <button type="button" class="expand togglable" style="display: block"><span>Show all comments</span></button>
+        <button type="button" class="expand togglable" style="display: none"><span>Hide</span></button>
+      </div>
+    #end
   #end
   <div class="comment-prompt">
     <i class="icon-comment"></i>

@@ -28,7 +28,7 @@ $(function () {
 
     $('.expand').click(function(e){
         e.preventDefault();
-        $(this).parent().next(".comment-list").children(".togglable").toggle();
+        $(this).parent().prev(".comment-list").children(".togglable").toggle();
         $(this).parent().children(".togglable").toggle();
         $(this).focus();
     });
