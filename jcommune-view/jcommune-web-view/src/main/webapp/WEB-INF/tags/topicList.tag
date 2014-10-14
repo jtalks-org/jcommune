@@ -24,9 +24,14 @@
       <tbody>
       <c:forEach var="topic" items="${topics}">
         <tr>
-          <td class="status-col-small"><jtalks:topicIconSmall topic="${topic}" authenticated="${authenticated}"/></td>
+          <td class="status-col-small">
+            <jtalks:topicIconSmall topic="${topic}" authenticated="${authenticated}"/>
+          </td>
           <td class="posts-td-small posts-td-small_2">
             <h2 class="h-nostyle">
+              <span class="badge badge-inverse" data-original-title="<spring:message code="label.postcount"/>">
+                <c:out value="${topic.postCount}"/>
+              </span>
                 <%--Some topic types should have a special prefix when displayed--%>
               <c:if test="${topic.announcement=='true'}">
                 <span class="sticky space-left-small-nf"><spring:message code="label.marked_as_announcement"/></span>
@@ -60,13 +65,16 @@
               </a>
             </div>
             <div>
-              <spring:message code="label.topic.last_post_by"/>
-              <a class="space-left-small"
+              <i class="icon-user"></i>
+              <a class="space-left-small margin-right-big"
                  href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}"
                  title="<spring:message code='label.tips.view_profile'/>">
                 <c:out value="${topic.lastPost.userCreated.username}"/>
               </a>
-              <span class='test-views'># <c:out value="${topic.views}"/></span>
+              <i class="icon-eye-open margin-left-big"></i>
+              <span class='test-views' data-original-title="<spring:message code="label.branch.header.views"/>">
+                <c:out value="${topic.views}"/>
+              </span>
             </div>
           </td>
         </tr>
