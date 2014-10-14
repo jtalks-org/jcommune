@@ -62,15 +62,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         return "plugin/plugin";
     }
 
-    @RequestMapping(value = "inside", method = RequestMethod.GET)
-    public String showCommentsInside(Model model, HttpServletRequest request) {
-        VelocityEngine engine = new VelocityEngine(getProperties());
-        engine.init();
-        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
-                "org/jtalks/jcommune/plugin/questionsandanswers/template/questionInside.vm", "UTF-8", getModel(request)));
-        return "plugin/plugin";
-    }
-
     private ResourceBundle getLocalizedMessagesBundle(JCUser currentUser) {
         return ResourceBundle.getBundle(MESSAGE_PATH, currentUser.getLanguage().getLocale());
     }

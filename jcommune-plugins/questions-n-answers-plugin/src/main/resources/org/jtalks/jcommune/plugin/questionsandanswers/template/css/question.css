@@ -6,6 +6,7 @@
     background: rgb(247, 247, 247);
     overflow: auto;
     border: 1px solid #ddd;
+    margin-bottom: 18px;
 }
 
 .question-left-panel {
@@ -33,8 +34,11 @@
     padding-right: 5px;
 }
 
-.question-header {
+.question-author, .question-date {
     padding: 10px 10px 5px 10px;
+}
+
+.question-header {
     border-bottom: 1px solid #ddd;
     overflow: hidden;
 }
@@ -49,9 +53,8 @@
 }
 
 .question-btn-group {
-    margin-left: 10px;
-    margin-top: 7px;
-    margin-bottom: 7px;
+    margin: 8px 20px 7px 10px;
+    position: inherit;
 }
 
 .vote-result {
@@ -121,6 +124,7 @@
     -o-border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+    font-size: 12px;
 }
 
 .comment-container {
@@ -148,6 +152,7 @@
     color: #707070;
     font-size: 13px;
     padding: 5px 10px;
+    border: 1px solid #DDD;
 }
 
 .comment-header {
@@ -156,6 +161,7 @@
 .comment-author {
     font-size: 13px;
     color: #3b73af;
+    margin-right: -4px;
 }
 
 .comment-list {
@@ -175,7 +181,7 @@
 }
 
 .btn-container:hover {
-    background-color: buttonface;
+    background-color: rgb(207, 210, 204);
 }
 
 .btn-container {
@@ -184,4 +190,21 @@
 
 .bordered {
     border-bottom: dotted 1px #484848;
+}
+
+.icon-calendar {
+    margin-top: 2px;
+}
+
+.comment-header .icon-pencil,.comment-header .icon-trash {
+    padding: 1px;
+}
+
+.comment-header .icon-pencil:hover, .comment-header .icon-trash:hover {
+    cursor: pointer;
+    background-color: rgb(207, 210, 204);
+}
+
+.comment-date {
+    margin: 0px 12px;
 }

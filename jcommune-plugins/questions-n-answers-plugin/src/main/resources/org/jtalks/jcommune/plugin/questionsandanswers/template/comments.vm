@@ -40,7 +40,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
               href="${request.contextPath}/users/$comment.author.id"
               title="${esc.html(${messages.getString("label.tips.view_profile")})}">
               ${esc.html($comment.author.username)}
-            </a>,${dateTool.format($comment.creationDate, ${currentUser.language.locale})} &nbsp;
+            </a>,
+            <span class="comment-date">
+              ${dateTool.format($comment.creationDate, ${currentUser.language.locale})}
+            </span>
             <i class="icon-pencil"></i>&nbsp;<i class="icon-trash"></i>
           </div>
           <div class="comment-body">
