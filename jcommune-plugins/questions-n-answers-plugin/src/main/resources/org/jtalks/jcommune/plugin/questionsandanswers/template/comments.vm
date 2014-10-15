@@ -23,9 +23,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         #if($velocityCount != $post.comments.size() && $post.comments.size() != 0)
           #set($commentClass = "bordered")
         #end
-        #if($velocityCount <= $shownComments)
+        #if($velocityCount == $shownComments)
+          #set($commentClass = "hiddenBorder")
+        #end
+        #if($velocityCount > $shownComments)
           <div class="togglable $commentClass" style="display: none">
-
         #else
           <div class="$commentClass">
         #end
@@ -35,10 +37,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
               title="${esc.html(${messages.getString("label.tips.view_profile")})}">
               ${esc.html($comment.author.username)}
             </a>,
-            <span class="comment-date">
-              ${dateTool.format($comment.creationDate, ${currentUser.language.locale})}
+            <span class="comment-buttons">
+              <i class="icon-pencil"></i>&nbsp;<i class="icon-trash"></i>
             </span>
-            <i class="icon-pencil"></i>&nbsp;<i class="icon-trash"></i>
+            ${dateTool.format($comment.creationDate, ${currentUser.language.locale})}
           </div>
           <div class="comment-body">
             ${esc.html($comment.body)}

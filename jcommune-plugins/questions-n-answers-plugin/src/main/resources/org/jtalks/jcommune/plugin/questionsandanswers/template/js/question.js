@@ -18,18 +18,41 @@ $(function () {
         e.preventDefault();
         $(this).hide();
         $(this).next(".comment-container").show();
+        $(this).next(".comment-container").children(".comment-textarea").focus();
     });
 
     $('.comment-cancel').click(function (e) {
         e.preventDefault();
+        $(this).parents(".comment-container").children(".comment-textarea").val("");
         $(this).parents(".comment-container").hide();
         $(this).parents(".comments").children(".comment-prompt").show();
     });
 
     $('.expand').click(function(e){
         e.preventDefault();
+        window.console.log(this);
         $(this).parent().prev(".comment-list").children(".togglable").toggle();
-        $(this).parent().children(".togglable").toggle();
-        $(this).focus();
+        var buttons = $(this).parent().children(".togglable");
+        buttons.toggle();
+        buttons.focus();
+        var thirdComment = $(this).parent().prev(".comment-list").children(".hiddenBorder");
+        console.log(thirdComment);
+        if (thirdComment.hasClass("bordered")) {
+            thirdComment.removeClass("bordered");
+        } else {
+            thirdComment.addClass("bordered");
+        }
     });
+});
+
+$(document).mouseup(function(e) {
+    if (!($(e.target).hasClass("comment-submit") || $(e.target).hasClass("comment-textarea"))) {
+        $(".comment-container").each(function() {
+            console.log(this);
+            if (!$(this).children(".comment-textarea").val()) {
+                $(this).hide();
+                $(this).parent().children(".comment-prompt").show();
+            }
+        });
+    }
 });

@@ -166,6 +166,7 @@
 
 .comment-list {
     color: #707070;
+    line-height: 17px;
 }
 
 .comment-body {
@@ -186,6 +187,7 @@
 
 .btn-container {
     padding: 5px 0px;
+    margin-bottom: 5px;
 }
 
 .bordered {
@@ -205,6 +207,6 @@
     background-color: rgb(207, 210, 204);
 }
 
-.comment-date {
+.comment-buttons {
     margin: 0px 12px;
 }
