@@ -52,7 +52,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     </div>
     <span class="inline-block"></span>
   </div>
-  #breadcrumb(${breadcrumbList})
+  #breadcrumb(${breadcrumbList} ${currentUser.language.locale})
 ##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
   #set($targedId = 3)
   #topicActions($targedId ${request} ${question} ${permissionTool})
