@@ -125,6 +125,11 @@ public class PluginHandlerMappingTest {
         public void testMethod() {
 
         }
+
+        @Override
+        public void setApiPath(String apiPath) {
+
+        }
     }
 
     @Controller

@@ -24,4 +24,11 @@ package org.jtalks.jcommune.plugin.api.web;
  * @see PluginHandlerMapping
  */
 public interface PluginController {
+
+    /**
+     * Sets path to jcommune-plugin-api.jar. This path should be used to load common templates from plugin-api.
+     *
+     * @param apiPath path to jcommune-plugin-api.jar
+     */
+    public void setApiPath(String apiPath);
 }
