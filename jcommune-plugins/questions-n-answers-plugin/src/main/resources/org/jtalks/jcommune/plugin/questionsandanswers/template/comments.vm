@@ -32,14 +32,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           <div class="$commentClass">
         #end
           <div class="comment-header">
-            <a class="comment-author"
-              href="${request.contextPath}/users/$comment.author.id"
-              title="${esc.html(${messages.getString("label.tips.view_profile")})}">
-              ${esc.html($comment.author.username)}
-            </a>,
-            <span class="comment-buttons">
-              <i class="icon-pencil"></i>&nbsp;<i class="icon-trash"></i>
-            </span>
+            <div class="comment-author pull-left">
+              <a class="no-right-space" href="${request.contextPath}/users/$comment.author.id"
+                 data-original-title="${esc.html(${messages.getString("label.tips.view_profile")})}">
+                ${esc.html($comment.author.username)}
+              </a>,
+            </div>
+            <div class="comment-buttons pull-left">
+              <a class="comment-button" data-original-title="${messages.getString("label.edit.comment")}"><i class="icon-pencil"></i></a>&nbsp;
+              <a class="comment-button" data-original-title="${messages.getString("label.delete.comment")}"><i class="icon-trash"></i></a>
+            </div>
             ${dateTool.format($comment.creationDate, ${currentUser.language.locale})}
           </div>
           <div class="comment-body">

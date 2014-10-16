@@ -161,7 +161,6 @@
 .comment-author {
     font-size: 13px;
     color: #3b73af;
-    margin-right: -4px;
 }
 
 .comment-list {
@@ -198,13 +197,17 @@
     margin-top: 2px;
 }
 
-.comment-header .icon-pencil,.comment-header .icon-trash {
+.comment-button {
     padding: 1px;
 }
 
-.comment-header .icon-pencil:hover, .comment-header .icon-trash:hover {
+.comment-button:hover {
     cursor: pointer;
     background-color: rgb(207, 210, 204);
+}
+
+.no-right-space {
+    margin-right: -4px;
 }
 
 .comment-buttons {
