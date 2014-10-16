@@ -232,10 +232,6 @@ ul.lang-menu li img {
     font-size: 10px;
 }
 
-#topics-table .latest-by .date {
-    color: rgb(51, 51, 51);
-}
-
 #topics-table .branch-title {
     font-weight: bold;
     line-height: 18px;
@@ -277,10 +273,6 @@ ul.lang-menu li img {
 
 @media (max-width: 479px) {
     #topics-table .posts-views {
-        display: none;
-    }
-
-    #topics-table .latest-by {
         display: none;
     }
 }

@@ -55,21 +55,25 @@
             </sub>
           </td>
           <td class="latest-by shrink-to-fit">
-            <i class="icon-calendar"></i>
-            <a class="date margin-right-big" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}"
-               data-original-title="<spring:message code="label.branch.header.lastMessage.tooltip"/>">
-              <jtalks:format value="${topic.lastPost.creationDate}"/>
-            </a>
-            <i class="icon-user"></i>
-            <a class="space-left-small"
-               href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}"
-               title="<spring:message code='label.tips.view_profile'/>">
-              <c:out value="${topic.lastPost.userCreated.username}"/>
-            </a>
-            <i class="icon-envelope margin-left-big margin-right-big"></i>
-            <span class='test-views' data-original-title="<spring:message code="label.branch.header.posts"/>">
-              <c:out value="${topic.postCount}"/>
-            </span>
+            <div>
+              <i class="icon-calendar"></i>
+              <a class="date margin-right-big" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}"
+                 data-original-title="<spring:message code="label.branch.header.lastMessage.tooltip"/>">
+                <jtalks:format value="${topic.lastPost.creationDate}"/>
+              </a>
+              <i class="icon-envelope margin-left-big margin-right-big"></i>
+              <span class='test-views' data-original-title="<spring:message code="label.branch.header.posts"/>">
+                <c:out value="${topic.postCount}"/>
+              </span>
+            </div>
+            <div>
+              <i class="icon-user"></i>
+              <a class="space-left-small"
+                 href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}"
+                 title="<spring:message code='label.tips.view_profile'/>">
+                <c:out value="${topic.lastPost.userCreated.username}"/>
+              </a>
+            </div>
           </td>
         </tr>
       </c:forEach>
