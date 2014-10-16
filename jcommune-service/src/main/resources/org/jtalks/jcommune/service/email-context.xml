@@ -30,7 +30,7 @@
   </bean>
     
   <bean id="sslEnabled" class="java.lang.Boolean">
-      <constructor-arg type="java.lang.String" value="${SSL_ENABLED:true}"/>
+      <constructor-arg type="java.lang.String" value="${SSL_ENABLED:false}"/>
   </bean>
 
   <util:properties id="sslMailProps">
