@@ -60,7 +60,8 @@
           <td class="latest-by shrink-to-fit">
             <div>
               <i class="icon-calendar"></i>
-              <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
+              <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}"
+                 data-original-title="<spring:message code="label.branch.header.lastMessage.tooltip"/>">
                 <jtalks:format value="${topic.lastPost.creationDate}"/>
               </a>
             </div>
