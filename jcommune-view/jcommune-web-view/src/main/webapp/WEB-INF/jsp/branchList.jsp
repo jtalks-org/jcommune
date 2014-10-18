@@ -125,7 +125,6 @@
                       <a class="space-left-small"
                          href="${pageContext.request.contextPath}/users/${branch.lastPost.userCreated.id}">
                         <c:out value="${branch.lastPost.userCreated.username}"/>
-                          data-original-title="123"
                       </a>
                     </p>
                   </c:if>
