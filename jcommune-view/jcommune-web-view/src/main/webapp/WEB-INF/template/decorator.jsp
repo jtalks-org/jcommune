@@ -33,6 +33,10 @@
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:description" content="<decorator:title/>"/>
 <meta name="twitter:title" content="<decorator:title/>"/>
+
+<script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-1.11.1.js"></script>
+<script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-migrate-1.2.1.js"></script>
+
 <script>
   <%--Defines URL mapping root to be used in JS--%>
   $root = "${pageContext.request.contextPath}";
@@ -137,7 +141,7 @@ in the future.
     <link rel="stylesheet" type="text/css" media="all"
           href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"/>
 
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-1.7.min.js"></script>
+
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery.truncate.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-ui.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-ui-i18n.min.js"></script>
