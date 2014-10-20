@@ -17,6 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/topicActions.vm")
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/breadcrumb.vm")
 #parse("org/jtalks/jcommune/plugin/questionsandanswers/template/comments.vm")
+#parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/bbeditor.vm")
 <head>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
@@ -52,7 +53,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     </div>
     <span class="inline-block"></span>
   </div>
-  #breadcrumb(${breadcrumbList})
+  #breadcrumb(${breadcrumbList} ${currentUser.language.locale})
 ##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
   #set($targedId = 3)
   #topicActions($targedId ${request} ${question} ${permissionTool})
@@ -191,6 +192,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   </div>
 
   #topicActions($targedId ${request} ${question} ${permissionTool})
+  #if(!${question.closed})
+    <form action="/answer"
+          method="POST" class='well anti-multipost submit-form' modelAttribute="postDto">
+      <form path="topicId"/>
+      #bbeditor(${messages.getString("label.answer")} ${currentUser.language.locale})
+    </form>
+  #end
 
   <div id="users-stats" class="well forum-user-stats-container">
     <strong>${esc.html(${messages.getString("permissions.moderators")})}</strong>

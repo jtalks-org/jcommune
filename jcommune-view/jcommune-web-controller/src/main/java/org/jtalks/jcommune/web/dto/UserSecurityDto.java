@@ -14,11 +14,10 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.validation.annotations.Matches;
-import org.jtalks.jcommune.web.validation.annotations.ChangedPassword;
+import org.jtalks.jcommune.web.validation.annotations.*;
 
 import javax.validation.constraints.Size;
 
@@ -37,10 +36,8 @@ public class UserSecurityDto {
     private long userId;
 
     private String currentUserPassword;
-    @NotBlank(message = "{validation.not_null}")
     @Size(min = User.PASSWORD_MIN_LENGTH, max = User.PASSWORD_MAX_LENGTH)
     private String newUserPassword;
-    @NotBlank(message = "{validation.not_null}")
     private String newUserPasswordConfirm;
 
     /**
