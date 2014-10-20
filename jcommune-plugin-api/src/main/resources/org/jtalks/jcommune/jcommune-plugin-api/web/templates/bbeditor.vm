@@ -1,0 +1,135 @@
+#macro(bbeditor $labelForAction $locale)
+  <div class="btn-toolbar hide-on-preview">
+    <div class="btn-group">
+      <a id="format_b" class="btn" accesskey="b" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.bold</jcommune:message>">
+        <i class="icon-bold"></i>
+      </a>
+      <a id="format_i" class="btn" accesskey="i" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.italic</jcommune:message>">
+        <i class="icon-italic"></i>
+      </a>
+      <a id="format_u" class="btn" accesskey="u" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.underline</jcommune:message>">
+        <i class="icon-underline"></i>
+      </a>
+      <a id="format_s" class="btn" accesskey="s" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.striked</jcommune:message>">
+        <i class="icon-strike"></i>
+      </a>
+      <a id="format_highlight" class="btn" accesskey="h" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.highlight</jcommune:message>">
+      &nbsp;Highlight&nbsp;
+      </a>
+    </div>
+    <div class='btn-group'>
+      <a id="format_left" class="btn" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.align_left</jcommune:message>">
+        <i class="icon-align-left"></i>
+      </a>
+      <a id="format_center" class="btn" accesskey="c" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.align_center</jcommune:message>">
+        <i class="icon-align-center"></i>
+      </a>
+      <a id="format_right" class="btn" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.align_right</jcommune:message>">
+        <i class="icon-align-right"></i>
+      </a>
+    </div>
+    <div class='btn-group'>
+      <a id="format_list" class="btn" accesskey="l" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.list</jcommune:message>">
+        <i class="icon-list"></i>
+      </a>
+      <a id="format_listeq" class="btn" accesskey="o" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.list_item</jcommune:message>">
+        <i class="icon-add-row"></i>
+      </a>
+    </div>
+    <div class='btn-group'>
+      <a id="select_color" class="btn" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.font_color</jcommune:message>">
+        <i class="icon-palette"></i>
+      </a>
+      <span id="colorpicker201" class="colorpicker201"></span>
+
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.font_size</jcommune:message>">
+        <i class="icon-text-height"></i>
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu" id='select_size'>
+        <li data-value='7'><a href="#fake"><jcommune:message locale='$locale'>label.answer.font_size.tiny</jcommune:message></a></li>
+        <li data-value='9'><a href="#fake"><jcommune:message locale='$locale'>label.answer.font_size.small</jcommune:message></a></li>
+        <li data-value='12'><a href="#fake"><jcommune:message locale='$locale'>label.answer.font_size.normal</jcommune:message></a></li>
+        <li data-value='18'><a href="#fake"><jcommune:message locale='$locale'>label.answer.font_size.large</jcommune:message></a></li>
+        <li data-value='24'><a href="#fake"><jcommune:message locale='$locale'>label.answer.font_size.huge</jcommune:message></a></li>
+      </ul>
+    </div>
+    <div class='btn-group'>
+      <a id="format_img" class="btn" accesskey="p" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.insert_picture</jcommune:message>">
+        <i class="icon-picture"></i>
+      </a>
+      <a id="format_url" class="btn" accesskey="w" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.insert_link</jcommune:message>">
+        <i class="icon-link"></i>
+      </a>
+
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake">
+        <jcommune:message locale='$locale'>label.answer.font_code</jcommune:message>
+        <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu" id='select_code'>
+        <li data-value="cpp"><a href="#fake">C/C++</a></li>
+        <li data-value="csharp"><a href="#fake">C#</a></li>
+        <li data-value="java"><a href="#fake">Java</a></li>
+        <li data-value="php"><a href="#fake">PHP</a></li>
+        <li data-value="python"><a href="#fake">Python</a></li>
+        <li data-value="pascal"><a href="#fake">Pascal</a></li>
+        <li data-value="bash"><a href="#fake">Bash</a></li>
+        <li data-value="js"><a href="#fake">JavaScript</a></li>
+        <li data-value="html"><a href="#fake">HTML</a></li>
+        <li data-value="css"><a href="#fake">CSS</a></li>
+        <li data-value="sql"><a href="#fake">SQL</a></li>
+        <li data-value="xml"><a href="#fake">XML</a></li>
+      </ul>
+
+      <a id="format_quote" class="btn" accesskey="q" href="#fake"
+        title="<spring:message code='label.answer.quote'/>">
+        <i class="icon-quote"></i>
+      </a>
+    </div>
+    <div class='btn-group'>
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
+         title="<jcommune:message locale='$locale'>label.answer.indent</jcommune:message>">
+        <jcommune:message locale='$locale'>label.answer.indent</jcommune:message>
+      <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu" id='select_indent'>
+        <li data-value="15"><a href="#fake">15</a></li>
+        <li data-value="20"><a href="#fake">20</a></li>
+        <li data-value="25"><a href="#fake">25</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class='control-group controls'>
+    <div id="editorBBCODEdiv">
+      <pre id="htmlContent"></pre>
+      <textarea id="postBody" name="${bodyParameterName}" tabindex="200" style="width:100%;height: 350px"
+                placeholder="<jcommune:message locale='$locale'>placeholder.editor.content</jcommune:message>" class="script-confirm-unsaved"></textarea>
+    </div>
+    <br>
+    <jcommune:message locale='$locale'>label.keymaps.post</jcommune:message>
+    <br>
+  </div>
+  <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
+        value="<jcommune:message locale='$locale'>$labelForAction</jcommune:message>"/>
+  <input id="preview" type="button" class="btn btn-success space-left-medium-nf" name="preview" tabindex="400"
+        value="<jcommune:message locale='$locale'>label.answer.preview</jcommune:message>"
+        onclick="togglePreviewMode(new Array('posts', 'topics'));return null;"/>
+  <script type="text/javascript">
+    initEditor("postBody", "editorBBCODEdiv", "htmlContent");
+  </script>
+
+#end
