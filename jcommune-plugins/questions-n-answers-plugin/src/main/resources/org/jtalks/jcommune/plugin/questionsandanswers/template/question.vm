@@ -24,6 +24,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <title>${esc.html("Question Tilte")}</title>
 </head>
 <body>
+##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
+  #set($targedId = 3)
+  #set($canLeavePosts=false)
+  #if((!${question.closed} || ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CLOSE_TOPICS")})
+  && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CREATE_POSTS")})
+    #set($canLeavePosts=true)
+  #end
 
 <div class="container">
   <div id="branch-header">
@@ -54,8 +61,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <span class="inline-block"></span>
   </div>
   #breadcrumb(${breadcrumbList} ${currentUser.language.locale})
-##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
-  #set($targedId = 3)
   #topicActions($targedId ${request} ${question} ${permissionTool})
 
   <div>
@@ -138,7 +143,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
               <div class="btn-toolbar post-btn-toolbar pull-right">
                 <div class="btn-group question-btn-group">
 
-                  #if($isFirstPost && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CREATE_POSTS")})
+                  #if($isFirstPost && $canLeavePosts)
                     <a href="/answer" data-rel=""
                        class="edit_button btn btn-mini"
                        title="${esc.html(${messages.getString("label.tips.answer")})}">
@@ -147,9 +152,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                     </a>
                   #end
                   #if(!${currentUser.anonymous})
-                    #if((${currentUser.id} == ${post.post.userCreated.id}
+                    #if((${currentUser.id} == ${post.userCreated.id}
                     && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OWN_POSTS")})
-                    || (${currentUser.id} != ${post.post.userCreated.id}
+                    || (${currentUser.id} != ${post.userCreated.id}
                     && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OTHERS_POSTS")}))
                       <a href="/edit" data-rel=""
                          class="edit_button btn btn-mini" title="${esc.html(${messages.getString("label.tips.edit.$postClass")})}">
@@ -157,9 +162,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                         ${esc.html(${messages.getString("label.edit")})}
                       </a>
                     #end
-                    #if((${currentUser.id} == ${post.post.userCreated.id}
+                    #if((${currentUser.id} == ${post.userCreated.id}
                     && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OWN_POSTS")})
-                    ||(${currentUser.id} != ${post.post.userCreated.id}
+                    ||(${currentUser.id} != ${post.userCreated.id}
                     &&${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OTHERS_POSTS")}))
                       <a href="/delete" class="btn btn-mini btn-danger delete"
                          title="${esc.html(${messages.getString("label.tips.remove.$postClass")})}"
@@ -180,7 +185,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
             <div class="question-footer">
               <div class="comments" style="margin-left: 60px">
-                #comments(${post})
+                #comments(${post} $canLeavePosts ${permissionTool} $targedId ${currentUser})
               </div>
 
             </div>
@@ -190,13 +195,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       <div class="clearfix"></div>
     #end
   </div>
-
   #topicActions($targedId ${request} ${question} ${permissionTool})
-  #if(!${question.closed})
+  #if($canLeavePosts)
     <form action="/answer"
           method="POST" class='well anti-multipost submit-form' modelAttribute="postDto">
       <form path="topicId"/>
-      #bbeditor(${messages.getString("label.answer")} ${currentUser.language.locale})
+      #bbeditor(${messages.getString("label.answer")} ${currentUser.language.locale} "" "" "bodyText" true)
     </form>
   #end
 

@@ -14,7 +14,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-#macro(comments $post)
+#macro(comments $post $canLeavePosts $permissionTool $targedId $currentUser)
   #set($shownComments = 3)
   #if($post.comments.size() > 0)
     <div class="comment-list">
@@ -38,11 +38,22 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 ${esc.html($comment.author.username)}
               </a>,
             </div>
-            <div class="comment-buttons pull-left">
-              <a class="comment-button" data-original-title="${messages.getString("label.edit.comment")}"><i class="icon-pencil"></i></a>&nbsp;
-              <a class="comment-button" data-original-title="${messages.getString("label.delete.comment")}"><i class="icon-trash"></i></a>
+            #if(!$currentUser.anonymous)
+              <div class="comment-buttons pull-left">
+                #if(($currentUser.id == $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.EDIT_OWN_POSTS"))
+                || ($currentUser.id != $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.EDIT_OTHERS_POSTS")))
+                  <a class="comment-button" data-original-title="${messages.getString("label.edit.comment")}"><i class="icon-pencil"></i></a>&nbsp;
+                #end
+                #if(($currentUser.id == $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.DELETE_OWN_POSTS"))
+                || ($currentUser.id != $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.DELETE_OTHERS_POSTS")))
+                  <a class="comment-button" data-original-title="${messages.getString("label.delete.comment")}"><i class="icon-trash"></i></a>
+                #end
+              </div>
+            #end
+            <div class="comment-date pull-left">
+              ${dateTool.format($comment.creationDate, ${currentUser.language.locale})}
             </div>
-            ${dateTool.format($comment.creationDate, ${currentUser.language.locale})}
+            <div class="cleared"></div>
           </div>
           <div class="comment-body">
             ${esc.html($comment.body)}
@@ -57,10 +68,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       </div>
     #end
   #end
-  <div class="comment-prompt">
-    <i class="icon-comment"></i>
-    <span class="comment-prompt-label">Add your comment...</span>
-  </div>
+  #if($canLeavePosts)
+    <div class="comment-prompt">
+      <i class="icon-comment"></i>
+      <span class="comment-prompt-label">Add your comment...</span>
+    </div>
+  #end
   <div class="comment-container">
     <textarea name="commentBody" class="comment-textarea" placeholder="Add your comment..." rows="3"></textarea>
     <div class="comment-buttons-container">

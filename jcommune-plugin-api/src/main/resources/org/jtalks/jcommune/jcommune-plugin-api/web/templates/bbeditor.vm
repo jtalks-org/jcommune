@@ -1,4 +1,4 @@
-#macro(bbeditor $labelForAction $locale)
+#macro(bbeditor $labelForAction $locale $back $postText $bodyParameterName $showSubmitButton)
   <div class="btn-toolbar hide-on-preview">
     <div class="btn-group">
       <a id="format_b" class="btn" accesskey="b" href="#fake"
