@@ -132,49 +132,47 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                   ${esc.html(${post.userCreated.username})}
                 </a>
               </div>
+              <div class="btn-toolbar post-btn-toolbar pull-right">
+                    <div class="btn-group question-btn-group">
 
+                      #if($isFirstPost && $canLeavePosts)
+                          <a href="/answer" data-rel=""
+                             class="edit_button btn btn-mini"
+                             title="${esc.html(${messages.getString("label.tips.answer")})}">
+                              <i class="icon-pencil"></i>
+                            ${esc.html(${messages.getString("label.answer")})}
+                          </a>
+                      #end
+                      #if(!${currentUser.anonymous})
+                        #if((${currentUser.id} == ${post.userCreated.id}
+                        && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OWN_POSTS")})
+                        || (${currentUser.id} != ${post.userCreated.id}
+                        && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OTHERS_POSTS")}))
+                            <a href="/edit" data-rel=""
+                               class="edit_button btn btn-mini" title="${esc.html(${messages.getString("label.tips.edit.$postClass")})}">
+                                <i class="icon-edit"></i>
+                              ${esc.html(${messages.getString("label.edit")})}
+                            </a>
+                        #end
+                        #if((${currentUser.id} == ${post.userCreated.id}
+                        && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OWN_POSTS")})
+                        ||(${currentUser.id} != ${post.userCreated.id}
+                        &&${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OTHERS_POSTS")}))
+                            <a href="/delete" class="btn btn-mini btn-danger delete"
+                               title="${esc.html(${messages.getString("label.tips.remove.$postClass")})}"
+                               data-confirmationMessage="${esc.html(${messages.getString("label.confirm.delete.$postClass")})}">
+                                <i class="icon-remove icon-white"></i>
+                              ${esc.html(${messages.getString("label.delete")})}
+                            </a>
+                        #end
+                      #end
+                    </div>
+                </div>
               <div class="question-date pull-right">
                 <i class="icon-calendar"></i>
                 <a href="${request.contextPath}/answers/${post.id}">
                   ${dateTool.format(${post.creationDate}, ${currentUser.language.locale})}
                 </a>
-              </div>
-
-              <div class="btn-toolbar post-btn-toolbar pull-right">
-                <div class="btn-group question-btn-group">
-
-                  #if($isFirstPost && $canLeavePosts)
-                    <a href="/answer" data-rel=""
-                       class="edit_button btn btn-mini"
-                       title="${esc.html(${messages.getString("label.tips.answer")})}">
-                      <i class="icon-pencil"></i>
-                      ${esc.html(${messages.getString("label.answer")})}
-                    </a>
-                  #end
-                  #if(!${currentUser.anonymous})
-                    #if((${currentUser.id} == ${post.userCreated.id}
-                    && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OWN_POSTS")})
-                    || (${currentUser.id} != ${post.userCreated.id}
-                    && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OTHERS_POSTS")}))
-                      <a href="/edit" data-rel=""
-                         class="edit_button btn btn-mini" title="${esc.html(${messages.getString("label.tips.edit.$postClass")})}">
-                        <i class="icon-edit"></i>
-                        ${esc.html(${messages.getString("label.edit")})}
-                      </a>
-                    #end
-                    #if((${currentUser.id} == ${post.userCreated.id}
-                    && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OWN_POSTS")})
-                    ||(${currentUser.id} != ${post.userCreated.id}
-                    &&${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OTHERS_POSTS")}))
-                      <a href="/delete" class="btn btn-mini btn-danger delete"
-                         title="${esc.html(${messages.getString("label.tips.remove.$postClass")})}"
-                         data-confirmationMessage="${esc.html(${messages.getString("label.confirm.delete.$postClass")})}">
-                        <i class="icon-remove icon-white"></i>
-                        ${esc.html(${messages.getString("label.delete")})}
-                      </a>
-                    #end
-                  #end
-                </div>
               </div>
 
             </div>
