@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.validation.editors;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.beans.PropertyEditorSupport;
 import java.text.SimpleDateFormat;
@@ -43,12 +44,13 @@ public class DateTimeEditor extends PropertyEditorSupport {
 
     @Override
     public void setAsText(String text) {
-        if (text != null && !text.equals("")) {
-            try {
-              setValue(DateTimeFormat.forPattern(this.format).parseDateTime(text));
-            } catch (IllegalArgumentException e) {
+        if (text != null && !text.isEmpty()) {
+          DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern(this.format);
+          try {
+              setValue(dateTimeFormatter.parseDateTime(text));
+          } catch (IllegalArgumentException e) {
               setValue(null);
-            }
+          }
         }
     }
 }
