@@ -152,3 +152,4 @@ $labelFailedToLoadGroups = '<spring:message code="permissions.group.load.failed"
 $pluginStatusActivated = '<spring:message code="label.plugins.plugin.status.activated" htmlEscape="true"/>';
 $pluginStatusDeactivated = '<spring:message code="label.plugins.plugin.status.deactivated" htmlEscape="true"/>';
 $pluginStatusFailed = '<spring:message code="label.plugins.plugin.status.failed" htmlEscape="true"/>';
+$copyLinkToClipboardPopupTitle = '<spring:message code="copy.link.to.clipboard.popup.title" htmlEscape="true"/>';

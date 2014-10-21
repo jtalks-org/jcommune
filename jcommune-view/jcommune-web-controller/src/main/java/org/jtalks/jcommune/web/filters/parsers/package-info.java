@@ -12,23 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.plugin.api.web;
-
 /**
- * Interface-marker. Plugin controller should implement this interface to allow {@link PluginHandlerMapping} distinguish
- * them from application controllers. It's necessary because we should map plugin controllers separately from
- * application controllers. It allow us to change plugin version without application restart.
- *
- * @author Mikhail Stryzhonok
- *
- * @see PluginHandlerMapping
+ * Contains parsers which will parse specific content in response in servlet filter
  */
-public interface PluginController {
-
-    /**
-     * Sets path to jcommune-plugin-api.jar. This path should be used to load common templates from plugin-api.
-     *
-     * @param apiPath path to jcommune-plugin-api.jar
-     */
-    public void setApiPath(String apiPath);
-}
+package org.jtalks.jcommune.web.filters.parsers;

@@ -50,7 +50,7 @@ import static org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswers
 @Controller
 @RequestMapping(QuestionsAndAnswersPlugin.CONTEXT)
 public class QuestionsAndAnswersController implements ApplicationContextAware, PluginController {
-
+    private String apiPath;
     private ApplicationContext applicationContext;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -59,15 +59,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         engine.init();
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", getModel(request)));
-        return "plugin/plugin";
-    }
-
-    @RequestMapping(value = "inside", method = RequestMethod.GET)
-    public String showCommentsInside(Model model, HttpServletRequest request) {
-        VelocityEngine engine = new VelocityEngine(getProperties());
-        engine.init();
-        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
-                "org/jtalks/jcommune/plugin/questionsandanswers/template/questionInside.vm", "UTF-8", getModel(request)));
         return "plugin/plugin";
     }
 
@@ -85,8 +76,10 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Properties properties = new Properties();
         properties.put("resource.loader", "jar");
         properties.put("jar.resource.loader.class", "org.apache.velocity.runtime.resource.loader.JarResourceLoader");
-        String jarPath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-        properties.put("jar.resource.loader.path", "jar:file:" + jarPath);
+        List<String> jars = new ArrayList<>();
+        jars.add("jar:file:" + this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+        jars.add("jar:file:" + apiPath);
+        properties.put("jar.resource.loader.path", jars);
         properties.put("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
         return properties;
     }
@@ -153,5 +146,9 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         model.put("messages", getLocalizedMessagesBundle(currentUser));
         model.put("permissionTool", tool);
         return model;
+    }
+
+    public void setApiPath(String apiPath) {
+        this.apiPath = apiPath;
     }
 }

@@ -223,16 +223,13 @@ ul.lang-menu li img {
 
 #topics-table .latest-by {
     font-size: 10px;
+    width: 100px;
 }
 
 #topics-table .latest-by p {
     margin: 0;
     white-space: nowrap;
     font-size: 10px;
-}
-
-#topics-table .latest-by .date {
-    color: rgb(51, 51, 51);
 }
 
 #topics-table .branch-title {
@@ -276,10 +273,6 @@ ul.lang-menu li img {
 
 @media (max-width: 479px) {
     #topics-table .posts-views {
-        display: none;
-    }
-
-    #topics-table .latest-by {
         display: none;
     }
 }
@@ -343,10 +336,6 @@ ul.lang-menu li img {
         white-space: normal;
     }
 
-    .created-by {
-        display: none;
-    }
-
     #topics-table .posts-views {
         display: table-cell;
     }
@@ -358,7 +347,6 @@ ul.lang-menu li img {
     }
 
     #topics-table .posts-td-small {
-       width:70%;
        word-wrap: break-word;
        word-break: break-all;
        white-space: normal;
@@ -1111,4 +1099,29 @@ pre.prettyprint {
     padding: 0.7em 1em;
     font-size: 15px;
     margin-right: 10%;
+}
+
+.label, .badge {
+    display: inline-block;
+    padding: 2px 4px;
+    font-size: 11.844px;
+    font-weight: bold;
+    line-height: 14px;
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    white-space: nowrap;
+    vertical-align: baseline;
+    background-color: #999999;
+}
+
+.badge {
+    padding-right: 9px;
+    padding-left: 9px;
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
+}
+
+.label-inverse, .badge-inverse {
+    background-color: #444444;
 }

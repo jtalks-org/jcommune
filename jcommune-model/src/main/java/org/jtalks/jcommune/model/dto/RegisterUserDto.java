@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.model.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.validation.annotations.Matches;
 
@@ -33,7 +32,6 @@ public class RegisterUserDto {
     @Valid
     private UserDto userDto;
 
-    @NotBlank(message = "{validation.not_null}")
     private String passwordConfirm;
     
     @Null

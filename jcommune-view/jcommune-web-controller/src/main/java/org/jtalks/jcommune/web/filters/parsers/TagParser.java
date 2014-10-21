@@ -12,23 +12,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.plugin.api.web;
+package org.jtalks.jcommune.web.filters.parsers;
 
 /**
- * Interface-marker. Plugin controller should implement this interface to allow {@link PluginHandlerMapping} distinguish
- * them from application controllers. It's necessary because we should map plugin controllers separately from
- * application controllers. It allow us to change plugin version without application restart.
+ * Interface which should be implemented by tag parsers
  *
  * @author Mikhail Stryzhonok
- *
- * @see PluginHandlerMapping
  */
-public interface PluginController {
+public interface TagParser {
 
     /**
-     * Sets path to jcommune-plugin-api.jar. This path should be used to load common templates from plugin-api.
+     * Replaces tag by appropriate content
      *
-     * @param apiPath path to jcommune-plugin-api.jar
+     * @param response response to search tags
+     * @return true if at leas one tag found, otherwise false
      */
-    public void setApiPath(String apiPath);
+    boolean replaceTagByContent(StringBuffer response);
 }

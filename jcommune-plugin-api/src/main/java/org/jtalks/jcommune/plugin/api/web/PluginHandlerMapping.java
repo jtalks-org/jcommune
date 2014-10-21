@@ -80,6 +80,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      */
     @VisibleForTesting
     void registerPluginHandlerMethod(PluginController handler, Method method, RequestMappingInfo mapping) {
+        handler.setApiPath(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
         Set<String> patterns = getMappingPathPatterns(mapping);
         if (patterns.size() != 1) {
             throw new IllegalStateException("Controller method " + method.getName() + " mapped to " + patterns.size()

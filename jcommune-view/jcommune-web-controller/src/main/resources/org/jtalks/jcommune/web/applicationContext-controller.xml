@@ -76,5 +76,13 @@
         </constructor-arg>
     </bean>
 
+    <bean id="tagFilter" class="org.jtalks.jcommune.web.filters.TagFilter">
+        <property name="parsers">
+            <list>
+                <bean id="messageTagParser" class="org.jtalks.jcommune.web.filters.parsers.MessageTagParser"/>
+            </list>
+        </property>
+    </bean>
+
 </beans>
 

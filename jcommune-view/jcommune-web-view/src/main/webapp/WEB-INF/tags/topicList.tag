@@ -16,22 +16,17 @@
       <tr>
         <th class="status-col-small"></th>
         <th><spring:message code="label.branch.header.topics"/></th>
-        <th class="author-col shrink-to-fit"><spring:message code="label.branch.header.author"/></th>
-        <c:if test="${showBranchColumn}">
-          <th class="posted-in-col shrink-to-fit"><spring:message code="label.branch.header.branches"/></th>
-        </c:if>
-        <th class="posts-views-small forum-posts-view-header shrink-to-fit">
-          <spring:message code="label.branch.header.posts"/></th>
-        <th class="posts-views-small forum-posts-view-header shrink-to-fit posts-views-small_2">
-          <spring:message code="label.branch.header.views"/></th>
-        <th class="latest-by forum-latest-by-header shrink-to-fit">
-          <spring:message code="label.branch.header.lastMessage"/></th>
+        <th class="forum-latest-by-header">
+          <spring:message code="label.branch.header.lastMessage"/>
+        </th>
       </tr>
       </thead>
       <tbody>
       <c:forEach var="topic" items="${topics}">
         <tr>
-          <td class="status-col-small"><jtalks:topicIconSmall topic="${topic}" authenticated="${authenticated}"/></td>
+          <td class="status-col-small">
+            <jtalks:topicIconSmall topic="${topic}" authenticated="${authenticated}"/>
+          </td>
           <td class="posts-td-small posts-td-small_2">
             <h2 class="h-nostyle">
                 <%--Some topic types should have a special prefix when displayed--%>
@@ -49,40 +44,36 @@
               </a>
             </h2>
             <sub class="created-by"><spring:message code="label.topic.created_by"/>
-              <a class="space-left-small" href="${pageContext.request.contextPath}/users/${topic.topicStarter.id}">
+              <a class="space-left-small margin-right-big" href="${pageContext.request.contextPath}/users/${topic.topicStarter.id}">
                 <c:out value="${topic.topicStarter.username}"/>
               </a>
+              <c:if test="${showBranchColumn}">
+                in <a class="margin-left-small margin-right-small" href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
+                  <c:out value="${topic.branch.name}"/>
+                </a>
+              </c:if>
             </sub>
           </td>
-          <td class="author-col shrink-to-fit">
-            <a href="${pageContext.request.contextPath}/users/${topic.topicStarter.id}">
-              <c:out value="${topic.topicStarter.username}"/>
-            </a>
-          </td>
-          <c:if test="${showBranchColumn}">
-            <td class="posted-in-col">
-              <a href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
-                <c:out value="${topic.branch.name}"/>
-              </a>
-            </td>
-          </c:if>
-          <td class="posts-views-small shrink-to-fit">
-            <span class='test-posts-count'><c:out value="${topic.postCount}"/></span>
-          </td>
-          <td class="posts-views-small shrink-to-fit posts-views-small_2">
-            <span class='test-views'><c:out value="${topic.views}"/></span>
-          </td>
           <td class="latest-by shrink-to-fit">
-            <i class="icon-calendar"></i>
-            <a class="date" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}">
-              <jtalks:format value="${topic.lastPost.creationDate}"/>
-            </a>&thinsp;
-            <spring:message code="label.topic.last_post_by"/>
-            <a class="space-left-small"
-               href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}"
-               title="<spring:message code='label.tips.view_profile'/>">
-              <c:out value="${topic.lastPost.userCreated.username}"/>
-            </a>
+            <div>
+              <i class="icon-calendar"></i>
+              <a class="date margin-right-big" href="${pageContext.request.contextPath}/posts/${topic.lastPost.id}"
+                 data-original-title="<spring:message code="label.branch.header.lastMessage.tooltip"/>">
+                <jtalks:format value="${topic.lastPost.creationDate}"/>
+              </a>
+              <i class="icon-envelope margin-left-big margin-right-big"></i>
+              <span class='test-views' data-original-title="<spring:message code="label.branch.header.posts"/>">
+                <c:out value="${topic.postCount}"/>
+              </span>
+            </div>
+            <div>
+              <i class="icon-user"></i>
+              <a class="space-left-small"
+                 href="${pageContext.request.contextPath}/users/${topic.lastPost.userCreated.id}"
+                 title="<spring:message code='label.tips.view_profile'/>">
+                <c:out value="${topic.lastPost.userCreated.username}"/>
+              </a>
+            </div>
           </td>
         </tr>
       </c:forEach>

@@ -14,23 +14,23 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-#macro(topicActions $targetId)
+#macro(topicActions $targetId $request $topic $permissionTool)
 <div class="row-fluid upper-pagination forum-pagination-container">
   <div class="span3">
-    #if(${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.MOVE_TOPICS")})
+    #if($permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.MOVE_TOPICS"))
       <a href="#" class="move_topic btn space-left-medium-nf" title="${esc.html(${messages.getString("label.tips.move")})}"
-         data-topicId="${question.id}">
+         data-topicId="${topic.id}">
         ${esc.html(${messages.getString("label.question.move")})}
       </a>
     #end
-    #if(${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CLOSE_TOPICS")})
-      #if(${question.closed})
-        <a href="${request.contextPath}/questions/${question.id}/open"
+    #if($permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CLOSE_TOPICS"))
+      #if($topic.closed)
+        <a href="$request.contextPath/questions/$topic.id/open"
            class="open_topic btn space-left-medium-nf">
           ${esc.html(${messages.getString("label.question.open")})}
         </a>
       #else
-        <a href="${request.contextPath}/questions/${question.id}/close"
+        <a href="$request.contextPath/questions/$topic.id/close"
            class="open_topic btn space-left-medium-nf">
           ${esc.html(${messages.getString("label.question.close")})}
         </a>

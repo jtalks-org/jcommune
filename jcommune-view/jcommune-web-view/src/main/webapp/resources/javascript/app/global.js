@@ -25,7 +25,7 @@ $(document).ready(function () {
             e.preventDefault();
             var path = window.location.protocol + '//' + window.location.host;
             jDialog.createDialog({
-                title: 'Copy link to clipboard',
+                title: $copyLinkToClipboardPopupTitle,
                 type: jDialog.alertType,
                 maxWidth: 800,
                 bodyMessage: path + $(this).attr('href')

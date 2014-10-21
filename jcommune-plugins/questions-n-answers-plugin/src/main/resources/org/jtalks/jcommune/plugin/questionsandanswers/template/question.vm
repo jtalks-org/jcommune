@@ -14,9 +14,10 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-#parse("org/jtalks/jcommune/plugin/questionsandanswers/template/topicActions.vm")
-#parse("org/jtalks/jcommune/plugin/questionsandanswers/template/breadcrumb.vm")
+#parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/topicActions.vm")
+#parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/breadcrumb.vm")
 #parse("org/jtalks/jcommune/plugin/questionsandanswers/template/comments.vm")
+#parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/bbeditor.vm")
 <head>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
@@ -52,22 +53,22 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     </div>
     <span class="inline-block"></span>
   </div>
-  #breadcrumb()
-  ##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
+  #breadcrumb(${breadcrumbList} ${currentUser.language.locale})
+##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
   #set($targedId = 3)
-  #topicActions($targedId)
+  #topicActions($targedId ${request} ${question} ${permissionTool})
 
   <div>
     #set($answersCount = ${postPage.getContent().size()} - 1)
     #foreach(${post} in ${postPage.content})
-      ##dummy version. should be something like $votedUp = post.votersUp.contains(currentUser)
+    ##dummy version. should be something like $votedUp = post.votersUp.contains(currentUser)
       #set($votedUp = false)
       #if($velocityCount == 2)
         #set($votedUp = true)
       #end
-      ##dummy version. should be something like $votedDown = post.votersDown.contains(currentUser)
+    ##dummy version. should be something like $votedDown = post.votersDown.contains(currentUser)
       #set($votedDown = false)
-      ##dummy version. should be something like post.rating in future
+    ##dummy version. should be something like post.rating in future
       #set($voteUpClass = "vote-up-unpressed")
       #set($votedDownClass = "vote-down-unpressed")
       #if($votedUp)
@@ -85,7 +86,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         #set($voteResultClass = "negative")
       #end
       #set($isFirstPost = false)
-      ##dummy version. should be == 1 in future
+    ##dummy version. should be == 1 in future
       #if(${postPage.number} < 2 && $velocityCount == 1)
         #set($isFirstPost = true)
       #end
@@ -134,14 +135,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 </a>
               </div>
 
-            </div>
-
-            <div class="question-content">
-              ${esc.html(${post.postContent})}
-            </div>
-
-            <div class="question-footer">
-              <div class="btn-toolbar post-btn-toolbar">
+              <div class="btn-toolbar post-btn-toolbar pull-right">
                 <div class="btn-group question-btn-group">
 
                   #if($isFirstPost && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CREATE_POSTS")})
@@ -158,7 +152,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                     || (${currentUser.id} != ${post.post.userCreated.id}
                     && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OTHERS_POSTS")}))
                       <a href="/edit" data-rel=""
-                        class="edit_button btn btn-mini" title="${esc.html(${messages.getString("label.tips.edit.$postClass")})}">
+                         class="edit_button btn btn-mini" title="${esc.html(${messages.getString("label.tips.edit.$postClass")})}">
                         <i class="icon-edit"></i>
                         ${esc.html(${messages.getString("label.edit")})}
                       </a>
@@ -168,8 +162,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                     ||(${currentUser.id} != ${post.post.userCreated.id}
                     &&${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OTHERS_POSTS")}))
                       <a href="/delete" class="btn btn-mini btn-danger delete"
-                        title="${esc.html(${messages.getString("label.tips.remove.$postClass")})}"
-                        data-confirmationMessage="${esc.html(${messages.getString("label.confirm.delete.$postClass")})}">
+                         title="${esc.html(${messages.getString("label.tips.remove.$postClass")})}"
+                         data-confirmationMessage="${esc.html(${messages.getString("label.confirm.delete.$postClass")})}">
                         <i class="icon-remove icon-white"></i>
                         ${esc.html(${messages.getString("label.delete")})}
                       </a>
@@ -177,18 +171,34 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                   #end
                 </div>
               </div>
+
+            </div>
+
+            <div class="question-content" style="min-height: 0px">
+              ${esc.html(${post.postContent})}
+            </div>
+
+            <div class="question-footer">
+              <div class="comments" style="margin-left: 60px">
+                #comments(${post})
+              </div>
+
             </div>
           </div>
         </div>
-      </div>
-      <div class="comments">
-        #comments(${post})
       </div>
       <div class="clearfix"></div>
     #end
   </div>
 
-  #topicActions($targedId)
+  #topicActions($targedId ${request} ${question} ${permissionTool})
+  #if(!${question.closed})
+    <form action="/answer"
+          method="POST" class='well anti-multipost submit-form' modelAttribute="postDto">
+      <form path="topicId"/>
+      #bbeditor(${messages.getString("label.answer")} ${currentUser.language.locale})
+    </form>
+  #end
 
   <div id="users-stats" class="well forum-user-stats-container">
     <strong>${esc.html(${messages.getString("permissions.moderators")})}</strong>
