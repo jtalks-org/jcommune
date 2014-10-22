@@ -26,12 +26,10 @@ import java.io.PrintWriter;
  */
 public class MessageResponseWrapper extends HttpServletResponseWrapper {
     private ByteArrayPrintWriter output;
-    private boolean usingWriter;
 
     public MessageResponseWrapper(HttpServletResponse response)
     {
         super(response);
-        usingWriter = false;
         output = new ByteArrayPrintWriter();
     }
 
@@ -43,22 +41,12 @@ public class MessageResponseWrapper extends HttpServletResponseWrapper {
     @Override
     public ServletOutputStream getOutputStream() throws IOException
     {
-        // will error out, if in use
-        if (usingWriter) {
-            super.getOutputStream();
-        }
-        usingWriter = true;
         return output.getStream();
     }
 
     @Override
     public PrintWriter getWriter() throws IOException
     {
-        // will error out, if in use
-        if (usingWriter) {
-            super.getWriter();
-        }
-        usingWriter = true;
         return output.getWriter();
     }
 
