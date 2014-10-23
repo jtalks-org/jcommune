@@ -19,78 +19,67 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class MessageResponseWrapper extends HttpServletResponseWrapper {
+public class TaggedResponseWrapper extends HttpServletResponseWrapper {
     private ByteArrayPrintWriter output;
 
-    public MessageResponseWrapper(HttpServletResponse response)
-    {
+    public TaggedResponseWrapper(HttpServletResponse response) {
         super(response);
         output = new ByteArrayPrintWriter();
     }
 
-    public byte[] getByteArray()
-    {
+    public byte[] getByteArray() {
         return output.toByteArray();
     }
 
     @Override
-    public ServletOutputStream getOutputStream() throws IOException
-    {
+    public ServletOutputStream getOutputStream() throws IOException {
         return output.getStream();
     }
 
     @Override
-    public PrintWriter getWriter() throws IOException
-    {
+    public PrintWriter getWriter() throws IOException {
         return output.getWriter();
     }
 
-    public String toString()
-    {
+    public String toString() {
         return output.toString();
     }
 
-    private static class ByteArrayPrintWriter
-    {
+    private static class ByteArrayPrintWriter {
 
         private ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-        private PrintWriter pw = new PrintWriter(baos);
-
+        private PrintWriter pw = new PrintWriter(new OutputStreamWriter(baos, StandardCharsets.UTF_8));
         private ServletOutputStream sos = new ByteArrayServletStream(baos);
 
-        public PrintWriter getWriter()
-        {
+        public PrintWriter getWriter() {
             return pw;
         }
 
-        public ServletOutputStream getStream()
-        {
+        public ServletOutputStream getStream() {
             return sos;
         }
 
-        byte[] toByteArray()
-        {
+        byte[] toByteArray() {
+            pw.flush();
             return baos.toByteArray();
         }
     }
 
-    private static class ByteArrayServletStream extends ServletOutputStream
-    {
+    private static class ByteArrayServletStream extends ServletOutputStream {
         ByteArrayOutputStream baos;
 
-        ByteArrayServletStream(ByteArrayOutputStream baos)
-        {
+        ByteArrayServletStream(ByteArrayOutputStream baos) {
             this.baos = baos;
         }
 
-        public void write(int param) throws IOException
-        {
+        public void write(int param) throws IOException {
             baos.write(param);
         }
     }

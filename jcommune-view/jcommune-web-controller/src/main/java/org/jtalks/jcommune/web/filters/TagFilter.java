@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.filters;
 
 import org.jtalks.jcommune.web.filters.parsers.TagParser;
-import org.jtalks.jcommune.web.filters.wrapper.MessageResponseWrapper;
+import org.jtalks.jcommune.web.filters.wrapper.TaggedResponseWrapper;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +44,7 @@ public class TagFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        MessageResponseWrapper wrappedResponse = new MessageResponseWrapper((HttpServletResponse)response);
+        TaggedResponseWrapper wrappedResponse = new TaggedResponseWrapper((HttpServletResponse)response);
         chain.doFilter(request, wrappedResponse);
         String encoding = wrappedResponse.getCharacterEncoding();
         byte[] bytes = wrappedResponse.getByteArray();
