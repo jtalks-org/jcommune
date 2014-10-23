@@ -48,7 +48,7 @@
                     class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
         <form:errors path="topic.title" id="subjectError" type="text" name="subjectError" size="45"
                      maxlength="255"
-                     class="post" cssClass="help-inline"/>
+                     class="post" cssClass="help-inline focusToError"/>
       </div>
     </div>
     <jtalks:hasPermission targetId='${branchId}' targetType='BRANCH'
@@ -99,7 +99,7 @@
                       size="45" maxlength="255" placeholder="${pollTitlePlaceholder}"
                       class="post script-confirm-unsaved" disabled="${pollEditing}"/>
           <br>
-          <form:errors path="topic.poll.title" cssClass="help-inline"/>
+          <form:errors path="topic.poll.title" cssClass="help-inline focusToError"/>
         </div>
         <div class='control-group'>
           <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
@@ -107,7 +107,7 @@
                          class="post script-confirm-unsaved" placeholder="${optionsPlaceholder}"
                          disabled="${pollEditing}"/>
           <br>
-          <form:errors path="topic.poll.pollItems" cssClass="help-inline"/>
+          <form:errors path="topic.poll.pollItems" cssClass="help-inline focusToError"/>
         </div>
 
         <div class='control-group'>
@@ -144,6 +144,13 @@
   </a>
 </div>
 <script>
-  Utils.focusFirstEl('#subject');
+    var hasError = $( '.focusToError').parent().find('input, textarea');
+    if (hasError.length > 0) {
+        var target = hasError[0];
+    }
+    else{
+        var target = "#subject";
+    }
+    Utils.focusFirstEl(target);
 </script>
 </body>

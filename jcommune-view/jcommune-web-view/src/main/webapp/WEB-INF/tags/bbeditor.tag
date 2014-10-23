@@ -157,7 +157,7 @@
     <span class="keymaps-caption"><spring:message code="label.keymaps.post"/></span>
     <br>
   </c:if>
-  <form:errors path="${bodyParameterName}" cssClass="help-inline"/>
+  <form:errors path="${bodyParameterName}" cssClass="help-inline focusToError"/>
 </div>
 
 <c:if test="${showSubmitButton}">
