@@ -130,7 +130,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     </div>
   </div>
   <div class='control-group controls'>
-    <div id="editorBBCODEdiv">
+    <div id="editorBbCodeDiv">
       <pre id="htmlContent"></pre>
       <textarea id="postBody" name="${bodyParameterName}" tabindex="200" style="width:100%;height: 350px"
                 placeholder="<jcommune:message locale='$locale'>placeholder.editor.content</jcommune:message>" class="script-confirm-unsaved"></textarea>
@@ -145,7 +145,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         value="<jcommune:message locale='$locale'>label.answer.preview</jcommune:message>"
         onclick="togglePreviewMode(new Array('posts', 'topics'));return null;"/>
   <script type="text/javascript">
-    initEditor("postBody", "editorBBCODEdiv", "htmlContent");
+    initEditor("postBody", "editorBbCodeDiv", "htmlContent");
   </script>
 
 #end
