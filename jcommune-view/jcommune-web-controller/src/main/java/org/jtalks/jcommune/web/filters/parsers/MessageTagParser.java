@@ -20,11 +20,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Finds and replaces message code by message content.
+ * Needed to give possibility to use jcommune i18n messages in plugin api and plugins itself.
+ *
  * @author Mikhail Stryzhonok
  */
 public class MessageTagParser implements TagParser {
+    /**
+     * Pattern for tag. EXAMPLE : <jcommune:message locale="en">message.code</jcommune:message>
+     */
     private static final Pattern MESSAGE_TAG_PATTERN = Pattern.compile("<\\s?jcommune:message\\s*locale\\s?=\\s?[\"'](.*?)[\"']\\s?>(.*?)<\\s?/\\s?jcommune:message\\s?>",
             Pattern.CASE_INSENSITIVE);
+    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+
 
     /**
      * {@inheritDoc}
@@ -46,7 +54,19 @@ public class MessageTagParser implements TagParser {
     }
 
     protected String getStringByKey(String key, Locale locale) {
-        ResourceBundle bundle = ResourceBundle.getBundle("org.jtalks.jcommune.web.view.messages", locale);
-        return bundle.containsKey(key)? bundle.getString(key) : key;
+        ResourceBundle bundle = getBundle(locale);
+        if (bundle.containsKey(key)) {
+            return bundle.getString(key);
+        } else {
+            bundle = getBundle(DEFAULT_LOCALE);
+            return bundle.containsKey(key) ? bundle.getString(key) : key;
+        }
+    }
+
+    /**
+     * Needed for mocking
+     */
+    protected ResourceBundle getBundle(Locale locale) {
+        return ResourceBundle.getBundle("org.jtalks.jcommune.web.view.messages", locale);
     }
 }

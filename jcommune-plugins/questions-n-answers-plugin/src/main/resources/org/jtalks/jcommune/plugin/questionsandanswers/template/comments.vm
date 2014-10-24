@@ -63,23 +63,23 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     </div>
     #if($post.comments.size() > $shownComments)
       <div class="btn-container">
-        <button type="button" class="expand togglable" style="display: block"><span>Show all comments</span></button>
-        <button type="button" class="expand togglable" style="display: none"><span>Hide</span></button>
+        <button type="button" class="expand togglable" style="display: block"><span>${messages.getString("label.expand.comments")}</span></button>
+        <button type="button" class="expand togglable" style="display: none"><span>${messages.getString("label.hide.comments")}</span></button>
       </div>
     #end
   #end
   #if($canLeavePosts)
     <div class="comment-prompt">
       <i class="icon-comment"></i>
-      <span class="comment-prompt-label">Add your comment...</span>
+      <span class="comment-prompt-label">${messages.getString("label.add.comment")}</span>
     </div>
   #end
   <div class="comment-container">
-    <textarea name="commentBody" class="comment-textarea" placeholder="Add your comment..." rows="3"></textarea>
+    <textarea name="commentBody" class="comment-textarea" placeholder="${messages.getString("label.add.comment")}" rows="3"></textarea>
     <div class="comment-buttons-container">
       <div class="pull-right">
-        <a class="btn btn-primary comment-submit">Comment</a>
-        <a class="btn comment-cancel">Cancel</a>
+        <a class="btn btn-primary comment-submit">${messages.getString("label.comment")}</a>
+        <a class="btn comment-cancel">${messages.getString("label.cancel")}</a>
       </div>
     </div>
   </div>

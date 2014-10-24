@@ -30,13 +30,11 @@ $(function () {
 
     $('.expand').click(function(e){
         e.preventDefault();
-        window.console.log(this);
         $(this).parent().prev(".comment-list").children(".togglable").toggle();
         var buttons = $(this).parent().children(".togglable");
         buttons.toggle();
         buttons.focus();
         var thirdComment = $(this).parent().prev(".comment-list").children(".hiddenBorder");
-        console.log(thirdComment);
         if (thirdComment.hasClass("bordered")) {
             thirdComment.removeClass("bordered");
         } else {
@@ -47,12 +45,22 @@ $(function () {
 
 $(document).mouseup(function(e) {
     if (!($(e.target).hasClass("comment-submit") || $(e.target).hasClass("comment-textarea"))) {
-        $(".comment-container").each(function() {
-            console.log(this);
-            if (!$(this).children(".comment-textarea").val()) {
-                $(this).hide();
-                $(this).parent().children(".comment-prompt").show();
-            }
-        });
+       hideEmptyCommentTextArea();
     }
 });
+
+$(document).keyup(function(e){
+    //esc button
+    if (e.keyCode == 27) {
+        hideEmptyCommentTextArea();
+    }
+});
+
+function hideEmptyCommentTextArea() {
+    $(".comment-container").each(function() {
+        if (!$(this).children(".comment-textarea").val()) {
+            $(this).hide();
+            $(this).parent().children(".comment-prompt").show();
+        }
+    });
+}

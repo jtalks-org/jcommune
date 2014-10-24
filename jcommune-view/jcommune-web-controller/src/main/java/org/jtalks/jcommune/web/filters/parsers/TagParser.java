@@ -22,10 +22,11 @@ package org.jtalks.jcommune.web.filters.parsers;
 public interface TagParser {
 
     /**
-     * Replaces tag by appropriate content
+     * Replaces tag by appropriate content. We need tags to access to application resources (e.g. i18n messages)
+     * from velocity macros provided by plugin-api module and from plugins templates itself (if necessary).
      *
      * @param response response to search tags
-     * @return true if at leas one tag found, otherwise false
+     * @return true if at least one tag found, otherwise false
      */
     boolean replaceTagByContent(StringBuffer response);
 }
