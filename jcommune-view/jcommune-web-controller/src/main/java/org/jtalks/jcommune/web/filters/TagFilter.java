@@ -49,15 +49,10 @@ public class TagFilter implements Filter {
         String encoding = wrappedResponse.getCharacterEncoding();
         byte[] bytes = wrappedResponse.getByteArray();
         if (wrappedResponse.getContentType() != null && wrappedResponse.getContentType().contains("text/html")) {
-            StringBuffer out = new StringBuffer(new String(bytes, encoding));
-            boolean isFound = false;
             for (TagParser parser : parsers) {
-                isFound = isFound || parser.replaceTagByContent(out);
+                bytes = parser.replaceTagByContent(wrappedResponse);
             }
-            if (isFound) {
-                bytes = out.toString().getBytes(encoding);
-                response.setContentLength(bytes.length);
-            }
+            response.setContentLength(bytes.length);
         }
         response.getOutputStream().write(bytes);
     }

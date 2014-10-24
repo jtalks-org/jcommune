@@ -14,6 +14,10 @@
  */
 package org.jtalks.jcommune.web.filters.parsers;
 
+import org.jtalks.jcommune.web.filters.wrapper.TaggedResponseWrapper;
+
+import java.io.UnsupportedEncodingException;
+
 /**
  * Interface which should be implemented by tag parsers
  *
@@ -26,7 +30,8 @@ public interface TagParser {
      * from velocity macros provided by plugin-api module and from plugins templates itself (if necessary).
      *
      * @param response response to search tags
-     * @return true if at least one tag found, otherwise false
+     * @return array of bytes which represents response content
+     * @throws java.io.UnsupportedEncodingException if response have unsupported encoding
      */
-    boolean replaceTagByContent(StringBuffer response);
+    byte[] replaceTagByContent(TaggedResponseWrapper response) throws UnsupportedEncodingException;
 }

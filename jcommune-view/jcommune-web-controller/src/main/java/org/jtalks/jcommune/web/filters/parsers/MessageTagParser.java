@@ -14,6 +14,10 @@
  */
 package org.jtalks.jcommune.web.filters.parsers;
 
+import org.jtalks.jcommune.web.filters.wrapper.TaggedResponseWrapper;
+
+import javax.servlet.ServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -38,19 +42,19 @@ public class MessageTagParser implements TagParser {
      * {@inheritDoc}
      */
     @Override
-    public boolean replaceTagByContent(StringBuffer response) {
-        boolean result = false;
-        Matcher matcher = MESSAGE_TAG_PATTERN.matcher(response);
+    public byte[] replaceTagByContent(TaggedResponseWrapper response) throws UnsupportedEncodingException{
+        String encoding = response.getCharacterEncoding();
+        Locale locale = response.getLocale();
+        StringBuffer out = new StringBuffer(new String(response.getByteArray(), encoding));
+        Matcher matcher = MESSAGE_TAG_PATTERN.matcher(out);
         while (matcher.find()) {
             if (matcher.groupCount() == 2) {
-                result = true;
-                Locale locale = Locale.forLanguageTag(matcher.group(1).trim());
                 String key = matcher.group(2).trim();
-                response.replace(matcher.start(), matcher.end(), getStringByKey(key, locale));
+                out.replace(matcher.start(), matcher.end(), getStringByKey(key, locale));
                 matcher.reset();
             }
         }
-        return result;
+        return out.toString().getBytes(encoding);
     }
 
     protected String getStringByKey(String key, Locale locale) {

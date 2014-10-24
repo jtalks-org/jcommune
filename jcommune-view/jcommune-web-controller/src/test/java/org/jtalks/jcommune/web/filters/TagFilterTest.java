@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.filters;
 
 import org.jtalks.jcommune.web.filters.parsers.TagParser;
+import org.jtalks.jcommune.web.filters.wrapper.TaggedResponseWrapper;
 import org.mockito.Mock;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -32,6 +33,7 @@ import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
@@ -52,10 +54,12 @@ public class TagFilterTest {
     }
 
     @BeforeMethod
-    public void refresh() {
+    public void refresh() throws Exception{
         filterChain = new MockFilterChain();
         response = new MockHttpServletResponse();
         request = new MockHttpServletRequest();
+        when(parser1.replaceTagByContent(any(TaggedResponseWrapper.class))).thenReturn(new byte[0]);
+        when(parser2.replaceTagByContent(any(TaggedResponseWrapper.class))).thenReturn(new byte[0]);
     }
 
     @Test
@@ -70,7 +74,7 @@ public class TagFilterTest {
         filter.doFilter(request, response, filterChain);
 
         for (TagParser parser : parsers) {
-            verify(parser).replaceTagByContent(any(StringBuffer.class));
+            verify(parser).replaceTagByContent(any(TaggedResponseWrapper.class));
         }
     }
 
@@ -85,7 +89,7 @@ public class TagFilterTest {
         filter.doFilter(request, response, filterChain);
 
         for (TagParser parser : parsers) {
-            verify(parser).replaceTagByContent(any(StringBuffer.class));
+            verify(parser).replaceTagByContent(any(TaggedResponseWrapper.class));
         }
     }
 }
