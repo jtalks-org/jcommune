@@ -20,10 +20,10 @@
     display: inline-block;
 }
 
-input.form-check-radio-box[type="checkbox"],
-input.form-check-radio-box[type="radio"] {
+.control-group input[type=checkbox],
+.control-group input[type=radio] {
     float: left;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .form-login-related {

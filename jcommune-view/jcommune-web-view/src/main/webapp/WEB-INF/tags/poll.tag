@@ -51,11 +51,11 @@
             <c:choose>
               <c:when test="${poll.multipleAnswer}">
                 <input name="pollAnswer" id="pollCheckBox${option.id}"
-                       type="checkbox" value="${option.id}" style="margin-right: 4px;" >
+                       type="checkbox" value="${option.id}" >
               </c:when>
               <c:otherwise>
                 <input name="pollAnswer" id="pollRadioButton${option.id}"
-                       type="radio" value="${option.id}" style="margin-right: 4px;">
+                       type="radio" value="${option.id}" >
               </c:otherwise>
             </c:choose>
 
