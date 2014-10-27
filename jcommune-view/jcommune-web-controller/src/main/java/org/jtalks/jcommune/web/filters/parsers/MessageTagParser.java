@@ -16,7 +16,6 @@ package org.jtalks.jcommune.web.filters.parsers;
 
 import org.jtalks.jcommune.web.filters.wrapper.TaggedResponseWrapper;
 
-import javax.servlet.ServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -33,7 +32,7 @@ public class MessageTagParser implements TagParser {
     /**
      * Pattern for tag. EXAMPLE : <jcommune:message>message.code</jcommune:message>
      */
-    private static final Pattern MESSAGE_TAG_PATTERN = Pattern.compile("<\\s?jcommune:message\\s?>(.*?)<\\s?/\\s?jcommune:message\\s?>",
+    private static final Pattern MESSAGE_TAG_PATTERN = Pattern.compile("<\\s*jcommune:message\\s*>(.*?)<\\s*/\\s*jcommune:message\\s*>",
             Pattern.CASE_INSENSITIVE);
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
