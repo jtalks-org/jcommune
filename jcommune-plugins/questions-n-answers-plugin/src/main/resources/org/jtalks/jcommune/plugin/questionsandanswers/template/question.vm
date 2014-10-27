@@ -60,7 +60,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     </div>
     <span class="inline-block"></span>
   </div>
-  #breadcrumb(${breadcrumbList} ${currentUser.language.locale})
+  #breadcrumb(${breadcrumbList})
   #topicActions($targedId ${request} ${question} ${permissionTool})
 
   <div>
@@ -208,7 +208,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <form action="/answer"
           method="POST" class='well anti-multipost submit-form' modelAttribute="postDto">
       <form path="topicId"/>
-      #bbeditor(${messages.getString("label.answer")} ${currentUser.language.locale} "" "" "bodyText" true)
+      #bbeditor(${messages.getString("label.answer")} "" "" "bodyText" true)
     </form>
   #end
 

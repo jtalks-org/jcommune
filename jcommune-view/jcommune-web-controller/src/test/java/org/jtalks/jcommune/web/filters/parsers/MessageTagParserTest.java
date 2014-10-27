@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.filters.parsers;
 
 import org.jtalks.jcommune.web.filters.wrapper.TaggedResponseWrapper;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -32,6 +33,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -49,6 +51,10 @@ public class MessageTagParserTest {
 
     @Spy
     private MessageTagParser parser = new MessageTagParser();
+
+    @Mock
+    TaggedResponseWrapper wrapper;
+
     private ResourceBundle enBundle;
     private ResourceBundle ruBundle;
 
@@ -63,90 +69,89 @@ public class MessageTagParserTest {
         MockitoAnnotations.initMocks(this);
         doReturn(enBundle).when(parser).getBundle(eq(Locale.forLanguageTag("en")));
         doReturn(ruBundle).when(parser).getBundle(eq(Locale.forLanguageTag("ru")));
+        when(wrapper.getCharacterEncoding()).thenReturn("UTF-8");
     }
 
 
-//    @Test
-//    public void testParse() {
-//        StringBuffer incoming = new StringBuffer("test <jcommune:message locale=\"en\"></jcommune:message>");
-//        doReturn("parsed").when(parser).getStringByKey(anyString(), any(Locale.class));
-//
-//        boolean result = parser.replaceTagByContent(incoming);
-//
-//        assertTrue(result);
-//        assertEquals(incoming.toString(), "test parsed");
-//    }
-//
-//    @Test
-//    public void testParseDifferentRegister() {
-//        StringBuffer incoming = new StringBuffer("test < JcoMMune:MessAGe LOCALE=\"en\"></jCommUNE:mESSagE>");
-//        doReturn("parsed").when(parser).getStringByKey(anyString(), any(Locale.class));
-//
-//        boolean result = parser.replaceTagByContent(incoming);
-//
-//        assertTrue(result);
-//        assertEquals(incoming.toString(), "test parsed");
-//    }
-//
-//    @Test
-//    public void  replaceTagByContentShouldReplaceContentByCorrectMessage() {
-//        StringBuffer incoming = new StringBuffer("test <jcommune:message locale=\"en\">code1</jcommune:message>");
-//
-//        boolean result = parser.replaceTagByContent(incoming);
-//
-//        assertTrue(result);
-//        assertEquals(incoming.toString(), "test message1");
-//    }
-//
-//    @Test
-//    public void replaceTagByContentShouldCorrectlyProcessCodesWithDots() {
-//        StringBuffer incoming = new StringBuffer("test <jcommune:message locale=\"en\">code.2</jcommune:message>");
-//
-//        boolean result = parser.replaceTagByContent(incoming);
-//
-//        assertTrue(result);
-//        assertEquals(incoming.toString(), "test message2");
-//    }
-//
-//    @Test
-//    public void replaceTagByContentShouldCorrectlyProcessCodesWithIllegalCharacters() {
-//        String code = "code.2/&?";
-//        StringBuffer incoming = new StringBuffer("test <jcommune:message locale=\"en\">" + code + "</jcommune:message>");
-//
-//        boolean result = parser.replaceTagByContent(incoming);
-//
-//        assertTrue(result);
-//        assertEquals(incoming.toString(),"test " + code);
-//    }
-//
-//    @Test
-//    public void replaceTagByContentShouldUseEnglishAsDefaultIfTranslateNotFound() {
-//        StringBuffer incoming = new StringBuffer("test <jcommune:message locale=\"ru\">code3</jcommune:message>");
-//
-//        boolean result = parser.replaceTagByContent(incoming);
-//
-//        assertTrue(result);
-//        assertEquals(incoming.toString(), "test message3");
-//    }
-//
-//    @Test
-//    public void replaceTagByContentShouldUseCodeIfTranslateAnsDefaultsNotFound() {
-//        StringBuffer incoming = new StringBuffer("test <jcommune:message locale=\"en\">code.000</jcommune:message>");
-//
-//        boolean result = parser.replaceTagByContent(incoming);
-//
-//        assertTrue(result);
-//        assertEquals(incoming.toString(), "test code.000");
-//    }
-//
-//    @Test
-//    public void testParseShouldNotModifyIncomingBufferAndReturnFalseIfNoMatchesFound() {
-//        StringBuffer incoming = new StringBuffer("test string");
-//        String expected = incoming.toString();
-//
-//        boolean result = parser.replaceTagByContent(incoming);
-//
-//        assertFalse(result);
-//        assertEquals(incoming.toString(), expected);
-//    }
+    @Test
+    public void testParse() throws Exception {
+        when(wrapper.getByteArray()).thenReturn("test <jcommune:message></jcommune:message>".getBytes());
+        doReturn("parsed").when(parser).getStringByKey(anyString(), any(Locale.class));
+
+        byte[] result = parser.replaceTagByContent(wrapper);
+
+        assertEquals(new String(result), "test parsed");
+    }
+
+    @Test
+    public void testParseDifferentRegister() throws Exception{
+        when(wrapper.getByteArray()).thenReturn("test < JcoMMune:MessAGe></jCommUNE:mESSagE>".getBytes());
+        doReturn("parsed").when(parser).getStringByKey(anyString(), any(Locale.class));
+
+        byte[] result = parser.replaceTagByContent(wrapper);
+
+        assertEquals(new String(result), "test parsed");
+    }
+
+    @Test
+    public void  replaceTagByContentShouldReplaceContentByCorrectMessage() throws Exception {
+        when(wrapper.getByteArray()).thenReturn("test <jcommune:message>code1</jcommune:message>".getBytes());
+        when(wrapper.getLocale()).thenReturn(Locale.ENGLISH);
+
+        byte[] result = parser.replaceTagByContent(wrapper);
+
+        assertEquals(new String(result), "test message1");
+    }
+
+    @Test
+    public void replaceTagByContentShouldCorrectlyProcessCodesWithDots() throws Exception {
+        when(wrapper.getByteArray()).thenReturn("test <jcommune:message>code.2</jcommune:message>".getBytes());
+        when(wrapper.getLocale()).thenReturn(Locale.ENGLISH);
+
+        byte[] result = parser.replaceTagByContent(wrapper);
+
+        assertEquals(new String(result), "test message2");
+    }
+
+    @Test
+    public void replaceTagByContentShouldCorrectlyProcessCodesWithIllegalCharacters() throws Exception {
+        String code = "code.2/&?";
+        when(wrapper.getByteArray()).thenReturn(("test <jcommune:message>" + code + "</jcommune:message>").getBytes());
+        when(wrapper.getLocale()).thenReturn(Locale.ENGLISH);
+
+        byte[] result = parser.replaceTagByContent(wrapper);
+
+        assertEquals(new String(result), "test " + code);
+    }
+
+    @Test
+    public void replaceTagByContentShouldUseEnglishAsDefaultIfTranslateNotFound() throws Exception {
+        when(wrapper.getByteArray()).thenReturn("test <jcommune:message>code3</jcommune:message>".getBytes());
+        when(wrapper.getLocale()).thenReturn(Locale.forLanguageTag("ru"));
+
+        byte[] result = parser.replaceTagByContent(wrapper);
+
+        assertEquals(new String(result), "test message3");
+    }
+
+    @Test
+    public void replaceTagByContentShouldUseCodeIfTranslateAnsDefaultsNotFound() throws Exception {
+        when(wrapper.getByteArray()).thenReturn("test <jcommune:message>code.000</jcommune:message>".getBytes());
+        when(wrapper.getLocale()).thenReturn(Locale.ENGLISH);
+
+        byte[] result = parser.replaceTagByContent(wrapper);
+
+        assertEquals(new String(result), "test code.000");
+    }
+
+    @Test
+    public void testParseShouldNotModifyIncomingBufferAndReturnFalseIfNoMatchesFound() throws Exception {
+        String response = "test string";
+        when(wrapper.getByteArray()).thenReturn(response.getBytes());
+        when(wrapper.getLocale()).thenReturn(Locale.ENGLISH);
+
+        byte[] result = parser.replaceTagByContent(wrapper);
+
+        assertEquals(new String(result), response);
+    }
 }

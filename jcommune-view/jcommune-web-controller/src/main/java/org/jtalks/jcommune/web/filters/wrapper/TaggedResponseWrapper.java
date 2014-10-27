@@ -38,6 +38,10 @@ public class TaggedResponseWrapper extends HttpServletResponseWrapper {
         return output.toByteArray();
     }
 
+    public void setByteArray(byte[] bytes) throws IOException {
+        output.setBytes(bytes);
+    }
+
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
         return output.getStream();
@@ -66,14 +70,19 @@ public class TaggedResponseWrapper extends HttpServletResponseWrapper {
             return sos;
         }
 
-        byte[] toByteArray() {
+        public byte[] toByteArray() {
             pw.flush();
             return baos.toByteArray();
+        }
+
+        public void setBytes(byte[] bytes) throws IOException {
+            baos.reset();
+            baos.write(bytes);
         }
     }
 
     private static class ByteArrayServletStream extends ServletOutputStream {
-        ByteArrayOutputStream baos;
+        private ByteArrayOutputStream baos;
 
         ByteArrayServletStream(ByteArrayOutputStream baos) {
             this.baos = baos;

@@ -46,11 +46,11 @@ public class TagFilter implements Filter {
             throws IOException, ServletException {
         TaggedResponseWrapper wrappedResponse = new TaggedResponseWrapper((HttpServletResponse)response);
         chain.doFilter(request, wrappedResponse);
-        String encoding = wrappedResponse.getCharacterEncoding();
         byte[] bytes = wrappedResponse.getByteArray();
         if (wrappedResponse.getContentType() != null && wrappedResponse.getContentType().contains("text/html")) {
             for (TagParser parser : parsers) {
                 bytes = parser.replaceTagByContent(wrappedResponse);
+                wrappedResponse.setByteArray(bytes);
             }
             response.setContentLength(bytes.length);
         }

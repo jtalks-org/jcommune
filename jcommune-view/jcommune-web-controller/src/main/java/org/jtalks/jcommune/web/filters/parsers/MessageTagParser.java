@@ -31,9 +31,9 @@ import java.util.regex.Pattern;
  */
 public class MessageTagParser implements TagParser {
     /**
-     * Pattern for tag. EXAMPLE : <jcommune:message locale="en">message.code</jcommune:message>
+     * Pattern for tag. EXAMPLE : <jcommune:message>message.code</jcommune:message>
      */
-    private static final Pattern MESSAGE_TAG_PATTERN = Pattern.compile("<\\s?jcommune:message\\s*locale\\s?=\\s?[\"'](.*?)[\"']\\s?>(.*?)<\\s?/\\s?jcommune:message\\s?>",
+    private static final Pattern MESSAGE_TAG_PATTERN = Pattern.compile("<\\s?jcommune:message\\s?>(.*?)<\\s?/\\s?jcommune:message\\s?>",
             Pattern.CASE_INSENSITIVE);
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
@@ -48,8 +48,8 @@ public class MessageTagParser implements TagParser {
         StringBuffer out = new StringBuffer(new String(response.getByteArray(), encoding));
         Matcher matcher = MESSAGE_TAG_PATTERN.matcher(out);
         while (matcher.find()) {
-            if (matcher.groupCount() == 2) {
-                String key = matcher.group(2).trim();
+            if (matcher.groupCount() == 1) {
+                String key = matcher.group(1).trim();
                 out.replace(matcher.start(), matcher.end(), getStringByKey(key, locale));
                 matcher.reset();
             }

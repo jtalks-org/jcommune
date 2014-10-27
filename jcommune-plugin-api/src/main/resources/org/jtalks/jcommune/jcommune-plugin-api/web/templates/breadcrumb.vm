@@ -14,7 +14,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-#macro(breadcrumb $breadcrumbList $locale)
+#macro(breadcrumb $breadcrumbList)
   <ul class="breadcrumb">
     #foreach($breadcrumb in $breadcrumbList)
       <li>
@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         #end
         #if(${breadcrumb.value} == 'Forum')
           <a href="${request.contextPath}/${breadcrumb.breadcrumbLocation.name}">
-            <jcommune:message locale="$locale">label.forum</jcommune:message>
+            <jcommune:message>label.forum</jcommune:message>
           </a>
         #else
           <a href="${request.contextPath}/${breadcrumb.breadcrumbLocation.name}/${breadcrumb.id}">
