@@ -30,13 +30,13 @@
 <body>
 <div class="container">
   <div class="row-fluid upper-pagination forum-pagination-container">
-    <div class="span3">
+    <div class="span5">
       <h3>
         <spring:message code="label.messagesWithoutAnswers"/>
       </h3>
     </div>
 
-    <div class="span9">
+    <div class="span7">
       <div class="pagination pull-right forum-pagination">
         <ul>
           <jtalks:pagination uri="" page="${topicsPage}"/>

@@ -71,12 +71,12 @@ ul.lang-menu li img {
     color: rgb(85, 85, 85);
 }
 
-.span9 #right-block {
+.span7 #right-block {
     float: right;
     overflow: hidden;
 }
 
-.span9 #right-block a {
+.span7 #right-block a {
     font-weight: bold;
     padding-left: 2px;
     color: rgb(85, 85, 85);
@@ -271,18 +271,11 @@ ul.lang-menu li img {
 }
 
 @media (max-width: 479px) {
-    #topics-table .posts-views {
+    #topics-table .latest-by {
         display: none;
     }
 }
 
-
-
-@media (max-width: 480px) {
-    .posts-views {
-        display: none;
-    }
-}
 
 #top-line-links-drop-down {
     display: none;

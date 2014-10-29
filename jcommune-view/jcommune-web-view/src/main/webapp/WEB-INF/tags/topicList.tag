@@ -16,7 +16,7 @@
       <tr>
         <th class="status-col-small"></th>
         <th><spring:message code="label.branch.header.topics"/></th>
-        <th class="forum-latest-by-header">
+        <th class="latest-by forum-latest-by-header">
           <spring:message code="label.branch.header.lastMessage"/>
         </th>
       </tr>
