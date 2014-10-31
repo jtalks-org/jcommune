@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.dao.Crud;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -58,14 +57,6 @@ public interface LastReadPostDao extends Crud<LastReadPost> {
      */
     List<LastReadPost> getLastReadPosts(JCUser forWhom, List<Topic> sourceTopics);
 
-    /**
-     * Mark all topics as read.
-     *
-     * @param forWhom user to find last read post for
-     * @param branch branch contained topics to mark
-     */
-    void markAllRead(JCUser forWhom, Branch branch);
-    
     /**
      * Delete all last read post records for given user.
      * 

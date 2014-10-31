@@ -303,6 +303,7 @@
     <constructor-arg ref="userService"/>
     <constructor-arg ref="lastReadPostHibernateDao"/>
     <constructor-arg ref="userDao"/>
+    <constructor-arg ref="markBranchAsReadDao"/>
   </bean>
 
   <bean id="simplePageService"

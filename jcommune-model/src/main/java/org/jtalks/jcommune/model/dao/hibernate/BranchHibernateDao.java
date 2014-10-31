@@ -73,19 +73,6 @@ public class BranchHibernateDao extends GenericDao<Branch>
      * {@inheritDoc}
      */
     @Override
-    public boolean isUnreadPostsInBranch(Branch branch, JCUser user) {
-        Number count = (Number) session()
-                .getNamedQuery("getCountUnreadPostsInBranch")
-                .setParameter("user", user.getId())
-                .setParameter("branch", branch.getId())
-                .uniqueResult();
-        return count.intValue() > 0 ? true : false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity){
         // use set for remove duplicates
         @SuppressWarnings("unchecked")

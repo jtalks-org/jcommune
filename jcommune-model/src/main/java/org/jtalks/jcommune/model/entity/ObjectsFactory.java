@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import com.google.common.collect.Lists;
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.*;
@@ -71,7 +69,7 @@ public final class ObjectsFactory {
     }
 
     public static List<Branch> getDefaultBranchList() {
-        List<Branch> branches = new ArrayList<Branch>();
+        List<Branch> branches = new ArrayList<>();
         for (Long i = 1L; i <= 3; i++) {
             branches.add(getDefaultBranch(i));
         }
@@ -111,7 +109,7 @@ public final class ObjectsFactory {
     }
 
     public static List<Topic> topics(JCUser author, int topicCount) {
-        List<Topic> topics = new ArrayList<Topic>();
+        List<Topic> topics = new ArrayList<>();
         for (int i = 0; i < topicCount; i++) {
             Topic topic = new Topic(author, "title");
             topic.setBranch(getDefaultBranch());
@@ -159,7 +157,7 @@ public final class ObjectsFactory {
     }
 
     public static List<ExternalLink> getExternalLinks(int size) {
-        List<ExternalLink> result = new ArrayList<ExternalLink>();
+        List<ExternalLink> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             result.add(getDefaultExternalLink());
         }
@@ -174,7 +172,7 @@ public final class ObjectsFactory {
     }
 
     public static List<Group> getDefaultGroupList() {
-        List<Group> groups = new ArrayList<Group>();
+        List<Group> groups = new ArrayList<>();
         Group group = new Group("Administrators");
         group.setId(13L);
         groups.add(group);
@@ -224,7 +222,7 @@ public final class ObjectsFactory {
 
     public static List<Banner> getBanners() {
         int bannersCount = 3;
-        List<Banner> banners = new ArrayList<Banner>();
+        List<Banner> banners = new ArrayList<>();
         for (int i = 0; i < bannersCount; i++) {
             Banner banner = new Banner();
             banner.setContent("<html></html>");

@@ -43,10 +43,6 @@
         <![CDATA[FROM LastReadPost p WHERE p.topic = :topic and p.user = :user]]>
     </query>
     
-    <query name="deleteAllLastReadPostsOfUser">
-        <![CDATA[DELETE FROM LastReadPost WHERE user = :user]]>
-    </query>
-    
     <query name="getAllOfUser">
         <![CDATA[FROM LastReadPost WHERE user = :user]]>
     </query>

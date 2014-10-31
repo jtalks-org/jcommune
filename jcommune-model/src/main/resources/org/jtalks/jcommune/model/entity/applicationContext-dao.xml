@@ -123,6 +123,9 @@
     <constructor-arg name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
+  <bean id="markBranchAsReadDao" parent="genericDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.BranchReadedMarkerHibernateDao"/>
+
   <!-- Declaration of Hibernate Search DAO beans -->
   <bean id="topicSearchDao"
         class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
@@ -206,6 +209,7 @@
         <value>/org/jtalks/jcommune/model/entity/ExternalLink.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/PluginConfiguration.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/PluginProperty.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/BranchReadedMarker.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">

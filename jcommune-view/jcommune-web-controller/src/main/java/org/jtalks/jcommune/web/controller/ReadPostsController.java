@@ -81,7 +81,7 @@ public class ReadPostsController {
      * @throws NotFoundException if no branch matches id given
      */
     @RequestMapping("/branches/{id}/markread")
-    public String markAllTopicsAsRead(@PathVariable long id) throws NotFoundException {
+        public String markAllTopicsAsRead(@PathVariable long id) throws NotFoundException {
         Branch branch = branchService.get(id);
         lastReadPostService.markAllTopicsAsRead(branch);
         return "redirect:/branches/" + id;

@@ -14,22 +14,15 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.type.DateType;
-import org.hibernate.type.TimestampType;
-import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
-import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * The implementation of {@link LastReadPostDao} based on Hibernate ORM.
@@ -84,40 +77,6 @@ public class LastReadPostHibernateDao extends GenericDao<LastReadPost>
                     .list();
         }
         return Collections.emptyList();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void markAllRead(JCUser forWho, Branch branch) {
-        Session session = session();
-
-        SQLQuery deletedEntities = (SQLQuery) session.getNamedQuery("deleteAllMarksReadToUser");
-        deletedEntities
-                .addSynchronizedEntityClass(LastReadPost.class)
-                .setParameter("user", forWho.getId())
-                .setParameter("branch", branch.getId())
-                .executeUpdate();
-
-        @SuppressWarnings("unchecked")
-        List<Object[]> topicsOfBranch = session.getNamedQuery("getTopicAndLatestPostDateInBranch")
-                .setParameter("branch", branch.getId())
-                .list();
-
-        SQLQuery insertQuery = (SQLQuery) session.getNamedQuery("markAllTopicsRead");
-        insertQuery
-                .addSynchronizedEntityClass(LastReadPost.class);
-
-        for (Object[] o : topicsOfBranch) {
-            insertQuery.setParameter("uuid", UUID.randomUUID().toString())
-                    .setParameter("user", forWho.getId())
-                    .setParameter("lastPostDate", ((DateTime) o[1]).toDate())
-                    .setParameter("topic", o[0])
-                    .executeUpdate();
-        }
-
-        session.flush();
     }
 
     /**

@@ -605,4 +605,5 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     public void setClosed(boolean closed) {
         this.closed = closed;
     }
+
 }

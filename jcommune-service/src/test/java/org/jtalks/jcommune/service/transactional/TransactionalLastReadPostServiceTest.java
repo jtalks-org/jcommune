@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
+import org.jtalks.jcommune.model.dao.BranchReadedMarkerDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.UserService;
@@ -47,6 +48,8 @@ public class TransactionalLastReadPostServiceTest {
     private UserService userService;
     @Mock
     private UserDao userDao;
+    @Mock
+    private BranchReadedMarkerDao branchReadedMarkerDao;
     //
     private TransactionalLastReadPostService lastReadPostService;
 
@@ -58,7 +61,8 @@ public class TransactionalLastReadPostServiceTest {
         lastReadPostService = new TransactionalLastReadPostService(
                 userService,
                 lastReadPostDao,
-                userDao);
+                userDao,
+                branchReadedMarkerDao);
     }
 
     @Test
@@ -226,7 +230,7 @@ public class TransactionalLastReadPostServiceTest {
         lastReadPostService.markAllTopicsAsRead(branch);
 
         verify(userService).getCurrentUser();
-        verify(lastReadPostDao).markAllRead(user, branch);
+        verify(branchReadedMarkerDao).markBranchAsRead(user, branch);
     }
 
     @Test
