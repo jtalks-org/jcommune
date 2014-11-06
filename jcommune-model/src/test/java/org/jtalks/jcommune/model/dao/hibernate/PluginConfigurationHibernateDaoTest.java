@@ -84,6 +84,7 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
         pluginConfiguration.setName(newPluginName);
 
         pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
+        session.flush();
         session.clear();
         PluginConfiguration updatedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, pluginConfiguration.getId());
 
@@ -109,18 +110,20 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
         pluginConfiguration.setProperties(properties);
 
         pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
+        session.flush();
         session.evict(pluginConfiguration);
         PluginConfiguration updatedPluginConfiguration = (PluginConfiguration) session.get(PluginConfiguration.class, pluginConfiguration.getId());
 
         assertEquals(updatedPluginConfiguration.getProperties(), properties, "Plugin configuration properties should be saved.");
     }
 
-    @Test(expectedExceptions = org.springframework.dao.DataIntegrityViolationException.class)
+    @Test(expectedExceptions = org.hibernate.exception.ConstraintViolationException.class)
     public void saveOrUpdateWithNullValuesShouldNotSavePlugin() {
         PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
 
         pluginConfiguration.setName(null);
         pluginConfigurationDao.saveOrUpdate(pluginConfiguration);
+        session.flush();
     }
 
     @Test

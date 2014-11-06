@@ -83,19 +83,21 @@ public class BannerHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         banner.setContent(newContent);
         //
         bannerDao.saveOrUpdate(banner);
+        session.flush();
         session.evict(banner);
         Banner result = (Banner) session.get(Banner.class, banner.getId());
 
         assertEquals(result.getContent(), newContent);
     }
 
-    @Test(expectedExceptions = org.springframework.dao.DataIntegrityViolationException.class)
+    @Test(expectedExceptions = org.hibernate.exception.ConstraintViolationException.class)
     public void bannerWithNullContentShouldNotBeUpdated() {
         Banner banner = ObjectsFactory.getDefaultBanner();
         session.save(banner);
         banner.setContent(null);
 
         bannerDao.saveOrUpdate(banner);
+        session.flush();
     }
 
     @Test

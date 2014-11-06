@@ -87,18 +87,20 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         post.setPostContent(newContent);
 
         dao.saveOrUpdate(post);
+        session.flush();
         session.evict(post);
         Post result = (Post) session.get(Post.class, post.getId());
 
         assertEquals(result.getPostContent(), newContent);
     }
 
-    @Test(expectedExceptions = org.springframework.dao.DataIntegrityViolationException.class)
+    @Test(expectedExceptions = org.hibernate.exception.ConstraintViolationException.class)
     public void testUpdateNotNullViolation() {
         Post post = PersistedObjectsFactory.getDefaultPost();
         session.save(post);
         post.setPostContent(null);
         dao.saveOrUpdate(post);
+        session.flush();
     }
 
     /* PostDao specific methods */

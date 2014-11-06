@@ -78,18 +78,20 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
         review.setUuid(newUuid);
 
         codeReviewCommentDao.saveOrUpdate(review);
+        session.flush();
         session.evict(review);
         CodeReviewComment result = (CodeReviewComment) session.get(CodeReviewComment.class, review.getId());
 
         assertEquals(result.getUuid(), newUuid);
     }
 
-    @Test(expectedExceptions = org.springframework.dao.DataIntegrityViolationException.class)
+    @Test(expectedExceptions = org.hibernate.exception.ConstraintViolationException.class)
     public void testUpdateNotNullViolation() {
         CodeReviewComment review = PersistedObjectsFactory.getDefaultCodeReviewComment();
         session.save(review);
         review.setUuid(null);
         codeReviewCommentDao.saveOrUpdate(review);
+        session.flush();
     }
 
 }

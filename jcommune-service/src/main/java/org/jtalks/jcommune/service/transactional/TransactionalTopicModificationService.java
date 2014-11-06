@@ -18,6 +18,7 @@ import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
@@ -50,8 +51,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private TopicDao dao;
+    private PostDao postDao;
 
-    private TopicFetchService topicFetchService;
     private SecurityService securityService;
     private BranchDao branchDao;
     private NotificationService notificationService;
@@ -73,11 +74,11 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * @param subscriptionService   for subscribing user on topic if notification enabled
      * @param userService           to get current logged in user
      * @param pollService           to create a poll and vote in a poll
-     * @param topicFetchService     to retrieve topics from a database
      * @param securityContextFacade authentication object retrieval
      * @param permissionEvaluator   for authorization purposes
      * @param branchLastPostService to refresh the last post of the branch
      * @param lastReadPostService   to work with last read post
+     * @param postDao               to store newly created posts in database
      */
     public TransactionalTopicModificationService(TopicDao dao, SecurityService securityService,
                                                  BranchDao branchDao,
@@ -85,11 +86,11 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  SubscriptionService subscriptionService,
                                                  UserService userService,
                                                  PollService pollService,
-                                                 TopicFetchService topicFetchService,
                                                  SecurityContextFacade securityContextFacade,
                                                  PermissionEvaluator permissionEvaluator,
                                                  BranchLastPostService branchLastPostService,
-                                                 LastReadPostService lastReadPostService) {
+                                                 LastReadPostService lastReadPostService,
+                                                 PostDao postDao) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -97,11 +98,11 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.subscriptionService = subscriptionService;
         this.userService = userService;
         this.pollService = pollService;
-        this.topicFetchService = topicFetchService;
         this.securityContextFacade = securityContextFacade;
         this.permissionEvaluator = permissionEvaluator;
         this.branchLastPostService = branchLastPostService;
         this.lastReadPostService = lastReadPostService;
+        this.postDao = postDao;
     }
 
     /**
@@ -110,7 +111,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @Override
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
-        Topic topic = topicFetchService.get(topicId);
+        Topic topic = dao.get(topicId);
         this.assertPostingIsAllowed(topic);
 
         JCUser currentUser = userService.getCurrentUser();
@@ -122,7 +123,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
             Set<JCUser> topicSubscribers = topic.getSubscribers();
             topicSubscribers.add(currentUser);
         }
-        dao.saveOrUpdate(topic);
+        postDao.saveOrUpdate(answer);
 
         Branch branch = topic.getBranch();
         branch.setLastPost(answer);
@@ -332,7 +333,10 @@ public class TransactionalTopicModificationService implements TopicModificationS
      */
     @Override
     public void deleteTopicSilent(long topicId) throws NotFoundException {
-        Topic topic = topicFetchService.get(topicId);
+        Topic topic = dao.get(topicId);
+        if (topic == null) {
+            throw new NotFoundException("Topic with given id not exist");
+        }
         this.deleteTopicSilent(topic);
     }
 

@@ -112,11 +112,11 @@ public class TransactionalTopicModificationServiceTest {
                 subscriptionService,
                 userService,
                 pollService,
-                topicFetchService,
                 securityContextFacade,
                 permissionEvaluator,
                 branchLastPostService,
-                lastReadPostService);
+                lastReadPostService,
+                postDao);
 
         user = new JCUser("username", "email@mail.com", "password");
         when(securityContextFacade.getContext()).thenReturn(securityContext);
@@ -127,7 +127,7 @@ public class TransactionalTopicModificationServiceTest {
         Topic answeredTopic = new Topic(user, "title");
         answeredTopic.setBranch(new Branch("name", "description"));
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         Post createdPost = topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
@@ -147,7 +147,7 @@ public class TransactionalTopicModificationServiceTest {
         Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
         user.setAutosubscribe(true);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
@@ -160,7 +160,7 @@ public class TransactionalTopicModificationServiceTest {
         user.setAutosubscribe(false);
         Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
@@ -172,7 +172,7 @@ public class TransactionalTopicModificationServiceTest {
     public void replyTopicShouldNotifyMentionedInReplyUsers() throws NotFoundException {
         Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
         String answerWithUserMentioning = "[user]Shogun[/user] was mentioned";
 
@@ -186,7 +186,7 @@ public class TransactionalTopicModificationServiceTest {
         Topic answeredTopic = new Topic(user, "title");
         answeredTopic.setBranch(new Branch("", ""));
         answeredTopic.setClosed(true);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
 
         topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
     }
@@ -200,7 +200,7 @@ public class TransactionalTopicModificationServiceTest {
                 Matchers.<Authentication>any(), anyLong(), anyString(), anyString()))
                 .thenReturn(true);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         Post createdPost = topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
@@ -374,7 +374,7 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test
     public void testDeleteTopic() throws NotFoundException {
-        Collection<JCUser> subscribers = new ArrayList<JCUser>();
+        Collection<JCUser> subscribers = new ArrayList<>();
         Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         Post firstPost = new Post(user, ANSWER_BODY);
@@ -406,7 +406,7 @@ public class TransactionalTopicModificationServiceTest {
         user.setPostCount(1);
         Branch branch = createBranch();
         branch.addTopic(topic);
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
         topicService.deleteTopicSilent(TOPIC_ID);
 
@@ -430,7 +430,7 @@ public class TransactionalTopicModificationServiceTest {
         topic.addPost(lastPostInBranch);
         final Post newLastPostInBranch = new Post(user, ANSWER_BODY);
 
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 branch.setLastPost(newLastPostInBranch);
@@ -456,7 +456,7 @@ public class TransactionalTopicModificationServiceTest {
         Post lastPostInBranch = new Post(user, ANSWER_BODY);
         branch.setLastPost(lastPostInBranch);
 
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
 
         topicService.deleteTopicSilent(TOPIC_ID);
 
@@ -467,7 +467,7 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testDeleteTopicSilentNonExistent() throws NotFoundException {
-        when(topicFetchService.get(TOPIC_ID)).thenThrow(new NotFoundException());
+        when(topicDao.get(TOPIC_ID)).thenReturn(null);
 
         topicService.deleteTopicSilent(TOPIC_ID);
     }
@@ -658,7 +658,7 @@ public class TransactionalTopicModificationServiceTest {
         currentBranch.addTopic(topic);
         Branch targetBranch = new Branch("target branch", "target branch description");
 
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
         when(branchDao.get(BRANCH_ID)).thenReturn(targetBranch);
 
         topicService.moveTopic(topic, BRANCH_ID);
@@ -679,7 +679,7 @@ public class TransactionalTopicModificationServiceTest {
         currentBranch.setLastPost(firstPost);
         Branch targetBranch = new Branch("target branch", "target branch description");
 
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
         when(branchDao.get(BRANCH_ID)).thenReturn(targetBranch);
 
         topicService.moveTopic(topic, BRANCH_ID);
@@ -699,7 +699,7 @@ public class TransactionalTopicModificationServiceTest {
         currentBranch.setLastPost(new Post(user, ANSWER_BODY));
         Branch targetBranch = new Branch("target branch", "target branch description");
 
-        when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
         when(branchDao.get(BRANCH_ID)).thenReturn(targetBranch);
 
         topicService.moveTopic(topic, BRANCH_ID);
@@ -765,7 +765,7 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     private void subscribeUserOnTopic(JCUser user, Topic topic) {
-        Set<JCUser> subscribers = new HashSet<JCUser>();
+        Set<JCUser> subscribers = new HashSet<>();
         subscribers.add(user);
         topic.setSubscribers(subscribers);
     }

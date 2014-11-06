@@ -93,6 +93,7 @@ public class SimplePageHibernateDaoTest extends AbstractTransactionalTestNGSprin
         simplePage.setContent(newContent);
 
         dao.saveOrUpdate(simplePage);
+        session.flush();
         session.evict(simplePage);
         SimplePage result = (SimplePage) session.get(SimplePage.class, simplePage.getId());
 

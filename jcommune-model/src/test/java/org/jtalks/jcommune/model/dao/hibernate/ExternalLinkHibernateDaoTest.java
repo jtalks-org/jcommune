@@ -86,6 +86,7 @@ public class ExternalLinkHibernateDaoTest extends AbstractTransactionalTestNGSpr
         fillFieldsRandomly(link);
 
         dao.saveOrUpdate(link);
+        session.flush();
         session.clear();
 
         ExternalLink actual = (ExternalLink) session.get(ExternalLink.class, link.getId());

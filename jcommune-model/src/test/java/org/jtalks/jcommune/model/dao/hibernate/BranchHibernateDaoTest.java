@@ -85,6 +85,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(null);
 
         dao.saveOrUpdate(branch);
+        session.flush();
     }
 
     @Test
@@ -113,6 +114,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(newName);
 
         dao.saveOrUpdate(branch);
+        session.flush();
         session.evict(branch);
         Branch result = (Branch) session.get(Branch.class, branch.getId());
 
@@ -126,6 +128,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(null);
 
         dao.saveOrUpdate(branch);
+        session.flush();
     }
 
     @Test
@@ -166,7 +169,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
 
     private List<Branch> createAndSaveBranchList(int size, int sectionPosition) {
-        List<Branch> branches = new ArrayList<Branch>();
+        List<Branch> branches = new ArrayList<>();
         Section section = ObjectsFactory.getDefaultSection();
         section.setPosition(sectionPosition);
         for (int i = 0; i < size; i++) {
@@ -194,7 +197,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         List<Branch> branchesOfSecondSection = createAndSaveBranchList(sectionSize, 0);
 
         // build desired order
-        List<Branch> createdBranches = new ArrayList<Branch>(branchesOfSecondSection);
+        List<Branch> createdBranches = new ArrayList<>(branchesOfSecondSection);
         createdBranches.addAll(branchesOfFirstSection);
 
         List<Branch> selectedBranches = dao.getAllBranches();

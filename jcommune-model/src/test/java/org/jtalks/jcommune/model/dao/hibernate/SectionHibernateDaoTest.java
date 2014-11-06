@@ -83,6 +83,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         section.setName(null);
 
         dao.saveOrUpdate(section);
+        session.flush();
     }
 
     @Test
@@ -110,10 +111,13 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         section.addOrUpdateBranch(actualBranch);
         branchDao.saveOrUpdate(actualBranch);
         dao.saveOrUpdate(section);
+        session.flush();
         Branch expectedBranch = branchDao.get(actualBranch.getId());
         assertEquals(expectedBranch.getName(), actualBranch.getName());
         section.deleteBranch(actualBranch);
         dao.saveOrUpdate(section);
+        session.flush();
+        session.clear();
         expectedBranch = branchDao.get(actualBranch.getId());
         assertNull(expectedBranch);
     }
@@ -126,6 +130,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         section.setName(newName);
 
         dao.saveOrUpdate(section);
+        session.flush();
         session.evict(section);
         Section result = (Section) session.get(Section.class, section.getId());
 
@@ -138,6 +143,7 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
         session.save(section);
         section.setName(null);
         dao.saveOrUpdate(section);
+        session.flush();
     }
 
     @Test

@@ -82,6 +82,7 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
         component.setUuid(newUuid);
 
         componentDao.saveOrUpdate(component);
+        session.flush();
         session.evict(component);
         Component result = (Component) session.get(Component.class, component.getId());
 
@@ -95,6 +96,7 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
         component.setUuid(null);
 
         componentDao.saveOrUpdate(component);
+        session.flush();
     }
 
     @Test
@@ -103,6 +105,7 @@ public class ComponentHibernateDaoTest extends AbstractTransactionalTestNGSpring
 
         component.getProperties().remove(0);
         componentDao.saveOrUpdate(component);
+        session.flush();
         session.evict(component);
 
         assertEquals(componentDao.get(component.getId()).getProperties().size(), 1);
