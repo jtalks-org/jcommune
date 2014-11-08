@@ -49,7 +49,7 @@
             <form:input class="span3 script-confirm-unsaved" path="recipient" tabindex="100"
                         placeholder="${placeholderRecipient}"/>
             <br/>
-            <form:errors path="recipient" cssClass="help-inline"/>
+            <form:errors path="recipient" cssClass="help-inline focusToError"/>
           </div>
         </div>
 
@@ -59,7 +59,7 @@
             <form:input class="script-confirm-unsaved full-width" path="title" tabindex="101"
                         placeholder="${placeholderTitle}"/>
             <br/>
-            <form:errors path="title" cssClass="help-inline"/>
+            <form:errors path="title" cssClass="help-inline focusToError"/>
           </div>
         </div>
 

@@ -41,7 +41,7 @@
                     class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
         <form:errors path="topic.title" id="subjectError" type="text" name="subjectError" size="45"
                      maxlength="255"
-                     class="post" cssClass="help-inline"/>
+                     class="post" cssClass="help-inline focusToError"/>
       </div>
     </div>
 
@@ -52,7 +52,7 @@
       <br>
       <span class="keymaps-caption"><spring:message code="label.keymaps.post"/></span>
       <br>
-      <form:errors path="bodyText" cssClass="help-inline"/>
+      <form:errors path="bodyText" cssClass="help-inline focusToError"/>
     </div>
 
     <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
@@ -64,7 +64,4 @@
     <spring:message code="label.back"/>
   </a>
 </div>
-<script>
-  Utils.focusFirstEl('#subject');
-</script>
 </body>

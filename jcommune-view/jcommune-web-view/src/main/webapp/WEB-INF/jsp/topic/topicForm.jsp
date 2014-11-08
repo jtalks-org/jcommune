@@ -143,14 +143,4 @@
     <spring:message code="label.back"/>
   </a>
 </div>
-<script>
-    var hasError = $( '.focusToError').parent().find('input, textarea');
-    if (hasError.length > 0) {
-        var target = hasError[0];
-    }
-    else{
-        var target = "#subject";
-    }
-    Utils.focusFirstEl(target);
-</script>
 </body>
