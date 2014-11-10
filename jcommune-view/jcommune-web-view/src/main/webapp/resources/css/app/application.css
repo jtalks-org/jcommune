@@ -417,9 +417,14 @@ ul.lang-menu li img {
     clear: both;
 }
 
-@media (max-width: 480px) {
-    .upper-pagination {
-        display: none;
+@media (max-width: 479px) {
+    .pagination {
+        float: none;
+        padding-top: 5px;
+    }
+
+    .pagination a {
+        padding: 0px 7px;
     }
 }
 
