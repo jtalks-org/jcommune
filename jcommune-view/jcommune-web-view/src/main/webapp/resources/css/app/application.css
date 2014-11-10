@@ -418,11 +418,6 @@ ul.lang-menu li img {
 }
 
 @media (max-width: 479px) {
-    .pagination {
-        float: none;
-        padding-top: 5px;
-    }
-
     .pagination a {
         padding: 0px 7px;
     }
@@ -1119,4 +1114,10 @@ pre.prettyprint {
 
 .label-inverse, .badge-inverse {
     background-color: #444444;
+}
+
+.new-topic-buttons {
+    float: left;
+    width: 120px;
+    margin-bottom: 10px;
 }
