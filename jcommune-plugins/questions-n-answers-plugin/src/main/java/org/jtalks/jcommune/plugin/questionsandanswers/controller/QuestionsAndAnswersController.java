@@ -76,9 +76,20 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     }
 
     @RequestMapping(value = "new", method = RequestMethod.POST)
-    public String createQuestion(@Valid @ModelAttribute TopicDto topicDto, BindingResult result,
-                                 @RequestParam(BRANCH_ID) Long branchId, HttpServletRequest request) {
-
+    public String createQuestion(@Valid @ModelAttribute TopicDto topicDto, BindingResult result, Model model,
+                                 @RequestParam(BRANCH_ID) Long branchId, HttpServletRequest request)
+            throws NotFoundException{
+        VelocityEngine engine = new VelocityEngine(getProperties());
+        engine.init();
+        Map<String, Object> data = getDefaultModel(request);
+        if (result.hasErrors()) {
+            Branch branch = TransactionalPluginBranchService.getInstance().get(branchId);
+            topicDto.getTopic().setBranch(branch);
+            data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topicDto.getTopic()));
+            data.put("topicDto", topicDto);
+            model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
+                    "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
+        }
         return "plugin/plugin";
     }
 
@@ -92,7 +103,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         topic.setBranch(branch);
         TopicDto dto = new TopicDto(topic);
         Map<String, Object> data = getDefaultModel(request);
-        data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branch));
+        data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put("topicDto", dto);
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));

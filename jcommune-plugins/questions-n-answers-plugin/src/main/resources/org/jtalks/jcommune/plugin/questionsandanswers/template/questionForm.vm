@@ -30,12 +30,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           method="POST" id="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
       <div class='control-group hide-on-preview'>
         <div class='controls'>
+          #if(!${topicDto.topic.title})
+            #set(${topicDto.topic.title} = "")
+          #end
+          #if(!${topicDto.bodyText})
+            #set(${topicDto.bodyText} = "")
+          #end
           <input name="topic.title" id="subject" type="text"  size="45"
             maxlength="255" tabindex="100"
-            class="span11 script-confirm-unsaved" placeholder="Question title"/>
+            class="span11 script-confirm-unsaved" placeholder="Question title"
+            value="${esc.html(${topicDto.topic.title})}"/>
         </div>
       </div>
-      #bbeditor("Ask" "" "" "bodyText" true "Description")
+      #bbeditor("Ask" "" "${esc.html(${topicDto.bodyText})}" "bodyText" true "Description")
     </form>
 
     <a href="${request.contextPath}/branches/${topicDto.topic.branch.id}" tabindex="1000" class='back-btn'>
