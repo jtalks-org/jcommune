@@ -12,26 +12,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
+package org.jtalks.jcommune.plugin.api.service.transactional;
 
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.service.PluginBranchService;
 
 /**
- * The interface to manipulate with code reviews
- * 
- * @author Vyacheslav Mishcheryakov
+ * @author Mikhail Stryzhonok
  */
-public interface CodeReviewCommentService extends EntityService<CodeReviewComment> {
+public class TransactionalPluginBranchService implements PluginBranchService {
+    private static final TransactionalPluginBranchService INSTANCE = new TransactionalPluginBranchService();
 
-    /**
-     * Updates CR comment's body
-     * @param id ID of CR comment
-     * @param body new body of comment
-     * @param branchId ID of branch containing code review to check permissions
-     * @return updated CR comment entity
-     * @throws NotFoundException when entity not found
-     */
-    CodeReviewComment updateComment(long id, String body, long branchId) throws NotFoundException;
+    private PluginBranchService branchService;
 
+    private TransactionalPluginBranchService() {
+    }
+
+    public static PluginBranchService getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public Branch get(Long id) throws NotFoundException {
+        return branchService.get(id);
+    }
+
+    public void setBranchService(PluginBranchService branchService) {
+        this.branchService = branchService;
+    }
 }

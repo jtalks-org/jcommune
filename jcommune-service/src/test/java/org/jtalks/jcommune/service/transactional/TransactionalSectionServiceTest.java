@@ -23,7 +23,7 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.security.access.AccessDeniedException;
@@ -95,7 +95,7 @@ public class TransactionalSectionServiceTest {
 
     @Test
     public void testGetAll() {
-        List<Section> expectedSectionList = new ArrayList<Section>();
+        List<Section> expectedSectionList = new ArrayList<>();
         expectedSectionList.add(new Section(SECTION_NAME));
         when(sectionDao.getAll()).thenReturn(expectedSectionList);
 
@@ -206,7 +206,7 @@ public class TransactionalSectionServiceTest {
     @Test(expectedExceptions = AccessDeniedException.class)
     public void testCheckAccessForVisibleException()throws AccessDeniedException{
         JCUser user = new JCUser(USER_NAME, EMAIL, USER_PASSWORD);
-        List<Branch> branches = new ArrayList<Branch>();
+        List<Branch> branches = new ArrayList<>();
         Section section = new Section(SECTION_NAME);
         when(userService.getCurrentUser()).thenReturn(user);
         when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(0L);
@@ -217,7 +217,7 @@ public class TransactionalSectionServiceTest {
     @Test
     public void testCheckAccessForVisibleNoException()throws AccessDeniedException{
         JCUser user = new JCUser(USER_NAME, EMAIL, USER_PASSWORD);
-        List<Branch> branches = new ArrayList<Branch>();
+        List<Branch> branches = new ArrayList<>();
         Section section = new Section(SECTION_NAME);
         when(userService.getCurrentUser()).thenReturn(user);
         when(sectionDao.getCountAvailableBranches(user,branches)).thenReturn(1L);
@@ -254,7 +254,7 @@ public class TransactionalSectionServiceTest {
         List<Long> branchIds = Arrays.asList(branch1.getId());
         when(sectionDao.getAvailableBranchIds(user, section.getBranches())).thenReturn(branchIds);
 
-        List<Post> posts = new ArrayList<Post>();
+        List<Post> posts = new ArrayList<>();
         posts.add(new Post(user, "post1"));
         posts.add(new Post(user, "post2"));
 

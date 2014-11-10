@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.validation.editors;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;

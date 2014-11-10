@@ -17,7 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.service.EntityService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
 import java.lang.reflect.ParameterizedType;
 

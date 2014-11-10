@@ -22,7 +22,7 @@ import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.UserContactContainer;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -71,7 +71,7 @@ public class TransactionalUserContactsServiceTest {
     @Test
     public void testsGetAvailableContactTypes() {
 
-        List<UserContactType> expectedTypes = new ArrayList<UserContactType>();
+        List<UserContactType> expectedTypes = new ArrayList<>();
         expectedTypes.add(createUserContactType(1));
 
         when(userContactsDao.getAvailableContactTypes()).thenReturn(expectedTypes);

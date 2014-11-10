@@ -17,7 +17,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
 import javax.persistence.EntityExistsException;
 

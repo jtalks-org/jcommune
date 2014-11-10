@@ -26,10 +26,11 @@ import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.service.PluginBranchService;
 import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.TopicModificationService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ import java.util.*;
  */
 
 public class TransactionalBranchService extends AbstractTransactionalEntityService<Branch, BranchDao>
-        implements BranchService {
+        implements BranchService, PluginBranchService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

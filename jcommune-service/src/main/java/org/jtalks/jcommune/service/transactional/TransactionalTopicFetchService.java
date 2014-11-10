@@ -24,7 +24,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -112,7 +112,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
 
             return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest, allowedBranchesIds);
         }
-        return new PageImpl<Topic>(Collections.<Topic>emptyList());
+        return new PageImpl<>(Collections.<Topic>emptyList());
     }
 
     /**

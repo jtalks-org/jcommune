@@ -422,6 +422,11 @@
   <bean class="org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService" factory-method="getInstance">
     <property name="userReader" ref="userService"/>
   </bean>
+  
+  <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService"
+        factory-method="getInstance">
+    <property name="branchService" ref="topicBranchService"/>
+  </bean>
 
   <beans profile="performance">
     <!-- JETM implementation using bean -->

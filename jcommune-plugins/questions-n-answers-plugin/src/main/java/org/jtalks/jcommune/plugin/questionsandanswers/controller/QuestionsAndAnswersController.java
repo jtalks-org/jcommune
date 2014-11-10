@@ -17,14 +17,19 @@ package org.jtalks.jcommune.plugin.questionsandanswers.controller;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.tools.generic.EscapeTool;
 import org.joda.time.DateTime;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
+import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
 import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.dto.BreadcrumbLocation;
+import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
+import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.PermissionTool;
 import org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin;
@@ -38,6 +43,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -50,6 +56,10 @@ import static org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswers
 @Controller
 @RequestMapping(QuestionsAndAnswersPlugin.CONTEXT)
 public class QuestionsAndAnswersController implements ApplicationContextAware, PluginController {
+    public static final String BRANCH_ID = "branchId";
+
+    private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
+
     private String apiPath;
     private ApplicationContext applicationContext;
 
@@ -59,6 +69,23 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         engine.init();
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", getModel(request)));
+        return "plugin/plugin";
+    }
+
+    @RequestMapping(value = "new", method = RequestMethod.GET)
+    public String showNewQuestionPage(@RequestParam(BRANCH_ID) Long branchId, Model model, HttpServletRequest request)
+            throws NotFoundException {
+        VelocityEngine engine = new VelocityEngine(getProperties());
+        engine.init();
+        Branch branch = TransactionalPluginBranchService.getInstance().get(branchId);
+        Topic topic = new Topic();
+        topic.setBranch(branch);
+        TopicDto dto = new TopicDto(topic);
+        Map<String, Object> data = getDefaultModel(request);
+        data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(branch));
+        data.put("topicDto", dto);
+        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
+                "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
         return "plugin/plugin";
     }
 

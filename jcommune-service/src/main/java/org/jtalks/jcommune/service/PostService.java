@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public interface PostService extends EntityService<Post> {
      *
      * @param post        post to be updated
      * @param postContent content of post
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          when post not found
      */
     void updatePost(Post post, String postContent) throws NotFoundException;

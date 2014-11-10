@@ -27,7 +27,7 @@ import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
 import org.mockito.Matchers;
@@ -105,7 +105,7 @@ public class TransactionalPrivateMessageServiceTest {
         String pageNumber = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
-        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+        Page<PrivateMessage> expectedPage = new PageImpl<>(messages);
         when(pmDao.getAllForUser(eq(user), Matchers.<PageRequest>any())).thenReturn(expectedPage);
 
         Page<PrivateMessage> actual = pmService.getInboxForCurrentUser(pageNumber);
@@ -119,7 +119,7 @@ public class TransactionalPrivateMessageServiceTest {
         String pageNumber = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
-        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+        Page<PrivateMessage> expectedPage = new PageImpl<>(messages);
         when(pmDao.getAllFromUser(eq(user), Matchers.<PageRequest>any())).thenReturn(expectedPage);
 
         Page<PrivateMessage> actual = pmService.getOutboxForCurrentUser(pageNumber);
@@ -171,7 +171,7 @@ public class TransactionalPrivateMessageServiceTest {
         String pageNumber = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(user, user,
                 "Message title", "Private message body"));
-        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+        Page<PrivateMessage> expectedPage = new PageImpl<>(messages);
         when(pmDao.getDraftsForUser(eq(user), Matchers.<PageRequest>any())).thenReturn(expectedPage);
 
         Page<PrivateMessage> actual = pmService.getDraftsForCurrentUser(pageNumber);

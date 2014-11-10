@@ -20,7 +20,7 @@ import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.*;
@@ -177,7 +177,7 @@ public class UserProfileController {
      * Show user profile page for specified user.
      *
      * @return edit user profile page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          throws if current logged in user was not found
      */
     @RequestMapping(value = {"/users/{editedUserId}/profile", "/users/{editedUserId}"}, method = RequestMethod.GET)
@@ -190,7 +190,7 @@ public class UserProfileController {
      * Show user contacts page for specified user.
      *
      * @return edit user contacts page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          throws if current logged in user was not found
      */
     @RequestMapping(value = "/users/{editedUserId}/contacts", method = RequestMethod.GET)
@@ -203,7 +203,7 @@ public class UserProfileController {
      * Show user notifications page for specified user.
      *
      * @return edit user notifications page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          throws if current logged in user was not found
      */
     @RequestMapping(value = "/users/{editedUserId}/notifications", method = RequestMethod.GET)
@@ -217,7 +217,7 @@ public class UserProfileController {
      * Show user security page for specified user.
      *
      * @return edit user security page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          throws if current logged in user was not found
      */
     @RequestMapping(value = "/users/{editedUserId}/security", method = RequestMethod.GET)
@@ -247,7 +247,7 @@ public class UserProfileController {
      * @param result           binding result which contains the validation result
      * @param response         http servlet response
      * @return return to user profile page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/*/profile", method = RequestMethod.POST)
@@ -272,7 +272,7 @@ public class UserProfileController {
      * @param result           binding result which contains the validation result
      * @param response         http servlet response
      * @return in case of errors return back to edit notifications page, in another case return to user profile page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/*/notifications", method = RequestMethod.POST)
@@ -297,7 +297,7 @@ public class UserProfileController {
      * @param result           binding result which contains the validation result
      * @param response         http servlet response
      * @return in case of errors return back to edit security page, in another case return to user profile page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/*/security", method = RequestMethod.POST)
@@ -326,7 +326,7 @@ public class UserProfileController {
      * @param result           binding result which contains the validation result
      * @param response         http servlet response
      * @return in case of errors return back to edit contacts page, in another case return to user profile page
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          if edited user doesn't exist in system
      */
     @RequestMapping(value = "/users/*/contacts", method = RequestMethod.POST)
@@ -380,7 +380,7 @@ public class UserProfileController {
      * @param page number current page
      * @param id   database user identifier
      * @return post list of user
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          if user with given id not found.
      */
     @RequestMapping(value = "/users/{id}/postList", method = RequestMethod.GET)
@@ -432,7 +432,7 @@ public class UserProfileController {
      * @param userProfileDto dto with user settings
      * @param settingsType   user settings type
      * @return updated user
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *
      */
     private JCUser saveUserData(long userId, EditUserProfileDto userProfileDto, String settingsType)

@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.CodeReviewComment;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
 /**
  * The interface to manipulate with code reviews

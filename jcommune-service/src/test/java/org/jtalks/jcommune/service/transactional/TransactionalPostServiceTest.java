@@ -23,7 +23,7 @@ import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.mockito.Matchers;
@@ -299,7 +299,7 @@ public class TransactionalPostServiceTest {
         Post post = new Post(user, "");
         post.setTopic(topic);
         List<Post> posts = Arrays.asList(post);
-        Page<Post> expectedPostsPage = new PageImpl<Post>(posts);
+        Page<Post> expectedPostsPage = new PageImpl<>(posts);
         when(postDao.getUserPosts(Matchers.<JCUser>any(), Matchers.<PageRequest>any(), Matchers.anyList()))
                 .thenReturn(expectedPostsPage);
         when(topicDao.getAllowedBranchesIds(Matchers.<JCUser>any())).thenReturn(Arrays.asList(branchId));
@@ -393,7 +393,7 @@ public class TransactionalPostServiceTest {
     public void testGetPosts() {
         String pageNumber = "50";
         Topic topic = new Topic(user, "");
-        Page<Post> expectedPage = new PageImpl<Post>(Collections.<Post>emptyList());
+        Page<Post> expectedPage = new PageImpl<>(Collections.<Post>emptyList());
 
         currentUser.setPageSize(50);
 

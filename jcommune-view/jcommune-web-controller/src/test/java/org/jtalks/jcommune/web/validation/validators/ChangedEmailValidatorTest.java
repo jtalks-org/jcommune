@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.validation.validators;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.UserProfileDto;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;

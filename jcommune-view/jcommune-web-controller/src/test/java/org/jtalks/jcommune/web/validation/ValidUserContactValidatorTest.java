@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 import org.jtalks.jcommune.model.entity.UserContactType;
 import org.jtalks.jcommune.service.UserContactsService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
 import org.jtalks.jcommune.web.validation.validators.ValidUserContactValidator;
 import org.mockito.Mock;

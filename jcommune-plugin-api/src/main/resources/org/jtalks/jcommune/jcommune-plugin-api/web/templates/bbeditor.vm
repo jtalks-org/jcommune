@@ -14,7 +14,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-#macro(bbeditor $labelForAction $locale $back $postText $bodyParameterName $showSubmitButton)
+#macro(bbeditor $labelForAction $back $postText $bodyParameterName $showSubmitButton $placeholder)
   <div class="btn-toolbar hide-on-preview">
     <div class="btn-group">
       <a id="format_b" class="btn" accesskey="b" href="#fake"
@@ -133,7 +133,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <div id="editorBbCodeDiv">
       <pre id="htmlContent"></pre>
       <textarea id="postBody" name="${bodyParameterName}" tabindex="200" style="width:100%;height: 350px"
-                placeholder="<jcommune:message>placeholder.editor.content</jcommune:message>" class="script-confirm-unsaved"></textarea>
+                placeholder="$placeholder" class="script-confirm-unsaved"></textarea>
     </div>
     <br>
     <span class="keymaps-caption"><jcommune:message>label.keymaps.post</jcommune:message></span>

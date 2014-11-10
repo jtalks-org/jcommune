@@ -24,7 +24,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -94,7 +94,7 @@ public class TransactionalTopicFetchServiceTest {
         String pageNumber = "1";
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
-        Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
+        Page<Topic> expectedPage = new PageImpl<>(expectedList);
         when(topicDao.getTopicsUpdatedSince(Matchers.<DateTime>any(), Matchers.<PageRequest>any(),eq(user)))
                 .thenReturn(expectedPage);
         user.setPageSize(pageSize);
@@ -113,7 +113,7 @@ public class TransactionalTopicFetchServiceTest {
         String pageNumber = "1";
         int pageSize = 20;
         List<Topic> expectedList = Collections.nCopies(2, new Topic(user, "title"));
-        Page<Topic> expectedPage = new PageImpl<Topic>(expectedList);
+        Page<Topic> expectedPage = new PageImpl<>(expectedList);
         when(topicDao.getUnansweredTopics(Matchers.<PageRequest>any(),eq(user)))
                 .thenReturn(expectedPage);
         user.setPageSize(pageSize);
@@ -128,7 +128,7 @@ public class TransactionalTopicFetchServiceTest {
     public void testGetTopics() {
         String pageNumber = "50";
         Branch branch = createBranch();
-        Page<Topic> expectedPage = new PageImpl<Topic>(Collections.<Topic>emptyList());
+        Page<Topic> expectedPage = new PageImpl<>(Collections.<Topic>emptyList());
 
         JCUser currentUser = new JCUser("current", null, null);
         currentUser.setPageSize(50);

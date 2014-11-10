@@ -208,7 +208,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <form action="/answer"
           method="POST" class='well anti-multipost submit-form' modelAttribute="postDto">
       <form path="topicId"/>
-      #bbeditor(${messages.getString("label.answer")} "" "" "bodyText" true)
+      #bbeditor(${messages.getString("label.answer")} "" "" "bodyText" true "<jcommune:message>placeholder.editor.content</jcommune:message>")
     </form>
   #end
 

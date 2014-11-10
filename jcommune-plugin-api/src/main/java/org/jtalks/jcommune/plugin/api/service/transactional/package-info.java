@@ -12,31 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.exceptions;
-
 /**
- * The exception for case when searching item not found.
- * 
- * @author Pavel Vervenko
+ * Package for transactional plugin services implementations
  */
-public class NotFoundException extends Exception {
-
-    private static final long serialVersionUID = -224997657579731831L;
-
-    /**
-     * Default constructor.
-     *
-     * @param message exception message
-     */
-    public NotFoundException(String message) {
-        super(message);
-    }
-
-    /**
-     * Create exception with specific message.
-     * 
-     * {@link Exception}
-     */
-    public NotFoundException() {
-    }
-}
+package org.jtalks.jcommune.plugin.api.service.transactional;

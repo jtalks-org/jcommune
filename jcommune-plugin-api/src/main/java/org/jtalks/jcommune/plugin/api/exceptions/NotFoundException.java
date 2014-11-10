@@ -12,26 +12,31 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
-
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+package org.jtalks.jcommune.plugin.api.exceptions;
 
 /**
- * The interface to manipulate with code reviews
+ * The exception for case when searching item not found.
  * 
- * @author Vyacheslav Mishcheryakov
+ * @author Pavel Vervenko
  */
-public interface CodeReviewCommentService extends EntityService<CodeReviewComment> {
+public class NotFoundException extends Exception {
+
+    private static final long serialVersionUID = -224997657579731831L;
 
     /**
-     * Updates CR comment's body
-     * @param id ID of CR comment
-     * @param body new body of comment
-     * @param branchId ID of branch containing code review to check permissions
-     * @return updated CR comment entity
-     * @throws NotFoundException when entity not found
+     * Default constructor.
+     *
+     * @param message exception message
      */
-    CodeReviewComment updateComment(long id, String body, long branchId) throws NotFoundException;
+    public NotFoundException(String message) {
+        super(message);
+    }
 
+    /**
+     * Create exception with specific message.
+     * 
+     * {@link Exception}
+     */
+    public NotFoundException() {
+    }
 }
