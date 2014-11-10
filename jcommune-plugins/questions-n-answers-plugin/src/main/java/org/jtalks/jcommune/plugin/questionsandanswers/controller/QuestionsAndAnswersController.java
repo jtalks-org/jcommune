@@ -41,11 +41,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.velocity.VelocityEngineUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.*;
 
 import static org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin.MESSAGE_PATH;
@@ -69,6 +72,13 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         engine.init();
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", getModel(request)));
+        return "plugin/plugin";
+    }
+
+    @RequestMapping(value = "new", method = RequestMethod.POST)
+    public String createQuestion(@Valid @ModelAttribute TopicDto topicDto, BindingResult result,
+                                 @RequestParam(BRANCH_ID) Long branchId, HttpServletRequest request) {
+
         return "plugin/plugin";
     }
 

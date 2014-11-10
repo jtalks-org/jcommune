@@ -17,6 +17,7 @@ package org.jtalks.jcommune.plugin.api.web.dto;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Topic;
 
+import javax.validation.Valid;
 
 
 /**
@@ -26,6 +27,7 @@ import org.jtalks.jcommune.model.entity.Topic;
  */
 public class TopicDto {
 
+    @Valid
     private Topic topic;
 
 

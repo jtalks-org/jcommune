@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -47,6 +48,11 @@ public class PluginHandlerMappingTest {
         initMocks(this);
     }
 
+    @AfterMethod
+    public void clearMapping() {
+        PluginHandlerMapping.getInstance().getPluginHandlerMethods().clear();
+    }
+
     @Test
     public void registerHandlerMethodShouldCallRegisterPluginHandlerMethodIfMethodIsPluginHandler() {
         doCallRealMethod().when(handlerMapping).registerHandlerMethod(any(), any(Method.class),
@@ -64,7 +70,7 @@ public class PluginHandlerMappingTest {
     public void pluginHandlerMethodsShouldNotContainMappingsIfNoHandlersMapped() {
         PluginHandlerMapping mapping = PluginHandlerMapping.getInstance();
 
-        Map<String, HandlerMethod> result = mapping.getPluginHandlerMethods();
+        Map<PluginHandlerMapping.MethodAwareKey, HandlerMethod> result = mapping.getPluginHandlerMethods();
 
         assertTrue(result.isEmpty());
     }
@@ -76,7 +82,7 @@ public class PluginHandlerMappingTest {
         RequestMappingInfo mappingInfo = new RequestMappingInfo(null, null, null, null, null, null, null);
 
         mapping.registerHandlerMethod(controller, TestController.class.getMethods()[0], mappingInfo);
-        Map<String, HandlerMethod> result = mapping.getPluginHandlerMethods();
+        Map<PluginHandlerMapping.MethodAwareKey, HandlerMethod> result = mapping.getPluginHandlerMethods();
 
         assertTrue(result.isEmpty());
     }
@@ -87,10 +93,11 @@ public class PluginHandlerMappingTest {
         TestPluginController controller = new TestPluginController();
         mapping.addController(controller);
 
-        Map<String, HandlerMethod> result = mapping.getPluginHandlerMethods();
+        Map<PluginHandlerMapping.MethodAwareKey, HandlerMethod> result = mapping.getPluginHandlerMethods();
 
         assertEquals(result.size(), 1);
-        assertEquals(result.get("/test/").getMethod(), controller.getClass().getMethod("testMethod"));
+        assertEquals(result.get(new PluginHandlerMapping.MethodAwareKey(RequestMethod.GET, "/test/")).getMethod(),
+                controller.getClass().getMethod("testMethod"));
     }
 
     @Test
@@ -100,7 +107,7 @@ public class PluginHandlerMappingTest {
         mapping.addController(controller);
         mapping.deactivateController(controller);
 
-        Map<String, HandlerMethod> result = mapping.getPluginHandlerMethods();
+        Map<PluginHandlerMapping.MethodAwareKey, HandlerMethod> result = mapping.getPluginHandlerMethods();
 
         assertTrue(result.isEmpty());
     }
@@ -111,12 +118,28 @@ public class PluginHandlerMappingTest {
         TestPluginController controller = new TestPluginController();
         mapping.addController(controller);
 
-        Set<String> urls = mapping.getPluginHandlerMethods().keySet();
+        Set<PluginHandlerMapping.MethodAwareKey> keys = mapping.getPluginHandlerMethods().keySet();
 
-        for (String url : urls) {
-            assertTrue(url.endsWith("/"));
+        for (PluginHandlerMapping.MethodAwareKey key : keys) {
+            assertTrue(key.getUrl().endsWith("/"));
         }
     }
+
+    @Test
+    public void handlerMapperShouldDifferHandlersWithSameUrlAndDifferentRequestMethods() throws Exception{
+        PluginHandlerMapping mapping = PluginHandlerMapping.getInstance();
+        ControllerWithDifferentRequestMethodsOnSameUrl controller = new ControllerWithDifferentRequestMethodsOnSameUrl();
+        mapping.addController(controller);
+
+        Map<PluginHandlerMapping.MethodAwareKey, HandlerMethod> result = mapping.getPluginHandlerMethods();
+
+        assertEquals(result.size(), 2);
+        assertEquals(result.get(new PluginHandlerMapping.MethodAwareKey(RequestMethod.GET, "/test/")).getMethod(),
+                controller.getClass().getMethod("testGet"));
+        assertEquals(result.get(new PluginHandlerMapping.MethodAwareKey(RequestMethod.POST, "/test/")).getMethod(),
+                controller.getClass().getMethod("testPost"));
+    }
+
 
     @Controller
     private class TestPluginController implements PluginController {
@@ -137,6 +160,25 @@ public class PluginHandlerMappingTest {
 
         @RequestMapping(value = "/test", method = RequestMethod.GET)
         public void testMethod() {
+
+        }
+    }
+
+    @Controller
+    private class ControllerWithDifferentRequestMethodsOnSameUrl implements PluginController {
+
+        @RequestMapping(value = "/test", method = RequestMethod.GET)
+        public void testGet() {
+
+        }
+
+        @RequestMapping(value = "/test", method = RequestMethod.POST)
+        public void testPost() {
+
+        }
+
+        @Override
+        public void setApiPath(String apiPath) {
 
         }
     }

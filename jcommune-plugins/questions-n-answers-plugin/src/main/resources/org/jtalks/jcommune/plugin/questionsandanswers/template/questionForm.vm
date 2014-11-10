@@ -26,11 +26,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <div class="container">
     #breadcrumb(${breadcrumbList})
 
-    <form action="${request.contextPath}/post"
-          method="POST" modelAttribute="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
+    <form action="${request.contextPath}/question/new?branchId=${topicDto.topic.branch.id}"
+          method="POST" id="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
       <div class='control-group hide-on-preview'>
         <div class='controls'>
-          <input path="topic.title" id="subject" type="text" name="subject" size="45"
+          <input name="topic.title" id="subject" type="text"  size="45"
             maxlength="255" tabindex="100"
             class="span11 script-confirm-unsaved" placeholder="Question title"/>
         </div>
