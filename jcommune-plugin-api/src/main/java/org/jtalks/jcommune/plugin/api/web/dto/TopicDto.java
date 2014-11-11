@@ -15,15 +15,19 @@
 package org.jtalks.jcommune.plugin.api.web.dto;
 
 import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
 
 import javax.validation.Valid;
 
-
 /**
- * Now it copy of TopicDto which placed in controller module.
- * TODO: move TopicDto to plugin-api and fix validation problems
+ * DTO for {@link Topic} objects. Used for validation and binding to form.
  *
+ * @author Vitaliy Kravchenko
+ * @author Max Malakhov
+ * @author Eugeny Batov
  */
 public class TopicDto {
 
@@ -31,6 +35,8 @@ public class TopicDto {
     private Topic topic;
 
 
+    @BbCodeAwareSize(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
+    @BbCodeNesting
     private String bodyText;
 
     /**
@@ -40,7 +46,7 @@ public class TopicDto {
     }
 
     /**
-     * Create dto from {@link org.jtalks.jcommune.model.entity.Topic}
+     * Create dto from {@link Topic}
      *
      * @param topic topic for conversion
      */

@@ -12,13 +12,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.validators;
+package org.jtalks.jcommune.plugin.api.web.validation.validators;
 
-import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.plugin.api.service.PluginBbCodeService;
+import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -39,10 +39,10 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
     private int min;
     private int max;
     private ApplicationContext context;
-    private BBCodeService bbCodeService;
+    private PluginBbCodeService bbCodeService;
     
     @Autowired
-    public BbCodeAwareSizeValidator(BBCodeService bbCodeService) {
+    public BbCodeAwareSizeValidator(PluginBbCodeService bbCodeService) {
         this.bbCodeService = bbCodeService;
     }
     
@@ -87,9 +87,9 @@ public class BbCodeAwareSizeValidator implements ConstraintValidator<BbCodeAware
         this.context = ac;
     }
     
-    private BBCodeService getBBCodeService() {
+    private PluginBbCodeService getBBCodeService() {
         if (bbCodeService == null) {
-            bbCodeService = this.context.getBean(BBCodeService.class);
+            bbCodeService = this.context.getBean(PluginBbCodeService.class);
         }
         return bbCodeService;
     }

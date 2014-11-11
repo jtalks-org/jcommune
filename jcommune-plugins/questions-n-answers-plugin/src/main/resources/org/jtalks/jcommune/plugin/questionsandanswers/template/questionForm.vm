@@ -40,9 +40,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             maxlength="255" tabindex="100"
             class="span11 script-confirm-unsaved" placeholder="Question title"
             value="${esc.html(${topicDto.topic.title})}"/>
+          #jtalksBinding(${result} "topic.title")
         </div>
       </div>
-      #bbeditor("Ask" "" "${esc.html(${topicDto.bodyText})}" "bodyText" true "Description")
+      #bbeditor("Ask" "" "${esc.html(${topicDto.bodyText})}" "bodyText" true "Description" ${result})
     </form>
 
     <a href="${request.contextPath}/branches/${topicDto.topic.branch.id}" tabindex="1000" class='back-btn'>

@@ -47,5 +47,9 @@
        <groupId>velocity-tools</groupId>
         <artifactId>velocity-tools-generic</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kefirsf</groupId>
+      <artifactId>kefirbb</artifactId>
+    </dependency>
   </dependencies>
 </project>

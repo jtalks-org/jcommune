@@ -12,14 +12,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.validators;
+package org.jtalks.jcommune.plugin.api.web.validation.validators;
 
-import org.jtalks.jcommune.service.nontransactional.BBCodeService;
-import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
-import org.mockito.Mockito;
+import org.jtalks.jcommune.plugin.api.service.PluginBbCodeService;
+import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
+import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import org.mockito.Spy;
 import static org.testng.Assert.assertFalse;
@@ -35,15 +36,15 @@ public class BbCodeAwareSizeValidatorTest {
 
     private BbCodeAwareSizeValidator validator;
     
-    @Spy
-    private BBCodeService bbCodeService = new BBCodeService();
+    @Mock
+    private PluginBbCodeService bbCodeService;
 
     @BeforeMethod
     public void init() throws NoSuchFieldException {
         BbCodeAwareSize annotation = (BbCodeAwareSize)
                 BbCodeAwareSizeValidatorTest.class.getField("value").getDeclaredAnnotations()[0];
         initMocks(this);
-        
+
         validator = new BbCodeAwareSizeValidator(bbCodeService);
         validator.initialize(annotation);
     }
@@ -51,7 +52,7 @@ public class BbCodeAwareSizeValidatorTest {
     @Test
     public void testValidationPassed() {
         String source = "1234567";
-        Mockito.when(bbCodeService.stripBBCodes(source)).thenReturn(source);
+        when(bbCodeService.stripBBCodes(source)).thenReturn(source);
 
         assertTrue(validator.isValid(source, null));
     }
@@ -64,6 +65,7 @@ public class BbCodeAwareSizeValidatorTest {
     @Test
     public void testValueTooLong() {
         String source = "12345678901234567890123456";
+        when(bbCodeService.stripBBCodes(source)).thenReturn(source);
 
         assertFalse(validator.isValid(source, null));
     }
@@ -71,53 +73,58 @@ public class BbCodeAwareSizeValidatorTest {
     @Test
     public void testValueTooShort() {
         String source = "12";
-        Mockito.when(bbCodeService.stripBBCodes(source)).thenReturn(source);
-        
+        when(bbCodeService.stripBBCodes(source)).thenReturn(source);
+
         assertFalse(validator.isValid(source, null));
     }
 
     @Test
     public void testSpaces() {
         String source = "             ";
-        
+        when(bbCodeService.stripBBCodes(source)).thenReturn(source);
+
         assertFalse(validator.isValid(source, null));
     }
-    
+
     @Test
     public void testMaxLengthWithBbCodes() {
     	String source = "[b]123456789012345678[/b]";
-        validator.isValid(source, null);
-    	assertTrue(validator.isValid(source, null));
+        when(bbCodeService.stripBBCodes(source)).thenReturn("123456789012345678");
+
+        assertTrue(validator.isValid(source, null));
     }
-    
+
     @Test
     public void testTooLongWithBbCodes() {
         String source = "[b][b]1234567890123[/b][/b]";
-        
+        when(bbCodeService.stripBBCodes(source)).thenReturn("1234567890123");
+
     	assertFalse(validator.isValid(source, null));
     }
-    
+
     @Test
     public void testTooShortWithBbCodes() {
         String source = "[b][b]12[/b][/b]";
-        
+        when(bbCodeService.stripBBCodes(source)).thenReturn("12");
+
     	assertFalse(validator.isValid(source, null));
     }
-    
+
     @Test
     public void testBBCodesOnly() {
         String source = "[b][b][/b][/b]";
-        
+        when(bbCodeService.stripBBCodes(source)).thenReturn("");
+
     	assertFalse(validator.isValid(source, null));
     }
-    
+
     @Test
     public void testBBCodesListOnly() {
         String source = "[list]\n" +
                 "[*]\n" +
                 "[*]\n" +
                 "[/list]";
-        
+        when(bbCodeService.stripBBCodes("")).thenReturn("");
         assertFalse(validator.isValid(source, null));
     }
 }

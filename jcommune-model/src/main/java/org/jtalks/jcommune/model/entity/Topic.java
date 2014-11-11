@@ -119,6 +119,10 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
+    /**
+     * Should be used both annotations
+     * @see Topic#MIN_NAME_SIZE
+     */
     @NotBlank
     @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
     private String title;
@@ -130,13 +134,16 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     @Valid
     private Poll poll;
     private CodeReview codeReview;    
-    private List<Post> posts = new ArrayList<Post>();
-    private Set<JCUser> subscribers = new HashSet<JCUser>();
+    private List<Post> posts = new ArrayList<>();
+    private Set<JCUser> subscribers = new HashSet<>();
 
     // transient, makes sense for current user only if set explicitly
     private transient DateTime lastReadPostDate;
 
-    public static final int MIN_NAME_SIZE = 1;
+    /**
+     * Set to 0 because we can't get null value from pure html used in plugins
+     */
+    public static final int MIN_NAME_SIZE = 0;
     public static final int MAX_NAME_SIZE = 120;
 
     /**

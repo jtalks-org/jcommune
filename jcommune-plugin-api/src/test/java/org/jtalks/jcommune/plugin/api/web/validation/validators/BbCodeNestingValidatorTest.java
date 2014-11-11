@@ -12,9 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.validators;
+package org.jtalks.jcommune.plugin.api.web.validation.validators;
 
-import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
+import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

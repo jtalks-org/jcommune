@@ -87,6 +87,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             topicDto.getTopic().setBranch(branch);
             data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topicDto.getTopic()));
             data.put("topicDto", topicDto);
+            data.put("result", result);
             model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                     "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
         }

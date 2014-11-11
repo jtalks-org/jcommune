@@ -16,8 +16,8 @@ package org.jtalks.jcommune.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.web.validation.annotations.BbCodeAwareSize;
-import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
+import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
 
 /**
  * DTO for {@link Post} objects. Used for validation and binding to form.

@@ -12,40 +12,55 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.validation.annotations;
+package org.jtalks.jcommune.plugin.api.web.validation.annotations;
 
-import org.jtalks.jcommune.web.validation.validators.BbCodeNestingValidator;
+
+
+import org.jtalks.jcommune.plugin.api.web.validation.validators.BbCodeAwareSizeValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
+/**
+ * Adopts default @Size annotation to ignore BB-codes
+ * when computing size. Suitable for the String fields only.
+ *
+ * @author Evgeniy Naumenko
+ */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Inherited
-@Constraint(validatedBy = BbCodeNestingValidator.class)
-
-/**
- * Constraint annotation for limiting maximum level of BB-code nesting
- */
-public @interface BbCodeNesting {
-
-    String message() default "{validation.bbcode.not_nesting}";
+@Constraint(validatedBy = BbCodeAwareSizeValidator.class)
+public @interface BbCodeAwareSize {
 
     /**
-     * Groups settings for this validation constraint
+     * @return resource bundle code for error message
+     */
+    String message() default "{javax.validation.constraints.Size.message}";
+
+    /**
+     * @return groups settings for this validation constraint
      */
     Class<?>[] groups() default {};
 
     /**
-     * Payload, not used here
+     * @return payload, not used here
      */
     Class<? extends Payload>[] payload() default {};
 
     /**
-     * maximum level of BB-code nesting
+     * @return size the string must be higher or equal to
      */
-    int maxNestingValue() default 50;
+    int min() default 0;
+
+    /**
+     * @return size the string must be lower or equal to
+     */
+    int max() default Integer.MAX_VALUE;
 
 }
