@@ -19,20 +19,29 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-    <class name="CodeReview" table="CODE_REVIEWS">
+    <class name="org.jtalks.jcommune.model.entity.PostComment" table="POST_COMMENT">
         <cache usage="read-write"/>
-        <id column="CR_ID" name="id" unsaved-value="0">
+        <id column="ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
+        <property name="creationDate" column="CREATION_DATE"
+                  type="org.joda.time.contrib.hibernate.PersistentDateTime"
+                  not-null="true"/>
+        <property column="BODY" name="body" type="text"/>
         
-        <one-to-one name="topic" constrained="true" property-ref="codeReview"
-                    class="Topic" />
+        <many-to-one name="author" column="AUTHOR_ID" class="org.jtalks.jcommune.model.entity.JCUser"
+                     lazy="false"
+                     not-null="true" foreign-key="FK_COMMENT_AUTHOR"/>
+        <many-to-one name="post" column="POST_ID" class="org.jtalks.jcommune.model.entity.Post"
+                     lazy="false"
+                     not-null="true" foreign-key="FK_COMMENT_POST"/>
+        <map name="attributes" table="COMMENT_ATTRIBUTE" cascade="all-delete-orphan">
+          <cache usage="read-write"/>
+          <key column="COMMENT_ID" foreign-key="FK_COMMENT_ATTRIBUTE"/>
+          <map-key type="java.lang.String" column="NAME"/>
+          <element type="text" column="VALUE"/>
+        </map>
 
-      <bag name="comments" cascade="all-delete-orphan" inverse="true" order-by="CREATION_DATE">
-            <cache usage="nonstrict-read-write"/>
-            <key column="CODE_REVIEW_ID" foreign-key="FK_CRC_CODE_REVIEW"/>
-            <one-to-many class="CodeReviewComment"/>
-        </bag>
     </class>
 </hibernate-mapping>

@@ -18,7 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -32,12 +32,12 @@ import static org.testng.Assert.*;
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
-public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
+public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
 
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private Crud<CodeReviewComment> codeReviewCommentDao;
+    private Crud<PostComment> postCommentDao;
     private Session session;
 
     @BeforeMethod
@@ -50,22 +50,23 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
 
     @Test
     public void testGet() {
-        CodeReviewComment review = PersistedObjectsFactory.getDefaultCodeReviewComment();
-        session.save(review);
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        session.save(comment);
+        flushAndClearSession();
 
-        CodeReviewComment result = codeReviewCommentDao.get(review.getId());
+        PostComment result = postCommentDao.get(comment.getId());
 
         assertNotNull(result);
-        assertEquals(result.getId(), review.getId());
-        assertEquals(result.getBody(), review.getBody());
-        assertEquals(result.getCreationDate(), review.getCreationDate());
-        assertEquals(result.getAuthor(), review.getAuthor());
+        assertEquals(result.getId(), comment.getId());
+        assertEquals(result.getBody(), comment.getBody());
+        assertEquals(result.getCreationDate(), comment.getCreationDate());
+        assertEquals(result.getAuthor(), comment.getAuthor());
     }
 
 
     @Test
     public void testGetInvalidId() {
-        CodeReviewComment result = codeReviewCommentDao.get(-567890L);
+        PostComment result = postCommentDao.get(-567890L);
 
         assertNull(result);
     }
@@ -73,25 +74,57 @@ public class CodeReviewCommentHibernateDaoTest extends AbstractTransactionalTest
     @Test
     public void testUpdate() {
         String newUuid = "1234-1231-1231";
-        CodeReviewComment review = PersistedObjectsFactory.getDefaultCodeReviewComment();
+        PostComment review = PersistedObjectsFactory.getDefaultPostComment();
         session.save(review);
         review.setUuid(newUuid);
 
-        codeReviewCommentDao.saveOrUpdate(review);
+        postCommentDao.saveOrUpdate(review);
         session.flush();
         session.evict(review);
-        CodeReviewComment result = (CodeReviewComment) session.get(CodeReviewComment.class, review.getId());
+        PostComment result = (PostComment) session.get(PostComment.class, review.getId());
 
         assertEquals(result.getUuid(), newUuid);
     }
 
     @Test(expectedExceptions = org.hibernate.exception.ConstraintViolationException.class)
     public void testUpdateNotNullViolation() {
-        CodeReviewComment review = PersistedObjectsFactory.getDefaultCodeReviewComment();
+        PostComment review = PersistedObjectsFactory.getDefaultPostComment();
         session.save(review);
         review.setUuid(null);
-        codeReviewCommentDao.saveOrUpdate(review);
+        postCommentDao.saveOrUpdate(review);
         session.flush();
     }
 
+    @Test
+    public void testSaveCommentWithCustomProperties() {
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        comment.putAttribute("name", "value");
+        postCommentDao.saveOrUpdate(comment);
+        flushAndClearSession();
+
+        PostComment result = (PostComment)session.get(PostComment.class, comment.getId());
+
+        assertEquals(result.getAttributes().get("name"), "value");
+    }
+
+    @Test
+    public void commentPropertiesShouldBeUpdatedByCascade() {
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        comment.putAttribute("name", "value");
+        postCommentDao.saveOrUpdate(comment);
+        String updatedValue = "updatedValue";
+        comment.putAttribute("name", updatedValue);
+
+        postCommentDao.saveOrUpdate(comment);
+        flushAndClearSession();
+
+        PostComment result = (PostComment)session.get(PostComment.class, comment.getId());
+
+        assertEquals(result.getAttributes().get("name"), updatedValue);
+    }
+
+    private void flushAndClearSession() {
+        session.flush();
+        session.clear();
+    }
 }

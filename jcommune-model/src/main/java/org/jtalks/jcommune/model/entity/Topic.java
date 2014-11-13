@@ -25,8 +25,10 @@ import org.slf4j.LoggerFactory;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -133,7 +135,8 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private int views;
     @Valid
     private Poll poll;
-    private CodeReview codeReview;    
+    private String type;
+    private Map<String, String> attributes = new HashMap<>();
     private List<Post> posts = new ArrayList<>();
     private Set<JCUser> subscribers = new HashSet<>();
 
@@ -178,6 +181,14 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         this.title = title;
         this.creationDate = new DateTime();
         this.modificationDate = new DateTime();
+    }
+
+    public Topic(JCUser topicStarter, String title, String topicType) {
+        this.topicStarter = topicStarter;
+        this.title = title;
+        this.creationDate = new DateTime();
+        this.modificationDate = new DateTime();
+        this.type = topicType;
     }
 
     /**
@@ -471,25 +482,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Gets the code review associated with the topic. Topic can't be a Poll 
-     * or a simple topic if it has this not a null, same is vice versa - if 
-     * the topic is already a Poll or it's a simple discussion-topic, it can't 
-     * be a CR. In a most cases this association would probably be null. 
-     * @return the codeReview
-     */
-    public CodeReview getCodeReview() {
-        return codeReview;
-    }
-
-    /**
-     * Set the code review for this topic
-     * @param codeReview the codeReview to set
-     */
-    public void setCodeReview(CodeReview codeReview) {
-        this.codeReview = codeReview;
-    }
-
-    /**
      * @param lastReadPostDate last read post creation date
      */
     public void setLastReadPostDate(DateTime lastReadPostDate) {
@@ -606,4 +598,59 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         this.closed = closed;
     }
 
+    /**
+     * Gets type of the topic
+     *
+     * @return type of the topic
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets specified type to the topic
+     *
+     * @param type type to set
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * Gets attributes of the topic
+     *
+     * @return attributes of the topic
+     */
+    public Map<String, String> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * Sets specified attributes to the topic
+     * For hibernate usage. Use Topic#putAttribute
+     *
+     * @param attributes attributes to set
+     */
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
+    }
+
+    /**
+     * Adds new attribute or overrides existent attribute of the topic
+     *
+     * @param attributeName name of the attribute
+     * @param attributeValue value of the attribute
+     */
+    public void addOrOverrideAttribute(String attributeName, String attributeValue) {
+        this.attributes.put(attributeName, attributeValue);
+    }
+
+    /**
+     * Determines if topic is code review
+     *
+     * @return true  if code review, otherwise false
+     */
+    public boolean isCodeReview() {
+        return type != null && type.equals(TopicTypeName.CODE_REVIEW.getName());
+    }
 }

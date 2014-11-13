@@ -63,6 +63,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private SecurityContextFacade securityContextFacade;
     private BranchLastPostService branchLastPostService;
     private LastReadPostService lastReadPostService;
+    private TopicFetchService topicFetchService;
 
     /**
      * Create an instance of User entity based service.
@@ -90,7 +91,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  PermissionEvaluator permissionEvaluator,
                                                  BranchLastPostService branchLastPostService,
                                                  LastReadPostService lastReadPostService,
-                                                 PostDao postDao) {
+                                                 PostDao postDao,
+                                                 TopicFetchService topicFetchService) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -103,6 +105,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.branchLastPostService = branchLastPostService;
         this.lastReadPostService = lastReadPostService;
         this.postDao = postDao;
+        this.topicFetchService = topicFetchService;
     }
 
     /**
@@ -111,7 +114,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @Override
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
-        Topic topic = dao.get(topicId);
+        Topic topic = topicFetchService.getTopicSilently(topicId);
         this.assertPostingIsAllowed(topic);
 
         JCUser currentUser = userService.getCurrentUser();
@@ -159,7 +162,10 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
+    @PreAuthorize("( not #topicDto.codeReview " +
+            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS'))" +
+            "or (#topicDto.codeReview " +
+            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW'))")
     public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
         Branch branch = topicDto.getBranch();
@@ -169,7 +175,11 @@ public class TransactionalTopicModificationService implements TopicModificationS
         topic.setAnnouncement(topicDto.isAnnouncement());
         topic.setSticked(topicDto.isSticked());
         topic.setBranch(topicDto.getBranch());
+        if (topicDto.isCodeReview()) {
+            bodyText = wrapWithCodeTag(bodyText);
+        }
         Post first = new Post(currentUser, bodyText);
+        topic.setType(topicDto.getType());
         topic.addPost(first);
         topic.setBranch(branch);
         branch.setLastPost(first);
@@ -215,43 +225,6 @@ public class TransactionalTopicModificationService implements TopicModificationS
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW')")
-    public Topic createCodeReview(Topic topicDto, String bodyText) throws NotFoundException {
-        JCUser currentUser = userService.getCurrentUser();
-        Branch branch = topicDto.getBranch();
-
-        currentUser.setPostCount(currentUser.getPostCount() + 1);
-        Topic topic = new Topic(currentUser, topicDto.getTitle());
-        Post first = new Post(currentUser, wrapWithCodeTag(bodyText));
-        topic.addPost(first);
-        CodeReview codeReview = new CodeReview();
-        codeReview.setTopic(topic);
-        topic.setCodeReview(codeReview);
-        topic.setBranch(branch);
-        branch.setLastPost(first);
-
-        dao.saveOrUpdate(topic);
-        branchDao.saveOrUpdate(branch);
-
-        JCUser user = userService.getCurrentUser();
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
-
-        notificationService.subscribedEntityChanged(topic.getBranch());
-
-        subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
-
-        lastReadPostService.markTopicAsRead(topic);
-
-        logger.debug("Created new code review topic id={}, branch id={}, author={}",
-                new Object[]{topic.getId(), topic.getBranch().getId(), currentUser.getUsername()});
-        return topic;
-    }
-
-    /**
      * Wrap given message with [code=java]...[/code] tags if it is not wrapped
      * yet
      *
@@ -280,7 +253,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
             "(not hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS'))")
     public void updateTopic(Topic topic, Poll poll) {
-        if (topic.getCodeReview() != null) {
+        if (topic.isCodeReview()) {
             throw new AccessDeniedException("It is not allowed to edit Code Review!");
         }
         Post post = topic.getFirstPost();
@@ -333,10 +306,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      */
     @Override
     public void deleteTopicSilent(long topicId) throws NotFoundException {
-        Topic topic = dao.get(topicId);
-        if (topic == null) {
-            throw new NotFoundException("Topic with given id not exist");
-        }
+        Topic topic = topicFetchService.getTopicSilently(topicId);
         this.deleteTopicSilent(topic);
     }
 
@@ -379,6 +349,9 @@ public class TransactionalTopicModificationService implements TopicModificationS
     public void moveTopic(Topic topic, Long branchId) throws NotFoundException {
         Branch sourceBranch = topic.getBranch();
         Branch targetBranch = branchDao.get(branchId);
+        if (targetBranch == null) {
+            throw new NotFoundException("Target branch not exist");
+        }
         targetBranch.addTopic(topic);
         branchDao.saveOrUpdate(targetBranch);
 
@@ -399,7 +372,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CLOSE_TOPICS')")
     @Override
     public void closeTopic(Topic topic) {
-        if (topic.getCodeReview() != null) {
+        if (topic.isCodeReview()) {
             throw new AccessDeniedException("Close for code review");
         }
         topic.setClosed(true);

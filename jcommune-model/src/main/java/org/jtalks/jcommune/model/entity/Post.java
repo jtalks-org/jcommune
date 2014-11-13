@@ -43,12 +43,9 @@ public class Post extends Entity {
     private JCUser userCreated;
     private String postContent;
     private Topic topic;
+    private int rating;
 
-    /**
-     * Needed for prototyping QA page. In future it may be some different instance (not {@link CodeReviewComment})
-     * Now we not store comments in database but everything has its time.
-     */
-    private List<CodeReviewComment> comments = new ArrayList<>();
+    private List<PostComment> comments = new ArrayList<>();
 
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 2;
@@ -196,11 +193,51 @@ public class Post extends Entity {
         return getTopic().getSubscribers();
     }
 
-    public List<CodeReviewComment> getComments() {
+    /**
+     * Gets list of comments of the post
+     *
+     * @return list of comments
+     */
+    public List<PostComment> getComments() {
         return comments;
     }
 
-    public void setComments(List<CodeReviewComment> comments) {
+    /**
+     * Sets specified list of comments to the post
+     *
+     * @param comments list of comments to set
+     */
+    public void setComments(List<PostComment> comments) {
         this.comments = comments;
+    }
+
+    /**
+     * Adds specified comment to the post
+     *
+     * @param comment comment to add
+     */
+    public void addComment(PostComment comment) {
+        comment.setPost(this);
+        comments.add(comment);
+    }
+
+    /**
+     * Gets rating of the post.
+     * Rating introduced to provide ability to vote for posts.
+     * In some topic types post may be ordered by rating.
+     *
+     * @return rating of the post
+     */
+    public int getRating() {
+        return rating;
+    }
+
+    /**
+     * Sets specified rating to current post
+     *
+     * @param rating rating to set
+     */
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 }

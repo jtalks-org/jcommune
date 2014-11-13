@@ -38,7 +38,9 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -172,5 +174,24 @@ public class TransactionalTopicFetchServiceTest {
         topicFetchService.rebuildSearchIndex();
 
         Mockito.verify(searchDao).rebuildIndex();
+    }
+
+    @Test
+    public void getTopicSilentlyShouldNotCallSaveOrUpdate() throws Exception{
+        Topic expectedTopic = new Topic(user, "title");
+        when(topicDao.isExist(999L)).thenReturn(true);
+        when(topicDao.get(999L)).thenReturn(expectedTopic);
+
+        Topic result = topicFetchService.getTopicSilently(999L);
+
+        assertEquals(result, expectedTopic);
+        verify(topicDao, never()).saveOrUpdate(any(Topic.class));
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getTopicSilentlyShouldThrowExceptionIfTopicNotFound() throws Exception{
+        when(topicDao.isExist(333L)).thenReturn(false);
+
+        topicFetchService.getTopicSilently(333L);
     }
 }

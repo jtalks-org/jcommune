@@ -145,7 +145,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         Branch branch = ObjectsFactory.getDefaultBranch();
         JCUser author = ObjectsFactory.getDefaultUser();
         session.save(author);
-        Topic topic = new Topic(author, "title");
+        Topic topic = new Topic(author, "title", "Discussion");
         Post post = new Post(author, "content");
         topic.addPost(post);
         branch.addTopic(topic);

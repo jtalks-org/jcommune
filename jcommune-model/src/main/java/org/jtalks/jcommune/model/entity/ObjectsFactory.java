@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.apache.commons.lang.math.RandomUtils;
-import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.*;
 
 import java.util.ArrayList;
@@ -111,7 +110,7 @@ public final class ObjectsFactory {
     public static List<Topic> topics(JCUser author, int topicCount) {
         List<Topic> topics = new ArrayList<>();
         for (int i = 0; i < topicCount; i++) {
-            Topic topic = new Topic(author, "title");
+            Topic topic = new Topic(author, "title", "Discussion");
             topic.setBranch(getDefaultBranch());
             topic.addPost(new Post(author, "post-content"));
             topics.add(topic);
@@ -120,8 +119,7 @@ public final class ObjectsFactory {
     }
 
     public static Topic getDefaultTopic() {
-        Topic topic = new Topic(getDefaultUser(), "title");
-        topic.setId(1);
+        Topic topic = new Topic(getDefaultUser(), "title", "Discussion");
         return topic;
     }
 
@@ -187,30 +185,6 @@ public final class ObjectsFactory {
 
     public static SimplePage getDefaultSimplePage() {
         return new SimplePage("name", "content", "pathName");
-    }
-
-    public static CodeReview getDefaultCodeReview() {
-        CodeReview review = new CodeReview();
-        review.setId(1L);
-
-        CodeReviewComment comment1 = new CodeReviewComment();
-        comment1.setId(1L);
-        comment1.setAuthor(getDefaultUser());
-        comment1.setBody("Comment1 body");
-        comment1.setLineNumber(1);
-        comment1.setCreationDate(new DateTime(1));
-        review.addComment(comment1);
-
-        CodeReviewComment comment2 = new CodeReviewComment();
-        comment2.setId(2L);
-        comment2.setAuthor(getDefaultUser());
-        comment2.setBody("Comment2 body");
-        comment2.setLineNumber(2);
-        comment2.setCreationDate(new DateTime(2));
-        review.addComment(comment2);
-
-
-        return review;
     }
 
     public static Banner getDefaultBanner() {

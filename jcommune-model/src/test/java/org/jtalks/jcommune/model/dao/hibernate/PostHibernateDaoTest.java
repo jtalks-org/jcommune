@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Kirill Afonin
@@ -159,23 +160,6 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         boolean asc = false;
         assertTrue(isPostListSortedByDate(postsPage.getContent(), asc));
-    }
-
-
-    private boolean isPostListSortedByDate(List<Post> postList, boolean asc) {
-        boolean result = false;
-        for (int i = 1; i < postList.size(); i++) {
-            DateTime creationDatePrevious = postList.get(i - 1).getCreationDate();
-            DateTime creationDate = postList.get(i).getCreationDate();
-            if (asc) {
-                result = creationDatePrevious.compareTo(creationDate) <= 0;
-                if (!result) break;
-            } else {
-                result = creationDatePrevious.compareTo(creationDate) >= 0;
-                if (!result) break;
-            }
-        }
-        return result;
     }
 
     @Test
@@ -357,5 +341,75 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         assertTrue(dao.getLastPostsFor(Arrays.asList(branch.getId()), 42).isEmpty(),
                 "The branch is empty, so last posts mustn't be found");
+    }
+
+    @Test
+    public void testAddCommentToPost() {
+        Post post = PersistedObjectsFactory.getDefaultPost();
+        session.save(post);
+        session.flush();
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        post.addComment(comment);
+
+        dao.saveOrUpdate(post);
+        session.flush();
+        session.evict(post);
+
+        Post actualPost = dao.get(post.getId());
+
+        assertEquals(actualPost.getComments().size(), 1);
+        assertReflectionEquals(comment, actualPost.getComments().get(0));
+    }
+
+    @Test
+    public void testRemovingCommentsWhenOwnerPostRemoved() {
+        Post post = PersistedObjectsFactory.getDefaultPost();
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        post.addComment(comment);
+        session.save(post);
+        session.flush();
+        session.evict(post);
+
+        dao.delete(post);
+
+        PostComment result = (PostComment)session.get(PostComment.class, comment.getId());
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testOrphanCommentRemoving() {
+        Post post = PersistedObjectsFactory.getDefaultPost();
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        post.addComment(comment);
+        session.save(post);
+        session.flush();
+        session.evict(post);
+        post.getComments().remove(0);
+        dao.saveOrUpdate(post);
+        session.flush();
+        session.evict(post);
+
+        Post result = dao.get(post.getId());
+
+        assertEquals(result.getComments().size(), 0);
+
+    }
+
+
+    private boolean isPostListSortedByDate(List<Post> postList, boolean asc) {
+        boolean result = false;
+        for (int i = 1; i < postList.size(); i++) {
+            DateTime creationDatePrevious = postList.get(i - 1).getCreationDate();
+            DateTime creationDate = postList.get(i).getCreationDate();
+            if (asc) {
+                result = creationDatePrevious.compareTo(creationDate) <= 0;
+                if (!result) break;
+            } else {
+                result = creationDatePrevious.compareTo(creationDate) >= 0;
+                if (!result) break;
+            }
+        }
+        return result;
     }
 }

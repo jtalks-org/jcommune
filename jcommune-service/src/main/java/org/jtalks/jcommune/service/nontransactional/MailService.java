@@ -46,6 +46,11 @@ import java.util.Map;
  */
 public class MailService {
 
+    public static final String REMOVE_TOPIC_SUBJECT_TEMPLATE = "removeTopic.subject";
+    public static final String REMOVE_CODE_REVIEW_SUBJECT_TEMPLATE = "removeCodeReview.subject";
+    public static final String REMOVE_TOPIC_MESSAGE_BODY_TEMPLATE = "removeTopic.vm";
+    public static final String REMOVE_CODE_REVIEW_MESSAGE_BODY_TEMPLATE = "removeCodeReview.vm";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MailService.class);
     private static final String LOG_TEMPLATE = "Error occurred while sending updates of %s %d to %s";
     private static final String HTML_TEMPLATES_PATH = "org/jtalks/jcommune/service/templates/html/";
@@ -387,9 +392,6 @@ public class MailService {
         } else if (entity instanceof Branch) {
             Branch branch = (Branch) entity;
             return ": " + branch.getName();
-        } else if (entity instanceof CodeReview) {
-            CodeReview codeReview = (CodeReview) entity;
-            return ": " + codeReview.getTopic().getTitle();
         } else {
             return "";
         }
@@ -411,12 +413,12 @@ public class MailService {
 
         try {
 
-            String subjectTemplate = "removeTopic.subject";
-            String messageBodyTemplate = "removeTopic.vm";
+            String subjectTemplate = REMOVE_TOPIC_SUBJECT_TEMPLATE;
+            String messageBodyTemplate = REMOVE_TOPIC_MESSAGE_BODY_TEMPLATE;
 
-            if (topic.getCodeReview() != null) {
-                subjectTemplate = "removeCodeReview.subject";
-                messageBodyTemplate = "removeCodeReview.vm";
+            if (topic.isCodeReview()) {
+                subjectTemplate = REMOVE_CODE_REVIEW_SUBJECT_TEMPLATE;
+                messageBodyTemplate = REMOVE_CODE_REVIEW_MESSAGE_BODY_TEMPLATE;
             }
 
             String subject = messageSource.getMessage(subjectTemplate, new Object[]{}, locale);
@@ -446,12 +448,12 @@ public class MailService {
 
         try {
 
-            String subjectTemplate = "removeTopic.subject";
-            String messageBodyTemplate = "removeTopic.vm";
+            String subjectTemplate = REMOVE_TOPIC_SUBJECT_TEMPLATE;
+            String messageBodyTemplate = REMOVE_TOPIC_MESSAGE_BODY_TEMPLATE;
 
-            if (topic.getCodeReview() != null) {
-                subjectTemplate = "removeCodeReview.subject";
-                messageBodyTemplate = "removeCodeReview.vm";
+            if (topic.isCodeReview()) {
+                subjectTemplate = REMOVE_CODE_REVIEW_SUBJECT_TEMPLATE;
+                messageBodyTemplate = REMOVE_CODE_REVIEW_MESSAGE_BODY_TEMPLATE;
             }
 
             String subject = messageSource.getMessage(subjectTemplate, new Object[]{}, locale);
@@ -493,9 +495,6 @@ public class MailService {
         }
         if (entity instanceof Topic) {
             return result.replace("{0}", "" + ((Topic) entity).getBranch().getId());
-        }
-        if (entity instanceof CodeReview) {
-            return result.replace("{0}", "" + ((CodeReview) entity).getTopic().getBranch().getId());
         }
         if (entity instanceof Post) {
             return result.replace("{0}", "" + ((Post) entity).getTopic().getBranch().getId());

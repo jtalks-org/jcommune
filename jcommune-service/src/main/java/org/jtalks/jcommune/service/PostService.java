@@ -18,11 +18,13 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Post persistent entity.
@@ -95,4 +97,25 @@ public interface PostService extends EntityService<Post> {
      * @return the last post that was posted in branch
      */
     List<Post> getLastPostsFor(Branch branch, int postCount);
+
+    /**
+     * Adds comment to post with specified id
+     *
+     * @param postId id of post to which comment will be added
+     * @param attributes list of comment attributes
+     * @param body text of the comment
+
+     * @return newly created comment
+     *
+     * @throws NotFoundException if post with specified id not found
+     */
+    PostComment addComment(Long postId, Map<String, String> attributes, String body) throws NotFoundException;
+
+    /**
+     * Removes specified comment from specified post
+     *
+     * @param post post form which comment will be removed
+     * @param comment comment to remove
+     */
+    void deleteComment(Post post, PostComment comment);
 }

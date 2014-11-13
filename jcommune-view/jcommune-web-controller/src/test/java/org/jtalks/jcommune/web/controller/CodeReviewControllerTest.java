@@ -18,10 +18,7 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
-import org.jtalks.jcommune.web.dto.CodeReviewDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
-import org.jtalks.jcommune.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
 import org.springframework.validation.BindingResult;
@@ -42,7 +39,6 @@ import static org.testng.Assert.assertEquals;
 public class CodeReviewControllerTest {
     public long BRANCH_ID = 1L;
     private String TOPIC_CONTENT = "content here";
-    private long REVIEW_ID = 1L;
 
     private JCUser user;
     private Branch branch;
@@ -56,9 +52,9 @@ public class CodeReviewControllerTest {
     @Mock
     private LastReadPostService lastReadPostService;
     @Mock
-    private CodeReviewService codeReviewService;
-    @Mock
     private UserService userService;
+    @Mock
+    private PostService postService;
 
 
     private CodeReviewController controller;
@@ -71,8 +67,8 @@ public class CodeReviewControllerTest {
                 breadcrumbBuilder,
                 topicModificationService,
                 lastReadPostService,
-                codeReviewService,
-                userService);
+                userService,
+                postService);
     }
 
     @BeforeMethod
@@ -111,14 +107,14 @@ public class CodeReviewControllerTest {
 
         //set expectations
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(topicModificationService.createCodeReview(topic, TOPIC_CONTENT))
+        when(topicModificationService.createTopic(topic, TOPIC_CONTENT))
                 .thenReturn(topic);
 
         //invoke the object under test
         ModelAndView mav = controller.createCodeReview(dto, result, BRANCH_ID);
 
         //check expectations
-        verify(topicModificationService).createCodeReview(topic, TOPIC_CONTENT);
+        verify(topicModificationService).createTopic(topic, TOPIC_CONTENT);
 
         //check result
         assertViewName(mav, "redirect:/topics/1");
@@ -140,25 +136,6 @@ public class CodeReviewControllerTest {
         assertViewName(mav, "codeReviewForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
-    }
-
-    @Test
-    public void getCodeReviewSuccess() throws NotFoundException {
-        CodeReview review = new CodeReview();
-        review.setId(REVIEW_ID);
-        when(codeReviewService.get(REVIEW_ID)).thenReturn(review);
-
-        JsonResponse response = controller.getCodeReview(REVIEW_ID);
-
-        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
-        assertEquals(((CodeReviewDto) response.getResult()).getId(), REVIEW_ID);
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void getCodeReviewNotFound() throws NotFoundException {
-        when(codeReviewService.get(REVIEW_ID)).thenThrow(new NotFoundException());
-
-        controller.getCodeReview(REVIEW_ID);
     }
 
     private Branch createBranch() {

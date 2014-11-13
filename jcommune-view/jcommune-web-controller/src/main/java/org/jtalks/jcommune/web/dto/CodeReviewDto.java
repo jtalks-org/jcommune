@@ -17,42 +17,46 @@ package org.jtalks.jcommune.web.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PostComment;
 
 /**
- * DTO for {@link CodeReview}
+ * DTO for code review topic type
  * @author Vyacheslav Mishcheryakov
  *
  */
 public class CodeReviewDto {
 
-    private long id;
+    private long postId;
     
-    private List<CodeReviewCommentDto> comments = new ArrayList<CodeReviewCommentDto>();
+    private List<CodeReviewCommentDto> comments = new ArrayList<>();
 
     public CodeReviewDto() {
     }
     
-    public CodeReviewDto(CodeReview review) {
-        this.id = review.getId();
-        for (CodeReviewComment comment : review.getComments()) {
+    public CodeReviewDto(Post post) {
+        this.postId = post.getId();
+        for (PostComment comment : post.getComments()) {
             this.comments.add(new CodeReviewCommentDto(comment));
         }
     }
 
     /**
-     * @return the id
+     * Gets id of post that is comment owner
+     *
+     * @return id of owner post
      */
-    public long getId() {
-        return id;
+    public long getPostId() {
+        return postId;
     }
 
     /**
-     * @param id the id to set
+     * Sets id of the post
+     *
+     * @param postId id to set
      */
-    public void setId(long id) {
-        this.id = id;
+    public void setPostId(long postId) {
+        this.postId = postId;
     }
 
     /**

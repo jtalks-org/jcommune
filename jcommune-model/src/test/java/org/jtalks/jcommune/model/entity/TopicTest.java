@@ -21,10 +21,7 @@ import org.testng.annotations.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class TopicTest {
     private Topic topic;
@@ -190,11 +187,32 @@ public class TopicTest {
     public void setSubscribersShouldSubscribeUserToTheTopic() {
         JCUser subscribedUser = new JCUser();
         JCUser notSubscribedUser = new JCUser();
-        Set<JCUser> subscribers = new HashSet<JCUser>();
+        Set<JCUser> subscribers = new HashSet<>();
         subscribers.add(subscribedUser);
         topic.setSubscribers(subscribers);
         assertTrue(topic.userSubscribed(subscribedUser));
         assertFalse(topic.userSubscribed(notSubscribedUser));
+    }
+
+    @Test
+    public void addOrOverrideAttributeShouldAddAttributes() {
+        String name = "name";
+        String value = "value";
+
+        topic.addOrOverrideAttribute(name, value);
+
+        assertEquals(topic.getAttributes().get(name), value);
+    }
+
+    @Test
+    public void addOrOverrideAttributeShouldOverrideExistentAttributes() {
+        String name = "name";
+        String newValue = "newValue";
+        topic.addOrOverrideAttribute(name, "value");
+
+        topic.addOrOverrideAttribute(name, newValue);
+
+        assertEquals(topic.getAttributes().get(name), newValue);
     }
 
     private Post[] postList(int numberOfPosts, Topic topic) {
@@ -204,5 +222,26 @@ public class TopicTest {
             topic.addPost(posts[i]);
         }
         return posts;
+    }
+
+    @Test
+    public void isCodeReviewShouldReturnTrueIfTopicTypeIsCodeReview() {
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
+
+        assertTrue(topic.isCodeReview());
+    }
+
+    @Test
+    public void isCodeReviewShouldReturnFalseIfTopicTypeIsNotCodeReview() {
+        topic.setType(TopicTypeName.DISCUSSION.getName());
+
+        assertFalse(topic.isCodeReview());
+    }
+
+    @Test
+    public void isCodeReviewShouldReturnFalseIfTopicTypeNotSet() {
+        topic.setType(null);
+
+        assertFalse(topic.isCodeReview());
     }
 }

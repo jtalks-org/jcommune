@@ -14,15 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.CodeReviewCommentService;
-import org.jtalks.jcommune.service.CodeReviewService;
+import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.PostCommentService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
+import org.jtalks.jcommune.web.dto.CodeReviewDto;
 import org.jtalks.jcommune.web.dto.json.*;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -33,7 +31,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -48,7 +45,7 @@ public class CodeReviewCommentControllerTest {
     public long BRANCH_ID = 1L;
 
     private long COMMENT_ID = 1L;
-    private long REVIEW_ID = 11L;
+    private long POST_ID = 11L;
     private String COMMENT_BODY = "body";
     private int COMMENT_LINE_NUMBER = 1;
 
@@ -56,14 +53,13 @@ public class CodeReviewCommentControllerTest {
     private String USERNAME = "username";
 
     private Branch branch;
-    private CodeReview codeReview = new CodeReview();
 
     @Mock
-    private CodeReviewService codeReviewService;
-    @Mock
-    private CodeReviewCommentService codeReviewCommentService;
+    private PostCommentService postCommentService;
     @Mock
     private NotificationService notificationService;
+    @Mock
+    private PostService postService;
 
     private CodeReviewCommentController controller;
 
@@ -71,8 +67,8 @@ public class CodeReviewCommentControllerTest {
     public void initEnvironment() {
         initMocks(this);
         controller = new CodeReviewCommentController(
-                codeReviewService,
-                codeReviewCommentService);
+                postCommentService,
+                postService);
     }
 
     @BeforeMethod
@@ -89,12 +85,33 @@ public class CodeReviewCommentControllerTest {
     }
 
     @Test
+    public void getCodeReviewSuccess() throws NotFoundException {
+        Post post = new Post(currentUser(), "my beautiful code");
+        post.setId(POST_ID);
+
+        when(postService.get(POST_ID)).thenReturn(post);
+
+        JsonResponse response = controller.getCodeReview(POST_ID);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+        assertEquals(((CodeReviewDto) response.getResult()).getPostId(), POST_ID);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getCodeReviewNotFound() throws NotFoundException {
+        when(postService.get(POST_ID)).thenThrow(new NotFoundException());
+
+        controller.getCodeReview(POST_ID);
+    }
+
+    @Test
     public void testAddCommentSuccess() throws AccessDeniedException, NotFoundException {
         BindingResult bindingResult = mock(BindingResult.class);
 
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewService.addComment(anyLong(), anyInt(), anyString()))
+        when(postService.addComment(anyLong(), anyMap(), anyString()))
             .thenReturn(createComment());
+
 
         JsonResponse response = controller.addComment(
                 new CodeReviewCommentDto(), bindingResult, 1L);
@@ -126,7 +143,7 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewService.addComment(anyLong(), anyInt(), anyString()))
+        when(postService.addComment(anyLong(), anyMap(), anyString()))
             .thenThrow(new NotFoundException());
 
         controller.addComment(new CodeReviewCommentDto(), bindingResult, 1L);
@@ -137,7 +154,7 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewService.addComment(anyLong(), anyInt(), anyString()))
+        when(postService.addComment(anyLong(), anyMap(), anyString()))
             .thenThrow(new AccessDeniedException(null));
 
         controller.addComment(new CodeReviewCommentDto(), bindingResult, 1L);
@@ -148,7 +165,7 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewCommentService.updateComment(anyLong(), anyString(), anyLong()))
+        when(postCommentService.updateComment(anyLong(), anyString(), anyLong()))
             .thenReturn(createComment());
 
         JsonResponse response = controller.editComment(
@@ -182,7 +199,7 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewCommentService.updateComment(anyLong(), anyString(), anyLong()))
+        when(postCommentService.updateComment(anyLong(), anyString(), anyLong()))
             .thenThrow(new NotFoundException());
 
         controller.editComment(new CodeReviewCommentDto(), bindingResult, BRANCH_ID);
@@ -193,7 +210,7 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(codeReviewCommentService.updateComment(anyLong(), anyString(), anyLong()))
+        when(postCommentService.updateComment(anyLong(), anyString(), anyLong()))
             .thenThrow(new AccessDeniedException(null));
 
         controller.editComment(new CodeReviewCommentDto(), bindingResult, BRANCH_ID);
@@ -201,27 +218,27 @@ public class CodeReviewCommentControllerTest {
 
     @Test
     public void testDeleteComment() throws NotFoundException {
-        CodeReview cr = new CodeReview();
-        CodeReviewComment crc = new CodeReviewComment();
+        Post post = new Post(null, null);
+        PostComment crc = new PostComment();
 
-        when(codeReviewService.get(REVIEW_ID)).thenReturn(cr);
-        when(codeReviewCommentService.get(COMMENT_ID)).thenReturn(crc);
-        JsonResponse jsonResponse = controller.deleteComment(COMMENT_ID, REVIEW_ID);
+        when(postService.get(POST_ID)).thenReturn(post);
+        when(postCommentService.get(COMMENT_ID)).thenReturn(crc);
+        JsonResponse jsonResponse = controller.deleteComment(COMMENT_ID, POST_ID);
 
-        verify(codeReviewService).deleteComment(crc, cr);
+        verify(postService).deleteComment(post, crc);
         assertEquals(jsonResponse.getStatus(), JsonResponseStatus.SUCCESS);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteCommentReviewNotFound() throws NotFoundException {
-        doThrow(new NotFoundException()).when(codeReviewService).get(anyLong());
-        controller.deleteComment(COMMENT_ID, REVIEW_ID);
+        doThrow(new NotFoundException()).when(postCommentService).get(anyLong());
+        controller.deleteComment(COMMENT_ID, POST_ID);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testDeleteCommentCommentNotFound() throws NotFoundException {
-        doThrow(new NotFoundException()).when(codeReviewCommentService).get(anyLong());
-        controller.deleteComment(COMMENT_ID, REVIEW_ID);
+        doThrow(new NotFoundException()).when(postCommentService).get(anyLong());
+        controller.deleteComment(COMMENT_ID, POST_ID);
     }
 
     @Test
@@ -242,12 +259,11 @@ public class CodeReviewCommentControllerTest {
         assertNull(response.getResult());
     }
 
-    private CodeReviewComment createComment() {
-        CodeReviewComment comment = new CodeReviewComment();
+    private PostComment createComment() {
+        PostComment comment = new PostComment();
         comment.setId(COMMENT_ID);
         comment.setBody(COMMENT_BODY);
-        comment.setLineNumber(COMMENT_LINE_NUMBER);
-        codeReview.addComment(comment);
+        comment.putAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
 
         JCUser user = currentUser();
         comment.setAuthor(user);
@@ -258,6 +274,7 @@ public class CodeReviewCommentControllerTest {
 	private JCUser currentUser() {
 		JCUser user = new JCUser(USERNAME, null, null);
         user.setId(USER_ID);
+
 		return user;
 	}
 

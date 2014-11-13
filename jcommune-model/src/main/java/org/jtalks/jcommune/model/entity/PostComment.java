@@ -18,12 +18,15 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 import org.springframework.util.ObjectUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Represents one comment to one line in code review.
  *
  * @author Vyacheslav Mishcheryakov
  */
-public class CodeReviewComment extends Entity {
+public class PostComment extends Entity {
 
     /**
      * Minimal allowed length of comment message
@@ -34,49 +37,11 @@ public class CodeReviewComment extends Entity {
      */
     public static final int BODY_MAX_LENGTH = 5000;
 
-    /**
-     * Number of commented line of code
-     */
-    private int lineNumber;
-
     private JCUser author;
-
     private DateTime creationDate;
-
     private String body;
-
-    private CodeReview codeReview;
-
-    /**
-     * @return {@link CodeReview} that this comment belong to.
-     */
-    public CodeReview getCodeReview() {
-        return codeReview;
-    }
-
-    /**
-     * For Hibernate use only. For adding comment to code review use
-     * the {@link CodeReview#addComment(CodeReviewComment)}
-     *
-     * @param codeReview the code review.
-     */
-    void setCodeReview(CodeReview codeReview) {
-        this.codeReview = codeReview;
-    }
-
-    /**
-     * @return the lineNumber
-     */
-    public int getLineNumber() {
-        return lineNumber;
-    }
-
-    /**
-     * @param lineNumber the lineNumber to set
-     */
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
-    }
+    private Post post;
+    private Map<String, String> attributes = new HashMap<>();
 
     /**
      * @return the author
@@ -100,10 +65,7 @@ public class CodeReviewComment extends Entity {
      *         the specified user is simply not the author
      */
     public boolean isCreatedBy(JCUser user) {
-        if (this.getAuthor() == null) {
-            return false;
-        }
-        return ObjectUtils.nullSafeEquals(this.getAuthor(), user);
+        return this.getAuthor() != null && ObjectUtils.nullSafeEquals(this.getAuthor(), user);
     }
 
     /**
@@ -142,6 +104,52 @@ public class CodeReviewComment extends Entity {
      * @return post where code review is placed
      */
     public Post getOwnerPost() {
-        return getCodeReview().getOwnerPost();
+        return post;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    /**
+     * Gets attributes of the comment
+     *
+     * @return attributes of  the comment
+     */
+    public Map<String, String> getAttributes() {
+        return attributes;
+    }
+
+    /**
+     * Sets specified attributes to the comment.
+     * For hibernate usage. Use PostComment#putAttribute or PostComment#putAllAttributes
+     *
+     * @param attributes attributes to set
+     */
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
+    }
+
+    /**
+     * Adds new attribute or overrides existent attribute of the comment
+     *
+     * @param attributeName name of the attribute
+     * @param attributeValue value of the attribute
+     */
+    public void putAttribute(String attributeName, String attributeValue) {
+        this.attributes.put(attributeName, attributeValue);
+    }
+
+    /**
+     * Adds new and overrides existent attributes of the comment
+     *
+     * @param attributes map of attributes to add
+     */
+    public void putAllAttributes(Map<String, String> attributes) {
+        this.attributes.putAll(attributes);
     }
 }

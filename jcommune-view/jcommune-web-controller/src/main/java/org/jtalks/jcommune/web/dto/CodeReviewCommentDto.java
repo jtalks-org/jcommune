@@ -17,22 +17,26 @@ package org.jtalks.jcommune.web.dto;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.PostComment;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * DTO for {@link CodeReviewComment}
+ * DTO for {@link org.jtalks.jcommune.model.entity.PostComment}
  * 
  * @author Vyacheslav Mishcheryakov
  *
  */
 public class CodeReviewCommentDto {
+    public static final String LINE_NUMBER_PROPERTY_NAME = "line_number";
 
     private long id;
     
     private int lineNumber;
     
     @NotBlank
-    @Size(min = CodeReviewComment.BODY_MIN_LENGTH, max = CodeReviewComment.BODY_MAX_LENGTH)
+    @Size(min = PostComment.BODY_MIN_LENGTH, max = PostComment.BODY_MAX_LENGTH)
     private String body;
     
     private long authorId;
@@ -41,10 +45,17 @@ public class CodeReviewCommentDto {
 
     public CodeReviewCommentDto() {
     }
-    
-    public CodeReviewCommentDto(CodeReviewComment comment) {
+
+    /**
+     * Creates CodeReviewCommentDto from {@link PostComment}
+     *
+     * @param comment to create dto
+     * @throws java.lang.NumberFormatException if comment have no line_number attribute
+     *                                         or if this attribute have invalid value
+     */
+    public CodeReviewCommentDto(PostComment comment) {
         this.id = comment.getId();
-        this.lineNumber = comment.getLineNumber();
+        this.lineNumber = Integer.parseInt(comment.getAttributes().get(LINE_NUMBER_PROPERTY_NAME));
         this.body = comment.getBody();
         this.authorId = comment.getAuthor().getId();
         this.authorUsername = comment.getAuthor().getUsername();
@@ -119,7 +130,16 @@ public class CodeReviewCommentDto {
     public void setAuthorUsername(String authorUsername) {
         this.authorUsername = authorUsername;
     }
-    
-    
+
+    /**
+     * Gets list of attributes for comment. In this case contains only line_number property
+     *
+     * @return list of custom properties
+     */
+    public Map<String, String> getCommentAttributes() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(LINE_NUMBER_PROPERTY_NAME, String.valueOf(lineNumber));
+        return properties;
+    }
     
 }

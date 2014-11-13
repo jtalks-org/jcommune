@@ -12,26 +12,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
-
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+package org.jtalks.jcommune.model.entity;
 
 /**
- * The interface to manipulate with code reviews
- * 
- * @author Vyacheslav Mishcheryakov
+ * @author Mikhail Stryzhonok
  */
-public interface CodeReviewCommentService extends EntityService<CodeReviewComment> {
+public enum TopicTypeName {
 
-    /**
-     * Updates CR comment's body
-     * @param id ID of CR comment
-     * @param body new body of comment
-     * @param branchId ID of branch containing code review to check permissions
-     * @return updated CR comment entity
-     * @throws NotFoundException when entity not found
-     */
-    CodeReviewComment updateComment(long id, String body, long branchId) throws NotFoundException;
+    DISCUSSION ("Discussion"),
+    CODE_REVIEW ("Code review");
 
+    private final String name;
+
+    TopicTypeName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

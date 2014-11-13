@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.entity.*;
-import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -34,32 +33,30 @@ import static org.testng.Assert.assertEquals;
 /**
  * @author Vyacheslav Mishcheryakov
  */
-public class TransactionalCodeReviewCommentServiceTest {
+public class TransactionalPostCommentServiceTest {
 
     private static final String COMMENT_BODY = "body";
     private static final long BRANCH_ID = 1L;
     private static final long CR_ID = 1L;
 
     @Mock
-    private Crud<CodeReviewComment> dao;
+    private Crud<PostComment> dao;
     @Mock
     private PermissionService permissionService;
     @Mock
     private UserService userService;
     @Mock
     NotificationService notificationService;
-    @Mock
-    private CodeReviewService codeReviewService;
 
-    private TransactionalCodeReviewCommentService codeReviewCommentService;
+    private TransactionalPostCommentService codeReviewCommentService;
 
-    private CodeReviewComment comment;
+    private PostComment comment;
     private JCUser currentUser;
 
     @BeforeMethod
     public void initEnvironmental() {
         initMocks(this);
-        codeReviewCommentService = new TransactionalCodeReviewCommentService(
+        codeReviewCommentService = new TransactionalPostCommentService(
                 dao, permissionService, userService);
     }
 
@@ -67,16 +64,14 @@ public class TransactionalCodeReviewCommentServiceTest {
     public void prepareTestData() {
 
         currentUser = givenCurrentUser("code-review comment author");
-        comment = new CodeReviewComment();
+        comment = new PostComment();
         comment.setAuthor(currentUser);
         
         Topic codeReviewTopic = new Topic();
         Post post = new Post(null, null);
         post.setId(48l);
+        post.addComment(comment);
         codeReviewTopic.addPost(post);
-        CodeReview codeReview = new CodeReview();
-        codeReview.setTopic(codeReviewTopic);
-        codeReview.addComment(comment);
 
         when(dao.get(CR_ID)).thenReturn(comment);
         when(dao.isExist(CR_ID)).thenReturn(true);
@@ -88,7 +83,7 @@ public class TransactionalCodeReviewCommentServiceTest {
     @Test
     public void testUpdateCommentSuccess() throws Exception {
         givenUserHasPermissionToEditOwnPosts(true);
-        CodeReviewComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
+        PostComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
 
         assertEquals(comment.getBody(), COMMENT_BODY);
     }
@@ -125,7 +120,7 @@ public class TransactionalCodeReviewCommentServiceTest {
         givenCurrentUser("not-the-author-of-comment");
         givenUserHasPermissionToEditOwnPosts(false);
         givenUserHasPermissionToEditOthersPosts(true);
-        CodeReviewComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
+        PostComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
 
         assertEquals(comment.getBody(), COMMENT_BODY);
     }
