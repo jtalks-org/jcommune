@@ -148,7 +148,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
                             + patterns.size() + " urls. Expected 1 url");
                 }
                 Set<RequestMethod> requestMethods = mapping.getMethodsCondition().getMethods();
-                if (methods.size() != 1) {
+                if (requestMethods.size() != 1) {
                     throw new IllegalStateException("Controller method " + method.getName() + " mapped to " + methods.size()
                             + " methods. Expected 1 method");
                 }
