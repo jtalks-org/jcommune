@@ -16,12 +16,10 @@ package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Entity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**
- * Represents the code review for the topic. Contains the list of {@link CodeReviewComment}
+ * Represents the code review for the topic. Contains the list of {@link PostComment}
  * for each commented line of code and configuration parameters for review.
  *
  * @author Vyacheslav Mishcheryakov
@@ -30,7 +28,6 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
 
     public static final String URL_SUFFIX = "/topics/";
     private Topic topic;
-    private List<CodeReviewComment> comments = new ArrayList<CodeReviewComment>();
 
 
     /**
@@ -80,33 +77,6 @@ public class CodeReview extends Entity implements SubscriptionAwareEntity {
      */
     public void setTopic(Topic topic) {
         this.topic = topic;
-    }
-
-    /**
-     * @return the comments
-     */
-    public List<CodeReviewComment> getComments() {
-        return comments;
-    }
-
-    /**
-     * For Hibernate use only. For adding comment to code review use
-     * the {@link CodeReview#addComment(CodeReviewComment)}
-     *
-     * @param comments the comments to set
-     */
-    void setComments(List<CodeReviewComment> comments) {
-        this.comments = comments;
-    }
-
-    /**
-     * Add comment to this review
-     *
-     * @param comment comment to add
-     */
-    public void addComment(CodeReviewComment comment) {
-        comment.setCodeReview(this);
-        comments.add(comment);
     }
 
     /**

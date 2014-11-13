@@ -341,6 +341,7 @@
     <constructor-arg ref="userService"/>
     <constructor-arg ref="permissionService"/>
     <constructor-arg ref="notificationService"/>
+    <constructor-arg ref="postDao"/>
   </bean>
 
   <bean id="codeReviewCommentService"

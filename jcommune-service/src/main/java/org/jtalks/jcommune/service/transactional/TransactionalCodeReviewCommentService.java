@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.BranchPermission;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.UserService;
@@ -30,7 +30,7 @@ import org.springframework.security.access.AccessDeniedException;
  * @author Vyacheslav Mishcheryakov
  */
 public class TransactionalCodeReviewCommentService extends
-        AbstractTransactionalEntityService<CodeReviewComment, Crud<CodeReviewComment>> implements
+        AbstractTransactionalEntityService<PostComment, Crud<PostComment>> implements
         CodeReviewCommentService {
 
     private PermissionService permissionService;
@@ -43,7 +43,7 @@ public class TransactionalCodeReviewCommentService extends
      * @param permissionService to check permissions for actions
      * @param userService to get current user
      */
-    public TransactionalCodeReviewCommentService(Crud<CodeReviewComment> dao,
+    public TransactionalCodeReviewCommentService(Crud<PostComment> dao,
             PermissionService permissionService, UserService userService) {
         super(dao);
         this.permissionService = permissionService;
@@ -54,9 +54,9 @@ public class TransactionalCodeReviewCommentService extends
      * {@inheritDoc}
      */
     @Override
-    public CodeReviewComment updateComment(long id, String body, long branchId) throws NotFoundException {
+    public PostComment updateComment(long id, String body, long branchId) throws NotFoundException {
 
-        CodeReviewComment comment = get(id);
+        PostComment comment = get(id);
         checkHasUpdatePermission(comment, branchId);
 
         comment.setBody(body);
@@ -73,7 +73,7 @@ public class TransactionalCodeReviewCommentService extends
      * @param branchId
      *            - ID of branch where review with comment located
      */
-    private void checkHasUpdatePermission(CodeReviewComment comment, long branchId) {
+    private void checkHasUpdatePermission(PostComment comment, long branchId) {
         JCUser currentUser = userService.getCurrentUser();
         boolean canEditOwnPosts = permissionService.hasBranchPermission(branchId, BranchPermission.EDIT_OWN_POSTS);
         boolean canEditOthersPosts = permissionService

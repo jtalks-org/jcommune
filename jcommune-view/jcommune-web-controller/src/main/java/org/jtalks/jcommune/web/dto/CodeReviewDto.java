@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.PostComment;
 
 /**
  * DTO for {@link CodeReview}
@@ -29,14 +29,14 @@ public class CodeReviewDto {
 
     private long id;
     
-    private List<CodeReviewCommentDto> comments = new ArrayList<CodeReviewCommentDto>();
+    private List<CodeReviewCommentDto> comments = new ArrayList<>();
 
     public CodeReviewDto() {
     }
     
     public CodeReviewDto(CodeReview review) {
         this.id = review.getId();
-        for (CodeReviewComment comment : review.getComments()) {
+        for (PostComment comment : review.getOwnerPost().getComments()) {
             this.comments.add(new CodeReviewCommentDto(comment));
         }
     }

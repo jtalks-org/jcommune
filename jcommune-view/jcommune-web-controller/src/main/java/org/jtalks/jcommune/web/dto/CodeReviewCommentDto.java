@@ -17,10 +17,10 @@ package org.jtalks.jcommune.web.dto;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.PostComment;
 
 /**
- * DTO for {@link CodeReviewComment}
+ * DTO for {@link org.jtalks.jcommune.model.entity.PostComment}
  * 
  * @author Vyacheslav Mishcheryakov
  *
@@ -32,7 +32,7 @@ public class CodeReviewCommentDto {
     private int lineNumber;
     
     @NotBlank
-    @Size(min = CodeReviewComment.BODY_MIN_LENGTH, max = CodeReviewComment.BODY_MAX_LENGTH)
+    @Size(min = PostComment.BODY_MIN_LENGTH, max = PostComment.BODY_MAX_LENGTH)
     private String body;
     
     private long authorId;
@@ -42,9 +42,9 @@ public class CodeReviewCommentDto {
     public CodeReviewCommentDto() {
     }
     
-    public CodeReviewCommentDto(CodeReviewComment comment) {
+    public CodeReviewCommentDto(PostComment comment) {
         this.id = comment.getId();
-        this.lineNumber = comment.getLineNumber();
+        this.lineNumber = comment.getIndex();
         this.body = comment.getBody();
         this.authorId = comment.getAuthor().getId();
         this.authorUsername = comment.getAuthor().getUsername();

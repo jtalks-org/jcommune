@@ -15,9 +15,7 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
-import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.*;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -49,28 +47,32 @@ public class CodeReviewDtoTest {
         
         assertEquals(dto.getId(), REVIEW_ID);
         assertNotNull(dto.getComments());
-        assertEquals(dto.getComments().size(), review.getComments().size());
+        assertEquals(dto.getComments().size(), review.getOwnerPost().getComments().size());
     }
     
     private CodeReview getCodeReview() {
+        Topic reviewTopic = new Topic();
+        Post post = new Post(new JCUser("name", "mail@example.com", "supersecured"), "some mad text");
+        reviewTopic.addPost(post);
         CodeReview review = new CodeReview();
+        review.setTopic(reviewTopic);
         review.setId(REVIEW_ID);
-        
-        CodeReviewComment comment1 = new CodeReviewComment();
+
+        PostComment comment1 = new PostComment();
         comment1.setId(1L);
         comment1.setAuthor(new JCUser("username1", "mail1", "password1" ));
         comment1.setBody("Comment1 body");
-        comment1.setLineNumber(1);
+        comment1.setIndex(1);
         comment1.setCreationDate(new DateTime(1));
-        review.addComment(comment1);
-        
-        CodeReviewComment comment2 = new CodeReviewComment();
+        post.addComment(comment1);
+
+        PostComment comment2 = new PostComment();
         comment2.setId(2L);
         comment2.setAuthor(new JCUser("username2", "mail2", "password2" ));
         comment2.setBody("Comment2 body");
-        comment2.setLineNumber(2);
+        comment2.setIndex(2);
         comment2.setCreationDate(new DateTime(2));
-        review.addComment(comment1);
+        post.addComment(comment1);
 
         return review;
     }

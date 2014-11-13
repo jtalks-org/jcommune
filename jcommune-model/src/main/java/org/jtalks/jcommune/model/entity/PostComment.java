@@ -23,7 +23,7 @@ import org.springframework.util.ObjectUtils;
  *
  * @author Vyacheslav Mishcheryakov
  */
-public class CodeReviewComment extends Entity {
+public class PostComment extends Entity {
 
     /**
      * Minimal allowed length of comment message
@@ -37,7 +37,7 @@ public class CodeReviewComment extends Entity {
     /**
      * Number of commented line of code
      */
-    private int lineNumber;
+    private int index;
 
     private JCUser author;
 
@@ -45,37 +45,21 @@ public class CodeReviewComment extends Entity {
 
     private String body;
 
-    private CodeReview codeReview;
+    private Post post;
+
 
     /**
-     * @return {@link CodeReview} that this comment belong to.
+     * @return the index
      */
-    public CodeReview getCodeReview() {
-        return codeReview;
+    public int getIndex() {
+        return index;
     }
 
     /**
-     * For Hibernate use only. For adding comment to code review use
-     * the {@link CodeReview#addComment(CodeReviewComment)}
-     *
-     * @param codeReview the code review.
+     * @param index the index to set
      */
-    void setCodeReview(CodeReview codeReview) {
-        this.codeReview = codeReview;
-    }
-
-    /**
-     * @return the lineNumber
-     */
-    public int getLineNumber() {
-        return lineNumber;
-    }
-
-    /**
-     * @param lineNumber the lineNumber to set
-     */
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     /**
@@ -100,10 +84,7 @@ public class CodeReviewComment extends Entity {
      *         the specified user is simply not the author
      */
     public boolean isCreatedBy(JCUser user) {
-        if (this.getAuthor() == null) {
-            return false;
-        }
-        return ObjectUtils.nullSafeEquals(this.getAuthor(), user);
+        return this.getAuthor() != null && ObjectUtils.nullSafeEquals(this.getAuthor(), user);
     }
 
     /**
@@ -142,6 +123,14 @@ public class CodeReviewComment extends Entity {
      * @return post where code review is placed
      */
     public Post getOwnerPost() {
-        return getCodeReview().getOwnerPost();
+        return post;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 }

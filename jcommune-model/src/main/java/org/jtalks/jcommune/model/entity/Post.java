@@ -44,11 +44,7 @@ public class Post extends Entity {
     private String postContent;
     private Topic topic;
 
-    /**
-     * Needed for prototyping QA page. In future it may be some different instance (not {@link CodeReviewComment})
-     * Now we not store comments in database but everything has its time.
-     */
-    private List<CodeReviewComment> comments = new ArrayList<>();
+    private List<PostComment> comments = new ArrayList<>();
 
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 2;
@@ -196,11 +192,16 @@ public class Post extends Entity {
         return getTopic().getSubscribers();
     }
 
-    public List<CodeReviewComment> getComments() {
+    public List<PostComment> getComments() {
         return comments;
     }
 
-    public void setComments(List<CodeReviewComment> comments) {
+    public void setComments(List<PostComment> comments) {
         this.comments = comments;
+    }
+
+    public void addComment(PostComment comment) {
+        comment.setPost(this);
+        comments.add(comment);
     }
 }

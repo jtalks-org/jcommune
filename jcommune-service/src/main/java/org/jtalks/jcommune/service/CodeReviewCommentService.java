@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.service;
 
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
 /**
@@ -22,7 +22,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
  * 
  * @author Vyacheslav Mishcheryakov
  */
-public interface CodeReviewCommentService extends EntityService<CodeReviewComment> {
+public interface CodeReviewCommentService extends EntityService<PostComment> {
 
     /**
      * Updates CR comment's body
@@ -32,6 +32,6 @@ public interface CodeReviewCommentService extends EntityService<CodeReviewCommen
      * @return updated CR comment entity
      * @throws NotFoundException when entity not found
      */
-    CodeReviewComment updateComment(long id, String body, long branchId) throws NotFoundException;
+    PostComment updateComment(long id, String body, long branchId) throws NotFoundException;
 
 }

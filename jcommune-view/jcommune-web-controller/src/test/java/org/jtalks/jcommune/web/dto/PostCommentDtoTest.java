@@ -15,33 +15,33 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
-public class CodeReviewCommentDtoTest {
+public class PostCommentDtoTest {
 
     @Test
     public void testConstructor() {
-        CodeReviewComment comment = createComment();
+        PostComment comment = createComment();
         
         CodeReviewCommentDto dto = new CodeReviewCommentDto(comment);
         
         assertEquals(dto.getId(), comment.getId());
-        assertEquals(dto.getLineNumber(), comment.getLineNumber());
+        assertEquals(dto.getLineNumber(), comment.getIndex());
         assertEquals(dto.getBody(), comment.getBody());
         assertEquals(dto.getAuthorId(), comment.getAuthor().getId());
         assertEquals(dto.getAuthorUsername(), comment.getAuthor().getEncodedUsername());
     }
     
-    private CodeReviewComment createComment() {
-        CodeReviewComment comment = new CodeReviewComment();
+    private PostComment createComment() {
+        PostComment comment = new PostComment();
         comment.setId(1L);
         comment.setAuthor(new JCUser("username1", "mail1", "password1" ));
         comment.setBody("Comment1 body");
-        comment.setLineNumber(1);
+        comment.setIndex(1);
         comment.setCreationDate(new DateTime(1));
         
         return comment;

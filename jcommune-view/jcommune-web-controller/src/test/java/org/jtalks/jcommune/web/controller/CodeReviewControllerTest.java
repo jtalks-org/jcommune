@@ -144,7 +144,10 @@ public class CodeReviewControllerTest {
 
     @Test
     public void getCodeReviewSuccess() throws NotFoundException {
+        Topic reviewTopic = new Topic();
+        reviewTopic.addPost(new Post(user, "my beautiful code"));
         CodeReview review = new CodeReview();
+        review.setTopic(reviewTopic);
         review.setId(REVIEW_ID);
         when(codeReviewService.get(REVIEW_ID)).thenReturn(review);
 

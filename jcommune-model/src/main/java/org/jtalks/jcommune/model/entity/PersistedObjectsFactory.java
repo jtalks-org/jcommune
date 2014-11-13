@@ -44,7 +44,7 @@ public final class PersistedObjectsFactory {
     }
 
     public static Post getDefaultPost() {
-        return new Post(persist(ObjectsFactory.getDefaultUser()), "post content");
+        return persist(new Post(persist(ObjectsFactory.getDefaultUser()), "post content"));
     }
 
     public static Topic getDefaultTopic() {
@@ -102,7 +102,7 @@ public final class PersistedObjectsFactory {
      */
     public static List<PrivateMessage> preparePrivateMessages(int size, JCUser userTo,
                                                               JCUser userFrom) {
-        List<PrivateMessage> messages = new ArrayList<PrivateMessage>(size);
+        List<PrivateMessage> messages = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             PrivateMessage pm = new PrivateMessage(userTo, userFrom,
                     "Message title", "Private message body");
@@ -165,7 +165,7 @@ public final class PersistedObjectsFactory {
     }
 
     public static List<Post> createAndSavePostList(int size) {
-        List<Post> posts = new ArrayList<Post>();
+        List<Post> posts = new ArrayList<>();
         Topic topic = PersistedObjectsFactory.getDefaultTopic();
         JCUser author = topic.getTopicStarter();
         for (int i = 0; i < size - 1; i++) {
@@ -187,7 +187,7 @@ public final class PersistedObjectsFactory {
     public static Poll createDefaultVoting() {
         Topic topic = getDefaultTopic();
         Poll poll = new Poll("New voting");
-        List<PollItem> pollItems = new ArrayList<PollItem>();
+        List<PollItem> pollItems = new ArrayList<>();
         pollItems.add(new PollItem("item1"));
         pollItems.add(new PollItem("item2"));
         pollItems.add(new PollItem("item3"));
@@ -263,23 +263,6 @@ public final class PersistedObjectsFactory {
         CodeReview review = new CodeReview();
         persist(review);
 
-        CodeReviewComment comment1 = new CodeReviewComment();
-        comment1.setAuthor(getUser("user1", "mail1@mail.ru"));
-        comment1.setBody("Comment1 body");
-        comment1.setLineNumber(1);
-        comment1.setCreationDate(new DateTime(1));
-        review.addComment(comment1);
-        persist(comment1);
-
-        CodeReviewComment comment2 = new CodeReviewComment();
-        comment2.setAuthor(getUser("user2", "mail2@mail.ru"));
-        comment2.setBody("Comment2 body");
-        comment2.setLineNumber(2);
-        comment2.setCreationDate(new DateTime(2));
-        review.addComment(comment2);
-        persist(comment2);
-
-
         return review;
     }
 
@@ -288,8 +271,14 @@ public final class PersistedObjectsFactory {
      *
      * @return first code review comment from persisted code review.
      */
-    public static CodeReviewComment getDefaultCodeReviewComment() {
-        return getDefaultCodeReview().getComments().get(0);
+    public static PostComment getDefaultCodeReviewComment() {
+        PostComment comment2 = new PostComment();
+        comment2.setAuthor(getUser("user2", "mail2@mail.ru"));
+        comment2.setBody("Comment2 body");
+        comment2.setIndex(2);
+        comment2.setCreationDate(new DateTime(2));
+        comment2.setPost(getDefaultPost());
+        return comment2;
     }
 
     public static Component getDefaultComponent() {
@@ -298,7 +287,7 @@ public final class PersistedObjectsFactory {
         component.setDescription("component.description");
         component.setComponentType(ComponentType.FORUM);
 
-        List<Property> properties = new ArrayList<Property>();
+        List<Property> properties = new ArrayList<>();
         Property property1 = new Property("name1", "value1");
         property1.setValidationRule("validationRule1");
         properties.add(property1);

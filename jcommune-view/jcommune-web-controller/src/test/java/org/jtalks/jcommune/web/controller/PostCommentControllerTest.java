@@ -16,7 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
@@ -44,7 +44,7 @@ import static org.testng.Assert.*;
 /**
  * @author Vyacheslav Mishcheryakov
  */
-public class CodeReviewCommentControllerTest {
+public class PostCommentControllerTest {
     public long BRANCH_ID = 1L;
 
     private long COMMENT_ID = 1L;
@@ -202,7 +202,7 @@ public class CodeReviewCommentControllerTest {
     @Test
     public void testDeleteComment() throws NotFoundException {
         CodeReview cr = new CodeReview();
-        CodeReviewComment crc = new CodeReviewComment();
+        PostComment crc = new PostComment();
 
         when(codeReviewService.get(REVIEW_ID)).thenReturn(cr);
         when(codeReviewCommentService.get(COMMENT_ID)).thenReturn(crc);
@@ -242,12 +242,12 @@ public class CodeReviewCommentControllerTest {
         assertNull(response.getResult());
     }
 
-    private CodeReviewComment createComment() {
-        CodeReviewComment comment = new CodeReviewComment();
+    private PostComment createComment() {
+        PostComment comment = new PostComment();
         comment.setId(COMMENT_ID);
         comment.setBody(COMMENT_BODY);
-        comment.setLineNumber(COMMENT_LINE_NUMBER);
-        codeReview.addComment(comment);
+        comment.setIndex(COMMENT_LINE_NUMBER);
+        //codeReview.addComment(comment);
 
         JCUser user = currentUser();
         comment.setAuthor(user);

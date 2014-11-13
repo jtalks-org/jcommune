@@ -21,34 +21,34 @@ import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
 
 /** @author stanislav bashkirtsev */
-public class CodeReviewCommentTest {
+public class PostCommentTest {
     @Test
     public void isCreatedBy_successfulPath() {
-        CodeReviewComment comment = commentBy(userWithUuid("11"));
+        PostComment comment = commentBy(userWithUuid("11"));
         assertTrue(comment.isCreatedBy(userWithUuid("11")));
     }
 
     @Test
     public void isCreatedByIsFalseIfUsersNotEqual() {
-        CodeReviewComment comment = commentBy(userWithUuid("11"));
+        PostComment comment = commentBy(userWithUuid("11"));
         assertFalse(comment.isCreatedBy(userWithUuid("not-equal")));
     }
 
     @Test
     public void isCreatedByShouldFailIfNullPassed() {
-        CodeReviewComment comment = commentBy(userWithUuid("11"));
+        PostComment comment = commentBy(userWithUuid("11"));
         assertFalse(comment.isCreatedBy(null));
     }
 
     @Test
     public void isCreatedByShouldFailIfAuthorIsNull() {
-        CodeReviewComment comment = commentBy(null);
+        PostComment comment = commentBy(null);
         assertFalse(comment.isCreatedBy(userWithUuid("11")));
     }
 
     @Test
     public void isCreatedByShouldFailIfAuthorIsNullAndNullPassed() {
-        CodeReviewComment comment = commentBy(null);
+        PostComment comment = commentBy(null);
         assertFalse(comment.isCreatedBy(null));
     }
 
@@ -58,8 +58,8 @@ public class CodeReviewCommentTest {
         return user;
     }
 
-    private CodeReviewComment commentBy(JCUser user) {
-        CodeReviewComment comment = new CodeReviewComment();
+    private PostComment commentBy(JCUser user) {
+        PostComment comment = new PostComment();
         comment.setAuthor(user);
         return comment;
     }
@@ -67,24 +67,23 @@ public class CodeReviewCommentTest {
     @Test
     public void getOwnerPostShouldReturnFirstPostOfCodeReviewTopic() {
         Post expectedOwnerPost = new Post();
-        CodeReviewComment codeReviewComment = createCodeReviewCommentAttachedTo(expectedOwnerPost);
+        PostComment postComment = createCodeReviewCommentAttachedTo(expectedOwnerPost);
         
-        Post actualOwnerPost = codeReviewComment.getOwnerPost();
+        Post actualOwnerPost = postComment.getOwnerPost();
         
         assertEquals("It should return first post of owner topic, cause it contains code review.",
                 expectedOwnerPost, actualOwnerPost);
     }
     
     
-    private CodeReviewComment createCodeReviewCommentAttachedTo(Post ownerPost) {
+    private PostComment createCodeReviewCommentAttachedTo(Post ownerPost) {
         Topic topic = new Topic();
         topic.addPost(ownerPost);
         CodeReview codeReview = new CodeReview();
-        CodeReviewComment codeReviewComment = new CodeReviewComment();
-        codeReview.addComment(codeReviewComment);
-        codeReviewComment.setCodeReview(codeReview);
+        PostComment postComment = new PostComment();
+        ownerPost.addComment(postComment);
         codeReview.setTopic(topic);
         
-        return codeReviewComment;
+        return postComment;
     }
 }

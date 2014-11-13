@@ -17,8 +17,10 @@ package org.jtalks.jcommune.service.transactional;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
@@ -39,6 +41,7 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
     private UserService userService;
     private PermissionService permissionService;
     private NotificationService notificationService;
+    private PostDao postDao;
 
     /**
      * Create an instance of CodeReview entity based service
@@ -54,15 +57,17 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
             Crud<CodeReview> dao,
             UserService userService,
             PermissionService permissionService,
-            NotificationService notificationService) {
+            NotificationService notificationService,
+            PostDao postDao) {
         super(dao);
         this.userService = userService;
         this.permissionService = permissionService;
         this.notificationService = notificationService;
+        this.postDao = postDao;
     }
 
     @Override
-    public CodeReviewComment addComment(Long reviewId, int lineNumber, String body) throws NotFoundException {
+    public PostComment addComment(Long reviewId, int lineNumber, String body) throws NotFoundException {
         CodeReview review = get(reviewId);
         JCUser currentUser = userService.getCurrentUser();
 
@@ -71,16 +76,18 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
                 AclClassName.BRANCH,
                 BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
 
-        CodeReviewComment comment = new CodeReviewComment();
-        comment.setLineNumber(lineNumber);
+        PostComment comment = new PostComment();
+        comment.setIndex(lineNumber);
         comment.setBody(body);
         comment.setCreationDate(new DateTime(System.currentTimeMillis()));
         comment.setAuthor(currentUser);
         if (currentUser.isAutosubscribe()) {
             review.getSubscribers().add(currentUser);
         }
-
-        review.addComment(comment);
+        Post targetPost = review.getOwnerPost();
+        targetPost.addComment(comment);
+        postDao.saveOrUpdate(targetPost);
+        //review.addComment(comment);
         getDao().saveOrUpdate(review);
         notificationService.subscribedEntityChanged(review);
 
@@ -97,9 +104,11 @@ public class TransactionalCodeReviewService extends AbstractTransactionalEntityS
             "#reviewComment.author.username == principal.username) or " +
             "(hasPermission(#codeReview.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
             "#reviewComment.author.username != principal.username)")
-    public void deleteComment(CodeReviewComment reviewComment, CodeReview codeReview) {
-        codeReview.getComments().remove(reviewComment);
-        getDao().saveOrUpdate(codeReview);
+    public void deleteComment(PostComment reviewComment, CodeReview codeReview) {
+        //codeReview.getComments().remove(reviewComment);
+        Post targetPost = codeReview.getOwnerPost();
+        targetPost.getComments().remove(reviewComment);
+        postDao.saveOrUpdate(targetPost);
     }
 
 }

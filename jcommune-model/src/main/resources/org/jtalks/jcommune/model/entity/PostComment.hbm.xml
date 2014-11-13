@@ -19,13 +19,13 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-    <class name="CodeReviewComment" table="CODE_REVIEW_COMMENTS">
+    <class name="org.jtalks.jcommune.model.entity.PostComment" table="POST_COMMENT">
         <cache usage="read-write"/>
-        <id column="COMMENT_ID" name="id" unsaved-value="0">
+        <id column="ID" name="id" unsaved-value="0">
             <generator class="native"/>
         </id>
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
-        <property column="LINE_NUMBER" name="lineNumber"/>
+        <property column="COMMENT_INDEX" name="index"/>
         <property name="creationDate" column="CREATION_DATE"
                   type="org.joda.time.contrib.hibernate.PersistentDateTime"
                   not-null="true"/>
@@ -33,10 +33,9 @@
         
         <many-to-one name="author" column="AUTHOR_ID" class="org.jtalks.jcommune.model.entity.JCUser"
                      lazy="false"
-                     not-null="true" foreign-key="FK_CRC_AUTHOR"/>
-
-        <many-to-one name="codeReview" column="CODE_REVIEW_ID" class="org.jtalks.jcommune.model.entity.CodeReview"
+                     not-null="true" foreign-key="FC_COMMENT_AUTHOR"/>
+        <many-to-one name="post" column="POST_ID" class="org.jtalks.jcommune.model.entity.Post"
                      lazy="false"
-                     not-null="true" foreign-key="FK_CRC_CODE_REVIEW"/>
+                     not-null="true" foreign-key="FC_COMMENT_POST"/>
     </class>
 </hibernate-mapping>

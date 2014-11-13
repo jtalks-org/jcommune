@@ -106,7 +106,7 @@
   <bean id="codeReviewCommentDao" parent="genericDao"
         class="org.jtalks.common.model.dao.hibernate.GenericDao">
     <constructor-arg name="type"
-                     value="org.jtalks.jcommune.model.entity.CodeReviewComment"/>
+                     value="org.jtalks.jcommune.model.entity.PostComment"/>
   </bean>
 
   <bean id="bannerDao" parent="genericDao"
@@ -200,7 +200,7 @@
         <value>/org/jtalks/jcommune/model/entity/ViewTopicsBranches.hbm.xml
         </value>
         <value>/org/jtalks/jcommune/model/entity/CodeReview.hbm.xml</value>
-        <value>/org/jtalks/jcommune/model/entity/CodeReviewComment.hbm.xml
+        <value>/org/jtalks/jcommune/model/entity/PostComment.hbm.xml
         </value>
         <value>/org/jtalks/jcommune/model/entity/Banner.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/ExternalLink.hbm.xml</value>

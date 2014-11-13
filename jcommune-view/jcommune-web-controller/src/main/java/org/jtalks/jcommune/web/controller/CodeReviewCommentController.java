@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.service.CodeReviewCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -59,7 +59,7 @@ public class CodeReviewCommentController {
     
     /**
      * @param codeReviewService        to operate with {@link org.jtalks.jcommune.model.entity.CodeReview} entities
-     * @param codeReviewCommentService to operate with (@link {@link CodeReviewComment} entities
+     * @param codeReviewCommentService to operate with (@link {@link org.jtalks.jcommune.model.entity.PostComment} entities
      */
     @Autowired
     public CodeReviewCommentController(CodeReviewService codeReviewService,
@@ -99,7 +99,7 @@ public class CodeReviewCommentController {
         if (bindingResult.hasErrors()) {
             return new FailValidationJsonResponse(bindingResult.getAllErrors());
         }
-        CodeReviewComment addedComment = codeReviewService.addComment(
+        PostComment addedComment = codeReviewService.addComment(
                 reviewId, commentDto.getLineNumber(), commentDto.getBody());
         CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(addedComment);
         return new JsonResponse(JsonResponseStatus.SUCCESS, addedCommentDto);
@@ -142,7 +142,7 @@ public class CodeReviewCommentController {
         if (bindingResult.hasErrors()) {
             return new FailValidationJsonResponse(bindingResult.getAllErrors());
         }
-        CodeReviewComment editedComment = codeReviewCommentService.updateComment(
+        PostComment editedComment = codeReviewCommentService.updateComment(
                 commentDto.getId(), commentDto.getBody(), branchId);
         CodeReviewCommentDto editedCommentDto = new CodeReviewCommentDto(editedComment);
         return new JsonResponse(JsonResponseStatus.SUCCESS, editedCommentDto);
