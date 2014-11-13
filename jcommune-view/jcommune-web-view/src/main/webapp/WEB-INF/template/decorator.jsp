@@ -188,7 +188,7 @@ in the future.
     <script src="${pageContext.request.contextPath}/resources/javascript/app/search.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/app/events.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/app/banner.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/errorFocus.js"></script>
+
 
     <%--Should be added to every page because we can use Administrator mode on each page to
         change forum name, description and icon --%>
