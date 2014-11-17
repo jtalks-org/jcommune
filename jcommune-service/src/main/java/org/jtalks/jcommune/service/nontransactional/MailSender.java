@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import com.sun.mail.smtp.SMTPMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
@@ -43,8 +44,10 @@ public class MailSender extends JavaMailSenderImpl {
             for (Address address : mimeMessage.getRecipients(MimeMessage.RecipientType.TO)) {
                 to.append(address.toString());
             }
+            SMTPMessage message = new SMTPMessage(mimeMessage);
+            message.setEnvelopeFrom(getUsername());
             long started = System.currentTimeMillis();
-            super.send(mimeMessage);
+            super.send(message);
             long secsTook = (System.currentTimeMillis() - started) / 1000;
             if (secsTook > 30) {
                 LOGGER.warn("Sending email took long time [{}] for receiver: [{}]. Subject: [{}]",
