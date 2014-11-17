@@ -97,5 +97,8 @@ ErrorUtils.getInput = function(inputOrSelector) {
  */
 $(document).ready(function() {
 	ErrorUtils.fixErrorHighlighting();
+    var targets = $( '.focusToError').parent().find('input, textarea');
+    Utils.focusFirstEl(targets[0] || "#subject");
 });
+
 
