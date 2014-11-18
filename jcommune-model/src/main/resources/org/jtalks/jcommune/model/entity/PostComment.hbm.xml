@@ -25,7 +25,6 @@
             <generator class="native"/>
         </id>
         <property column="UUID" name="uuid" unique="true" not-null="true"/>
-        <property column="COMMENT_INDEX" name="index"/>
         <property name="creationDate" column="CREATION_DATE"
                   type="org.joda.time.contrib.hibernate.PersistentDateTime"
                   not-null="true"/>
