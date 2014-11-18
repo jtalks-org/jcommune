@@ -39,13 +39,6 @@ public class CodeReviewTest {
     public void initEnvironmental() {
         review = new CodeReview();
     }
-    
-//    @Test
-//    public void testAddComment() {
-//        review.addComment(new PostComment());
-//
-//        assertEquals(review.getComments().size(), 1);
-//    }
 
     @Test
     public void testIsUserSubscribedToCR() {

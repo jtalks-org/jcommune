@@ -50,16 +50,16 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
 
     @Test
     public void testGet() {
-        PostComment review = PersistedObjectsFactory.getDefaultCodeReviewComment();
-        session.save(review);
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        session.save(comment);
 
-        PostComment result = codeReviewCommentDao.get(review.getId());
+        PostComment result = codeReviewCommentDao.get(comment.getId());
 
         assertNotNull(result);
-        assertEquals(result.getId(), review.getId());
-        assertEquals(result.getBody(), review.getBody());
-        assertEquals(result.getCreationDate(), review.getCreationDate());
-        assertEquals(result.getAuthor(), review.getAuthor());
+        assertEquals(result.getId(), comment.getId());
+        assertEquals(result.getBody(), comment.getBody());
+        assertEquals(result.getCreationDate(), comment.getCreationDate());
+        assertEquals(result.getAuthor(), comment.getAuthor());
     }
 
 
@@ -73,7 +73,7 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
     @Test
     public void testUpdate() {
         String newUuid = "1234-1231-1231";
-        PostComment review = PersistedObjectsFactory.getDefaultCodeReviewComment();
+        PostComment review = PersistedObjectsFactory.getDefaultPostComment();
         session.save(review);
         review.setUuid(newUuid);
 
@@ -87,7 +87,7 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
 
     @Test(expectedExceptions = org.hibernate.exception.ConstraintViolationException.class)
     public void testUpdateNotNullViolation() {
-        PostComment review = PersistedObjectsFactory.getDefaultCodeReviewComment();
+        PostComment review = PersistedObjectsFactory.getDefaultPostComment();
         session.save(review);
         review.setUuid(null);
         codeReviewCommentDao.saveOrUpdate(review);

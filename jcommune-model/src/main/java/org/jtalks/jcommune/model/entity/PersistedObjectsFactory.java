@@ -44,7 +44,7 @@ public final class PersistedObjectsFactory {
     }
 
     public static Post getDefaultPost() {
-        return persist(new Post(persist(ObjectsFactory.getDefaultUser()), "post content"));
+        return persist(new Post(persist(ObjectsFactory.getRandomUser()), "post content"));
     }
 
     public static Topic getDefaultTopic() {
@@ -271,7 +271,7 @@ public final class PersistedObjectsFactory {
      *
      * @return first code review comment from persisted code review.
      */
-    public static PostComment getDefaultCodeReviewComment() {
+    public static PostComment getDefaultPostComment() {
         PostComment comment2 = new PostComment();
         comment2.setAuthor(getUser("user2", "mail2@mail.ru"));
         comment2.setBody("Comment2 body");

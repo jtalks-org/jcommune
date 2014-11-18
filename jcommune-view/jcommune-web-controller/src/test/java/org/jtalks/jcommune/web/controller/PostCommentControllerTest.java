@@ -247,7 +247,6 @@ public class PostCommentControllerTest {
         comment.setId(COMMENT_ID);
         comment.setBody(COMMENT_BODY);
         comment.setIndex(COMMENT_LINE_NUMBER);
-        //codeReview.addComment(comment);
 
         JCUser user = currentUser();
         comment.setAuthor(user);

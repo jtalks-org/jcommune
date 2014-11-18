@@ -19,7 +19,6 @@ import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.entity.CodeReview;
-import org.jtalks.jcommune.model.entity.PostComment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng
@@ -40,8 +39,6 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
     private SessionFactory sessionFactory;
     @Autowired
     private Crud<CodeReview> codeReviewDao;
-    @Autowired
-    private Crud<PostComment> codeReviewCommentDao;
 
     private Session session;
 
@@ -62,7 +59,6 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
 
         assertNotNull(result);
         assertEquals(result.getId(), review.getId());
-  //      assertEquals(result.getComments().size(), 2);
     }
 
 
@@ -97,32 +93,14 @@ public class CodeReviewHibernateDaoTest extends AbstractTransactionalTestNGSprin
         session.flush();
     }
 
-//    @Test
-//    public void testOrphanRemoving() {
-//        CodeReview review = PersistedObjectsFactory.getDefaultCodeReview();
-//        session.flush();
-//
-//        review.getComments().remove(0);
-//        codeReviewDao.saveOrUpdate(review);
-//        session.flush();
-//        session.evict(review);
-//
-//        assertEquals(codeReviewDao.get(review.getId()).getComments().size(), 1);
-//    }
-
-
     @Test
     public void testDeletionReview() {
         CodeReview review = PersistedObjectsFactory.getDefaultCodeReview();
-//        PostComment comment0 = review.getComments().get(0);
-//        PostComment comment1 = review.getComments().get(1);
 
         codeReviewDao.delete(review);
         session.flush();
         session.evict(review);
 
         assertNull(codeReviewDao.get(review.getId()));
-//        assertNull(codeReviewCommentDao.get(comment0.getId()));
-//        assertNull(codeReviewCommentDao.get(comment1.getId()));
     }
 }
