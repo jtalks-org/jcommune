@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.PostCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.json.*;
@@ -64,6 +65,8 @@ public class PostCommentControllerTest {
     private PostCommentService postCommentService;
     @Mock
     private NotificationService notificationService;
+    @Mock
+    private PostService postService;
 
     private CodeReviewCommentController controller;
 
@@ -71,8 +74,8 @@ public class PostCommentControllerTest {
     public void initEnvironment() {
         initMocks(this);
         controller = new CodeReviewCommentController(
-                codeReviewService,
-                postCommentService);
+                postCommentService,
+                postService);
     }
 
     @BeforeMethod

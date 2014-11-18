@@ -83,9 +83,9 @@ function CodeHighlighting() {
 	 */
 	this.displayReviewComments = function () {
 		var _this = this;
-	    var codeReviewId = $('#codeReviewId').val();
+	    var postId = $('#firstPostId').val();
 	    return $.ajax({
-	        url: baseUrl + '/reviews/' + codeReviewId + '/json',
+	        url: baseUrl + '/reviews/' + postId + '/json',
 	        type: "GET",
 	        success: function (data) {
 	            var comments = data.result.comments;
@@ -169,7 +169,7 @@ function CodeHighlighting() {
 	        data.lineNumber = $('#' + _this.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
 	        data.body = $('#' + _this.ADD_COMMENT_FORM_ID + ' [name=body]').val();
 			data.postId = $('#firstPostId').val();
-			
+
 	        $.post(baseUrl + '/reviewcomments/new', data)
 	                .success(function (data) {
 	                    if (data.status == 'SUCCESS') {
@@ -235,7 +235,7 @@ function CodeHighlighting() {
 	        e.preventDefault();
 	        var reviewContainer = $(this).closest('.review-container');
 	        var commentId = reviewContainer.find('input[name=id]').val();
-	        var reviewId = $('input[id="codeReviewId"]').val();
+	        var postId = $('input[id="firstPostId"]').val();
 	
 	
 	        var footerContent = ' \
@@ -245,7 +245,7 @@ function CodeHighlighting() {
 	        var submitFunc = function (e) {
 	            e.preventDefault();
 	            $.ajax({
-	                url:baseUrl + '/reviewcomments/delete?reviewId=' + reviewId + '&commentId=' + commentId,
+	                url:baseUrl + '/reviewcomments/delete?postId=' + postId + '&commentId=' + commentId,
 	                type:"GET",
 	                success:function (data) {
 						if (data.status == 'SUCCESS') {

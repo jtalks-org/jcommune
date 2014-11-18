@@ -26,6 +26,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -77,6 +78,8 @@ public class TransactionalPostServiceTest {
     private BranchLastPostService branchLastPostService;
     @Mock
     private MentionedUsers mentionedUsers;
+    @Mock
+    private PermissionService permissionService;
 
     private PostService postService;
 
@@ -99,7 +102,8 @@ public class TransactionalPostServiceTest {
                 notificationService,
                 lastReadPostService,
                 userService,
-                branchLastPostService);
+                branchLastPostService,
+                permissionService);
     }
 
     @Test

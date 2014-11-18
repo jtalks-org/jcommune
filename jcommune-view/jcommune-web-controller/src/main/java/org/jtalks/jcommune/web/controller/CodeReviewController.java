@@ -19,10 +19,7 @@ import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
-import org.jtalks.jcommune.web.dto.CodeReviewDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
-import org.jtalks.jcommune.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,8 +52,6 @@ public class CodeReviewController {
     private BranchService branchService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicModificationService topicModificationService;
-    private LastReadPostService lastReadPostService;
-    private CodeReviewService codeReviewService;
     private UserService userService;
 
     /**
@@ -74,12 +69,11 @@ public class CodeReviewController {
                                 TopicModificationService topicModificationService,
                                 LastReadPostService lastReadPostService,
                                 CodeReviewService codeReviewService,
-                                UserService userService) {
+                                UserService userService,
+                                PostService postService) {
         this.branchService = branchService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicModificationService = topicModificationService;
-        this.lastReadPostService = lastReadPostService;
-        this.codeReviewService = codeReviewService;
         this.userService = userService;
     }
 
@@ -145,21 +139,6 @@ public class CodeReviewController {
                     UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
             throw e;
         }
-    }
-
-    /**
-     * Returns code review by its ID as JSON data
-     *
-     * @param reviewId ID of code review
-     * @return JSON response object containing string status and review DTO as
-     *         result field
-     * @throws NotFoundException if code review was not found
-     */
-    @RequestMapping(value = "/reviews/{reviewId}/json", method = RequestMethod.GET)
-    @ResponseBody
-    public JsonResponse getCodeReview(@PathVariable("reviewId") Long reviewId) throws NotFoundException {
-        CodeReview review = codeReviewService.get(reviewId);
-        return new JsonResponse(JsonResponseStatus.SUCCESS, new CodeReviewDto(review));
     }
 
 }

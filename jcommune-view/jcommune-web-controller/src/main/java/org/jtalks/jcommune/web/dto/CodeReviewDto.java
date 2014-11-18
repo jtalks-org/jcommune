@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jtalks.jcommune.model.entity.CodeReview;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
 
 /**
@@ -27,32 +28,36 @@ import org.jtalks.jcommune.model.entity.PostComment;
  */
 public class CodeReviewDto {
 
-    private long id;
+    private long postId;
     
     private List<CodeReviewCommentDto> comments = new ArrayList<>();
 
     public CodeReviewDto() {
     }
     
-    public CodeReviewDto(CodeReview review) {
-        this.id = review.getId();
-        for (PostComment comment : review.getOwnerPost().getComments()) {
+    public CodeReviewDto(Post post) {
+        this.postId = post.getId();
+        for (PostComment comment : post.getComments()) {
             this.comments.add(new CodeReviewCommentDto(comment));
         }
     }
 
     /**
-     * @return the id
+     * Gets id of post that is comment owner
+     *
+     * @return id of owner post
      */
-    public long getId() {
-        return id;
+    public long getPostId() {
+        return postId;
     }
 
     /**
-     * @param id the id to set
+     * Sets id of the post
+     *
+     * @param postId id to set
      */
-    public void setId(long id) {
-        this.id = id;
+    public void setPostId(long postId) {
+        this.postId = postId;
     }
 
     /**
