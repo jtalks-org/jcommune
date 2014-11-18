@@ -345,7 +345,7 @@
   </bean>
 
   <bean id="codeReviewCommentService"
-        class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewCommentService">
+        class="org.jtalks.jcommune.service.transactional.TransactionalPostCommentService">
     <constructor-arg ref="codeReviewCommentDao"/>
     <constructor-arg ref="permissionService"/>
     <constructor-arg ref="userService"/>

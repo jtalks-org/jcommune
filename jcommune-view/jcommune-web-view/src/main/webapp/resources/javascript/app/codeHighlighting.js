@@ -168,7 +168,7 @@ function CodeHighlighting() {
 			var data = {id: 0, authorId:0, authorUsername:""};
 	        data.lineNumber = $('#' + _this.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
 	        data.body = $('#' + _this.ADD_COMMENT_FORM_ID + ' [name=body]').val();
-			data.reviewId = $('#codeReviewId').val();
+			data.postId = $('#firstPostId').val();
 			
 	        $.post(baseUrl + '/reviewcomments/new', data)
 	                .success(function (data) {

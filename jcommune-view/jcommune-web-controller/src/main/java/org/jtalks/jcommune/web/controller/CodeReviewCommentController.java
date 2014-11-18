@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.PostComment;
-import org.jtalks.jcommune.service.CodeReviewCommentService;
+import org.jtalks.jcommune.service.PostCommentService;
 import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
@@ -55,17 +55,17 @@ public class CodeReviewCommentController {
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     
     private CodeReviewService codeReviewService;
-    private CodeReviewCommentService codeReviewCommentService;
+    private PostCommentService postCommentService;
     
     /**
      * @param codeReviewService        to operate with {@link org.jtalks.jcommune.model.entity.CodeReview} entities
-     * @param codeReviewCommentService to operate with (@link {@link org.jtalks.jcommune.model.entity.PostComment} entities
+     * @param postCommentService to operate with (@link {@link org.jtalks.jcommune.model.entity.PostComment} entities
      */
     @Autowired
     public CodeReviewCommentController(CodeReviewService codeReviewService,
-                                CodeReviewCommentService codeReviewCommentService) {
+                                PostCommentService postCommentService) {
         this.codeReviewService = codeReviewService;
-        this.codeReviewCommentService = codeReviewCommentService;
+        this.postCommentService = postCommentService;
     }
     
     /**
@@ -120,7 +120,7 @@ public class CodeReviewCommentController {
     public JsonResponse deleteComment(
             @RequestParam(COMMENT_ID) Long commentId,
             @RequestParam(REVIEW_ID) Long reviewId) throws NotFoundException {
-        codeReviewService.deleteComment(codeReviewCommentService.get(commentId), codeReviewService.get(reviewId));
+        codeReviewService.deleteComment(postCommentService.get(commentId), codeReviewService.get(reviewId));
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
     
@@ -142,7 +142,7 @@ public class CodeReviewCommentController {
         if (bindingResult.hasErrors()) {
             return new FailValidationJsonResponse(bindingResult.getAllErrors());
         }
-        PostComment editedComment = codeReviewCommentService.updateComment(
+        PostComment editedComment = postCommentService.updateComment(
                 commentDto.getId(), commentDto.getBody(), branchId);
         CodeReviewCommentDto editedCommentDto = new CodeReviewCommentDto(editedComment);
         return new JsonResponse(JsonResponseStatus.SUCCESS, editedCommentDto);

@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
@@ -21,12 +23,15 @@ import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.security.AclClassName;
+import org.jtalks.jcommune.service.security.PermissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -55,6 +60,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private LastReadPostService lastReadPostService;
     private UserService userService;
     private BranchLastPostService branchLastPostService;
+    private PermissionService permissionService;
 
     /**
      * Create an instance of Post entity based service
@@ -74,7 +80,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             NotificationService notificationService,
             LastReadPostService lastReadPostService,
             UserService userService,
-            BranchLastPostService branchLastPostService) {
+            BranchLastPostService branchLastPostService,
+            PermissionService permissionService) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
@@ -82,6 +89,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
         this.branchLastPostService = branchLastPostService;
+        this.permissionService = permissionService;
     }
 
     /**
@@ -203,5 +211,44 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public List<Post> getLastPostsFor(Branch branch, int postCount) {
         return getDao().getLastPostsFor(Arrays.asList(branch.getId()), postCount);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public PostComment addComment(Long postId, int lineNumber, String body) {
+        Post targetPost = getDao().get(postId);
+        JCUser currentUser = userService.getCurrentUser();
+        permissionService.checkPermission(
+                targetPost.getTopic().getBranch().getId(),
+                AclClassName.BRANCH,
+                BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
+        PostComment comment = new PostComment();
+        comment.setIndex(lineNumber);
+        comment.setBody(body);
+        comment.setCreationDate(new DateTime(System.currentTimeMillis()));
+        comment.setAuthor(currentUser);
+        if (currentUser.isAutosubscribe()) {
+            targetPost.getTopic().getSubscribers().add(currentUser);
+        }
+        targetPost.addComment(comment);
+        getDao().saveOrUpdate(targetPost);
+        notificationService.subscribedEntityChanged(targetPost.getTopic());
+
+        return comment;
+    }
+
+    /**
+     * Checks permissions before deleting comment
+     * 
+     * {@inheritDoc}
+     */
+    @PreAuthorize("(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
+            "#comment.author.username == principal.username) or " +
+            "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
+            "#comment.author.username != principal.username)")
+    public void deleteComment(Post post, PostComment comment) {
+        post.getComments().remove(comment);
+        getDao().saveOrUpdate(post);
     }
 }

@@ -51,7 +51,7 @@ public class TransactionalPostCommentServiceTest {
     @Mock
     private CodeReviewService codeReviewService;
 
-    private TransactionalCodeReviewCommentService codeReviewCommentService;
+    private TransactionalPostCommentService codeReviewCommentService;
 
     private PostComment comment;
     private JCUser currentUser;
@@ -59,7 +59,7 @@ public class TransactionalPostCommentServiceTest {
     @BeforeMethod
     public void initEnvironmental() {
         initMocks(this);
-        codeReviewCommentService = new TransactionalCodeReviewCommentService(
+        codeReviewCommentService = new TransactionalPostCommentService(
                 dao, permissionService, userService);
     }
 

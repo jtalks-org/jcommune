@@ -18,20 +18,20 @@ import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.CodeReviewCommentService;
+import org.jtalks.jcommune.service.PostCommentService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
- * The implementation of {@link CodeReviewCommentService}
+ * The implementation of {@link org.jtalks.jcommune.service.PostCommentService}
  * 
  * @author Vyacheslav Mishcheryakov
  */
-public class TransactionalCodeReviewCommentService extends
+public class TransactionalPostCommentService extends
         AbstractTransactionalEntityService<PostComment, Crud<PostComment>> implements
-        CodeReviewCommentService {
+        PostCommentService {
 
     private PermissionService permissionService;
     private UserService userService;
@@ -43,8 +43,8 @@ public class TransactionalCodeReviewCommentService extends
      * @param permissionService to check permissions for actions
      * @param userService to get current user
      */
-    public TransactionalCodeReviewCommentService(Crud<PostComment> dao,
-            PermissionService permissionService, UserService userService) {
+    public TransactionalPostCommentService(Crud<PostComment> dao,
+                                           PermissionService permissionService, UserService userService) {
         super(dao);
         this.permissionService = permissionService;
         this.userService = userService;

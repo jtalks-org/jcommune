@@ -22,7 +22,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
  * 
  * @author Vyacheslav Mishcheryakov
  */
-public interface CodeReviewCommentService extends EntityService<PostComment> {
+public interface PostCommentService extends EntityService<PostComment> {
 
     /**
      * Updates CR comment's body
