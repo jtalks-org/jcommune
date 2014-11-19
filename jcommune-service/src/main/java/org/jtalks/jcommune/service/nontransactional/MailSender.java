@@ -22,7 +22,6 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.Async;
 
 import javax.mail.Address;
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 /**
@@ -59,7 +58,7 @@ public class MailSender extends JavaMailSenderImpl {
             LOGGER.debug("Email was sent to [{}] with subject [{}]. Note that this doesn't mean the mail" +
                     " is delivered to the end user, this only means that mail server accepted the email and will" +
                     " try to send it further.", to, subject);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             LOGGER.error("Mail sending failed", e);
         }
     }
