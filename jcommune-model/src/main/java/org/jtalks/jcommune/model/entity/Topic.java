@@ -133,7 +133,9 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private int views;
     @Valid
     private Poll poll;
-    private CodeReview codeReview;    
+    private CodeReview codeReview;
+    private TopicType type;
+    private List<TopicProperty> customProperties = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
     private Set<JCUser> subscribers = new HashSet<>();
 
@@ -178,6 +180,14 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         this.title = title;
         this.creationDate = new DateTime();
         this.modificationDate = new DateTime();
+    }
+
+    public Topic(JCUser topicStarter, String title, TopicType topicType) {
+        this.topicStarter = topicStarter;
+        this.title = title;
+        this.creationDate = new DateTime();
+        this.modificationDate = new DateTime();
+        this.type = topicType;
     }
 
     /**
@@ -604,5 +614,51 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void setClosed(boolean closed) {
         this.closed = closed;
+    }
+
+    /**
+     * Gets type of the topic
+     *
+     * @return type of the topic
+     */
+    public TopicType getType() {
+        return type;
+    }
+
+    /**
+     * Sets specified type to the topic
+     *
+     * @param type type to set
+     */
+    public void setType(TopicType type) {
+        this.type = type;
+    }
+
+    /**
+     * Gets custom properties list of the topic
+     *
+     * @return custom properties list
+     */
+    public List<TopicProperty> getCustomProperties() {
+        return customProperties;
+    }
+
+    /**
+     * Sets specified custom properties list to the topic
+     *
+     * @param customProperties custom properties list to set
+     */
+    public void setCustomProperties(List<TopicProperty> customProperties) {
+        this.customProperties = customProperties;
+    }
+
+    /**
+     * Adds specified property to th custom properties list of the topic
+     *
+     * @param property property to add
+     */
+    public void addCustomProperty(TopicProperty property) {
+        property.setTopic(this);
+        customProperties.add(property);
     }
 }

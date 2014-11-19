@@ -44,7 +44,7 @@ public class CodeReviewCommentDto {
     
     public CodeReviewCommentDto(PostComment comment) {
         this.id = comment.getId();
-        this.lineNumber = comment.getIndex();
+        //this.lineNumber = comment.getIndex();
         this.body = comment.getBody();
         this.authorId = comment.getAuthor().getId();
         this.authorUsername = comment.getAuthor().getUsername();

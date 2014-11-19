@@ -19,23 +19,22 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-    <class name="PluginProperty" table="PLUGIN_PROPERTY">
-        <cache usage="read-write"/>
-        <id column="ID" name="id" unsaved-value="0">
-            <generator class="native"/>
-        </id>
-        <property column="UUID" name="uuid" unique="true" not-null="true"/>
-        <property column="NAME" name="name" unique="true" not-null="true"/>
-        <property column="TYPE" name="type"  not-null="true">
-            <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.jtalks.jcommune.model.entity.PropertyType</param>
-                <!-- varchar -->
-                <param name="type">12</param>
-            </type>
-        </property>
-        <property column="VALUE" name="value" not-null="true"/>
-        <property column="HINT" name="hint" not-null="false"/>
-        <many-to-one name="pluginConfiguration" column="PLUGIN_ID" not-null="false"
-                     foreign-key="FK_PLUGIN" class="org.jtalks.jcommune.model.entity.PluginConfiguration"/>
-    </class>
+  <class name="CommentProperty" table="CUSTOM_COMMENT_PARAMETER">
+    <cache usage="read-write"/>
+    <id column="ID" name="id" unsaved-value="0">
+      <generator class="native"/>
+    </id>
+    <property column="UUID" name="uuid" unique="true" not-null="true"/>
+    <property column="NAME" name="name" not-null="true"/>
+    <property column="TYPE" name="type" not-null="true">
+      <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">org.jtalks.jcommune.model.entity.PropertyType</param>
+        <!-- varchar -->
+        <param name="type">12</param>
+      </type>
+    </property>
+    <property column="VALUE" name="value" not-null="true"/>
+    <many-to-one name="comment" column="COMMENT_ID" not-null="true"
+                 foreign-key="FC_COMMENT_PARAM" class="PostComment"/>
+  </class>
 </hibernate-mapping>

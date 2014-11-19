@@ -38,6 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.jtalks.jcommune.model.matchers.HasPages.hasPages;
 import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Kirill Afonin
@@ -110,7 +111,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         session.save(author);
         Branch branch = ObjectsFactory.getDefaultBranch();
         for (int i = 0; i < size; i++) {
-            Topic newTopic = new Topic(author, "title" + i);
+            Topic newTopic = new Topic(author, "title" + i, PersistedObjectsFactory.getDefaultTopicType());
             newTopic.addPost(new Post(author, "post_content" + i));
             branch.addTopic(newTopic);
             topics.add(newTopic);
@@ -311,9 +312,15 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCUser author = PersistedObjectsFactory.getDefaultUserWithGroups();
 
         Branch branch = ObjectsFactory.getDefaultBranch();
-        branch.addTopic(ObjectsFactory.getTopic(author, 1));
-        branch.addTopic(ObjectsFactory.getTopic(author, 1));
-        branch.addTopic(ObjectsFactory.getTopic(author, 2));
+        Topic topic1 = ObjectsFactory.getTopic(author, 1);
+        topic1.setType(PersistedObjectsFactory.getDefaultTopicType());
+        branch.addTopic(topic1);
+        Topic topic2 = ObjectsFactory.getTopic(author, 1);
+        topic2.setType(PersistedObjectsFactory.getDefaultTopicType());
+        branch.addTopic(topic2);
+        Topic topic3 = ObjectsFactory.getTopic(author, 2);
+        topic3.setType(PersistedObjectsFactory.getDefaultTopicType());
+        branch.addTopic(topic3);
         session.save(branch);
 
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(branch.getId(),
@@ -328,7 +335,8 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     public void testGetLastUpdatedTopicInBranch() {
         Topic firstTopic = PersistedObjectsFactory.getDefaultTopic();
         Branch branch = firstTopic.getBranch();
-        Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic");
+        Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic",
+                PersistedObjectsFactory.getDefaultTopicType());
         branch.addTopic(secondTopic);
         Topic expectedLastUpdatedTopic = firstTopic;
         ReflectionTestUtils.setField(
@@ -371,7 +379,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         Topic topic = PersistedObjectsFactory.getDefaultTopic();
         JCUser user = topic.getTopicStarter();
         Branch branch = topic.getBranch();
-        branch.addTopic(new Topic(user, "Second topic"));
+        branch.addTopic(new Topic(user, "Second topic", PersistedObjectsFactory.getDefaultTopicType()));
         session.save(branch);
         int expectedCount = branch.getTopics().size();
 
@@ -511,6 +519,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
         Branch branch = ObjectsFactory.getDefaultBranch();
         Topic topic = ObjectsFactory.getTopic(subscriber, 5);
+        topic.setType(PersistedObjectsFactory.getDefaultTopicType());
         topic.getSubscribers().add(subscriber);
         branch.addTopic(topic);
         session.save(branch);
@@ -605,4 +614,24 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         List<Long> collection = this.dao.getAllowedBranchesIds(user);
         assertTrue(collection.isEmpty());
     }
+
+    @Test
+    public void testAddPropertyToTopic() {
+        TopicProperty property = new TopicProperty("name", PropertyType.STRING, "value1");
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
+        topic.addCustomProperty(property);
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
+
+        Topic result = dao.get(topic.getId());
+
+        assertEquals(result.getCustomProperties().size(), 1);
+        assertReflectionEquals(property, result.getCustomProperties().get(0));
+    }
+
+    private void flushAndClearSession() {
+        session.flush();
+        session.clear();
+    }
+
 }

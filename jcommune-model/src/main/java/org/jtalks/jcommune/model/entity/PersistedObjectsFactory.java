@@ -30,6 +30,7 @@ public final class PersistedObjectsFactory {
     //todo: refactor this class without using static
     //because static will affect our tests if we will want run it in some threads
     private static Session session;
+    private static TopicType discussion;
 
     private PersistedObjectsFactory() {
     }
@@ -47,10 +48,14 @@ public final class PersistedObjectsFactory {
         return persist(new Post(persist(ObjectsFactory.getRandomUser()), "post content"));
     }
 
+    public static TopicType getDefaultTopicType() {
+        return persist(ObjectsFactory.getRandomTopicType());
+    }
+
     public static Topic getDefaultTopic() {
         JCUser user = persist(ObjectsFactory.getDefaultUser());
         Branch branch = ObjectsFactory.getDefaultBranch();
-        Topic newTopic = new Topic(user, "topic title");
+        Topic newTopic = new Topic(user, "topic title", getDefaultTopicType());
         Post post = new Post(user, "post content");
         newTopic.addPost(post);
         branch.addTopic(newTopic);
@@ -139,7 +144,7 @@ public final class PersistedObjectsFactory {
         org.jtalks.jcommune.model.entity.Branch branch = ObjectsFactory.getDefaultBranch();
         JCUser user = persist(ObjectsFactory.getDefaultUser());
         for (int i = 0; i < size; i++) {
-            Topic topic = new Topic(user, "title" + i);
+            Topic topic = new Topic(user, "title" + i, getDefaultTopicType());
             topic.addPost(new Post(user, "post_context" + i));
             branch.addTopic(topic);
         }
@@ -156,7 +161,7 @@ public final class PersistedObjectsFactory {
         org.jtalks.jcommune.model.entity.Branch branch = ObjectsFactory.getDefaultBranch();
         JCUser user = persist(ObjectsFactory.getRandomUser());
         for (int i = 0; i < size; i++) {
-            Topic topic = new Topic(user, "title" + i);
+            Topic topic = new Topic(user, "title" + i, getDefaultTopicType());
             topic.addPost(new Post(topic.getTopicStarter(), "content"));
             branch.addTopic(topic);
         }
@@ -275,7 +280,6 @@ public final class PersistedObjectsFactory {
         PostComment comment2 = new PostComment();
         comment2.setAuthor(getUser("user2", "mail2@mail.ru"));
         comment2.setBody("Comment2 body");
-        comment2.setIndex(2);
         comment2.setCreationDate(new DateTime(2));
         comment2.setPost(getDefaultPost());
         return comment2;
@@ -309,7 +313,7 @@ public final class PersistedObjectsFactory {
     }
 
     public static PluginProperty getDefaultPluginConfigurationProperty() {
-        PluginProperty property = new PluginProperty("Property", PluginProperty.Type.BOOLEAN, "true");
+        PluginProperty property = new PluginProperty("Property", PropertyType.BOOLEAN, "true");
         PluginConfiguration configuration = new PluginConfiguration("Default name", true, Arrays.asList(property));
         property.setPluginConfiguration(configuration);
         persist(configuration);

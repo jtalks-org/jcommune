@@ -43,6 +43,7 @@ public class Post extends Entity {
     private JCUser userCreated;
     private String postContent;
     private Topic topic;
+    private int rating;
 
     private List<PostComment> comments = new ArrayList<>();
 
@@ -203,5 +204,23 @@ public class Post extends Entity {
     public void addComment(PostComment comment) {
         comment.setPost(this);
         comments.add(comment);
+    }
+
+    /**
+     * Gets rating of the post
+     *
+     * @return rating of the post
+     */
+    public int getRating() {
+        return rating;
+    }
+
+    /**
+     * Sets specified rating to current post
+     *
+     * @param rating rating to set
+     */
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 }

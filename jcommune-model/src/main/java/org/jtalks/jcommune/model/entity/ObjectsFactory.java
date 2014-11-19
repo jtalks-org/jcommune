@@ -50,6 +50,14 @@ public final class ObjectsFactory {
         return newUser;
     }
 
+    public static TopicType getDefaultTopicType() {
+        return new TopicType(TopicTypeName.DISCUSSION.getName());
+    }
+
+    public static TopicType getRandomTopicType() {
+        return new TopicType("type" + RandomUtils.nextInt(1000000));
+    }
+
     public static Branch getDefaultBranch() {
         return new Branch("branch name", "branch description");
     }
@@ -110,7 +118,7 @@ public final class ObjectsFactory {
     public static List<Topic> topics(JCUser author, int topicCount) {
         List<Topic> topics = new ArrayList<>();
         for (int i = 0; i < topicCount; i++) {
-            Topic topic = new Topic(author, "title");
+            Topic topic = new Topic(author, "title", getDefaultTopicType());
             topic.setBranch(getDefaultBranch());
             topic.addPost(new Post(author, "post-content"));
             topics.add(topic);
@@ -119,7 +127,7 @@ public final class ObjectsFactory {
     }
 
     public static Topic getDefaultTopic() {
-        Topic topic = new Topic(getDefaultUser(), "title");
+        Topic topic = new Topic(getDefaultUser(), "title", getDefaultTopicType());
         topic.setId(1);
         return topic;
     }

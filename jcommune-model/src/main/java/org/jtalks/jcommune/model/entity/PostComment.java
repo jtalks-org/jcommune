@@ -18,6 +18,9 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents one comment to one line in code review.
  *
@@ -34,33 +37,11 @@ public class PostComment extends Entity {
      */
     public static final int BODY_MAX_LENGTH = 5000;
 
-    /**
-     * Number of commented line of code
-     */
-    private int index;
-
     private JCUser author;
-
     private DateTime creationDate;
-
     private String body;
-
     private Post post;
-
-
-    /**
-     * @return the index
-     */
-    public int getIndex() {
-        return index;
-    }
-
-    /**
-     * @param index the index to set
-     */
-    public void setIndex(int index) {
-        this.index = index;
-    }
+    private List<CommentProperty> customProperties = new ArrayList<>();
 
     /**
      * @return the author
@@ -132,5 +113,33 @@ public class PostComment extends Entity {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    /**
+     * Gets list of custom properties of the comment
+     *
+     * @return list of custom properties of the comment
+     */
+    public List<CommentProperty> getCustomProperties() {
+        return customProperties;
+    }
+
+    /**
+     * Sets list of custom properties to the comment
+     *
+     * @param customProperties list of custom properties to set
+     */
+    public void setCustomProperties(List<CommentProperty> customProperties) {
+        this.customProperties = customProperties;
+    }
+
+    /**
+     * Adds custom property to comment's property list
+     *
+     * @param property property to add
+     */
+    public void addCustomProperty(CommentProperty property) {
+        property.setComment(this);
+        customProperties.add(property);
     }
 }

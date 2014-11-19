@@ -17,63 +17,95 @@ package org.jtalks.jcommune.model.entity;
 import org.jtalks.common.model.entity.Entity;
 
 /**
- *
- * @author Anuar Nurmakanov
+ * @author Mikhail Stryzhonok
  */
-public class PluginProperty extends Entity {
+public class TopicProperty extends Entity {
     private String name;
     private PropertyType type;
     private String value;
-    private String hint;
-    private PluginConfiguration pluginConfiguration;
+    private Topic topic;
 
+    /**
+     * For hibernate usage
+     */
+    public TopicProperty() {
+    }
 
-    public PluginProperty(String name, PropertyType type, String value) {
+    public TopicProperty(String name, PropertyType type, String value) {
         this.name = name;
         this.type = type;
         this.value = value;
     }
 
-    public PluginProperty() {
-    }
-
+    /**
+     * Gets name of the property
+     *
+     * @return name of the property
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets specified name to th property
+     *
+     * @param name name to set
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets type of the property
+     *
+     * @return type of the property
+     */
     public PropertyType getType() {
         return type;
     }
 
+    /**
+     * Sets specified type to the property
+     *
+     * @param type type to set
+     */
     public void setType(PropertyType type) {
         this.type = type;
     }
 
+    /**
+     * Gets value of the property
+     *
+     * @return value of the property
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Sets specified value to the property
+     *
+     * @param value value to set
+     */
     public void setValue(String value) {
         this.value = value;
     }
 
-    public PluginConfiguration getPluginConfiguration() {
-        return pluginConfiguration;
+    /**
+     * Gets topic which owns the property
+     *
+     * @return topic which owns the property
+     */
+    public Topic getTopic() {
+        return topic;
     }
 
-    public void setPluginConfiguration(PluginConfiguration pluginConfiguration) {
-        this.pluginConfiguration = pluginConfiguration;
-    }
-
-    public String getHint() {
-        return hint;
-    }
-
-    public void setHint(String hint) {
-        this.hint = hint;
+    /**
+     * Sets specified topic as property owner
+     *
+     * @param topic topic to set
+     */
+    public void setTopic(Topic topic) {
+        this.topic = topic;
     }
 }

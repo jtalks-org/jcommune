@@ -63,6 +63,13 @@ This might be tuned further in the future if the page size itself changes.-->
             <key column="TOPIC_ID"/>
             <many-to-many column="USER_ID" class="JCUser"/>
         </set>
+        <list name="customProperties" cascade="all-delete-orphan">
+          <cache usage="read-write"/>
+          <key column="TOPIC_ID" foreign-key="FC_TOPIC_PARAM"/>
+          <index column="LIST_INDEX"/>
+          <one-to-many class="TopicProperty"/>
+        </list>
+        <many-to-one name="type" class="TopicType" column="TYPE_ID" foreign-key="FK_TOPIC_TOPIC_TYPE" not-null="true"/>
 
     </class>
 

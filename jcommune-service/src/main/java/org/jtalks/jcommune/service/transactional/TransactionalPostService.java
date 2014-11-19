@@ -224,7 +224,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
                 AclClassName.BRANCH,
                 BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
         PostComment comment = new PostComment();
-        comment.setIndex(lineNumber);
+ //       comment.setIndex(lineNumber);
         comment.setBody(body);
         comment.setCreationDate(new DateTime(System.currentTimeMillis()));
         comment.setAuthor(currentUser);
