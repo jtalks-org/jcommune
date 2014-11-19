@@ -53,11 +53,6 @@ This might be tuned further in the future if the page size itself changes.-->
         TOPIC has POLL which is not our case.-->
         <many-to-one name="poll" class="Poll" column="POLL_ID"
                      foreign-key="TOPIC_POLL_FK" cascade="all"/>
-        <!--This is an emulation of OTO association. It's actually OTO, but expressed via MTO because in OTO schema it's
-        impossible to have additional column for CODE_REVIEW_ID in TOPIC, thus it's impossible to have lazy loading unless every
-        TOPIC has CODE_REVIEW which is not our case.-->
-        <many-to-one name="codeReview" class="CodeReview" column="CODE_REVIEW_ID"
-                     foreign-key="FK_TOPIC_CODE_REVIEW" cascade="all"/>
 
         <set name="subscribers" table="TOPIC_SUBSCRIPTIONS">
             <key column="TOPIC_ID"/>

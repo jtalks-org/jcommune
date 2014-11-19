@@ -30,7 +30,6 @@ public final class PersistedObjectsFactory {
     //todo: refactor this class without using static
     //because static will affect our tests if we will want run it in some threads
     private static Session session;
-    private static TopicType discussion;
 
     private PersistedObjectsFactory() {
     }
@@ -248,27 +247,6 @@ public final class PersistedObjectsFactory {
         persist(user);
 
         return user;
-    }
-
-    public static Topic getCodeReviewTopic() {
-        Topic topic = getDefaultTopic();
-        CodeReview review = new CodeReview();
-        topic.setCodeReview(review);
-        review.setTopic(topic);
-        persist(topic);
-        return topic;
-    }
-
-    /**
-     * Create code review with two comments and persist it to session
-     *
-     * @return persisted code review entity
-     */
-    public static CodeReview getDefaultCodeReview() {
-        CodeReview review = new CodeReview();
-        persist(review);
-
-        return review;
     }
 
     /**

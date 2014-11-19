@@ -109,11 +109,6 @@
                      value="org.jtalks.jcommune.model.entity.PostComment"/>
   </bean>
 
-  <bean id="codeReviewDao" parent="genericDao"
-        class="org.jtalks.common.model.dao.hibernate.GenericDao">
-    <constructor-arg name="type" value="org.jtalks.jcommune.model.entity.CodeReview"/>
-  </bean>
-
   <bean id="bannerDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.BannerHibernateDao"/>
 
@@ -211,7 +206,6 @@
         <value>/org/jtalks/jcommune/model/entity/Component.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/ViewTopicsBranches.hbm.xml
         </value>
-        <value>/org/jtalks/jcommune/model/entity/CodeReview.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/PostComment.hbm.xml
         </value>
         <value>/org/jtalks/jcommune/model/entity/Banner.hbm.xml</value>

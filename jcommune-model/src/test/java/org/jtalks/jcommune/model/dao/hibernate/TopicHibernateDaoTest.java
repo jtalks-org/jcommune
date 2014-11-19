@@ -436,46 +436,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testAddCodeReview() {
-        Topic topic = PersistedObjectsFactory.getDefaultTopic();
-
-        CodeReview review = new CodeReview();
-        topic.setCodeReview(review);
-        review.setTopic(topic);
-        dao.saveOrUpdate(topic);
-        session.flush();
-        session.evict(topic);
-        assertNotNull(dao.get(topic.getId()).getCodeReview());
-    }
-
-    @Test
-    public void testRemoveCodeReview() {
-        Topic topic = PersistedObjectsFactory.getCodeReviewTopic();
-
-        topic.getCodeReview().setTopic(null);
-        topic.setCodeReview(null);
-        dao.saveOrUpdate(topic);
-
-        session.evict(topic);
-
-        assertNull(dao.get(topic.getId()).getCodeReview());
-    }
-
-    @Test
-    public void testDeleteCodeReviewTopic() {
-        Topic topic = PersistedObjectsFactory.getCodeReviewTopic();
-        long reviewId = topic.getCodeReview().getId();
-
-        Branch topicBranch = topic.getBranch();
-        topicBranch.deleteTopic(topic);
-        session.update(topicBranch);
-        session.flush();
-
-        assertNull(dao.get(topic.getId()));
-        assertNull(session.get(CodeReview.class, reviewId));
-    }
-
-    @Test
     public void testGetSubscribersWithAllowedPermission() {
         Topic topic = createAndSaveTopicWithSubscribers();
         JCUser subscriber = topic.getTopicStarter();

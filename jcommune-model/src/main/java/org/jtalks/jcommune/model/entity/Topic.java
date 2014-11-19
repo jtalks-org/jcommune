@@ -133,7 +133,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private int views;
     @Valid
     private Poll poll;
-    private CodeReview codeReview;
     private TopicType type;
     private List<TopicProperty> customProperties = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
@@ -478,25 +477,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void setPoll(Poll poll) {
         this.poll = poll;
-    }
-
-    /**
-     * Gets the code review associated with the topic. Topic can't be a Poll
-     * or a simple topic if it has this not a null, same is vice versa - if
-     * the topic is already a Poll or it's a simple discussion-topic, it can't
-     * be a CR. In a most cases this association would probably be null.
-     * @return the codeReview
-     */
-    public CodeReview getCodeReview() {
-        return codeReview;
-    }
-
-    /**
-     * Set the code review for this topic
-     * @param codeReview the codeReview to set
-     */
-    public void setCodeReview(CodeReview codeReview) {
-        this.codeReview = codeReview;
     }
 
     /**

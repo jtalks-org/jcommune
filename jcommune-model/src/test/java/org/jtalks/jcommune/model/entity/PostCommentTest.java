@@ -79,10 +79,8 @@ public class PostCommentTest {
     private PostComment createCodeReviewCommentAttachedTo(Post ownerPost) {
         Topic topic = new Topic();
         topic.addPost(ownerPost);
-        CodeReview codeReview = new CodeReview();
         PostComment postComment = new PostComment();
         ownerPost.addComment(postComment);
-        codeReview.setTopic(topic);
         
         return postComment;
     }
