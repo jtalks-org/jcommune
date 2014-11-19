@@ -20,12 +20,14 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
   <class name="TopicProperty" table="CUSTOM_TOPIC_PARAMETER">
+
+
+
     <cache usage="read-write"/>
     <id name="id" column="ID" unsaved-value="0">
       <generator class="native"/>
     </id>
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <property column="NAME" name="name" not-null="true"/>
     <property column="TYPE" name="type" not-null="true">
       <type name="org.hibernate.type.EnumType">
         <param name="enumClass">org.jtalks.jcommune.model.entity.PropertyType</param>
@@ -34,7 +36,10 @@
       </type>
     </property>
     <property column="VALUE" name="value" not-null="true"/>
-    <many-to-one name="topic" column="TOPIC_ID" not-null="true"
-                 foreign-key="FC_TOPIC_PARAM" class="Topic"/>
+    <properties name="uniquePropertyNameForTopic" unique="true">
+        <property column="NAME" name="name" not-null="true"/>
+        <many-to-one name="topic" column="TOPIC_ID" not-null="true"
+                    foreign-key="FC_TOPIC_PARAM" class="Topic"/>
+    </properties>
   </class>
 </hibernate-mapping>

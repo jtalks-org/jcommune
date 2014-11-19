@@ -128,7 +128,6 @@ public final class ObjectsFactory {
 
     public static Topic getDefaultTopic() {
         Topic topic = new Topic(getDefaultUser(), "title", getDefaultTopicType());
-        topic.setId(1);
         return topic;
     }
 
@@ -194,12 +193,6 @@ public final class ObjectsFactory {
 
     public static SimplePage getDefaultSimplePage() {
         return new SimplePage("name", "content", "pathName");
-    }
-
-    public static CodeReview getDefaultCodeReview() {
-        CodeReview review = new CodeReview();
-        review.setId(1L);
-        return review;
     }
 
     public static Banner getDefaultBanner() {

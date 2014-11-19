@@ -16,10 +16,14 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jtalks.common.model.dao.Crud;
+import org.jtalks.jcommune.model.entity.CommentProperty;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.entity.PostComment;
+import org.jtalks.jcommune.model.entity.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -37,7 +41,7 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
     @Autowired
     private SessionFactory sessionFactory;
     @Autowired
-    private Crud<PostComment> codeReviewCommentDao;
+    private Crud<PostComment> postCommentDao;
     private Session session;
 
     @BeforeMethod
@@ -52,8 +56,9 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
     public void testGet() {
         PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
         session.save(comment);
+        flushAndClearSession();
 
-        PostComment result = codeReviewCommentDao.get(comment.getId());
+        PostComment result = postCommentDao.get(comment.getId());
 
         assertNotNull(result);
         assertEquals(result.getId(), comment.getId());
@@ -65,7 +70,7 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
 
     @Test
     public void testGetInvalidId() {
-        PostComment result = codeReviewCommentDao.get(-567890L);
+        PostComment result = postCommentDao.get(-567890L);
 
         assertNull(result);
     }
@@ -77,7 +82,7 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
         session.save(review);
         review.setUuid(newUuid);
 
-        codeReviewCommentDao.saveOrUpdate(review);
+        postCommentDao.saveOrUpdate(review);
         session.flush();
         session.evict(review);
         PostComment result = (PostComment) session.get(PostComment.class, review.getId());
@@ -90,8 +95,76 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
         PostComment review = PersistedObjectsFactory.getDefaultPostComment();
         session.save(review);
         review.setUuid(null);
-        codeReviewCommentDao.saveOrUpdate(review);
+        postCommentDao.saveOrUpdate(review);
         session.flush();
     }
 
+    @Test
+    public void testSaveCommentWithCustomProperties() {
+        CommentProperty property = new CommentProperty("name", PropertyType.STRING, "value");
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        comment.addCustomProperty(property);
+        postCommentDao.saveOrUpdate(comment);
+        flushAndClearSession();
+
+        PostComment result = (PostComment)session.get(PostComment.class, comment.getId());
+
+        assertEquals(result.getCustomProperties().size(), comment.getCustomProperties().size());
+    }
+
+    @Test
+    public void commentPropertiesShouldBeUpdatedByCascade() {
+        PostComment comment = PersistedObjectsFactory.getCommentWithProperties();
+        postCommentDao.saveOrUpdate(comment);
+        String updatedValue = "updatedValue";
+        comment.getCustomProperties().get(0).setValue(updatedValue);
+
+        postCommentDao.saveOrUpdate(comment);
+        flushAndClearSession();
+
+        PostComment result = (PostComment)session.get(PostComment.class, comment.getId());
+
+        assertEquals(result.getCustomProperties().get(0).getValue(), updatedValue);
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void testCascadeUpdateNotNulViolation() {
+        PostComment comment = PersistedObjectsFactory.getCommentWithProperties();
+        postCommentDao.saveOrUpdate(comment);
+        comment.getCustomProperties().get(0).setValue(null);
+
+        postCommentDao.saveOrUpdate(comment);
+        flushAndClearSession();
+    }
+
+    @Test
+    public void commentPropertiesShouldBeRemovedIfCommentRemoved() {
+        PostComment comment = PersistedObjectsFactory.getCommentWithProperties();
+        postCommentDao.saveOrUpdate(comment);
+        flushAndClearSession();
+
+        postCommentDao.delete(comment);
+
+        CommentProperty property = (CommentProperty)session.get(CommentProperty.class,
+                comment.getCustomProperties().get(0).getId());
+
+        assertNull(property);
+    }
+
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    public void itShouldBeImpossibleToSaveCommentWithTwoIdenticalProperties() {
+        CommentProperty property1 = new CommentProperty("name", PropertyType.STRING, "value1");
+        CommentProperty property2 = new CommentProperty("name", PropertyType.STRING, "value1");
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        comment.addCustomProperty(property1);
+        comment.addCustomProperty(property2);
+
+        postCommentDao.saveOrUpdate(comment);
+        flushAndClearSession();
+    }
+
+    private void flushAndClearSession() {
+        session.flush();
+        session.clear();
+    }
 }

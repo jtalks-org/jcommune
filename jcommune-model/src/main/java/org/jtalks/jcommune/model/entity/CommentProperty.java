@@ -31,6 +31,12 @@ public class CommentProperty extends Entity {
     public CommentProperty() {
     }
 
+    public CommentProperty(String name, PropertyType type, String value) {
+        this.name = name;
+        this.type = type;
+        this.value = value;
+    }
+
     /**
      * Get name of the property
      *

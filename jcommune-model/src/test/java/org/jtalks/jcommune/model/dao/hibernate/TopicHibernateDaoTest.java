@@ -16,12 +16,14 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -616,9 +618,10 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testAddPropertyToTopic() {
+    public void testSaveTopicWithCustomProperties() {
         TopicProperty property = new TopicProperty("name", PropertyType.STRING, "value1");
-        Topic topic = PersistedObjectsFactory.getDefaultTopic();
+        Topic topic = new Topic(PersistedObjectsFactory.getDefaultUser(), "title",
+                PersistedObjectsFactory.getDefaultTopicType());
         topic.addCustomProperty(property);
         dao.saveOrUpdate(topic);
         flushAndClearSession();
@@ -627,6 +630,61 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         assertEquals(result.getCustomProperties().size(), 1);
         assertReflectionEquals(property, result.getCustomProperties().get(0));
+    }
+
+    @Test
+    public void topicPropertyShouldBeUpdatedByCascade() {
+        Topic topic = PersistedObjectsFactory.getTopicWithProperties();
+        dao.saveOrUpdate(topic);
+        String updatedValue = "updatedValue";
+        topic.getCustomProperties().get(0).setValue(updatedValue);
+
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
+
+        TopicProperty updatedProperty =
+                (TopicProperty)session.get(TopicProperty.class, topic.getCustomProperties().get(0).getId());
+
+        assertEquals(updatedProperty.getValue(), updatedValue);
+    }
+
+    @Test(expectedExceptions = ConstraintViolationException.class)
+    public void tetCascadeUpdateNotNulViolation() {
+        Topic topic = PersistedObjectsFactory.getTopicWithProperties();
+        dao.saveOrUpdate(topic);
+        topic.getCustomProperties().get(0).setValue(null);
+
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
+    }
+
+
+    @Test
+    public void topicPropertiesShouldBeRemovedIfTopicRemoved() {
+        Topic topic = PersistedObjectsFactory.getTopicWithProperties();
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
+
+        dao.delete(topic);
+
+        TopicProperty result =
+                (TopicProperty)session.get(TopicProperty.class, topic.getCustomProperties().get(0).getId());
+
+        assertNull(result);
+    }
+
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    public void itShouldBeImpossibleToSaveTopicWithTwoIdenticalParameters() {
+        TopicProperty property1 = new TopicProperty("name", PropertyType.STRING, "value1");
+        TopicProperty property2 = new TopicProperty("name", PropertyType.STRING, "value1");
+        Topic topic = new Topic(PersistedObjectsFactory.getDefaultUser(), "title",
+                PersistedObjectsFactory.getDefaultTopicType());
+        topic.addCustomProperty(property1);
+        property2.setUuid(property1.getUuid());
+        topic.addCustomProperty(property2);
+
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
     }
 
     private void flushAndClearSession() {

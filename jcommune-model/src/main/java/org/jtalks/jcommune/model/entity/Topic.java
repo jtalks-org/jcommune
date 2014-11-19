@@ -481,10 +481,10 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Gets the code review associated with the topic. Topic can't be a Poll 
-     * or a simple topic if it has this not a null, same is vice versa - if 
-     * the topic is already a Poll or it's a simple discussion-topic, it can't 
-     * be a CR. In a most cases this association would probably be null. 
+     * Gets the code review associated with the topic. Topic can't be a Poll
+     * or a simple topic if it has this not a null, same is vice versa - if
+     * the topic is already a Poll or it's a simple discussion-topic, it can't
+     * be a CR. In a most cases this association would probably be null.
      * @return the codeReview
      */
     public CodeReview getCodeReview() {

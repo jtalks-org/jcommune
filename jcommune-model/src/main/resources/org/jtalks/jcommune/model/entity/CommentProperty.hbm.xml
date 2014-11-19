@@ -25,7 +25,6 @@
       <generator class="native"/>
     </id>
     <property column="UUID" name="uuid" unique="true" not-null="true"/>
-    <property column="NAME" name="name" not-null="true"/>
     <property column="TYPE" name="type" not-null="true">
       <type name="org.hibernate.type.EnumType">
         <param name="enumClass">org.jtalks.jcommune.model.entity.PropertyType</param>
@@ -34,7 +33,10 @@
       </type>
     </property>
     <property column="VALUE" name="value" not-null="true"/>
-    <many-to-one name="comment" column="COMMENT_ID" not-null="true"
+    <properties name="uniquePropertyNameForComment" unique="true">
+        <property column="NAME" name="name" not-null="true"/>
+        <many-to-one name="comment" column="COMMENT_ID" not-null="true"
                  foreign-key="FC_COMMENT_PARAM" class="PostComment"/>
+    </properties>
   </class>
 </hibernate-mapping>

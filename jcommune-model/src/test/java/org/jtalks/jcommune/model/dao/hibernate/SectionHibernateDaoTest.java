@@ -201,7 +201,8 @@ public class SectionHibernateDaoTest extends AbstractTransactionalTestNGSpringCo
     public void testGetAllTopicInBranchCount() {
         Section section = ObjectsFactory.getDefaultSection();
         Branch branch = ObjectsFactory.getDefaultBranch();
-        Topic topic = ObjectsFactory.getDefaultTopic();
+        Topic topic = new Topic(PersistedObjectsFactory.getDefaultUser(), "title",
+                PersistedObjectsFactory.getDefaultTopicType());
         branch.addTopic(topic);
         section.addOrUpdateBranch(branch);
         session.save(section);
