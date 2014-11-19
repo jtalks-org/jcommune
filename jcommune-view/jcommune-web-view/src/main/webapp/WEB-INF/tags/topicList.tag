@@ -44,7 +44,7 @@
               </a>
             </h2>
             <sub class="created-by"><spring:message code="label.topic.created_by"/>
-              <a class="space-left-small margin-right-big" href="${pageContext.request.contextPath}/users/${topic.topicStarter.id}">
+              <a class="space-left-small margin-right-big" href="${pageContext.request.contextPath}/users/${topic.topicStarter.id}" data-original-title="<spring:message code="label.tips.view_profile"/>">
                 <c:out value="${topic.topicStarter.username}"/>
               </a>
               <c:if test="${showBranchColumn}">
