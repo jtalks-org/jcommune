@@ -116,8 +116,10 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     }
 
     private void saveChanges(SubscriptionAwareEntity entityToSubscribe) {
-//        if (entityToSubscribe instanceof CodeReview) {
-//            codeReviewDao.saveOrUpdate((CodeReview) entityToSubscribe);
-//        }
+        if (entityToSubscribe instanceof Topic) {
+            topicDao.saveOrUpdate((Topic) entityToSubscribe);
+        } else {
+            branchDao.saveOrUpdate((Branch) entityToSubscribe);
+        }
     }
 }

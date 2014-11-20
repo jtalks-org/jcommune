@@ -65,6 +65,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private SecurityContextFacade securityContextFacade;
     private BranchLastPostService branchLastPostService;
     private LastReadPostService lastReadPostService;
+    private TopicFetchService topicFetchService;
 
     /**
      * Create an instance of User entity based service.
@@ -94,7 +95,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  BranchLastPostService branchLastPostService,
                                                  LastReadPostService lastReadPostService,
                                                  PostDao postDao,
-                                                 TopicTypeDao topicTypeDao) {
+                                                 TopicTypeDao topicTypeDao,
+                                                 TopicFetchService topicFetchService) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -108,6 +110,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.lastReadPostService = lastReadPostService;
         this.postDao = postDao;
         this.topicTypeDao = topicTypeDao;
+        this.topicFetchService = topicFetchService;
     }
 
     /**
@@ -116,7 +119,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @Override
     @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
     public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
-        Topic topic = dao.get(topicId);
+        Topic topic = topicFetchService.getTopicSilently(topicId);
         this.assertPostingIsAllowed(topic);
 
         JCUser currentUser = userService.getCurrentUser();
@@ -227,42 +230,6 @@ public class TransactionalTopicModificationService implements TopicModificationS
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW')")
-    public Topic createCodeReview(Topic topicDto, String bodyText) throws NotFoundException {
-        JCUser currentUser = userService.getCurrentUser();
-        Branch branch = topicDto.getBranch();
-
-        currentUser.setPostCount(currentUser.getPostCount() + 1);
-        Topic topic = new Topic(currentUser, topicDto.getTitle());
-        Post first = new Post(currentUser, wrapWithCodeTag(bodyText));
-        topic.addPost(first);
-        TopicType codeReview = topicTypeDao.getByName(TopicTypeName.CODE_REVIEW.getName());
-        topic.setType(codeReview);
-        topic.setBranch(branch);
-        branch.setLastPost(first);
-
-        dao.saveOrUpdate(topic);
-        branchDao.saveOrUpdate(branch);
-
-        JCUser user = userService.getCurrentUser();
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
-
-        notificationService.subscribedEntityChanged(topic.getBranch());
-
-        subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
-
-        lastReadPostService.markTopicAsRead(topic);
-
-        logger.debug("Created new code review topic id={}, branch id={}, author={}",
-                new Object[]{topic.getId(), topic.getBranch().getId(), currentUser.getUsername()});
-        return topic;
-    }
-
-    /**
      * Wrap given message with [code=java]...[/code] tags if it is not wrapped
      * yet
      *
@@ -344,10 +311,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      */
     @Override
     public void deleteTopicSilent(long topicId) throws NotFoundException {
-        Topic topic = dao.get(topicId);
-        if (topic == null) {
-            throw new NotFoundException("Topic with given id not exist");
-        }
+        Topic topic = topicFetchService.getTopicSilently(topicId);
         this.deleteTopicSilent(topic);
     }
 
@@ -390,6 +354,9 @@ public class TransactionalTopicModificationService implements TopicModificationS
     public void moveTopic(Topic topic, Long branchId) throws NotFoundException {
         Branch sourceBranch = topic.getBranch();
         Branch targetBranch = branchDao.get(branchId);
+        if (targetBranch == null) {
+            throw new NotFoundException("Target branch not exist");
+        }
         targetBranch.addTopic(topic);
         branchDao.saveOrUpdate(targetBranch);
 

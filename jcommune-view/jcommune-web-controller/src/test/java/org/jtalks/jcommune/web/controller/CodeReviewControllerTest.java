@@ -111,14 +111,14 @@ public class CodeReviewControllerTest {
 
         //set expectations
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(topicModificationService.createCodeReview(topic, TOPIC_CONTENT))
+        when(topicModificationService.createTopic(topic, TOPIC_CONTENT))
                 .thenReturn(topic);
 
         //invoke the object under test
         ModelAndView mav = controller.createCodeReview(dto, result, BRANCH_ID);
 
         //check expectations
-        verify(topicModificationService).createCodeReview(topic, TOPIC_CONTENT);
+        verify(topicModificationService).createTopic(topic, TOPIC_CONTENT);
 
         //check result
         assertViewName(mav, "redirect:/topics/1");
@@ -141,28 +141,6 @@ public class CodeReviewControllerTest {
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
     }
-
-//    @Test
-//    public void getCodeReviewSuccess() throws NotFoundException {
-//        Topic reviewTopic = new Topic();
-//        reviewTopic.addPost(new Post(user, "my beautiful code"));
-//        CodeReview review = new CodeReview();
-//        review.setTopic(reviewTopic);
-//        review.setId(REVIEW_ID);
-//        when(codeReviewService.get(REVIEW_ID)).thenReturn(review);
-//
-//        JsonResponse response = controller.getCodeReview(REVIEW_ID);
-//
-//        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
-//      //  assertEquals(((CodeReviewDto) response.getResult()).getId(), REVIEW_ID);
-//    }
-//
-//    @Test(expectedExceptions = NotFoundException.class)
-//    public void getCodeReviewNotFound() throws NotFoundException {
-//        when(codeReviewService.get(REVIEW_ID)).thenThrow(new NotFoundException());
-//
-//        controller.getCodeReview(REVIEW_ID);
-//    }
 
     private Branch createBranch() {
         Branch branch = new Branch("branch name", "branch description");

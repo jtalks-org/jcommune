@@ -120,7 +120,8 @@ public class TransactionalTopicModificationServiceTest {
                 branchLastPostService,
                 lastReadPostService,
                 postDao,
-                topicTypeDao);
+                topicTypeDao,
+                topicFetchService);
 
         user = new JCUser("username", "email@mail.com", "password");
         when(securityContextFacade.getContext()).thenReturn(securityContext);
@@ -129,9 +130,10 @@ public class TransactionalTopicModificationServiceTest {
     @Test
     public void testReplyToTopic() throws NotFoundException {
         Topic answeredTopic = new Topic(user, "title");
+        answeredTopic.setType(getDiscussionTopicType());
         answeredTopic.setBranch(new Branch("name", "description"));
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         Post createdPost = topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
@@ -151,7 +153,7 @@ public class TransactionalTopicModificationServiceTest {
         Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
         user.setAutosubscribe(true);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
@@ -164,7 +166,7 @@ public class TransactionalTopicModificationServiceTest {
         user.setAutosubscribe(false);
         Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
@@ -176,7 +178,7 @@ public class TransactionalTopicModificationServiceTest {
     public void replyTopicShouldNotifyMentionedInReplyUsers() throws NotFoundException {
         Topic answeredTopic = ObjectsFactory.topics(user, 1).get(0);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
         String answerWithUserMentioning = "[user]Shogun[/user] was mentioned";
 
@@ -190,7 +192,7 @@ public class TransactionalTopicModificationServiceTest {
         Topic answeredTopic = new Topic(user, "title");
         answeredTopic.setBranch(new Branch("", ""));
         answeredTopic.setClosed(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(answeredTopic);
 
         topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
     }
@@ -204,7 +206,7 @@ public class TransactionalTopicModificationServiceTest {
                 Matchers.<Authentication>any(), anyLong(), anyString(), anyString()))
                 .thenReturn(true);
         when(userService.getCurrentUser()).thenReturn(user);
-        when(topicDao.get(TOPIC_ID)).thenReturn(answeredTopic);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(answeredTopic);
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
         Post createdPost = topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
@@ -217,6 +219,12 @@ public class TransactionalTopicModificationServiceTest {
         verify(aclBuilder).to(user);
         verify(aclBuilder).on(createdPost);
         verify(notificationService).subscribedEntityChanged(answeredTopic);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testReplyToNonexistentTopic() throws Exception {
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenThrow(new NotFoundException());
+        topicService.replyToTopic(TOPIC_ID, ANSWER_BODY, BRANCH_ID);
     }
 
     @Test
@@ -263,42 +271,6 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     @Test
-    public void testRunSubscriptionByCreateReviewWhenNotificationTrue() throws NotFoundException {
-        Branch branch = createBranch();
-        user.setAutosubscribe(true);
-        when(userService.getCurrentUser()).thenReturn(user);
-
-        createTopicStubs(branch);
-        Topic dto = createTopic();
-        dto.setAnnouncement(true);
-        dto.setSticked(true);
-        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY);
-        Post createdPost = createdTopic.getFirstPost();
-
-        createCodeReviewAssertions(branch, createdTopic, createdPost);
-        createCodeReviewVerifications(branch);
-        verify(subscriptionService).toggleTopicSubscription(createdTopic);
-    }
-
-    @Test
-    public void testNotRunSubscriptionByCreateReviewWhenNotificationFalse() throws NotFoundException {
-        Branch branch = createBranch();
-        user.setAutosubscribe(false);
-        when(userService.getCurrentUser()).thenReturn(user);
-
-        createTopicStubs(branch);
-        Topic dto = createTopic();
-        dto.setAnnouncement(true);
-        dto.setSticked(true);
-        Topic createdTopic = topicService.createCodeReview(dto, ANSWER_BODY);
-        Post createdPost = createdTopic.getFirstPost();
-
-        createCodeReviewAssertions(branch, createdTopic, createdPost);
-        createCodeReviewVerifications(branch);
-        verify(subscriptionService, never()).toggleTopicSubscription(createdTopic);
-    }
-
-    @Test
     public void testCreateCodeReviewWithWrappedBbCode() throws NotFoundException {
         JCUser user = new JCUser("", "", "");
         user.setAutosubscribe(false);
@@ -306,12 +278,10 @@ public class TransactionalTopicModificationServiceTest {
         Branch branch = createBranch();
         createTopicStubs(branch);
         Topic dto = createTopic();
-        String codeReviewPattern = "[code=java]%s[/code]";
-        Topic createdTopic = topicService.createCodeReview(dto, String.format(codeReviewPattern, ANSWER_BODY));
-        Post createdPost = createdTopic.getFirstPost();
+        dto.setType(getReviewTopicType());
+        Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY);
 
-        createCodeReviewAssertions(branch, createdTopic, createdPost);
-        createCodeReviewVerifications(branch);
+        assertEquals(createdTopic.getBodyText(), "[code=java]" + ANSWER_BODY + "[/code]");
     }
 
     @Test
@@ -324,15 +294,6 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(branch.getLastPost(), topic.getFirstPost());
     }
 
-    @Test
-    private void updateLastPostInBranchByCreateReview() throws NotFoundException {
-        Branch branch = createBranch();
-        createTopicStubs(branch);
-        Topic tmp = createTopic();
-        tmp.setBranch(branch);
-        Topic review = topicService.createCodeReview(tmp, "content");
-        assertEquals(branch.getLastPost(), review.getFirstPost());
-    }
 
     private void createTopicStubs(Branch branch) throws NotFoundException {
         when(userService.getCurrentUser()).thenReturn(user);
@@ -347,25 +308,6 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(createdPost.getUserCreated(), user);
         assertEquals(createdPost.getPostContent(), ANSWER_BODY);
         assertEquals(user.getPostCount(), 1);
-    }
-
-    private void createCodeReviewAssertions(Branch branch, Topic createdTopic, Post createdPost) {
-        assertEquals(createdTopic.getTitle(), TOPIC_TITLE);
-        assertEquals(createdTopic.getTopicStarter(), user);
-        assertEquals(createdTopic.getBranch(), branch);
-        assertEquals(createdPost.getUserCreated(), user);
-        assertEquals(createdPost.getPostContent(), "[code=java]" + ANSWER_BODY + "[/code]");
-        assertEquals(user.getPostCount(), 1);
-        assertFalse(createdTopic.isAnnouncement());
-        assertFalse(createdTopic.isSticked());
-//        assertNotNull(createdTopic.getCodeReview());
-//        assertSame(createdTopic.getCodeReview().getTopic(), createdTopic);
-    }
-
-    private void createCodeReviewVerifications(Branch branch)
-            throws NotFoundException {
-        verify(aclBuilder, times(2)).grant(GeneralPermission.WRITE);
-        verify(notificationService).subscribedEntityChanged(branch);
     }
 
     private void createTopicVerifications(Topic topic)
@@ -409,7 +351,7 @@ public class TransactionalTopicModificationServiceTest {
         user.setPostCount(1);
         Branch branch = createBranch();
         branch.addTopic(topic);
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(topic);
 
         topicService.deleteTopicSilent(TOPIC_ID);
 
@@ -433,7 +375,7 @@ public class TransactionalTopicModificationServiceTest {
         topic.addPost(lastPostInBranch);
         final Post newLastPostInBranch = new Post(user, ANSWER_BODY);
 
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(topic);
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 branch.setLastPost(newLastPostInBranch);
@@ -459,7 +401,7 @@ public class TransactionalTopicModificationServiceTest {
         Post lastPostInBranch = new Post(user, ANSWER_BODY);
         branch.setLastPost(lastPostInBranch);
 
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(topic);
 
         topicService.deleteTopicSilent(TOPIC_ID);
 
@@ -470,7 +412,7 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testDeleteTopicSilentNonExistent() throws NotFoundException {
-        when(topicDao.get(TOPIC_ID)).thenReturn(null);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenThrow(new NotFoundException());
 
         topicService.deleteTopicSilent(TOPIC_ID);
     }
@@ -635,6 +577,7 @@ public class TransactionalTopicModificationServiceTest {
         topic.setTitle("title");
         Post post = new Post(user, "content");
         topic.addPost(post);
+        topic.setType(getDiscussionTopicType());
 
         topicService.updateTopic(topic, null);
 
@@ -646,7 +589,7 @@ public class TransactionalTopicModificationServiceTest {
         user.setAutosubscribe(false);
         when(userService.getCurrentUser()).thenReturn(user);
         Topic topic = new Topic(user, "title");
-//        topic.setCodeReview(new CodeReview());
+        topic.setType(getReviewTopicType());
 
         topicService.updateTopic(topic, null);
     }
@@ -669,6 +612,21 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(targetBranch.getTopicCount(), 1);
         verify(branchDao).saveOrUpdate(targetBranch);
         verify(notificationService).sendNotificationAboutTopicMoved(topic);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void testMoveTopicToNonexistentBranchShouldThrowException() throws Exception {
+        Topic topic = new Topic(user, "title");
+        topic.setId(TOPIC_ID);
+        Post firstPost = new Post(user, ANSWER_BODY);
+        topic.addPost(firstPost);
+        Branch currentBranch = createBranch();
+        currentBranch.addTopic(topic);
+
+        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
+        when(branchDao.get(BRANCH_ID)).thenReturn(null);
+
+        topicService.moveTopic(topic, BRANCH_ID);
     }
 
     @Test
@@ -723,7 +681,7 @@ public class TransactionalTopicModificationServiceTest {
     @Test(expectedExceptions = AccessDeniedException.class)
     public void testCloseCodeReviewTopic() {
         Topic topic = this.createTopic();
-//        topic.setCodeReview(new CodeReview());
+        topic.setType(getReviewTopicType());
         topicService.closeTopic(topic);
     }
 
@@ -758,6 +716,7 @@ public class TransactionalTopicModificationServiceTest {
         topic.setId(TOPIC_ID);
         Branch branch = createBranch();
         topic.setBranch(branch);
+        topic.setType(getDiscussionTopicType());
         return topic;
     }
 
@@ -771,5 +730,13 @@ public class TransactionalTopicModificationServiceTest {
         Set<JCUser> subscribers = new HashSet<>();
         subscribers.add(user);
         topic.setSubscribers(subscribers);
+    }
+
+    private TopicType getDiscussionTopicType() {
+        return new TopicType(TopicTypeName.DISCUSSION.getName());
+    }
+
+    private TopicType getReviewTopicType() {
+        return new TopicType(TopicTypeName.CODE_REVIEW.getName());
     }
 }

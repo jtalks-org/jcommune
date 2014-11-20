@@ -15,8 +15,10 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.joda.time.DateTime;
+import org.jtalks.jcommune.model.entity.CommentProperty;
 import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.PropertyType;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
@@ -26,11 +28,13 @@ public class PostCommentDtoTest {
     @Test
     public void testConstructor() {
         PostComment comment = createComment();
+        comment.addCustomProperty(new CommentProperty(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME,
+                PropertyType.INT, "1"));
         
         CodeReviewCommentDto dto = new CodeReviewCommentDto(comment);
         
         assertEquals(dto.getId(), comment.getId());
-        //assertEquals(dto.getLineNumber(), comment.getIndex());
+        assertEquals(dto.getLineNumber(), 1);
         assertEquals(dto.getBody(), comment.getBody());
         assertEquals(dto.getAuthorId(), comment.getAuthor().getId());
         assertEquals(dto.getAuthorUsername(), comment.getAuthor().getEncodedUsername());
@@ -41,7 +45,6 @@ public class PostCommentDtoTest {
         comment.setId(1L);
         comment.setAuthor(new JCUser("username1", "mail1", "password1" ));
         comment.setBody("Comment1 body");
-        //comment.setIndex(1);
         comment.setCreationDate(new DateTime(1));
         
         return comment;

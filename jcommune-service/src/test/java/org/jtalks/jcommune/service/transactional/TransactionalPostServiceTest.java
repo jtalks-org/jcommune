@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
@@ -26,6 +27,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -41,11 +43,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * This test cover {@code TransactionalPostService} logic validation.
@@ -130,6 +132,7 @@ public class TransactionalPostServiceTest {
     public void testUpdatePost() throws NotFoundException {
         String newBody = "new body";
         Topic topic = new Topic(user, "title");
+        topic.setType(getDefaultTopicType());
         Post post = new Post(user, "");
         topic.addPost(post);
         post.setId(POST_ID);
@@ -150,6 +153,7 @@ public class TransactionalPostServiceTest {
     public void testUpdatePost_shouldNotSendNotifications() throws NotFoundException {
         String newBody = "new body";
         Topic topic = new Topic(user, "title");
+        topic.setType(getDefaultTopicType());
         Post post = new Post(user, "");
         topic.addPost(post);
         post.setId(POST_ID);
@@ -169,21 +173,6 @@ public class TransactionalPostServiceTest {
         when(postService.get(post.getId())).thenReturn(post);
 
         postService.updatePost(post, null);
-    }
-
-    /**
-     * Creates a code review with the first post.
-     *
-     * @return a post of the created code review
-     */
-    private Post firstPostOfCodeReview() {
-        Topic topic = new Topic(user, "title");
-//        topic.setCodeReview(new CodeReview());
-        Post post = new Post(user, "");
-        topic.addPost(post);
-        post.setId(123L);//we don't care about ID
-        topic.addPost(post);
-        return post;
     }
 
     @Test
@@ -316,6 +305,30 @@ public class TransactionalPostServiceTest {
     }
 
     @Test
+    public void getPostsOfUserShouldReturnEmptyPageInNoBranchesAllowed() {
+        String page = "1";
+        long branchId = 1L;
+        int pageSize = 50;
+        Branch branch = new Branch("branch","");
+        branch.setId(branchId);
+        Topic topic = new Topic();
+        topic.setBranch(branch);
+        Post post = new Post(user, "");
+        post.setTopic(topic);
+        List<Post> posts = Arrays.asList(post);
+        Page<Post> postsOfUser = new PageImpl<>(posts);
+        when(postDao.getUserPosts(Matchers.<JCUser>any(), Matchers.<PageRequest>any(), Matchers.anyList()))
+                .thenReturn(postsOfUser);
+        when(topicDao.getAllowedBranchesIds(Matchers.<JCUser>any())).thenReturn(Collections.EMPTY_LIST);
+
+        currentUser.setPageSize(pageSize);
+
+        Page<Post> actualPostsPage = postService.getPostsOfUser(user, page);
+
+        assertEquals(actualPostsPage.getSize(), 0);
+    }
+
+    @Test
     public void testLastPostInTopicPageCalculation() {
         int pageSize = 2;
         currentUser.setPageSize(pageSize);
@@ -437,5 +450,127 @@ public class TransactionalPostServiceTest {
 
         assertEquals(actualPosts, posts, "Service returned incorrect last posts for branch");
         verify(postDao).getLastPostsFor(branches, 42);
+    }
+
+    @Test
+    public void testAddComment() throws Exception {
+        Post post = getPostWithTopicInBranch();
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+
+        PostComment comment = postService.addComment(POST_ID, Collections.EMPTY_LIST, "text");
+
+        assertEquals(post.getComments().size(), 1);
+        assertEquals(comment.getBody(), "text");
+        assertEquals(comment.getAuthor(), currentUser);
+        verify(postDao).saveOrUpdate(post);
+    }
+
+    @Test
+    public void testAddCommentWithProperties() throws Exception {
+        Post post = getPostWithTopicInBranch();
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+        List<CommentProperty> properties = Arrays.asList(new CommentProperty("prop", PropertyType.STRING, "val"));
+
+        PostComment comment = postService.addComment(POST_ID, properties, "text");
+
+        assertEquals(comment.getCustomProperties().size(), 1);
+        CommentProperty prop = comment.getCustomProperties().get(0);
+        assertEquals(prop.getName(), "prop");
+        assertEquals(prop.getType(), PropertyType.STRING);
+        assertEquals(prop.getValue(), "val");
+        verify(postDao).saveOrUpdate(post);
+
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void addCommentShouldThrowExceptionIfPostNotFound() throws Exception {
+        postService.addComment(0L, Collections.EMPTY_LIST, "text");
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void testAddCommentUserHasNoPermission() throws Exception {
+        Post post = getPostWithTopicInBranch();
+        doThrow(new AccessDeniedException(""))
+                .when(permissionService).checkPermission(anyLong(), any(AclClassName.class),
+                any(JtalksPermission.class));
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+
+        postService.addComment(POST_ID, Collections.EMPTY_LIST, "text");
+    }
+
+    @Test
+    public void testAddUserToSubscriptedByComment() throws Exception {
+        JCUser user = new JCUser("username", null, null);
+        Post post = getPostWithTopicInBranch();
+        user.setAutosubscribe(true);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+
+        postService.addComment(POST_ID, Collections.EMPTY_LIST, "text");
+
+        assertTrue(post.getTopic().getSubscribers().contains(user));
+
+    }
+
+    @Test
+    public void testNotAddUserToSubscriptedByComment() throws Exception {
+        JCUser user = new JCUser("username", null, null);
+        Post post = getPostWithTopicInBranch();
+        user.setAutosubscribe(false);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+
+        postService.addComment(POST_ID, Collections.EMPTY_LIST, "text");
+
+        assertFalse(post.getTopic().getSubscribers().contains(user));
+
+    }
+
+    @Test
+    public void testDeleteCommentSuccess() {
+        Post post = getPostWithTopicInBranch();
+        PostComment comment = new PostComment();
+        post.addComment(comment);
+
+        postService.deleteComment(post, comment);
+
+        assertEquals(post.getComments().size(), 0);
+        verify(postDao).saveOrUpdate(post);
+    }
+
+    private Post getPostWithTopicInBranch() {
+        Branch branch = new Branch(null, null);
+        Topic topic = new Topic();
+        Post firstPost = new Post(null, null);
+        firstPost.setId(1l);
+        topic.addPost(firstPost);
+        topic.setBranch(branch);
+        return firstPost;
+    }
+
+    private TopicType getDefaultTopicType() {
+        return new TopicType(TopicTypeName.DISCUSSION.getName());
+    }
+
+    /**
+     * Creates a code review with the first post.
+     *
+     * @return a post of the created code review
+     */
+    private Post firstPostOfCodeReview() {
+        Topic topic = new Topic(user, "title");
+        topic.setType(new TopicType(TopicTypeName.CODE_REVIEW.getName()));
+        Post post = new Post(user, "");
+        topic.addPost(post);
+        post.setId(123L);//we don't care about ID
+        topic.addPost(post);
+        return post;
     }
 }

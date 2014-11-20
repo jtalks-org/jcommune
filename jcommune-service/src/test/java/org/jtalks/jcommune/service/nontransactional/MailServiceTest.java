@@ -93,11 +93,10 @@ public class MailServiceTest {
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);
         captor = ArgumentCaptor.forClass(MimeMessage.class);
-//        topic.setCodeReview(codeReview);
-//        codeReview.setTopic(topic);
         topic.setId(topicId);
         branch.setId(branchId);
         topic.setBranch(branch);
+        topic.setType(new TopicType(TopicTypeName.DISCUSSION.getName()));
     }
 
     @BeforeMethod
@@ -126,46 +125,6 @@ public class MailServiceTest {
         disableEmailNotifications();
         service.sendPasswordRecoveryMail(user, PASSWORD);
         verify(sender, never()).send(any(MimeMessage.class));
-    }
-
-    @Test
-    public void testSendUpdatesOnSubscriptionCodeReviewCase() throws Exception {
-        enableEmailNotifications();
-//        service.sendUpdatesOnSubscription(user, codeReview);
-        this.checkMailCredentials();
-        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topicId));
-    }
-
-    @Test
-    public void updatesOnSubscriptionCodeReviewCaseShouldNotBeSentIfNotificationsAreDisabled() throws Exception {
-        disableEmailNotifications();
-//        service.sendUpdatesOnSubscription(user, codeReview);
-        verify(sender, never()).send(any(MimeMessage.class));
-    }
-
-    @Test
-    public void testSendUpdatesOnSubscriptionCodeReview_CheckTitleInSubject() throws Exception {
-        enableEmailNotifications();
-//        service.sendUpdatesOnSubscription(user, codeReview);
-        this.checkMailCredentials();
-        assertTrue(this.getMimeMailSubject().contains("title Topic"));
-    }
-
-    @Test
-    public void updatesOnSubscriptionCodeReviewCheckTitleInSubjectShouldNotBeSentIfNotificationsAreDisabled()
-            throws Exception {
-        disableEmailNotifications();
-//        service.sendUpdatesOnSubscription(user, codeReview);
-        verify(sender, never()).send(any(MimeMessage.class));
-    }
-
-    @Test
-    public void testSendUpdatesOnSubscriptionExceptionCase() {
-        enableEmailNotifications();
-        Exception fail = new MailSendException("");
-        doThrow(fail).when(sender).send(Matchers.<MimeMessage>any());
-//        service.sendUpdatesOnSubscription(user, codeReview);
-        verify(sender).send(Matchers.<MimeMessage>any());
     }
 
     @Test
@@ -401,10 +360,9 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendRemovingTopicMailWhenTopicAsTopic() throws Exception {
+    public void testSendRemovingTopicMail() throws Exception {
         enableEmailNotifications();
-        Topic topic = new Topic();
-        topic.setBranch(branch);
+
         service.sendRemovingTopicMail(user, topic);
 
         this.checkMailCredentials();
@@ -420,21 +378,45 @@ public class MailServiceTest {
     }
 
     @Test
-    public void removingTopicMailWhenTopicAsTopicShouldNotSentWhenForumNotificationsAreDisabled() throws Exception {
+    public void testSendRemovingTopicMail_ForMethodWith3Params() throws Exception{
+        enableEmailNotifications();
+
+        service.sendRemovingTopicMail(user, topic, "admin");
+        this.checkMailCredentials();
+
+        String subjectTemplate =
+                messageSource.getMessage("removeTopic.subject",  new Object[]{}, user.getLanguage().getLocale());
+
+        String bodyTemplate =
+                messageSource.getMessage("removeTopic.content",  new Object[]{}, user.getLanguage().getLocale());
+
+        assertEquals(this.getMimeMailSubject(), subjectTemplate);
+        assertTrue(this.getMimeMailBody().contains(bodyTemplate));
+    }
+
+    @Test
+    public void removingTopicMailWhenShouldNotSentWhenForumNotificationsAreDisabled() throws Exception {
         disableEmailNotifications();
-        Topic topic = new Topic();
-        topic.setBranch(branch);
+
         service.sendRemovingTopicMail(user, topic);
 
         verify(sender, never()).send(any(MimeMessage.class));
     }
 
     @Test
-    public void testSendRemovingTopicMailWhenTopicAsCodeReview() throws Exception {
+    public void removingTopicMailWhenShouldNotSentWhenForumNotificationsAreDisabled_ForMethodWith3Params()
+            throws Exception {
+        disableEmailNotifications();
+
+        service.sendRemovingTopicMail(user, topic, "admin");
+
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
+    public void testSendRemovingTopicWitCodeReviewMail() throws Exception {
         enableEmailNotifications();
-        Topic topic = new Topic();
-//        topic.setCodeReview(new CodeReview());
-        topic.setBranch(branch);
+        topic.setType(new TopicType(TopicTypeName.CODE_REVIEW.getName()));
         service.sendRemovingTopicMail(user, topic);
 
         this.checkMailCredentials();
@@ -450,14 +432,21 @@ public class MailServiceTest {
     }
 
     @Test
-    public void removingTopicMailWhenTopicAsCodeReviewShouldNotSentWhenForumNotificationsAreDisabled()
-            throws Exception {
-        disableEmailNotifications();
-        Topic topic = new Topic();
-//        topic.setCodeReview(new CodeReview());
-        topic.setBranch(branch);
-        service.sendRemovingTopicMail(user, topic);
-        verify(sender, never()).send(any(MimeMessage.class));
+    public void testSendRemovingTopicWitCodeReviewMail_ForMethodWith3Params() throws Exception {
+        enableEmailNotifications();
+        topic.setType(new TopicType(TopicTypeName.CODE_REVIEW.getName()));
+        service.sendRemovingTopicMail(user, topic, "admin");
+
+        this.checkMailCredentials();
+
+        String subjectTemplate =
+                messageSource.getMessage("removeCodeReview.subject",  new Object[]{}, user.getLanguage().getLocale());
+
+        String bodyTemplate =
+                messageSource.getMessage("removeCodeReview.content",  new Object[]{}, user.getLanguage().getLocale());
+
+        assertEquals(this.getMimeMailSubject(), subjectTemplate);
+        assertTrue(this.getMimeMailBody().contains(bodyTemplate));
     }
     
     @Test

@@ -64,32 +64,8 @@ public class NotificationServiceTest {
         topic.setId(TOPIC_ID);
         branch = new Branch("name", "description");
         branch.addTopic(topic);
-//        codeReview = new CodeReview();
-//        topic.setCodeReview(codeReview);
-//        codeReview.setTopic(topic);
         
         when(userService.getCurrentUser()).thenReturn(currentUser);
-    }
-
-    @Test
-    public void testSubscribedEntityChangedCodeReviewCase() throws MailingFailedException {
-        topic.getSubscribers().add(user1);
-        topic.getSubscribers().add(user2);
-        topic.getSubscribers().add(currentUser);
-//        when(subscriptionService.getAllowedSubscribers(codeReview)).thenReturn(codeReview.getSubscribers());
-//
-//        service.subscribedEntityChanged(codeReview);
-//
-//        verify(mailService, times(2)).sendUpdatesOnSubscription(any(JCUser.class), eq(codeReview));
-//        verify(mailService).sendUpdatesOnSubscription(user1, codeReview);
-//        verify(mailService).sendUpdatesOnSubscription(user2, codeReview);
-//        assertEquals(topic.getSubscribers().size(), 2);
-    }
-
-    @Test
-    public void testSubscribedEntityChangedCodeReviewCaseNoSubscribers() {
-//        service.subscribedEntityChanged(codeReview);
-        verifyZeroInteractions(mailService);
     }
 
 

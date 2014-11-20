@@ -85,6 +85,11 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
         return this.getDao().getUnansweredTopics(pageRequest, userService.getCurrentUser());
     }
 
+    @Override
+    public Topic getTopicSilently(Long id) throws NotFoundException {
+        return super.get(id);
+    }
+
     /**
      * {@inheritDoc}
      */

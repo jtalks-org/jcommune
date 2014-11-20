@@ -61,20 +61,6 @@ public interface TopicModificationService {
     Topic createTopic(Topic topic, String bodyText) throws NotFoundException;
 
     /**
-     * Add new code review with given title and body.
-     * Author is current user.<br>
-     * <b>NOTE</b>: The whole body will be wrapped with [code] if it is not wrapped,
-     * because CR implies that there is no usual text in the post body.
-     *
-     * @param topicDto topic that used as dto
-     * @param bodyText body of topic
-     * @return created code review topic
-     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
-     *          when branch not found
-     */
-    Topic createCodeReview(Topic topicDto, String bodyText) throws NotFoundException;
-
-    /**
      * Update current topic with given title and body.
      *
      * @param topic topic to be updated

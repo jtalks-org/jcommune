@@ -106,8 +106,10 @@ public interface PostService extends EntityService<Post> {
      * @param body text of the comment
 
      * @return newly created comment
+     *
+     * @throws NotFoundException if post with specified id not found
      */
-    PostComment addComment(Long postId, List<CommentProperty> properties, String body);
+    PostComment addComment(Long postId, List<CommentProperty> properties, String body) throws NotFoundException;
 
     /**
      * Removes specified comment from specified post

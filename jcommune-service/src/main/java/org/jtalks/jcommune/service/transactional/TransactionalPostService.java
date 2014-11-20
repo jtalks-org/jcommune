@@ -26,6 +26,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
@@ -217,8 +218,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public PostComment addComment(Long postId, List<CommentProperty> properties, String body) {
-        Post targetPost = getDao().get(postId);
+    public PostComment addComment(Long postId, List<CommentProperty> properties, String body) throws NotFoundException {
+        Post targetPost = get(postId);
         JCUser currentUser = userService.getCurrentUser();
         permissionService.checkPermission(
                 targetPost.getTopic().getBranch().getId(),

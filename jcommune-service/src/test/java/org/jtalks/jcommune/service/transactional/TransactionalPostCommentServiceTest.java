@@ -70,10 +70,8 @@ public class TransactionalPostCommentServiceTest {
         Topic codeReviewTopic = new Topic();
         Post post = new Post(null, null);
         post.setId(48l);
+        post.addComment(comment);
         codeReviewTopic.addPost(post);
-//        CodeReview codeReview = new CodeReview();
-//        codeReview.setTopic(codeReviewTopic);
-        //codeReview.addComment(comment);
 
         when(dao.get(CR_ID)).thenReturn(comment);
         when(dao.isExist(CR_ID)).thenReturn(true);

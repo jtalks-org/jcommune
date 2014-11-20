@@ -132,7 +132,6 @@ public class CodeReviewCommentController {
             @RequestParam(COMMENT_ID) Long commentId,
             @RequestParam(POST_ID) Long postId) throws NotFoundException {
         postService.deleteComment(postService.get(postId), postCommentService.get(commentId));
-        //codeReviewService.deleteComment(postCommentService.get(commentId), codeReviewService.get(reviewId));
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
     

@@ -56,9 +56,6 @@ public class TransactionalSubscriptionServiceTest {
         service = new TransactionalSubscriptionService(userService, branchDao, topicDao);
         branch = new Branch("name", "description");
         topic = new Topic(user, "title");
-//        codeReview = new CodeReview();
-//        topic.setCodeReview(codeReview);
-//        codeReview.setTopic(topic);
         when(userService.getCurrentUser()).thenReturn(user);
     }
 
@@ -106,38 +103,51 @@ public class TransactionalSubscriptionServiceTest {
     }
 
     @Test
-    public void testToggleSubscriptionCodeReviewSubscribeCase() {
-//        service.toggleSubscription(codeReview);
-//        assertTrue(codeReview.getSubscribers().contains(user));
-//        verify(codeReviewDao).saveOrUpdate(codeReview);
-    }
-
-    @Test
-    public void testToggleSubscriptionCodeReviewUnsubscribeCase() {
-//        codeReview.getSubscribers().add(user);
-//        service.toggleSubscription(codeReview);
-//        assertFalse(codeReview.getSubscribers().contains(user));
-//        verify(codeReviewDao).saveOrUpdate(codeReview);
-    }
-
-    @Test
     public void testGetAllowedSubscribersForTopic() {
         when(topicDao.getAllowedSubscribers(topic)).thenReturn(Collections.singleton(user));
         assertTrue(service.getAllowedSubscribers(topic).contains(user));
         verify(topicDao).getAllowedSubscribers(topic);
     }
 
-    @Test
-    public void testGetAllowedSubscribersForCodeReview() {
-//        when(topicDao.getAllowedSubscribers(codeReview.getTopic())).thenReturn(Collections.singleton(user));
-//        assertTrue(service.getAllowedSubscribers(codeReview).contains(user));
-//        verify(topicDao).getAllowedSubscribers(codeReview.getTopic());
-    }
 
     @Test
     public void testGetAllowedSubscribersForBranch() {
         when(branchDao.getAllowedSubscribers(branch)).thenReturn(Collections.singleton(user));
         assertTrue(service.getAllowedSubscribers(branch).contains(user));
         verify(branchDao).getAllowedSubscribers(branch);
+    }
+
+    @Test
+    public void testToggleSubscriptionTopicCase() {
+        service.toggleSubscription(topic);
+
+        assertTrue(topic.getSubscribers().contains(user));
+        verify(topicDao).saveOrUpdate(topic);
+    }
+
+    @Test
+    public void testToggleSubscriptionTopicAlreadySubscribedTopicCase() {
+        topic.getSubscribers().add(user);
+
+        service.toggleSubscription(topic);
+
+        assertFalse(topic.getSubscribers().contains(user));
+        verify(topicDao).saveOrUpdate(topic);
+    }
+
+    @Test
+    public void testToggleSubscriptionBranchCase() {
+        service.toggleSubscription(branch);
+
+        assertTrue(branch.getSubscribers().contains(user));
+    }
+
+    @Test
+    public void testToggleSubscriptionAlreadySubscribedBranchCase() {
+        branch.getSubscribers().add(user);
+
+        service.toggleSubscription(branch);
+
+        assertFalse(branch.getSubscribers().contains(user));
     }
 }
