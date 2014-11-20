@@ -50,31 +50,31 @@ public class CodeReviewDtoTest {
 //        assertEquals(dto.getComments().size(), review.getOwnerPost().getComments().size());
 //    }
     
-    private CodeReview getCodeReview() {
-        Topic reviewTopic = new Topic();
-        Post post = new Post(new JCUser("name", "mail@example.com", "supersecured"), "some mad text");
-        reviewTopic.addPost(post);
-        CodeReview review = new CodeReview();
-        review.setTopic(reviewTopic);
-        review.setId(REVIEW_ID);
-
-        PostComment comment1 = new PostComment();
-        comment1.setId(1L);
-        comment1.setAuthor(new JCUser("username1", "mail1", "password1" ));
-        comment1.setBody("Comment1 body");
-        //comment1.setIndex(1);
-        comment1.setCreationDate(new DateTime(1));
-        post.addComment(comment1);
-
-        PostComment comment2 = new PostComment();
-        comment2.setId(2L);
-        comment2.setAuthor(new JCUser("username2", "mail2", "password2" ));
-        comment2.setBody("Comment2 body");
-        //comment2.setIndex(2);
-        comment2.setCreationDate(new DateTime(2));
-        post.addComment(comment1);
-
-        return review;
-    }
+//    private CodeReview getCodeReview() {
+//        Topic reviewTopic = new Topic();
+//        Post post = new Post(new JCUser("name", "mail@example.com", "supersecured"), "some mad text");
+//        reviewTopic.addPost(post);
+//        CodeReview review = new CodeReview();
+//        review.setTopic(reviewTopic);
+//        review.setId(REVIEW_ID);
+//
+//        PostComment comment1 = new PostComment();
+//        comment1.setId(1L);
+//        comment1.setAuthor(new JCUser("username1", "mail1", "password1" ));
+//        comment1.setBody("Comment1 body");
+//        //comment1.setIndex(1);
+//        comment1.setCreationDate(new DateTime(1));
+//        post.addComment(comment1);
+//
+//        PostComment comment2 = new PostComment();
+//        comment2.setId(2L);
+//        comment2.setAuthor(new JCUser("username2", "mail2", "password2" ));
+//        comment2.setBody("Comment2 body");
+//        //comment2.setIndex(2);
+//        comment2.setCreationDate(new DateTime(2));
+//        post.addComment(comment1);
+//
+//        return review;
+//    }
     
 }

@@ -20,6 +20,7 @@ import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dao.TopicTypeDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -52,6 +53,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
     private TopicDao dao;
     private PostDao postDao;
+    private TopicTypeDao topicTypeDao;
 
     private SecurityService securityService;
     private BranchDao branchDao;
@@ -79,6 +81,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * @param branchLastPostService to refresh the last post of the branch
      * @param lastReadPostService   to work with last read post
      * @param postDao               to store newly created posts in database
+     * @param topicTypeDao          to fetch topic type entity from database
      */
     public TransactionalTopicModificationService(TopicDao dao, SecurityService securityService,
                                                  BranchDao branchDao,
@@ -90,7 +93,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  PermissionEvaluator permissionEvaluator,
                                                  BranchLastPostService branchLastPostService,
                                                  LastReadPostService lastReadPostService,
-                                                 PostDao postDao) {
+                                                 PostDao postDao,
+                                                 TopicTypeDao topicTypeDao) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -103,6 +107,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.branchLastPostService = branchLastPostService;
         this.lastReadPostService = lastReadPostService;
         this.postDao = postDao;
+        this.topicTypeDao = topicTypeDao;
     }
 
     /**
@@ -159,7 +164,10 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
+    @PreAuthorize("( not #topicDto.type.codeReview " +
+            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS'))" +
+            "or (#topicDto.type.codeReview " +
+            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW'))")
     public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
         Branch branch = topicDto.getBranch();
@@ -169,7 +177,11 @@ public class TransactionalTopicModificationService implements TopicModificationS
         topic.setAnnouncement(topicDto.isAnnouncement());
         topic.setSticked(topicDto.isSticked());
         topic.setBranch(topicDto.getBranch());
+        if (topicDto.getType().isCodeReview()) {
+            bodyText = wrapWithCodeTag(bodyText);
+        }
         Post first = new Post(currentUser, bodyText);
+        topic.setType(topicDto.getType());
         topic.addPost(first);
         topic.setBranch(branch);
         branch.setLastPost(first);
@@ -227,9 +239,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Topic topic = new Topic(currentUser, topicDto.getTitle());
         Post first = new Post(currentUser, wrapWithCodeTag(bodyText));
         topic.addPost(first);
-        CodeReview codeReview = new CodeReview();
-        codeReview.setTopic(topic);
-        topic.setCodeReview(codeReview);
+        TopicType codeReview = topicTypeDao.getByName(TopicTypeName.CODE_REVIEW.getName());
+        topic.setType(codeReview);
         topic.setBranch(branch);
         branch.setLastPost(first);
 
@@ -280,7 +291,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
             "(not hasPermission(#topic.id, 'TOPIC', 'GeneralPermission.WRITE') and " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS'))")
     public void updateTopic(Topic topic, Poll poll) {
-        if (topic.getCodeReview() != null) {
+        if (topic.getType().isCodeReview()) {
             throw new AccessDeniedException("It is not allowed to edit Code Review!");
         }
         Post post = topic.getFirstPost();
@@ -399,7 +410,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CLOSE_TOPICS')")
     @Override
     public void closeTopic(Topic topic) {
-        if (topic.getCodeReview() != null) {
+        if (topic.getType().isCodeReview()) {
             throw new AccessDeniedException("Close for code review");
         }
         topic.setClosed(true);

@@ -142,4 +142,15 @@ public class PostComment extends Entity {
         property.setComment(this);
         customProperties.add(property);
     }
+
+    /**
+     * Adds all properties from list to comment's properties
+     *
+     * @param properties list of properties to add
+     */
+    public void addCustomProperties(List<CommentProperty> properties) {
+        for (CommentProperty property : properties) {
+            addCustomProperty(property);
+        }
+    }
 }

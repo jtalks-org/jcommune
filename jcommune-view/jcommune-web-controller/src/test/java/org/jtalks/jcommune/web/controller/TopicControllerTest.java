@@ -79,6 +79,8 @@ public class TopicControllerTest {
     private SessionRegistry registry;
     @Mock
     private LastReadPostService lastReadPostService;
+    @Mock
+    private TopicTypeService topicTypeService;
 
     private TopicController controller;
 
@@ -93,7 +95,9 @@ public class TopicControllerTest {
                 userService,
                 breadcrumbBuilder,
                 locationService,
-                registry, topicFetchService);
+                registry,
+                topicFetchService,
+                topicTypeService);
     }
 
     @BeforeMethod
@@ -286,7 +290,7 @@ public class TopicControllerTest {
     @Test(expectedExceptions = AccessDeniedException.class)
     public void editTopicPageShouldNotBePossibleForCodeReview() throws NotFoundException {
         Topic topic = this.createTopic();
-        topic.setCodeReview(new CodeReview());
+//        topic.setCodeReview(new CodeReview());
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         when(userService.getCurrentUser()).thenReturn(user);

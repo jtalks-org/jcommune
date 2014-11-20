@@ -17,7 +17,12 @@ package org.jtalks.jcommune.web.dto;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.jtalks.jcommune.model.entity.CommentProperty;
 import org.jtalks.jcommune.model.entity.PostComment;
+import org.jtalks.jcommune.model.entity.PropertyType;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * DTO for {@link org.jtalks.jcommune.model.entity.PostComment}
@@ -26,6 +31,7 @@ import org.jtalks.jcommune.model.entity.PostComment;
  *
  */
 public class CodeReviewCommentDto {
+    public static final String LINE_NUMBER_PROPERTY_NAME = "line_number";
 
     private long id;
     
@@ -44,10 +50,19 @@ public class CodeReviewCommentDto {
     
     public CodeReviewCommentDto(PostComment comment) {
         this.id = comment.getId();
-        //this.lineNumber = comment.getIndex();
+        this.lineNumber = getLineNumberProperty(comment);
         this.body = comment.getBody();
         this.authorId = comment.getAuthor().getId();
         this.authorUsername = comment.getAuthor().getUsername();
+    }
+
+    private int getLineNumberProperty(PostComment comment) {
+        for (CommentProperty property : comment.getCustomProperties()) {
+            if (LINE_NUMBER_PROPERTY_NAME.equals(property.getName()) && property.getType() == PropertyType.INT) {
+                return Integer.parseInt(property.getValue());
+            }
+        }
+        throw new IllegalArgumentException("Code review comment should contain INT line_number property");
     }
 
     /**
@@ -119,7 +134,15 @@ public class CodeReviewCommentDto {
     public void setAuthorUsername(String authorUsername) {
         this.authorUsername = authorUsername;
     }
-    
-    
+
+    /**
+     * Gets custom properties list for comment. In this case contains only line_number property
+     *
+     * @return list of custom properties
+     */
+    public List<CommentProperty> getCommentProperties() {
+        return Arrays.asList( new CommentProperty(LINE_NUMBER_PROPERTY_NAME, PropertyType.INT,
+                String.valueOf(lineNumber)));
+    }
     
 }

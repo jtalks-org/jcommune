@@ -178,7 +178,7 @@ public class TransactionalPostServiceTest {
      */
     private Post firstPostOfCodeReview() {
         Topic topic = new Topic(user, "title");
-        topic.setCodeReview(new CodeReview());
+//        topic.setCodeReview(new CodeReview());
         Post post = new Post(user, "");
         topic.addPost(post);
         post.setId(123L);//we don't care about ID

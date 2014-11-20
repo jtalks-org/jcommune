@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service;
 
 
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CommentProperty;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
@@ -101,12 +102,12 @@ public interface PostService extends EntityService<Post> {
      * Adds comment to post with specified id
      *
      * @param postId id of post to which comment will be added
-     * @param index index of the comment (line number for review comment)
+     * @param properties list of custom comment properties
      * @param body text of the comment
 
      * @return newly created comment
      */
-    PostComment addComment(Long postId, int index, String body);
+    PostComment addComment(Long postId, List<CommentProperty> properties, String body);
 
     /**
      * Removes specified comment from specified post

@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.CommentProperty;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
@@ -108,8 +109,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public void updatePost(Post post, String postContent) {
         Topic postTopic = post.getTopic();
-        if (postTopic.getCodeReview() != null
-                && postTopic.getPosts().get(0).getId() == post.getId()) {
+        if (postTopic.getType().isCodeReview() && postTopic.getPosts().get(0).getId() == post.getId()) {
             throw new AccessDeniedException("It is impossible to edit code review!");
         }
         post.setPostContent(postContent);
@@ -166,7 +166,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         PageRequest pageRequest = new PageRequest(page, currentUser.getPageSize());
 
         if (allowedBranchesIds.isEmpty()) {
-            return new PageImpl<Post>(Collections.<Post>emptyList());
+            return new PageImpl<>(Collections.<Post>emptyList());
         } else {
             return this.getDao().getUserPosts(userCreated, pageRequest, allowedBranchesIds);
         }
@@ -216,7 +216,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     /**
      * {@inheritDoc}
      */
-    public PostComment addComment(Long postId, int lineNumber, String body) {
+    @Override
+    public PostComment addComment(Long postId, List<CommentProperty> properties, String body) {
         Post targetPost = getDao().get(postId);
         JCUser currentUser = userService.getCurrentUser();
         permissionService.checkPermission(
@@ -224,7 +225,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
                 AclClassName.BRANCH,
                 BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
         PostComment comment = new PostComment();
- //       comment.setIndex(lineNumber);
+        comment.addCustomProperties(properties);
         comment.setBody(body);
         comment.setCreationDate(new DateTime(System.currentTimeMillis()));
         comment.setAuthor(currentUser);

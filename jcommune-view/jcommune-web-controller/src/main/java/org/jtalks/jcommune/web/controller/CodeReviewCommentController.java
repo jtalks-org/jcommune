@@ -110,7 +110,8 @@ public class CodeReviewCommentController {
         if (bindingResult.hasErrors()) {
             return new FailValidationJsonResponse(bindingResult.getAllErrors());
         }
-        PostComment addedComment = postService.addComment(postId, commentDto.getLineNumber(), commentDto.getBody());
+        PostComment addedComment = postService.addComment(postId, commentDto.getCommentProperties(),
+                commentDto.getBody());
         CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(addedComment);
         return new JsonResponse(JsonResponseStatus.SUCCESS, addedCommentDto);
     }

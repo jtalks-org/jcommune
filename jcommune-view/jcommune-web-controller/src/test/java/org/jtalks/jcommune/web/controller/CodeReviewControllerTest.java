@@ -53,11 +53,11 @@ public class CodeReviewControllerTest {
     @Mock
     private LastReadPostService lastReadPostService;
     @Mock
-    private CodeReviewService codeReviewService;
-    @Mock
     private UserService userService;
     @Mock
     private PostService postService;
+    @Mock
+    private TopicTypeService topicTypeService;
 
 
     private CodeReviewController controller;
@@ -70,9 +70,9 @@ public class CodeReviewControllerTest {
                 breadcrumbBuilder,
                 topicModificationService,
                 lastReadPostService,
-                codeReviewService,
                 userService,
-                postService);
+                postService,
+                topicTypeService);
     }
 
     @BeforeMethod

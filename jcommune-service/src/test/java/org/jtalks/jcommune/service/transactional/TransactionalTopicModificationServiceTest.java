@@ -23,6 +23,7 @@ import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
+import org.jtalks.jcommune.model.dao.TopicTypeDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -97,6 +98,8 @@ public class TransactionalTopicModificationServiceTest {
     private MentionedUsers mentionedUsers;
     @Mock
     private PostDao postDao;
+    @Mock
+    private TopicTypeDao topicTypeDao;
 
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -116,7 +119,8 @@ public class TransactionalTopicModificationServiceTest {
                 permissionEvaluator,
                 branchLastPostService,
                 lastReadPostService,
-                postDao);
+                postDao,
+                topicTypeDao);
 
         user = new JCUser("username", "email@mail.com", "password");
         when(securityContextFacade.getContext()).thenReturn(securityContext);
@@ -354,8 +358,8 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(user.getPostCount(), 1);
         assertFalse(createdTopic.isAnnouncement());
         assertFalse(createdTopic.isSticked());
-        assertNotNull(createdTopic.getCodeReview());
-        assertSame(createdTopic.getCodeReview().getTopic(), createdTopic);
+//        assertNotNull(createdTopic.getCodeReview());
+//        assertSame(createdTopic.getCodeReview().getTopic(), createdTopic);
     }
 
     private void createCodeReviewVerifications(Branch branch)
@@ -642,7 +646,7 @@ public class TransactionalTopicModificationServiceTest {
         user.setAutosubscribe(false);
         when(userService.getCurrentUser()).thenReturn(user);
         Topic topic = new Topic(user, "title");
-        topic.setCodeReview(new CodeReview());
+//        topic.setCodeReview(new CodeReview());
 
         topicService.updateTopic(topic, null);
     }
@@ -719,7 +723,7 @@ public class TransactionalTopicModificationServiceTest {
     @Test(expectedExceptions = AccessDeniedException.class)
     public void testCloseCodeReviewTopic() {
         Topic topic = this.createTopic();
-        topic.setCodeReview(new CodeReview());
+//        topic.setCodeReview(new CodeReview());
         topicService.closeTopic(topic);
     }
 

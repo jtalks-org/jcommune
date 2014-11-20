@@ -12,7 +12,7 @@
   <a href="${pageContext.request.contextPath}/posts/${topic.firstUnreadPostId}">
 </c:if>
 <c:choose>
-  <c:when test="${topic.codeReview != null}">
+  <c:when test="${topic.type.codeReview}">
     <c:if test="${topic.hasUpdates && authenticated}">
       <c:set var="iconName" value="code-review-new-posts.png"/>
       <c:set var="titleCode" value="label.topic.new_posts"/>

@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
+import static org.jtalks.jcommune.model.entity.PropertyType.STRING;
 
 /**
  * Provides user registration and authentication services via Poulpe.

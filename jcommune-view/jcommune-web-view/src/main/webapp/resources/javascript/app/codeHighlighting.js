@@ -89,6 +89,7 @@ function CodeHighlighting() {
 	        type: "GET",
 	        success: function (data) {
 	            var comments = data.result.comments;
+				console.log(comments.length);
 	            for (var i = 0; i < comments.length; i++) {
 	                _this.addComment(comments[i]);
 	            }

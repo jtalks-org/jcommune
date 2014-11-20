@@ -8,7 +8,7 @@
 
 <%--Users with this grant can post even in closed topics.--%>
 <c:set var="hasCloseTopicPermission" value="false"/>
-<c:if test='${topic.codeReview == null}'>
+<c:if test='${!topic.type.codeReview}'>
   <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                         permission='BranchPermission.CLOSE_TOPICS'>
     <c:set var="hasCloseTopicPermission" value="true"/>
@@ -23,7 +23,7 @@
   </a>
 </jtalks:hasPermission>
 
-<c:if test='${topic.codeReview == null && hasCloseTopicPermission}'>
+<c:if test='${!topic.type.codeReview && hasCloseTopicPermission}'>
   <c:choose>
     <c:when test="${topic.closed}">
       <a href="${pageContext.request.contextPath}/topics/${topic.id}/open"

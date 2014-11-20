@@ -15,8 +15,8 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.TopicTypeName;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
@@ -53,28 +53,29 @@ public class CodeReviewController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicModificationService topicModificationService;
     private UserService userService;
+    private TopicTypeService topicTypeService;
 
     /**
      * @param branchService            the object which provides actions on
      *                                 {@link org.jtalks.jcommune.model.entity.Branch} entity
      * @param breadcrumbBuilder        to create Breadcrumbs for pages
      * @param topicModificationService the object which provides actions on
-     *                                 {@link org.jtalks.jcommune.model.entity.Topic} entity
-     * @param lastReadPostService      to perform post-related actions
-     * @param codeReviewService        to operate with {@link CodeReview} entities
+     * @param userService              the object which provides actions on
+     *                                 {@link org.jtalks.jcommune.model.entity.JCUser} entity
      */
     @Autowired
     public CodeReviewController(BranchService branchService,
                                 BreadcrumbBuilder breadcrumbBuilder,
                                 TopicModificationService topicModificationService,
                                 LastReadPostService lastReadPostService,
-                                CodeReviewService codeReviewService,
                                 UserService userService,
-                                PostService postService) {
+                                PostService postService,
+                                TopicTypeService topicTypeService) {
         this.branchService = branchService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicModificationService = topicModificationService;
         this.userService = userService;
+        this.topicTypeService = topicTypeService;
     }
 
     /**
@@ -120,7 +121,8 @@ public class CodeReviewController {
         }
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
-        Topic createdTopic = topicModificationService.createCodeReview(topic, topicDto.getBodyText());
+        topic.setType(topicTypeService.getTopicTypeByName(TopicTypeName.CODE_REVIEW.getName()));
+        Topic createdTopic = topicModificationService.createTopic(topic, topicDto.getBodyText());
 
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
     }

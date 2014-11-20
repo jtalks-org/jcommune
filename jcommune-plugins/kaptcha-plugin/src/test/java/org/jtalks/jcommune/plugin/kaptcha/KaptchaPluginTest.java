@@ -18,6 +18,7 @@ package org.jtalks.jcommune.plugin.kaptcha;
 import com.google.common.collect.ImmutableMap;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PluginProperty;
+import org.jtalks.jcommune.model.entity.PropertyType;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
@@ -155,11 +156,11 @@ public class KaptchaPluginTest {
     @Test
     public void applyConfigurationWithCorrectValuesShouldBeSuccessful() throws PluginConfigurationException {
         List<PluginProperty> properties = new ArrayList<>();
-        properties.add(new PluginProperty(KaptchaPlugin.WIDTH_PROPERTY, PluginProperty.Type.INT, "400"));
-        properties.add(new PluginProperty(KaptchaPlugin.HEIGHT_PROPERTY, PluginProperty.Type.INT, "400"));
-        properties.add(new PluginProperty(KaptchaPlugin.LENGTH_PROPERTY, PluginProperty.Type.INT, "4"));
+        properties.add(new PluginProperty(KaptchaPlugin.WIDTH_PROPERTY, PropertyType.INT, "400"));
+        properties.add(new PluginProperty(KaptchaPlugin.HEIGHT_PROPERTY, PropertyType.INT, "400"));
+        properties.add(new PluginProperty(KaptchaPlugin.LENGTH_PROPERTY, PropertyType.INT, "4"));
         properties.add(new PluginProperty(KaptchaPlugin.POSSIBLE_SYMBOLS_PROPERTY,
-                PluginProperty.Type.STRING, "0123456789"));
+                PropertyType.STRING, "0123456789"));
 
         Map<PluginProperty, String> errors = kaptchaPlugin.applyConfiguration(properties);
 
@@ -169,9 +170,9 @@ public class KaptchaPluginTest {
     @Test(expectedExceptions = PluginConfigurationException.class)
     public void applyConfigurationWithInvalidPropertiesShouldBeFailed() throws PluginConfigurationException {
         List<PluginProperty> properties = new ArrayList<>();
-        properties.add(new PluginProperty(KaptchaPlugin.WIDTH_PROPERTY, PluginProperty.Type.INT, "400"));
-        properties.add(new PluginProperty(KaptchaPlugin.HEIGHT_PROPERTY, PluginProperty.Type.INT, "400"));
-        properties.add(new PluginProperty(KaptchaPlugin.LENGTH_PROPERTY, PluginProperty.Type.INT, "ABC4"));
+        properties.add(new PluginProperty(KaptchaPlugin.WIDTH_PROPERTY, PropertyType.INT, "400"));
+        properties.add(new PluginProperty(KaptchaPlugin.HEIGHT_PROPERTY, PropertyType.INT, "400"));
+        properties.add(new PluginProperty(KaptchaPlugin.LENGTH_PROPERTY, PropertyType.INT, "ABC4"));
 
         kaptchaPlugin.applyConfiguration(properties);
     }

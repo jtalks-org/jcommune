@@ -17,7 +17,6 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.entity.*;
-import org.jtalks.jcommune.service.CodeReviewService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -48,8 +47,6 @@ public class TransactionalPostCommentServiceTest {
     private UserService userService;
     @Mock
     NotificationService notificationService;
-    @Mock
-    private CodeReviewService codeReviewService;
 
     private TransactionalPostCommentService codeReviewCommentService;
 
@@ -74,8 +71,8 @@ public class TransactionalPostCommentServiceTest {
         Post post = new Post(null, null);
         post.setId(48l);
         codeReviewTopic.addPost(post);
-        CodeReview codeReview = new CodeReview();
-        codeReview.setTopic(codeReviewTopic);
+//        CodeReview codeReview = new CodeReview();
+//        codeReview.setTopic(codeReviewTopic);
         //codeReview.addComment(comment);
 
         when(dao.get(CR_ID)).thenReturn(comment);

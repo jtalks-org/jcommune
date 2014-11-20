@@ -12,47 +12,33 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.entity;
+package org.jtalks.jcommune.service;
 
-import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.entity.TopicType;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
 /**
+ * Service for manipulating {@link TopicType} entity
+ *
  * @author Mikhail Stryzhonok
  */
-public class TopicType extends Entity {
-
-    private String name;
+public interface TopicTypeService {
 
     /**
-     * For Hibernate use only
-     */
-    public TopicType() {
-    }
-
-    public TopicType(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Gets name of the type
+     * Creates new topic type with specified name
      *
-     * @return name of the type
+     * @param name name of new topic type
      */
-    public String getName() {
-        return name;
-    }
-
+    public void createNewTopicType(String name);
 
     /**
-     * Sets specified name to the type
+     * Gets topic type with specified name
      *
-     * @param name name to be set
+     * @param name name of interested topic type
+     *
+     * @return topic type with specified name
+     *
+     * @throws NotFoundException if no topic types found
      */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isCodeReview() {
-        return TopicTypeName.CODE_REVIEW.getName().equals(name);
-    }
+    public TopicType getTopicTypeByName(String name) throws NotFoundException;
 }

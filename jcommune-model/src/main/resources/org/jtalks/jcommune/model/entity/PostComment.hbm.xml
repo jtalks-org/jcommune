@@ -36,11 +36,10 @@
         <many-to-one name="post" column="POST_ID" class="org.jtalks.jcommune.model.entity.Post"
                      lazy="false"
                      not-null="true" foreign-key="FC_COMMENT_POST"/>
-        <list name="customProperties" cascade="all-delete-orphan">
+        <bag name="customProperties" cascade="all-delete-orphan" inverse="true">
           <cache usage="read-write"/>
           <key column="COMMENT_ID" foreign-key="FC_COMMENT_PARAM"/>
-          <index column="LIST_INDEX"/>
           <one-to-many class="CommentProperty"/>
-        </list>
+        </bag>
     </class>
 </hibernate-mapping>

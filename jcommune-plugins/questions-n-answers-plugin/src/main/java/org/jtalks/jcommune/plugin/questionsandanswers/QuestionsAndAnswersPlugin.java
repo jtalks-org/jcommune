@@ -16,6 +16,7 @@ package org.jtalks.jcommune.plugin.questionsandanswers;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
+import org.jtalks.jcommune.model.entity.PropertyType;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.core.WebControllerPlugin;
 import org.jtalks.jcommune.plugin.api.web.dto.CreateTopicBtnDto;
@@ -57,7 +58,7 @@ public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements To
      */
     @Override
     public List<PluginProperty> getConfiguration() {
-        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT,
+        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PropertyType.INT,
                 String.valueOf(order));
         orderProperty.setHint(ORDER_HINT);
         return Arrays.asList(orderProperty);
@@ -93,7 +94,7 @@ public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements To
      */
     @Override
     public List<PluginProperty> getDefaultConfiguration() {
-        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT,
+        PluginProperty orderProperty = new PluginProperty(ORDER_PROPERTY, PropertyType.INT,
                 String.valueOf(DEFAULT_ORDER_VALUE));
         orderProperty.setHint(ORDER_HINT);
         return Arrays.asList(orderProperty);

@@ -103,7 +103,7 @@ public class MailService {
         String url = this.getDeploymentRootUrl() + urlSuffix;
         String name = user.getUsername();
         Locale locale = user.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(NAME, name);
         model.put("newPassword", newPassword);
         model.put(LINK, url);
@@ -128,7 +128,7 @@ public class MailService {
             String urlSuffix = entity.prepareUrlSuffix();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
+            Map<String, Object> model = new HashMap<>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
             if (entity instanceof Branch) {
@@ -172,7 +172,7 @@ public class MailService {
             String urlSuffix = "/pm/inbox/" + pm.getId();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
+            Map<String, Object> model = new HashMap<>();
             model.put("recipient", recipient);
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
@@ -195,7 +195,7 @@ public class MailService {
             String urlSuffix = "/user/activate/" + recipient.getUuid();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
+            Map<String, Object> model = new HashMap<>();
             model.put(NAME, recipient.getUsername());
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
@@ -217,7 +217,7 @@ public class MailService {
         String urlSuffix = "/topics/" + topic.getId();
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(NAME, recipient.getUsername());
         model.put(LINK, url);
         model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(topic.getBranch()));
@@ -242,7 +242,7 @@ public class MailService {
         String urlSuffix = "/topics/" + topic.getId();
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(NAME, recipient.getUsername());
         model.put(CUR_USER, curUser);
         model.put(LINK, url);
@@ -269,7 +269,7 @@ public class MailService {
         String urlSuffix = "/posts/" + postId;
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(NAME, recipient.getUsername());
         model.put(LINK, url);
         model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
@@ -387,9 +387,6 @@ public class MailService {
         } else if (entity instanceof Branch) {
             Branch branch = (Branch) entity;
             return ": " + branch.getName();
-        } else if (entity instanceof CodeReview) {
-            CodeReview codeReview = (CodeReview) entity;
-            return ": " + codeReview.getTopic().getTitle();
         } else {
             return "";
         }
@@ -414,7 +411,7 @@ public class MailService {
             String subjectTemplate = "removeTopic.subject";
             String messageBodyTemplate = "removeTopic.vm";
 
-            if (topic.getCodeReview() != null) {
+            if (topic.getType().isCodeReview()) {
                 subjectTemplate = "removeCodeReview.subject";
                 messageBodyTemplate = "removeCodeReview.vm";
             }
@@ -449,7 +446,7 @@ public class MailService {
             String subjectTemplate = "removeTopic.subject";
             String messageBodyTemplate = "removeTopic.vm";
 
-            if (topic.getCodeReview() != null) {
+            if (topic.getType().isCodeReview()) {
                 subjectTemplate = "removeCodeReview.subject";
                 messageBodyTemplate = "removeCodeReview.vm";
             }
@@ -474,7 +471,7 @@ public class MailService {
             String urlSuffix = "/topics/" + topic.getId();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = subscriber.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
+            Map<String, Object> model = new HashMap<>();
             model.put(LINK, url);
             model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl()
                     + getUnsubscribeBranchLink(topic.getBranch()));
@@ -493,9 +490,6 @@ public class MailService {
         }
         if (entity instanceof Topic) {
             return result.replace("{0}", "" + ((Topic) entity).getBranch().getId());
-        }
-        if (entity instanceof CodeReview) {
-            return result.replace("{0}", "" + ((CodeReview) entity).getTopic().getBranch().getId());
         }
         if (entity instanceof Post) {
             return result.replace("{0}", "" + ((Post) entity).getTopic().getBranch().getId());

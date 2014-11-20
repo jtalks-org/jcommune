@@ -17,12 +17,11 @@ package org.jtalks.jcommune.web.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jtalks.jcommune.model.entity.CodeReview;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
 
 /**
- * DTO for {@link CodeReview}
+ * DTO for code review topic type
  * @author Vyacheslav Mishcheryakov
  *
  */
