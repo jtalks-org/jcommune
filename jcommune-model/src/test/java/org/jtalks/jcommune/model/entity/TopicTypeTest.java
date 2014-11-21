@@ -12,34 +12,36 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
+package org.jtalks.jcommune.model.entity;
 
-import org.jtalks.jcommune.model.entity.TopicType;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.testng.annotations.Test;
+
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 /**
- * Service for manipulating {@link TopicType} entity
- *
  * @author Mikhail Stryzhonok
  */
-public interface TopicTypeService {
+public class TopicTypeTest {
 
-    /**
-     * Creates new topic type with specified name if topic type with specified name not exist
-     * Otherwise does nothing
-     *
-     * @param name name of new topic type
-     */
-    public void createTopicTypeIfNotExist(String name);
+    @Test
+    public void isCodeReviewShouldReturnTrueIfTypeIsCodeReview() {
+        TopicType type = new TopicType(TopicTypeName.CODE_REVIEW.getName());
 
-    /**
-     * Gets topic type with specified name
-     *
-     * @param name name of interested topic type
-     *
-     * @return topic type with specified name
-     *
-     * @throws NotFoundException if no topic types found
-     */
-    public TopicType getTopicTypeByName(String name) throws NotFoundException;
+        assertTrue(type.isCodeReview());
+    }
+
+    @Test
+    public void isCodeReviewShouldReturnFalseIfTypeIsNotCodeReview() {
+        TopicType type = new TopicType(TopicTypeName.DISCUSSION.getName());
+
+        assertFalse(type.isCodeReview());
+    }
+
+    @Test
+    public void isCodeReviewShouldReturnFalseIfTypeNameIsNull() {
+        TopicType type = new TopicType();
+
+        assertFalse(type.isCodeReview());
+    }
 }

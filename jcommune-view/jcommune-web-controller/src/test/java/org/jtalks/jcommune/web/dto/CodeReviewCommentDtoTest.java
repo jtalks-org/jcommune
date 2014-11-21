@@ -21,9 +21,11 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PropertyType;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static org.testng.Assert.*;
 
-public class PostCommentDtoTest {
+public class CodeReviewCommentDtoTest {
 
     @Test
     public void testConstructor() {
@@ -38,6 +40,28 @@ public class PostCommentDtoTest {
         assertEquals(dto.getBody(), comment.getBody());
         assertEquals(dto.getAuthorId(), comment.getAuthor().getId());
         assertEquals(dto.getAuthorUsername(), comment.getAuthor().getEncodedUsername());
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void constructorShouldThrowExceptionIfNoLineNumberProperty() {
+        PostComment comment = createComment();
+        new CodeReviewCommentDto(comment);
+    }
+
+    @Test
+    public void testGetCommentProperties() {
+        PostComment comment = createComment();
+        comment.addCustomProperty(new CommentProperty(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME,
+                PropertyType.INT, "1"));
+        CodeReviewCommentDto dto = new CodeReviewCommentDto(comment);
+
+        List<CommentProperty> properties = dto.getCommentProperties();
+
+        assertEquals(properties.size(), 1);
+        CommentProperty prop = properties.get(0);
+        assertEquals(prop.getName(), CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME);
+        assertEquals(prop.getType(), PropertyType.INT);
+        assertEquals(prop.getValue(), "1");
     }
     
     private PostComment createComment() {

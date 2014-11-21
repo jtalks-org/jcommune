@@ -44,9 +44,12 @@ public class TransactionalTopicTypeService implements TopicTypeService {
      * {@inheritDoc}
      */
     @Override
-    public void createNewTopicType(String name) {
-        TopicType topicType = new TopicType(name);
-        topicTypeDao.saveOrUpdate(topicType);
+    public void createTopicTypeIfNotExist(String name) {
+        TopicType topicType = topicTypeDao.getByName(name);
+        if (topicType == null) {
+            topicType = new TopicType(name);
+            topicTypeDao.saveOrUpdate(topicType);
+        }
     }
 
     /**

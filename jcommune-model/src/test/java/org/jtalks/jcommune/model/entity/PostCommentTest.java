@@ -16,6 +16,8 @@ package org.jtalks.jcommune.model.entity;
 
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+
 import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
@@ -67,16 +69,42 @@ public class PostCommentTest {
     @Test
     public void getOwnerPostShouldReturnFirstPostOfCodeReviewTopic() {
         Post expectedOwnerPost = new Post();
-        PostComment postComment = createCodeReviewCommentAttachedTo(expectedOwnerPost);
+        PostComment postComment = createCommentAttachedTo(expectedOwnerPost);
         
         Post actualOwnerPost = postComment.getOwnerPost();
         
         assertEquals("It should return first post of owner topic, cause it contains code review.",
                 expectedOwnerPost, actualOwnerPost);
     }
+
+    @Test
+    public void testAddCustomProperty() {
+        PostComment comment = new PostComment();
+        CommentProperty property = new CommentProperty();
+
+        comment.addCustomProperty(property);
+
+        assertTrue(comment.getCustomProperties().contains(property));
+        assertEquals(comment, property.getComment());
+    }
+
+    @Test
+    public void testAddCustomProperties() {
+        PostComment comment = new PostComment();
+        CommentProperty property1 = new CommentProperty();
+        CommentProperty property2 = new CommentProperty();
+
+        comment.addCustomProperties(Arrays.asList(property1, property2));
+
+        assertEquals(2, comment.getCustomProperties().size());
+        assertTrue(comment.getCustomProperties().contains(property1));
+        assertTrue(comment.getCustomProperties().contains(property2));
+        assertEquals(comment, property1.getComment());
+        assertEquals(comment, property2.getComment());
+    }
     
     
-    private PostComment createCodeReviewCommentAttachedTo(Post ownerPost) {
+    private PostComment createCommentAttachedTo(Post ownerPost) {
         Topic topic = new Topic();
         topic.addPost(ownerPost);
         PostComment postComment = new PostComment();

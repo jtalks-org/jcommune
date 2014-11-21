@@ -193,14 +193,29 @@ public class Post extends Entity {
         return getTopic().getSubscribers();
     }
 
+    /**
+     * Gets list of comments of the post
+     *
+     * @return list of comments
+     */
     public List<PostComment> getComments() {
         return comments;
     }
 
+    /**
+     * Sets specified list of comments to the post
+     *
+     * @param comments list of comments to set
+     */
     public void setComments(List<PostComment> comments) {
         this.comments = comments;
     }
 
+    /**
+     * Adds specified comment to the post
+     *
+     * @param comment comment to add
+     */
     public void addComment(PostComment comment) {
         comment.setPost(this);
         comments.add(comment);

@@ -190,11 +190,21 @@ public class TopicTest {
     public void setSubscribersShouldSubscribeUserToTheTopic() {
         JCUser subscribedUser = new JCUser();
         JCUser notSubscribedUser = new JCUser();
-        Set<JCUser> subscribers = new HashSet<JCUser>();
+        Set<JCUser> subscribers = new HashSet<>();
         subscribers.add(subscribedUser);
         topic.setSubscribers(subscribers);
         assertTrue(topic.userSubscribed(subscribedUser));
         assertFalse(topic.userSubscribed(notSubscribedUser));
+    }
+
+    @Test
+    public void testAddCustomProperty() {
+        TopicProperty property = new TopicProperty("name", PropertyType.INT, "1");
+
+        topic.addCustomProperty(property);
+
+        assertTrue(topic.getCustomProperties().contains(property));
+        assertEquals(property.getTopic(), topic);
     }
 
     private Post[] postList(int numberOfPosts, Topic topic) {
