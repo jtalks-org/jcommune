@@ -39,7 +39,6 @@ import static org.testng.Assert.assertEquals;
 public class CodeReviewControllerTest {
     public long BRANCH_ID = 1L;
     private String TOPIC_CONTENT = "content here";
-    private long REVIEW_ID = 1L;
 
     private JCUser user;
     private Branch branch;
@@ -56,8 +55,6 @@ public class CodeReviewControllerTest {
     private UserService userService;
     @Mock
     private PostService postService;
-    @Mock
-    private TopicTypeService topicTypeService;
 
 
     private CodeReviewController controller;
@@ -71,8 +68,7 @@ public class CodeReviewControllerTest {
                 topicModificationService,
                 lastReadPostService,
                 userService,
-                postService,
-                topicTypeService);
+                postService);
     }
 
     @BeforeMethod

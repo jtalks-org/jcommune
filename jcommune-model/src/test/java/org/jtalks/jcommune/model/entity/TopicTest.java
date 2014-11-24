@@ -215,4 +215,25 @@ public class TopicTest {
         }
         return posts;
     }
+
+    @Test
+    public void isCodeReviewShouldReturnTrueIfTopicTypeIsCodeReview() {
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
+
+        assertTrue(topic.isCodeReview());
+    }
+
+    @Test
+    public void isCodeReviewShouldReturnFalseIfTopicTypeIsNotCodeReview() {
+        topic.setType(TopicTypeName.DISCUSSION.getName());
+
+        assertFalse(topic.isCodeReview());
+    }
+
+    @Test
+    public void isCodeReviewShouldReturnFalseIfTopicTypeNotSet() {
+        topic.setType(null);
+
+        assertFalse(topic.isCodeReview());
+    }
 }

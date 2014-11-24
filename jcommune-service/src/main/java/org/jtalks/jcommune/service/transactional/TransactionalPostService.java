@@ -110,7 +110,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public void updatePost(Post post, String postContent) {
         Topic postTopic = post.getTopic();
-        if (postTopic.getType().isCodeReview() && postTopic.getPosts().get(0).getId() == post.getId()) {
+        if (postTopic.isCodeReview() && postTopic.getPosts().get(0).getId() == post.getId()) {
             throw new AccessDeniedException("It is impossible to edit code review!");
         }
         post.setPostContent(postContent);

@@ -113,7 +113,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         session.save(author);
         Branch branch = ObjectsFactory.getDefaultBranch();
         for (int i = 0; i < size; i++) {
-            Topic newTopic = new Topic(author, "title" + i, PersistedObjectsFactory.getDefaultTopicType());
+            Topic newTopic = new Topic(author, "title" + i, "Discussion");
             newTopic.addPost(new Post(author, "post_content" + i));
             branch.addTopic(newTopic);
             topics.add(newTopic);
@@ -315,13 +315,13 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
         Branch branch = ObjectsFactory.getDefaultBranch();
         Topic topic1 = ObjectsFactory.getTopic(author, 1);
-        topic1.setType(PersistedObjectsFactory.getDefaultTopicType());
+        topic1.setType("Discussion");
         branch.addTopic(topic1);
         Topic topic2 = ObjectsFactory.getTopic(author, 1);
-        topic2.setType(PersistedObjectsFactory.getDefaultTopicType());
+        topic2.setType("Discussion");
         branch.addTopic(topic2);
         Topic topic3 = ObjectsFactory.getTopic(author, 2);
-        topic3.setType(PersistedObjectsFactory.getDefaultTopicType());
+        topic3.setType("Discussion");
         branch.addTopic(topic3);
         session.save(branch);
 
@@ -337,8 +337,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     public void testGetLastUpdatedTopicInBranch() {
         Topic firstTopic = PersistedObjectsFactory.getDefaultTopic();
         Branch branch = firstTopic.getBranch();
-        Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic",
-                PersistedObjectsFactory.getDefaultTopicType());
+        Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic", "Discussion");
         branch.addTopic(secondTopic);
         Topic expectedLastUpdatedTopic = firstTopic;
         ReflectionTestUtils.setField(
@@ -381,7 +380,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         Topic topic = PersistedObjectsFactory.getDefaultTopic();
         JCUser user = topic.getTopicStarter();
         Branch branch = topic.getBranch();
-        branch.addTopic(new Topic(user, "Second topic", PersistedObjectsFactory.getDefaultTopicType()));
+        branch.addTopic(new Topic(user, "Second topic", "Discussion"));
         session.save(branch);
         int expectedCount = branch.getTopics().size();
 
@@ -481,7 +480,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
         Branch branch = ObjectsFactory.getDefaultBranch();
         Topic topic = ObjectsFactory.getTopic(subscriber, 5);
-        topic.setType(PersistedObjectsFactory.getDefaultTopicType());
+        topic.setType("Discussion");
         topic.getSubscribers().add(subscriber);
         branch.addTopic(topic);
         session.save(branch);
@@ -580,8 +579,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     @Test
     public void testSaveTopicWithCustomProperties() {
         TopicProperty property = new TopicProperty("name", PropertyType.STRING, "value1");
-        Topic topic = new Topic(PersistedObjectsFactory.getDefaultUser(), "title",
-                PersistedObjectsFactory.getDefaultTopicType());
+        Topic topic = new Topic(PersistedObjectsFactory.getDefaultUser(), "title", "Discussion");
         topic.addCustomProperty(property);
         dao.saveOrUpdate(topic);
         flushAndClearSession();
@@ -637,8 +635,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     public void itShouldBeImpossibleToSaveTopicWithTwoIdenticalParameters() {
         TopicProperty property1 = new TopicProperty("name", PropertyType.STRING, "value1");
         TopicProperty property2 = new TopicProperty("name", PropertyType.STRING, "value1");
-        Topic topic = new Topic(PersistedObjectsFactory.getDefaultUser(), "title",
-                PersistedObjectsFactory.getDefaultTopicType());
+        Topic topic = new Topic(PersistedObjectsFactory.getDefaultUser(), "title", "Discussion");
         topic.addCustomProperty(property1);
         property2.setUuid(property1.getUuid());
         topic.addCustomProperty(property2);

@@ -416,7 +416,7 @@ public class MailService {
             String subjectTemplate = REMOVE_TOPIC_SUBJECT_TEMPLATE;
             String messageBodyTemplate = REMOVE_TOPIC_MESSAGE_BODY_TEMPLATE;
 
-            if (topic.getType().isCodeReview()) {
+            if (topic.isCodeReview()) {
                 subjectTemplate = REMOVE_CODE_REVIEW_SUBJECT_TEMPLATE;
                 messageBodyTemplate = REMOVE_CODE_REVIEW_MESSAGE_BODY_TEMPLATE;
             }
@@ -451,7 +451,7 @@ public class MailService {
             String subjectTemplate = REMOVE_TOPIC_SUBJECT_TEMPLATE;
             String messageBodyTemplate = REMOVE_TOPIC_MESSAGE_BODY_TEMPLATE;
 
-            if (topic.getType().isCodeReview()) {
+            if (topic.isCodeReview()) {
                 subjectTemplate = REMOVE_CODE_REVIEW_SUBJECT_TEMPLATE;
                 messageBodyTemplate = REMOVE_CODE_REVIEW_MESSAGE_BODY_TEMPLATE;
             }

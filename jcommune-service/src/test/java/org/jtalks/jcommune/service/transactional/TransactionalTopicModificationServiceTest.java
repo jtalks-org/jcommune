@@ -23,7 +23,6 @@ import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
-import org.jtalks.jcommune.model.dao.TopicTypeDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -98,8 +97,6 @@ public class TransactionalTopicModificationServiceTest {
     private MentionedUsers mentionedUsers;
     @Mock
     private PostDao postDao;
-    @Mock
-    private TopicTypeDao topicTypeDao;
 
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -120,7 +117,6 @@ public class TransactionalTopicModificationServiceTest {
                 branchLastPostService,
                 lastReadPostService,
                 postDao,
-                topicTypeDao,
                 topicFetchService);
 
         user = new JCUser("username", "email@mail.com", "password");
@@ -130,7 +126,7 @@ public class TransactionalTopicModificationServiceTest {
     @Test
     public void testReplyToTopic() throws NotFoundException {
         Topic answeredTopic = new Topic(user, "title");
-        answeredTopic.setType(getDiscussionTopicType());
+        answeredTopic.setType(TopicTypeName.DISCUSSION.getName());
         answeredTopic.setBranch(new Branch("name", "description"));
         when(userService.getCurrentUser()).thenReturn(user);
         when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(answeredTopic);
@@ -278,7 +274,7 @@ public class TransactionalTopicModificationServiceTest {
         Branch branch = createBranch();
         createTopicStubs(branch);
         Topic dto = createTopic();
-        dto.setType(getReviewTopicType());
+        dto.setType(TopicTypeName.CODE_REVIEW.getName());
         Topic createdTopic = topicService.createTopic(dto, ANSWER_BODY);
 
         assertEquals(createdTopic.getBodyText(), "[code=java]" + ANSWER_BODY + "[/code]");
@@ -577,7 +573,7 @@ public class TransactionalTopicModificationServiceTest {
         topic.setTitle("title");
         Post post = new Post(user, "content");
         topic.addPost(post);
-        topic.setType(getDiscussionTopicType());
+        topic.setType(TopicTypeName.DISCUSSION.getName());
 
         topicService.updateTopic(topic, null);
 
@@ -589,7 +585,7 @@ public class TransactionalTopicModificationServiceTest {
         user.setAutosubscribe(false);
         when(userService.getCurrentUser()).thenReturn(user);
         Topic topic = new Topic(user, "title");
-        topic.setType(getReviewTopicType());
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
 
         topicService.updateTopic(topic, null);
     }
@@ -681,7 +677,7 @@ public class TransactionalTopicModificationServiceTest {
     @Test(expectedExceptions = AccessDeniedException.class)
     public void testCloseCodeReviewTopic() {
         Topic topic = this.createTopic();
-        topic.setType(getReviewTopicType());
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
         topicService.closeTopic(topic);
     }
 
@@ -716,7 +712,7 @@ public class TransactionalTopicModificationServiceTest {
         topic.setId(TOPIC_ID);
         Branch branch = createBranch();
         topic.setBranch(branch);
-        topic.setType(getDiscussionTopicType());
+        topic.setType(TopicTypeName.DISCUSSION.getName());
         return topic;
     }
 
@@ -732,11 +728,4 @@ public class TransactionalTopicModificationServiceTest {
         topic.setSubscribers(subscribers);
     }
 
-    private TopicType getDiscussionTopicType() {
-        return new TopicType(TopicTypeName.DISCUSSION.getName());
-    }
-
-    private TopicType getReviewTopicType() {
-        return new TopicType(TopicTypeName.CODE_REVIEW.getName());
-    }
 }

@@ -132,7 +132,7 @@ public class TransactionalPostServiceTest {
     public void testUpdatePost() throws NotFoundException {
         String newBody = "new body";
         Topic topic = new Topic(user, "title");
-        topic.setType(getDefaultTopicType());
+        topic.setType(TopicTypeName.DISCUSSION.getName());
         Post post = new Post(user, "");
         topic.addPost(post);
         post.setId(POST_ID);
@@ -153,7 +153,7 @@ public class TransactionalPostServiceTest {
     public void testUpdatePost_shouldNotSendNotifications() throws NotFoundException {
         String newBody = "new body";
         Topic topic = new Topic(user, "title");
-        topic.setType(getDefaultTopicType());
+        topic.setType(TopicTypeName.DISCUSSION.getName());
         Post post = new Post(user, "");
         topic.addPost(post);
         post.setId(POST_ID);
@@ -555,10 +555,6 @@ public class TransactionalPostServiceTest {
         return firstPost;
     }
 
-    private TopicType getDefaultTopicType() {
-        return new TopicType(TopicTypeName.DISCUSSION.getName());
-    }
-
     /**
      * Creates a code review with the first post.
      *
@@ -566,7 +562,7 @@ public class TransactionalPostServiceTest {
      */
     private Post firstPostOfCodeReview() {
         Topic topic = new Topic(user, "title");
-        topic.setType(new TopicType(TopicTypeName.CODE_REVIEW.getName()));
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
         Post post = new Post(user, "");
         topic.addPost(post);
         post.setId(123L);//we don't care about ID

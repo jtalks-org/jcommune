@@ -19,7 +19,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.jtalks.jcommune.model.entity">
-  <class name="CommentProperty" table="CUSTOM_COMMENT_PARAMETER">
+  <class name="CommentProperty" table="COMMENT_ATTRIBUTE">
     <cache usage="read-write"/>
     <id column="ID" name="id" unsaved-value="0">
       <generator class="native"/>
@@ -32,7 +32,7 @@
         <param name="type">12</param>
       </type>
     </property>
-    <property column="VALUE" name="value" not-null="true"/>
+    <property column="VALUE" name="value" type="text" not-null="true"/>
     <properties name="uniquePropertyNameForComment" unique="true">
         <property column="NAME" name="name" not-null="true"/>
         <many-to-one name="comment" column="COMMENT_ID" not-null="true"

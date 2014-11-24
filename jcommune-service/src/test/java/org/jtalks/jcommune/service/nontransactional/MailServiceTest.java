@@ -96,7 +96,7 @@ public class MailServiceTest {
         topic.setId(topicId);
         branch.setId(branchId);
         topic.setBranch(branch);
-        topic.setType(new TopicType(TopicTypeName.DISCUSSION.getName()));
+        topic.setType(TopicTypeName.DISCUSSION.getName());
     }
 
     @BeforeMethod
@@ -416,7 +416,7 @@ public class MailServiceTest {
     @Test
     public void testSendRemovingTopicWitCodeReviewMail() throws Exception {
         enableEmailNotifications();
-        topic.setType(new TopicType(TopicTypeName.CODE_REVIEW.getName()));
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
         service.sendRemovingTopicMail(user, topic);
 
         this.checkMailCredentials();
@@ -434,7 +434,7 @@ public class MailServiceTest {
     @Test
     public void testSendRemovingTopicWitCodeReviewMail_ForMethodWith3Params() throws Exception {
         enableEmailNotifications();
-        topic.setType(new TopicType(TopicTypeName.CODE_REVIEW.getName()));
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
         service.sendRemovingTopicMail(user, topic, "admin");
 
         this.checkMailCredentials();

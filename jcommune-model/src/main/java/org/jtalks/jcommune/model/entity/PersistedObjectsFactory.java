@@ -47,14 +47,10 @@ public final class PersistedObjectsFactory {
         return persist(new Post(persist(ObjectsFactory.getRandomUser()), "post content"));
     }
 
-    public static TopicType getDefaultTopicType() {
-        return persist(ObjectsFactory.getRandomTopicType());
-    }
-
     public static Topic getDefaultTopic() {
         JCUser user = persist(ObjectsFactory.getDefaultUser());
         Branch branch = ObjectsFactory.getDefaultBranch();
-        Topic newTopic = new Topic(user, "topic title", getDefaultTopicType());
+        Topic newTopic = new Topic(user, "topic title", "Discussion");
         Post post = new Post(user, "post content");
         newTopic.addPost(post);
         branch.addTopic(newTopic);
@@ -143,7 +139,7 @@ public final class PersistedObjectsFactory {
         org.jtalks.jcommune.model.entity.Branch branch = ObjectsFactory.getDefaultBranch();
         JCUser user = persist(ObjectsFactory.getDefaultUser());
         for (int i = 0; i < size; i++) {
-            Topic topic = new Topic(user, "title" + i, getDefaultTopicType());
+            Topic topic = new Topic(user, "title" + i, "Discussion");
             topic.addPost(new Post(user, "post_context" + i));
             branch.addTopic(topic);
         }
@@ -160,7 +156,7 @@ public final class PersistedObjectsFactory {
         org.jtalks.jcommune.model.entity.Branch branch = ObjectsFactory.getDefaultBranch();
         JCUser user = persist(ObjectsFactory.getRandomUser());
         for (int i = 0; i < size; i++) {
-            Topic topic = new Topic(user, "title" + i, getDefaultTopicType());
+            Topic topic = new Topic(user, "title" + i, "Discussion");
             topic.addPost(new Post(topic.getTopicStarter(), "content"));
             branch.addTopic(topic);
         }

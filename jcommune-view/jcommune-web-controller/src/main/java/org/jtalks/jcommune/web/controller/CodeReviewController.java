@@ -53,7 +53,6 @@ public class CodeReviewController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicModificationService topicModificationService;
     private UserService userService;
-    private TopicTypeService topicTypeService;
 
     /**
      * @param branchService            the object which provides actions on
@@ -69,13 +68,11 @@ public class CodeReviewController {
                                 TopicModificationService topicModificationService,
                                 LastReadPostService lastReadPostService,
                                 UserService userService,
-                                PostService postService,
-                                TopicTypeService topicTypeService) {
+                                PostService postService) {
         this.branchService = branchService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicModificationService = topicModificationService;
         this.userService = userService;
-        this.topicTypeService = topicTypeService;
     }
 
     /**
@@ -121,7 +118,7 @@ public class CodeReviewController {
         }
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
-        topic.setType(topicTypeService.getTopicTypeByName(TopicTypeName.CODE_REVIEW.getName()));
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
         Topic createdTopic = topicModificationService.createTopic(topic, topicDto.getBodyText());
 
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());

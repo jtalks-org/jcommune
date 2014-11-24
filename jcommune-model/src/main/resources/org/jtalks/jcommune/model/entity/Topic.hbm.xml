@@ -34,6 +34,7 @@
         <property name="views" column="VIEWS"/>
         <property name="announcement" column="ANNOUNCEMENT" not-null="true"/>
         <property name="closed" column="CLOSED" not-null="true"/>
+        <property name="type" column="TYPE" not-null="true"/>
 
         <!--By experimenting figured out that 10 is the best batch size when it comes to opening the branch page
 This might be tuned further in the future if the page size itself changes.-->
@@ -63,7 +64,6 @@ This might be tuned further in the future if the page size itself changes.-->
           <key column="TOPIC_ID" foreign-key="FC_TOPIC_PARAM"/>
           <one-to-many class="TopicProperty"/>
         </bag>
-        <many-to-one name="type" class="TopicType" column="TYPE_ID" foreign-key="FK_TOPIC_TOPIC_TYPE" not-null="true"/>
 
     </class>
 

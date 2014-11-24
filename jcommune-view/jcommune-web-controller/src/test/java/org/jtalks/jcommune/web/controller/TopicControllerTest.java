@@ -79,8 +79,6 @@ public class TopicControllerTest {
     private SessionRegistry registry;
     @Mock
     private LastReadPostService lastReadPostService;
-    @Mock
-    private TopicTypeService topicTypeService;
 
     private TopicController controller;
 
@@ -96,8 +94,7 @@ public class TopicControllerTest {
                 breadcrumbBuilder,
                 locationService,
                 registry,
-                topicFetchService,
-                topicTypeService);
+                topicFetchService);
     }
 
     @BeforeMethod
@@ -239,7 +236,7 @@ public class TopicControllerTest {
         Topic topic = this.createTopic();
         Post post = new Post(user, "content");
         topic.addPost(post);
-        topic.setType(new TopicType(TopicTypeName.DISCUSSION.getName()));
+        topic.setType(TopicTypeName.DISCUSSION.getName());
         //
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
@@ -268,7 +265,7 @@ public class TopicControllerTest {
         topic.setSubscribers(subscribers);
         Post post = new Post(user, "content");
         topic.addPost(post);
-        topic.setType(new TopicType(TopicTypeName.DISCUSSION.getName()));
+        topic.setType(TopicTypeName.DISCUSSION.getName());
         //
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
@@ -292,7 +289,7 @@ public class TopicControllerTest {
     @Test(expectedExceptions = AccessDeniedException.class)
     public void editTopicPageShouldNotBePossibleForCodeReview() throws NotFoundException {
         Topic topic = this.createTopic();
-        topic.setType(new TopicType(TopicTypeName.CODE_REVIEW.getName()));
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         when(userService.getCurrentUser()).thenReturn(user);

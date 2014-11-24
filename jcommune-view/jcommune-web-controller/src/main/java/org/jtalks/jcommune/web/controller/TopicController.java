@@ -75,7 +75,6 @@ public class TopicController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
-    private TopicTypeService topicTypeService;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -114,8 +113,7 @@ public class TopicController {
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
                            SessionRegistry sessionRegistry,
-                           TopicFetchService topicFetchService,
-                           TopicTypeService topicTypeService) {
+                           TopicFetchService topicFetchService) {
         this.topicModificationService = topicModificationService;
         this.postService = postService;
         this.branchService = branchService;
@@ -125,7 +123,6 @@ public class TopicController {
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
         this.topicFetchService = topicFetchService;
-        this.topicTypeService = topicTypeService;
     }
 
     /**
@@ -172,7 +169,7 @@ public class TopicController {
         }
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
-        topic.setType(topicTypeService.getTopicTypeByName(TopicTypeName.DISCUSSION.getName()));
+        topic.setType(TopicTypeName.DISCUSSION.getName());
         Topic createdTopic = createTopicWithLockHandling(topic, topicDto);
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
     }
@@ -254,7 +251,7 @@ public class TopicController {
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.GET)
     public ModelAndView editTopicPage(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicFetchService.get(topicId);
-        if (topic.getType().isCodeReview()) {
+        if (topic.isCodeReview()) {
             throw new AccessDeniedException("Edit page for code review");
         }
         TopicDto topicDto = new TopicDto(topic);

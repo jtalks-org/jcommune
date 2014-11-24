@@ -133,7 +133,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private int views;
     @Valid
     private Poll poll;
-    private TopicType type;
+    private String type;
     private List<TopicProperty> customProperties = new ArrayList<>();
     private List<Post> posts = new ArrayList<>();
     private Set<JCUser> subscribers = new HashSet<>();
@@ -181,7 +181,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         this.modificationDate = new DateTime();
     }
 
-    public Topic(JCUser topicStarter, String title, TopicType topicType) {
+    public Topic(JCUser topicStarter, String title, String topicType) {
         this.topicStarter = topicStarter;
         this.title = title;
         this.creationDate = new DateTime();
@@ -601,7 +601,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      *
      * @return type of the topic
      */
-    public TopicType getType() {
+    public String getType() {
         return type;
     }
 
@@ -610,7 +610,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      *
      * @param type type to set
      */
-    public void setType(TopicType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -640,5 +640,9 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     public void addCustomProperty(TopicProperty property) {
         property.setTopic(this);
         customProperties.add(property);
+    }
+
+    public boolean isCodeReview() {
+        return type != null && type.equals(TopicTypeName.CODE_REVIEW.getName());
     }
 }

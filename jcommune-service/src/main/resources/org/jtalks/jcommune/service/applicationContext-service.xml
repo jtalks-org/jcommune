@@ -227,7 +227,6 @@
     <constructor-arg ref="branchLastPostService"/>
     <constructor-arg ref="lastReadPostService"/>
     <constructor-arg ref="postDao"/>
-    <constructor-arg ref="topicTypeDao"/>
     <constructor-arg ref="topicFetchService"/>
   </bean>
 
@@ -338,9 +337,9 @@
     </property>
   </bean>
 
-  <bean id="codeReviewCommentService"
+  <bean id="postReviewCommentService"
         class="org.jtalks.jcommune.service.transactional.TransactionalPostCommentService">
-    <constructor-arg ref="codeReviewCommentDao"/>
+    <constructor-arg ref="postCommentDao"/>
     <constructor-arg ref="permissionService"/>
     <constructor-arg ref="userService"/>
   </bean>
@@ -394,10 +393,6 @@
   <bean id="pluginService" class="org.jtalks.jcommune.service.transactional.TransactionalPluginService">
     <constructor-arg name="dao" ref="pluginConfigurationDao"/>
     <constructor-arg name="pluginLoader" ref="pluginLoader"/>
-  </bean>
-
-  <bean id="topicTypeService" class="org.jtalks.jcommune.service.transactional.TransactionalTopicTypeService">
-    <constructor-arg ref="topicTypeDao"/>
   </bean>
 
   <!--

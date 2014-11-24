@@ -103,12 +103,6 @@
                      value="org.jtalks.jcommune.model.entity.PostComment"/>
   </bean>
 
-  <bean id="codeReviewCommentDao" parent="genericDao"
-        class="org.jtalks.common.model.dao.hibernate.GenericDao">
-    <constructor-arg name="type"
-                     value="org.jtalks.jcommune.model.entity.PostComment"/>
-  </bean>
-
   <bean id="bannerDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.BannerHibernateDao"/>
 
@@ -120,10 +114,6 @@
   </bean>
 
   <bean id="pluginConfigurationDao" class="org.jtalks.jcommune.model.dao.hibernate.PluginConfigurationHibernateDao">
-    <constructor-arg name="sessionFactory" ref="sessionFactory"/>
-  </bean>
-
-  <bean id="topicTypeDao" class="org.jtalks.jcommune.model.dao.hibernate.TopicTypeHibernateDao">
     <constructor-arg name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
@@ -191,7 +181,6 @@
         <value>/org/jtalks/jcommune/model/entity/Post.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Topic.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/TopicProperty.hbm.xml</value>
-        <value>/org/jtalks/jcommune/model/entity/TopicType.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Branch.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/CommentProperty.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/PrivateMessage.hbm.xml</value>
