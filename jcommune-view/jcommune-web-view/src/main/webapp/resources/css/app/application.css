@@ -193,9 +193,8 @@ ul.lang-menu li img {
 }
 
 #topics-table .status-col-small {
-    padding-top: 8px 0px;
+    padding: 0px;
     width: 24px;
-    height: 16px;
     max-width: 24px;
     min-width: 24px;
 }
@@ -217,17 +216,13 @@ ul.lang-menu li img {
 }
 
 #topics-table .created-by {
-    font-size: 11px;
-}
-
-.created-by a {
-    color: #000;
-    font-size: 11px;
+    font-style: italic;
+    font-size: 12px;
 }
 
 #topics-table .latest-by {
     font-size: 10px;
-    width: 180px;
+    width: 100px;
 }
 
 #topics-table .latest-by p {
@@ -279,10 +274,6 @@ ul.lang-menu li img {
     #topics-table .latest-by {
         display: none;
     }
-
-    #topics-table .messages-info {
-        display: none;
-    }
 }
 
 
@@ -297,6 +288,14 @@ ul.lang-menu li img {
 
     #topics-table .posted-in-col {
         display: none;
+    }
+
+    .created-by {
+        font-style: italic;
+        font-size: 12px;
+    }
+    .posts-td-small_2{
+        max-width: 40px;
     }
 
     #top-line-links-drop-down {
@@ -335,6 +334,12 @@ ul.lang-menu li img {
         display: table-cell;
         text-align: center;
         font-size: 11px;
+    }
+
+    #topics-table .posts-td-small {
+       word-wrap: break-word;
+       word-break: break-all;
+       white-space: normal;
     }
 }
 
@@ -1115,82 +1120,4 @@ pre.prettyprint {
     float: left;
     width: 120px;
     margin-bottom: 10px;
-}
-
-.topic-info-column {
-    margin-left: 25px;
-    margin-right: 290px;
-}
-
-@media (max-width: 479px) {
-    .topic-info-column {
-        margin-right: 0px;
-    }
-}
-
-.topic-table-header-first {
-    border-radius: 4px 0px 0px;
-}
-
-.topic-table-header-last {
-    border-radius: 0px 4px 0px 0px;
-}
-
-.topic-table-column-header {
-    vertical-align: middle;
-    background-color: #444;
-    color: #FFF;
-    font-weight: bold;
-    padding: 8px;
-    height: 16px;
-    text-align: left;
-    border-collapse: separate;
-    border-left: 1px solid #DDD;
-}
-
-.topic-table-row {
-    background-color: #F9F9F9;
-    border-bottom: 1px solid #DDD;
-    width: 100%;
-    min-height: 40px;
-    display: inline-block;
-    overflow: hidden;
-    vertical-align: top;
-}
-
-.last-message-div {
-    display: inline-block;
-}
-
-.topic-table-td {
-    padding-top: 4px;
-    padding-bottom: 6px;
-    background-color: #F9F9F9;
-    vertical-align: middle;
-    padding: 8px;
-    text-align: left;
-    border-left: 1px solid #DDD;
-    display: block;
-    padding-bottom: 300px;
-    margin-bottom: -300px;
-}
-
-.topic-table-cell-first {
-    border-left: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
-}
-
-.ellipsis-text {
-    max-width: 100%;
-    display: inline-block;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    padding-right: 5px;
-}
-
-.messages-info {
-    width: 80px;
-
 }
