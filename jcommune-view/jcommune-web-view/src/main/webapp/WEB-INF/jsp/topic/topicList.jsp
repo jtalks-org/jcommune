@@ -106,7 +106,7 @@
              href="${pageContext.request.contextPath}${topicTypes[0].link}"
              title="<spring:message code='${topicTypes[0].toolTipKey}' text='${topicTypes[0].toolTipKey}'/>"
              data-placement="right">
-            <spring:message code='${topicTypes[0].displayNameKey}' text='${topicType.displayNameKey}'/>
+            <spring:message code='${topicTypes[0].displayNameKey}' text='${topicTypes[0].displayNameKey}'/>
           </a>
         </c:when>
         <c:otherwise>

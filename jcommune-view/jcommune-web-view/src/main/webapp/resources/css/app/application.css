@@ -1118,6 +1118,6 @@ pre.prettyprint {
 
 .new-topic-buttons {
     float: left;
-    width: 120px;
+    display: inline-block;
     margin-bottom: 10px;
 }
