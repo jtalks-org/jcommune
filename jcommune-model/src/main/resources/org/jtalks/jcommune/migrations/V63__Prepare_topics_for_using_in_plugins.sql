@@ -1,60 +1,57 @@
 
-CREATE TABLE POST_COMMENT (
-  ID BIGINT(20) NOT NULL AUTO_INCREMENT,
-  UUID VARCHAR(255) NOT NULL,
-  BODY LONGTEXT NOT NULL,
-  CREATION_DATE DATETIME NOT NULL,
-  AUTHOR_ID BIGINT(20) NOT NULL,
-  POST_ID BIGINT(20) NOT NULL,
-  PRIMARY KEY (ID),
-  UNIQUE KEY (UUID),
-  CONSTRAINT FK_COMMENT_POST FOREIGN KEY (POST_ID) REFERENCES POST (POST_ID) ON DELETE CASCADE,
-  CONSTRAINT FK_COMMENT_AUTHOR FOREIGN KEY (AUTHOR_ID) REFERENCES USERS (ID)
-)ENGINE=InnoDb DEFAULT CHARSET='utf8' COLLATE='utf8_bin';
+create table POST_COMMENT (
+  ID bigint (20) not null auto_increment,
+  UUID varchar(255) not null,
+  BODY longtext not null,
+  CREATION_DATE datetime not null,
+  AUTHOR_ID bigint(20) not null,
+  POST_ID bigint(20) not null,
+  primary key (ID),
+  constraint FK_COMMENT_POST foreign key (POST_ID) references POST (POST_ID) on delete cascade,
+  constraint FK_COMMENT_AUTHOR foreign key (AUTHOR_ID) references USERS (ID)
+)engine=InnoDb default charset='utf8' collate='utf8_bin';
 
-INSERT INTO POST_COMMENT (UUID, BODY, CREATION_DATE, AUTHOR_ID, POST_ID)
-  SELECT UUID, BODY, CREATION_DATE, AUTHOR_ID,
-    (SELECT POST_ID FROM POST p JOIN TOPIC t ON t.TOPIC_ID = p.TOPIC_ID WHERE t.CODE_REVIEW_ID=crc.CODE_REVIEW_ID)
-  FROM CODE_REVIEW_COMMENTS crc;
+insert into POST_COMMENT (UUID, BODY, CREATION_DATE, AUTHOR_ID, POST_ID)
+  select UUID, BODY, CREATION_DATE, AUTHOR_ID,
+    (select POST_ID from POST p join TOPIC t on t.TOPIC_ID = p.TOPIC_ID where t.CODE_REVIEW_ID=crc.CODE_REVIEW_ID)
+  from CODE_REVIEW_COMMENTS crc;
 
-CREATE TABLE TOPIC_ATTRIBUTE (
-  ID BIGINT(20) NOT NULL AUTO_INCREMENT,
-  UUID VARCHAR(255) NOT NULL,
-  NAME VARCHAR(255) NOT NULL,
-  TYPE VARCHAR(255) NOT NULL,
-  VALUE LONGTEXT NOT NULL,
-  TOPIC_ID BIGINT(20) NOT NULL,
-  PRIMARY KEY (ID),
-  UNIQUE KEY (UUID),
-  UNIQUE KEY (NAME, TOPIC_ID),
-  CONSTRAINT FK_TOPIC_PARAM FOREIGN KEY (TOPIC_ID) REFERENCES TOPIC (TOPIC_ID) ON DELETE CASCADE
-)ENGINE=InnoDb DEFAULT CHARSET='utf8' COLLATE='utf8_bin';
+create table TOPIC_ATTRIBUTE (
+  ID bigint(20) not null auto_increment,
+  UUID varchar(255) not null,
+  NAME varchar(255) not null,
+  TYPE varchar(255) not null,
+  VALUE longtext not null,
+  TOPIC_ID bigint(20) not null,
+  primary key (ID),
+  unique key (NAME, TOPIC_ID),
+  constraint FK_TOPIC_PARAM foreign key (TOPIC_ID) references TOPIC (TOPIC_ID) on delete cascade
+)engine=InnoDb default charset='utf8' collate='utf8_bin';
 
-CREATE TABLE COMMENT_ATTRIBUTE (
-  ID BIGINT(20) NOT NULL AUTO_INCREMENT,
-  UUID VARCHAR(255) NOT NULL,
-  NAME VARCHAR(255) NOT NULL,
-  TYPE VARCHAR(255) NOT NULL,
-  VALUE LONGTEXT NOT NULL,
-  COMMENT_ID BIGINT(20) NOT NULL,
-  PRIMARY KEY (ID),
-  UNIQUE KEY (UUID),
-  UNIQUE KEY (NAME, COMMENT_ID),
-  CONSTRAINT FK_COMMENT_PARAM FOREIGN KEY (COMMENT_ID) REFERENCES POST_COMMENT (ID) ON DELETE CASCADE
-)ENGINE=InnoDb DEFAULT CHARSET='utf8' COLLATE='utf8_bin';
+create table COMMENT_ATTRIBUTE (
+  ID bigint(20) not null auto_increment,
+  UUID varchar(255) not null,
+  NAME varchar(255) not null,
+  TYPE varchar(255) not null,
+  VALUE longtext not null,
+  COMMENT_ID bigint(20) not null,
+  primary key (ID),
+  unique key (NAME, COMMENT_ID),
+  constraint FK_COMMENT_PARAM foreign key (COMMENT_ID) references POST_COMMENT (ID) on delete cascade
+)engine=InnoDb default charset='utf8' collate='utf8_bin';
 
-ALTER TABLE POST ADD RATING INT DEFAULT 0;
+alter table POST add RATING int default 0;
 
-ALTER TABLE TOPIC ADD TYPE VARCHAR(255);
+alter table TOPIC add TYPE varchar(255);
 
-UPDATE TOPIC SET TYPE = 'Discussion' WHERE CODE_REVIEW_ID IS NULL;
-UPDATE TOPIC SET TYPE = 'Code review' WHERE CODE_REVIEW_ID IS NOT NULL;
+update TOPIC set TYPE = 'Discussion' where CODE_REVIEW_ID is null;
+update TOPIC set TYPE = 'Code review' where CODE_REVIEW_ID is not null;
 
-ALTER TABLE TOPIC
-    MODIFY TYPE VARCHAR(255) NOT NULL;
+alter table TOPIC
+    modify TYPE varchar(255) not null;
 
-INSERT INTO COMMENT_ATTRIBUTE (UUID, NAME, TYPE, VALUE, COMMENT_ID)
-  SELECT (SELECT UUID() FROM dual), 'line_number', 'INT', CAST(LINE_NUMBER AS CHAR(255)),
-    (SELECT ID FROM POST_COMMENT pc JOIN POST p ON pc.POST_ID = p.POST_ID
-      JOIN TOPIC t ON p.TOPIC_ID = t.TOPIC_ID WHERE t.CODE_REVIEW_ID = crc.CODE_REVIEW_ID and crc.UUID = pc.UUID)
-  FROM CODE_REVIEW_COMMENTS crc;
+insert into COMMENT_ATTRIBUTE (UUID, NAME, TYPE, VALUE, COMMENT_ID)
+  select (select UUID() from dual), 'line_number', 'INT', CAST(LINE_NUMBER as char(255)),
+    (select ID from POST_COMMENT pc join POST p on pc.POST_ID = p.POST_ID
+      join TOPIC t on p.TOPIC_ID = t.TOPIC_ID where t.CODE_REVIEW_ID = crc.CODE_REVIEW_ID and crc.UUID = pc.UUID)
+  from CODE_REVIEW_COMMENTS crc;
