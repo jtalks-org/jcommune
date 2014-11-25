@@ -83,6 +83,7 @@ $altCaptchaRefresh = '<spring:message code="alt.captcha.update" htmlEscape="true
 $labelRememberMe = '<spring:message code="label.auto_logon" htmlEscape="true"/>';
 $labelRestorePassword = '<spring:message code="label.restorePassword.prompt" htmlEscape="true"/>';
 $labelSignin = '<spring:message code="label.signin" htmlEscape="true"/>';
+$labelSignupRightNow = '<spring:message code="label.signup.rightnow"/>';
 $labelLoginError = '<spring:message code="label.login_error" htmlEscape="true"/>';
 
 $labelCancel = '<spring:message code="label.cancel" htmlEscape="true"/>';

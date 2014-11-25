@@ -123,7 +123,7 @@
           </li>
       --%>
       <li>
-        <a id="signup" href="${pageContext.request.contextPath}/user/new">
+        <a class="signup" href="${pageContext.request.contextPath}/user/new">
           <fmt:message key="label.signup"/>
         </a>
       </li>

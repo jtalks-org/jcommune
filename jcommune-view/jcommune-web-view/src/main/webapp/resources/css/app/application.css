@@ -457,7 +457,8 @@ div.anchor {
 }
 
 #signin-modal-dialog #rememberme-area {
-    margin: 0px 10px 9px 25px;
+    margin: 0px 10px 0px 25px;
+    float: left;
 }
 
 .rememberme-lbl:hover {
@@ -480,6 +481,23 @@ div.anchor {
 
 #signup-modal-dialog .captcha-images img {
     vertical-align: middle;
+}
+
+.signup a {
+    text-decoration: underline;
+    color: #a3a3a3;
+}
+
+div.signup {
+    float: left;
+    margin-left: 25px;
+    margin-right: 5px;
+}
+
+a.signup {
+    text-decoration: underline;
+    color: #a3a3a3;
+    margin-left: 15px;
 }
 
 .btn-block {
