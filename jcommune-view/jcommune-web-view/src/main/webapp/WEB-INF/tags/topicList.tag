@@ -43,12 +43,14 @@
                 <c:out value="${topic.title}"/>
               </a>
             </h2>
-            <sub class="created-by"><spring:message code="label.topic.created_by"/>
-              <a class="space-left-small margin-right-big" href="${pageContext.request.contextPath}/users/${topic.topicStarter.id}">
+            <sub class="created-by">
+              <span><spring:message code="label.topic.created_by"/></span>
+              <a class="space-left-small" href="${pageContext.request.contextPath}/users/${topic.topicStarter.id}">
                 <c:out value="${topic.topicStarter.username}"/>
               </a>
               <c:if test="${showBranchColumn}">
-                in <a class="margin-left-small margin-right-small" href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
+                <span class="space-left-small"><spring:message code="label.topic.section.in"/></span>
+                <a href="${pageContext.request.contextPath}/branches/${topic.branch.id}">
                   <c:out value="${topic.branch.name}"/>
                 </a>
               </c:if>

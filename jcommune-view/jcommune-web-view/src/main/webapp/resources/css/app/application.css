@@ -216,8 +216,11 @@ ul.lang-menu li img {
 }
 
 #topics-table .created-by {
-    font-style: italic;
-    font-size: 12px;
+    font-size: 11px;
+}
+
+#topics-table .created-by a {
+    color: #000;
 }
 
 #topics-table .latest-by {
