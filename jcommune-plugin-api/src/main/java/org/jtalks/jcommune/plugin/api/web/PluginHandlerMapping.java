@@ -119,6 +119,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
     public void deactivateController(PluginController controller) {
         List<MethodAwareKey> keys = getPluginControllerUrls(controller);
         for (MethodAwareKey key : keys) {
+
             pluginHandlerMethods.remove(key);
         }
     }
@@ -170,12 +171,24 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         pluginLoader.reloadPlugins(new TypeFilter(WebControllerPlugin.class));
         String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
         MethodAwareKey key = new MethodAwareKey(RequestMethod.valueOf(request.getMethod()), getUniformUrl(lookupPath));
-        HandlerMethod handlerMethod = pluginHandlerMethods.get(key);
+        HandlerMethod handlerMethod = findHandlerMethod(key);
         if (handlerMethod != null) {
+            RequestMappingInfo mappingInfo = getMappingForMethod(handlerMethod.getMethod(), handlerMethod.getBeanType());
+            //IMPORTANT: Should be called to set request attributes which allows resolve path variables
+            handleMatch(mappingInfo, lookupPath, request);
             return handlerMethod;
         } else {
             return super.getHandlerInternal(request);
         }
+    }
+
+    protected HandlerMethod findHandlerMethod(MethodAwareKey key) {
+        for (Map.Entry<MethodAwareKey, HandlerMethod> entry : pluginHandlerMethods.entrySet()) {
+            if (key.urlRegExp.matches(entry.getKey().urlRegExp) && key.getMethod() == entry.getKey().getMethod()) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     /**
@@ -203,47 +216,48 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
     }
 
     static class MethodAwareKey {
+        private static String PATH_VARIABLE_REGEXP = "\\{(.*?)\\}";
         private RequestMethod method;
-        private String url;
+        private String urlRegExp;
 
         public MethodAwareKey(RequestMethod method, String url) {
             this.method = method;
-            this.url = url;
+            this.urlRegExp = url.replaceAll(PATH_VARIABLE_REGEXP, "(.*?)");
         }
 
         public RequestMethod getMethod() {
             return method;
         }
 
-        public String getUrl() {
-            return url;
+        public String getUrlRegExp() {
+            return urlRegExp;
         }
+
+        /**
+         * equals and hashCode needed for removing from map.
+         * for searching use {@link PluginHandlerMapping#findHandlerMethod(MethodAwareKey)} method
+         * this method compares urls using regexp
+         */
 
         @Override
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
             }
-            if (o == null || getClass() != o.getClass()){
+            if (o == null || getClass() != o.getClass()) {
                 return false;
             }
 
             MethodAwareKey that = (MethodAwareKey) o;
 
-            if (method != that.method) {
-                return false;
-            }
-            if (url != null ? !url.equals(that.url) : that.url != null) {
-                return false;
-            }
+            return method == that.method && !(urlRegExp != null ? !urlRegExp.equals(that.urlRegExp) : that.urlRegExp != null);
 
-            return true;
         }
 
         @Override
         public int hashCode() {
             int result = method != null ? method.hashCode() : 0;
-            result = 31 * result + (url != null ? url.hashCode() : 0);
+            result = 31 * result + (urlRegExp != null ? urlRegExp.hashCode() : 0);
             return result;
         }
     }

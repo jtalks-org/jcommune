@@ -96,7 +96,9 @@ public class PluginHandlerMappingTest {
         Map<PluginHandlerMapping.MethodAwareKey, HandlerMethod> result = mapping.getPluginHandlerMethods();
 
         assertEquals(result.size(), 1);
-        assertEquals(result.get(new PluginHandlerMapping.MethodAwareKey(RequestMethod.GET, "/test/")).getMethod(),
+
+        assertEquals(mapping.findHandlerMethod(new PluginHandlerMapping.MethodAwareKey(RequestMethod.GET, "/test/"))
+                        .getMethod(),
                 controller.getClass().getMethod("testMethod"));
     }
 
@@ -121,7 +123,7 @@ public class PluginHandlerMappingTest {
         Set<PluginHandlerMapping.MethodAwareKey> keys = mapping.getPluginHandlerMethods().keySet();
 
         for (PluginHandlerMapping.MethodAwareKey key : keys) {
-            assertTrue(key.getUrl().endsWith("/"));
+            assertTrue(key.getUrlRegExp().endsWith("/"));
         }
     }
 

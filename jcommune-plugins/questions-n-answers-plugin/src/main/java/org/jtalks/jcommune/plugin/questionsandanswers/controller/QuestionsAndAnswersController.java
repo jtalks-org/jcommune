@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.plugin.questionsandanswers.controller;
 
+import com.google.common.io.ByteStreams;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.tools.generic.EscapeTool;
 import org.joda.time.DateTime;
@@ -43,12 +45,15 @@ import org.springframework.ui.Model;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.*;
 
 import static org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin.MESSAGE_PATH;
@@ -59,7 +64,10 @@ import static org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswers
 @Controller
 @RequestMapping(QuestionsAndAnswersPlugin.CONTEXT)
 public class QuestionsAndAnswersController implements ApplicationContextAware, PluginController {
+    private static final String PATH_TO_IMAGES = "/org/jtalks/jcommune/plugin/questionsandanswers/images/";
+    private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
     public static final String BRANCH_ID = "branchId";
+    private static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z";
 
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
@@ -109,6 +117,38 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
         return "plugin/plugin";
+    }
+
+    @RequestMapping(value = "icon/{name}", method = RequestMethod.GET)
+    public void getIcon(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String name) {
+        try {
+            processIconRequest(request, response, PATH_TO_IMAGES + name);
+        } catch (Exception ex) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    private void processIconRequest(HttpServletRequest request, HttpServletResponse response, String iconPath)
+            throws IOException {
+        if(request.getHeader(IF_MODIFIED_SINCE_HEADER) != null) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            return;
+        }
+        byte[] icon = ByteStreams.toByteArray(getClass().getResourceAsStream(iconPath));
+        response.setContentType("image/png");
+        response.setContentLength(icon.length);
+        response.getOutputStream().write(icon);
+        response.setHeader("Pragma", "public");
+        response.setHeader("Cache-Control", "public");
+        response.addHeader("Cache-Control", "must-revalidate");
+        response.addHeader("Cache-Control", "max-age=0");
+        String formattedDateExpires = DateFormatUtils.format(
+                new Date(System.currentTimeMillis()),
+                HTTP_HEADER_DATETIME_PATTERN, Locale.US);
+        response.setHeader("Expires", formattedDateExpires);
+        Date lastModificationDate = new Date(0);
+        response.setHeader("Last-Modified", DateFormatUtils.format(lastModificationDate, HTTP_HEADER_DATETIME_PATTERN,
+                Locale.US));
     }
 
     private ResourceBundle getLocalizedMessagesBundle(JCUser currentUser) {
