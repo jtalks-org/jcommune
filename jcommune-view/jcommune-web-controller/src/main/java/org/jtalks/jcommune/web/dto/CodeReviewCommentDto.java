@@ -17,12 +17,10 @@ package org.jtalks.jcommune.web.dto;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.jtalks.jcommune.model.entity.CommentProperty;
 import org.jtalks.jcommune.model.entity.PostComment;
-import org.jtalks.jcommune.model.entity.PropertyType;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * DTO for {@link org.jtalks.jcommune.model.entity.PostComment}
@@ -47,22 +45,20 @@ public class CodeReviewCommentDto {
 
     public CodeReviewCommentDto() {
     }
-    
+
+    /**
+     * Creates CodeReviewCommentDto from {@link PostComment}
+     *
+     * @param comment to create dto
+     * @throws java.lang.NumberFormatException if comment have no line_number attribute
+     *                                         or if this attribute have invalid value
+     */
     public CodeReviewCommentDto(PostComment comment) {
         this.id = comment.getId();
-        this.lineNumber = getLineNumberProperty(comment);
+        this.lineNumber = Integer.parseInt(comment.getAttributes().get(LINE_NUMBER_PROPERTY_NAME));
         this.body = comment.getBody();
         this.authorId = comment.getAuthor().getId();
         this.authorUsername = comment.getAuthor().getUsername();
-    }
-
-    private int getLineNumberProperty(PostComment comment) {
-        for (CommentProperty property : comment.getCustomProperties()) {
-            if (LINE_NUMBER_PROPERTY_NAME.equals(property.getName()) && property.getType() == PropertyType.INT) {
-                return Integer.parseInt(property.getValue());
-            }
-        }
-        throw new IllegalArgumentException("Code review comment should contain INT line_number property");
     }
 
     /**
@@ -140,9 +136,10 @@ public class CodeReviewCommentDto {
      *
      * @return list of custom properties
      */
-    public List<CommentProperty> getCommentProperties() {
-        return Arrays.asList( new CommentProperty(LINE_NUMBER_PROPERTY_NAME, PropertyType.INT,
-                String.valueOf(lineNumber)));
+    public Map<String, String> getCommentProperties() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(LINE_NUMBER_PROPERTY_NAME, String.valueOf(lineNumber));
+        return properties;
     }
     
 }

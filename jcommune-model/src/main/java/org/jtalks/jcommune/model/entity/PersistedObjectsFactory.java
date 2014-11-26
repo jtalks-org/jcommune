@@ -287,7 +287,7 @@ public final class PersistedObjectsFactory {
     }
 
     public static PluginProperty getDefaultPluginConfigurationProperty() {
-        PluginProperty property = new PluginProperty("Property", PropertyType.BOOLEAN, "true");
+        PluginProperty property = new PluginProperty("Property", PluginProperty.Type.BOOLEAN, "true");
         PluginConfiguration configuration = new PluginConfiguration("Default name", true, Arrays.asList(property));
         property.setPluginConfiguration(configuration);
         persist(configuration);
@@ -331,19 +331,4 @@ public final class PersistedObjectsFactory {
         }
         return result;
     }
-
-    public static Topic getTopicWithProperties() {
-        Topic topic = getDefaultTopic();
-        TopicProperty property = new TopicProperty("name", PropertyType.STRING, "val");
-        topic.addCustomProperty(property);
-        return persist(topic);
-    }
-
-    public static PostComment getCommentWithProperties() {
-        PostComment comment = getDefaultPostComment();
-        CommentProperty property = new CommentProperty("name", PropertyType.STRING, "val");
-        comment.addCustomProperty(property);
-        return persist(comment);
-    }
-
 }

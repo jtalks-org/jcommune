@@ -28,7 +28,7 @@
         <property column="NAME" name="name" unique="true" not-null="true"/>
         <property column="TYPE" name="type"  not-null="true">
             <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.jtalks.jcommune.model.entity.PropertyType</param>
+                <param name="enumClass">org.jtalks.jcommune.model.entity.PluginProperty$Type</param>
                 <!-- varchar -->
                 <param name="type">12</param>
             </type>

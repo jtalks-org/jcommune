@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.PluginConfigurationDao;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.model.entity.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -106,7 +105,7 @@ public class PluginConfigurationHibernateDaoTest extends AbstractTransactionalTe
     @Test
     public void saveOrUpdateShouldSavePluginConfigurationProperties() {
         PluginConfiguration pluginConfiguration = PersistedObjectsFactory.getDefaultPluginConfiguration();
-        PluginProperty property = new PluginProperty("Property", PropertyType.BOOLEAN, "true");
+        PluginProperty property = new PluginProperty("Property", PluginProperty.Type.BOOLEAN, "true");
         List<PluginProperty> properties = Arrays.asList(property);
         pluginConfiguration.setProperties(properties);
 

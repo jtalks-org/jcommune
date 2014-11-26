@@ -18,26 +18,22 @@ insert into POST_COMMENT (UUID, BODY, CREATION_DATE, AUTHOR_ID, POST_ID)
 
 create table TOPIC_ATTRIBUTE (
   ID bigint(20) not null auto_increment,
-  UUID varchar(255) not null,
   NAME varchar(255) not null,
-  TYPE varchar(255) not null,
   VALUE longtext not null,
   TOPIC_ID bigint(20) not null,
   primary key (ID),
   unique key (NAME, TOPIC_ID),
-  constraint FK_TOPIC_PARAM foreign key (TOPIC_ID) references TOPIC (TOPIC_ID) on delete cascade
+  constraint FK_TOPIC_ATTRIBUTE foreign key (TOPIC_ID) references TOPIC (TOPIC_ID) on delete cascade
 )engine=InnoDb default charset='utf8' collate='utf8_bin';
 
 create table COMMENT_ATTRIBUTE (
   ID bigint(20) not null auto_increment,
-  UUID varchar(255) not null,
   NAME varchar(255) not null,
-  TYPE varchar(255) not null,
   VALUE longtext not null,
   COMMENT_ID bigint(20) not null,
   primary key (ID),
   unique key (NAME, COMMENT_ID),
-  constraint FK_COMMENT_PARAM foreign key (COMMENT_ID) references POST_COMMENT (ID) on delete cascade
+  constraint FK_COMMENT_ATTRIBUTE foreign key (COMMENT_ID) references POST_COMMENT (ID) on delete cascade
 )engine=InnoDb default charset='utf8' collate='utf8_bin';
 
 alter table POST add RATING int default 0;
@@ -50,8 +46,8 @@ update TOPIC set TYPE = 'Code review' where CODE_REVIEW_ID is not null;
 alter table TOPIC
     modify TYPE varchar(255) not null;
 
-insert into COMMENT_ATTRIBUTE (UUID, NAME, TYPE, VALUE, COMMENT_ID)
-  select (select UUID() from dual), 'line_number', 'INT', CAST(LINE_NUMBER as char(255)),
+insert into COMMENT_ATTRIBUTE (NAME, VALUE, COMMENT_ID)
+  select 'line_number', CAST(LINE_NUMBER as char(255)),
     (select ID from POST_COMMENT pc join POST p on pc.POST_ID = p.POST_ID
       join TOPIC t on p.TOPIC_ID = t.TOPIC_ID where t.CODE_REVIEW_ID = crc.CODE_REVIEW_ID and crc.UUID = pc.UUID)
   from CODE_REVIEW_COMMENTS crc;

@@ -180,9 +180,7 @@
         <value>/org/jtalks/jcommune/model/entity/Group.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Post.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Topic.hbm.xml</value>
-        <value>/org/jtalks/jcommune/model/entity/TopicProperty.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Branch.hbm.xml</value>
-        <value>/org/jtalks/jcommune/model/entity/CommentProperty.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/PrivateMessage.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Section.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/UserContact.hbm.xml</value>

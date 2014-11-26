@@ -31,8 +31,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static org.jtalks.jcommune.model.entity.PropertyType.STRING;
-import static org.jtalks.jcommune.model.entity.PropertyType.INT;
+import static org.jtalks.jcommune.model.entity.PluginProperty.Type.INT;
+import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 
 /**
  * Provides refresh, validating captcha, and obtaining captcha as html for registration form.

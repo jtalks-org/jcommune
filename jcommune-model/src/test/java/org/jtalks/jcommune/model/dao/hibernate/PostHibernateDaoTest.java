@@ -347,6 +347,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void testAddCommentToPost() {
         Post post = PersistedObjectsFactory.getDefaultPost();
         session.save(post);
+        session.flush();
         PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
         post.addComment(comment);
 

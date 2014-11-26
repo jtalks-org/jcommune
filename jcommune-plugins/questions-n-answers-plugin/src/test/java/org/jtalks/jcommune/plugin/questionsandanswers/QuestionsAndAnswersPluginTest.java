@@ -19,7 +19,6 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.PluginConfiguration;
 import org.jtalks.jcommune.model.entity.PluginProperty;
-import org.jtalks.jcommune.model.entity.PropertyType;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.web.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.exceptions.PluginConfigurationException;
@@ -47,7 +46,7 @@ public class QuestionsAndAnswersPluginTest {
 
     @Test
     public void testConfigure() throws Exception {
-        PluginProperty property = new PluginProperty(ORDER_PROPERTY, PropertyType.INT, "102");
+        PluginProperty property = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, "102");
         PluginConfiguration config = new PluginConfiguration("Questions and Answers plugin", true, Arrays.asList(property));
         QuestionsAndAnswersPlugin plugin = new QuestionsAndAnswersPlugin();
 
@@ -58,7 +57,7 @@ public class QuestionsAndAnswersPluginTest {
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
     public void configurationWithIncorrectParameterShouldThrowUnexpectedErrorException() throws Exception {
-        PluginProperty property = new PluginProperty("anyProperty", PropertyType.STRING, "string");
+        PluginProperty property = new PluginProperty("anyProperty", PluginProperty.Type.STRING, "string");
         PluginConfiguration config = new PluginConfiguration("Questions and Answers plugin", true, Arrays.asList(property));
         QuestionsAndAnswersPlugin plugin = new QuestionsAndAnswersPlugin();
 
@@ -67,8 +66,8 @@ public class QuestionsAndAnswersPluginTest {
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
     public void configurationWithIncorrectParametersNumberShouldThrowUnexpectedErrorException() throws Exception {
-        PluginProperty correctProperty = new PluginProperty(ORDER_PROPERTY, PropertyType.INT, "102");
-        PluginProperty incorrectProperty = new PluginProperty("anyProperty", PropertyType.STRING, "string");
+        PluginProperty correctProperty = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, "102");
+        PluginProperty incorrectProperty = new PluginProperty("anyProperty", PluginProperty.Type.STRING, "string");
         PluginConfiguration config = new PluginConfiguration("Questions and Answers plugin", true,
                 Arrays.asList(correctProperty, incorrectProperty));
         QuestionsAndAnswersPlugin plugin = new QuestionsAndAnswersPlugin();
@@ -78,7 +77,7 @@ public class QuestionsAndAnswersPluginTest {
 
     @Test(expectedExceptions = UnexpectedErrorException.class)
     public void configurationWithIncorrectParameterTypeShouldThrowUnexpectedErrorException() throws Exception {
-        PluginProperty property = new PluginProperty(ORDER_PROPERTY, PropertyType.INT, "string");
+        PluginProperty property = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, "string");
         PluginConfiguration config = new PluginConfiguration("Questions and Answers plugin", true, Arrays.asList(property));
         QuestionsAndAnswersPlugin plugin = new QuestionsAndAnswersPlugin();
 
@@ -87,7 +86,7 @@ public class QuestionsAndAnswersPluginTest {
 
     @Test
     public void defaultConfigurationShouldBeAppliedIfConfigureWithNullOrderValue() throws Exception {
-        PluginProperty property = new PluginProperty(ORDER_PROPERTY, PropertyType.INT, null);
+        PluginProperty property = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, null);
         PluginConfiguration config = new PluginConfiguration("Questions and Answers plugin", true, Arrays.asList(property));
         QuestionsAndAnswersPlugin plugin = new QuestionsAndAnswersPlugin();
 
@@ -100,7 +99,7 @@ public class QuestionsAndAnswersPluginTest {
 
     @Test
     public void testApplyConfiguration() throws PluginConfigurationException {
-        PluginProperty property = new PluginProperty(ORDER_PROPERTY, PropertyType.INT, "103");
+        PluginProperty property = new PluginProperty(ORDER_PROPERTY, PluginProperty.Type.INT, "103");
         QuestionsAndAnswersPlugin plugin = new QuestionsAndAnswersPlugin();
         plugin.applyConfiguration(Arrays.asList(property));
 

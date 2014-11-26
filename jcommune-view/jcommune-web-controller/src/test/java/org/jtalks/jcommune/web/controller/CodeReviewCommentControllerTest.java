@@ -109,7 +109,7 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(postService.addComment(anyLong(), anyListOf(CommentProperty.class), anyString()))
+        when(postService.addComment(anyLong(), anyMap(), anyString()))
             .thenReturn(createComment());
 
 
@@ -143,7 +143,7 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(postService.addComment(anyLong(), anyListOf(CommentProperty.class), anyString()))
+        when(postService.addComment(anyLong(), anyMap(), anyString()))
             .thenThrow(new NotFoundException());
 
         controller.addComment(new CodeReviewCommentDto(), bindingResult, 1L);
@@ -154,7 +154,7 @@ public class CodeReviewCommentControllerTest {
         BindingResult bindingResult = mock(BindingResult.class);
 
         when(bindingResult.hasErrors()).thenReturn(false);
-        when(postService.addComment(anyLong(), anyListOf(CommentProperty.class), anyString()))
+        when(postService.addComment(anyLong(), anyMap(), anyString()))
             .thenThrow(new AccessDeniedException(null));
 
         controller.addComment(new CodeReviewCommentDto(), bindingResult, 1L);
@@ -263,8 +263,7 @@ public class CodeReviewCommentControllerTest {
         PostComment comment = new PostComment();
         comment.setId(COMMENT_ID);
         comment.setBody(COMMENT_BODY);
-        comment.addCustomProperty(new CommentProperty(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME,
-                PropertyType.INT, "1"));
+        comment.addOrOverrideAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
 
         JCUser user = currentUser();
         comment.setAuthor(user);
@@ -275,6 +274,7 @@ public class CodeReviewCommentControllerTest {
 	private JCUser currentUser() {
 		JCUser user = new JCUser(USERNAME, null, null);
         user.setId(USER_ID);
+
 		return user;
 	}
 

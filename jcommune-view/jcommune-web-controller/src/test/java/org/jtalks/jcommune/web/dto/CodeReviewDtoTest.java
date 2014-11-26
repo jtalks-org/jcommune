@@ -56,8 +56,7 @@ public class CodeReviewDtoTest {
         PostComment comment = new PostComment();
         comment.setBody("text");
         comment.setAuthor(user);
-        comment.addCustomProperty(new CommentProperty(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, PropertyType.INT,
-                "1"));
+        comment.addOrOverrideAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
         post.addComment(comment);
         return post;
     }

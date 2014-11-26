@@ -25,8 +25,10 @@ import org.slf4j.LoggerFactory;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -134,7 +136,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     @Valid
     private Poll poll;
     private String type;
-    private List<TopicProperty> customProperties = new ArrayList<>();
+    private Map<String, String> attributes = new HashMap<>();
     private List<Post> posts = new ArrayList<>();
     private Set<JCUser> subscribers = new HashSet<>();
 
@@ -615,33 +617,39 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Gets custom properties list of the topic
+     * Gets attributes of the topic
      *
-     * @return custom properties list
+     * @return attributes of the topic
      */
-    public List<TopicProperty> getCustomProperties() {
-        return customProperties;
+    public Map<String, String> getAttributes() {
+        return attributes;
     }
 
     /**
-     * Sets specified custom properties list to the topic
+     * Sets specified attributes to the topic
+     * For hibernate usage. Use Topic#addOrOverrideAttribute
      *
-     * @param customProperties custom properties list to set
+     * @param attributes attributes to set
      */
-    public void setCustomProperties(List<TopicProperty> customProperties) {
-        this.customProperties = customProperties;
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
     }
 
     /**
-     * Adds specified property to th custom properties list of the topic
+     * Adds new attribute or overrides existent attribute of the topic
      *
-     * @param property property to add
+     * @param attributeName name of the attribute
+     * @param attributeValue value of the attribute
      */
-    public void addCustomProperty(TopicProperty property) {
-        property.setTopic(this);
-        customProperties.add(property);
+    public void addOrOverrideAttribute(String attributeName, String attributeValue) {
+        this.attributes.put(attributeName, attributeValue);
     }
 
+    /**
+     * Determines if topic is code review
+     *
+     * @return true  if code review, otherwise false
+     */
     public boolean isCodeReview() {
         return type != null && type.equals(TopicTypeName.CODE_REVIEW.getName());
     }

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
@@ -41,7 +42,9 @@ import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -82,6 +85,8 @@ public class TransactionalPostServiceTest {
     private MentionedUsers mentionedUsers;
     @Mock
     private PermissionService permissionService;
+    @Mock
+    private Crud<PostComment> postCommentDao;
 
     private PostService postService;
 
@@ -458,7 +463,7 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(post);
 
-        PostComment comment = postService.addComment(POST_ID, Collections.EMPTY_LIST, "text");
+        PostComment comment = postService.addComment(POST_ID, Collections.EMPTY_MAP, "text");
 
         assertEquals(post.getComments().size(), 1);
         assertEquals(comment.getBody(), "text");
@@ -471,22 +476,20 @@ public class TransactionalPostServiceTest {
         Post post = getPostWithTopicInBranch();
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(post);
-        List<CommentProperty> properties = Arrays.asList(new CommentProperty("prop", PropertyType.STRING, "val"));
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("name", "value");
 
-        PostComment comment = postService.addComment(POST_ID, properties, "text");
+        PostComment comment = postService.addComment(POST_ID, attributes, "text");
 
-        assertEquals(comment.getCustomProperties().size(), 1);
-        CommentProperty prop = comment.getCustomProperties().get(0);
-        assertEquals(prop.getName(), "prop");
-        assertEquals(prop.getType(), PropertyType.STRING);
-        assertEquals(prop.getValue(), "val");
+        assertEquals(comment.getAttributes().size(), 1);
+        assertEquals(comment.getAttributes().get("name"), "value");
         verify(postDao).saveOrUpdate(post);
 
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void addCommentShouldThrowExceptionIfPostNotFound() throws Exception {
-        postService.addComment(0L, Collections.EMPTY_LIST, "text");
+        postService.addComment(0L, Collections.EMPTY_MAP, "text");
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
@@ -498,7 +501,7 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(post);
 
-        postService.addComment(POST_ID, Collections.EMPTY_LIST, "text");
+        postService.addComment(POST_ID, Collections.EMPTY_MAP, "text");
     }
 
     @Test
@@ -511,7 +514,7 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(post);
 
-        postService.addComment(POST_ID, Collections.EMPTY_LIST, "text");
+        postService.addComment(POST_ID, Collections.EMPTY_MAP, "text");
 
         assertTrue(post.getTopic().getSubscribers().contains(user));
 
@@ -527,7 +530,7 @@ public class TransactionalPostServiceTest {
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(post);
 
-        postService.addComment(POST_ID, Collections.EMPTY_LIST, "text");
+        postService.addComment(POST_ID, Collections.EMPTY_MAP, "text");
 
         assertFalse(post.getTopic().getSubscribers().contains(user));
 

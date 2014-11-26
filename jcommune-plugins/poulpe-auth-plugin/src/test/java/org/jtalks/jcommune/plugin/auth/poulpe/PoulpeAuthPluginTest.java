@@ -30,7 +30,7 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.*;
 
-import static org.jtalks.jcommune.model.entity.PropertyType.STRING;
+import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;

@@ -16,11 +16,10 @@ package org.jtalks.jcommune.model.entity;
 
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.testng.AssertJUnit.assertFalse;
-import static org.testng.AssertJUnit.assertTrue;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.*;
 
 /** @author stanislav bashkirtsev */
 public class PostCommentTest {
@@ -78,29 +77,53 @@ public class PostCommentTest {
     }
 
     @Test
-    public void testAddCustomProperty() {
-        PostComment comment = new PostComment();
-        CommentProperty property = new CommentProperty();
+    public void addOrOverrideAttributeShouldAddNewAttributes() {
+        String name = "name";
+        String value = "value";
+        PostComment postComment = new PostComment();
 
-        comment.addCustomProperty(property);
+        postComment.addOrOverrideAttribute(name, value);
 
-        assertTrue(comment.getCustomProperties().contains(property));
-        assertEquals(comment, property.getComment());
+        assertEquals(value, postComment.getAttributes().get(name));
     }
 
     @Test
-    public void testAddCustomProperties() {
-        PostComment comment = new PostComment();
-        CommentProperty property1 = new CommentProperty();
-        CommentProperty property2 = new CommentProperty();
+    public void addOrOverrideAttributeShouldOverrideExistentAttribute() {
+        String name = "name";
+        String newValue = "newValue";
+        PostComment postComment = new PostComment();
+        postComment.addOrOverrideAttribute(name, "value");
 
-        comment.addCustomProperties(Arrays.asList(property1, property2));
+        postComment.addOrOverrideAttribute(name, newValue);
 
-        assertEquals(2, comment.getCustomProperties().size());
-        assertTrue(comment.getCustomProperties().contains(property1));
-        assertTrue(comment.getCustomProperties().contains(property2));
-        assertEquals(comment, property1.getComment());
-        assertEquals(comment, property2.getComment());
+        assertEquals(newValue, postComment.getAttributes().get(name));
+    }
+
+    @Test
+    public void addOrOverrideAttributesShouldAddNewAttributes() {
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("name1", "value1");
+        attributes.put("name2", "value2");
+        PostComment postComment = new PostComment();
+
+        postComment.addOrOverrideAttributes(attributes);
+
+        assertEquals("value1", postComment.getAttributes().get("name1"));
+        assertEquals("value2", postComment.getAttributes().get("name2"));
+    }
+
+    @Test
+    public void addOrOverrideAttributesShouldOverrideExistentAttributes() {
+        PostComment postComment = new PostComment();
+        postComment.addOrOverrideAttribute("name1", "value1");
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put("name1", "newValue1");
+        attributes.put("name2", "newValue2");
+
+        postComment.addOrOverrideAttributes(attributes);
+
+        assertEquals("newValue1", postComment.getAttributes().get("name1"));
+        assertEquals("newValue2", postComment.getAttributes().get("name2"));
     }
     
     

@@ -21,10 +21,7 @@ import org.testng.annotations.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class TopicTest {
     private Topic topic;
@@ -198,13 +195,24 @@ public class TopicTest {
     }
 
     @Test
-    public void testAddCustomProperty() {
-        TopicProperty property = new TopicProperty("name", PropertyType.INT, "1");
+    public void addOrOverrideAttributeShouldAddAttributes() {
+        String name = "name";
+        String value = "value";
 
-        topic.addCustomProperty(property);
+        topic.addOrOverrideAttribute(name, value);
 
-        assertTrue(topic.getCustomProperties().contains(property));
-        assertEquals(property.getTopic(), topic);
+        assertEquals(topic.getAttributes().get(name), value);
+    }
+
+    @Test
+    public void addOrOverrideAttributeShouldOverrideExistentAttributes() {
+        String name = "name";
+        String newValue = "newValue";
+        topic.addOrOverrideAttribute(name, "value");
+
+        topic.addOrOverrideAttribute(name, newValue);
+
+        assertEquals(topic.getAttributes().get(name), newValue);
     }
 
     private Post[] postList(int numberOfPosts, Topic topic) {

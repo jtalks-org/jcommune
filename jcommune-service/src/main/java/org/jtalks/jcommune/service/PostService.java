@@ -16,7 +16,6 @@ package org.jtalks.jcommune.service;
 
 
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CommentProperty;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
@@ -25,6 +24,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Post persistent entity.
@@ -109,7 +109,7 @@ public interface PostService extends EntityService<Post> {
      *
      * @throws NotFoundException if post with specified id not found
      */
-    PostComment addComment(Long postId, List<CommentProperty> properties, String body) throws NotFoundException;
+    PostComment addComment(Long postId, Map<String, String> attributes, String body) throws NotFoundException;
 
     /**
      * Removes specified comment from specified post

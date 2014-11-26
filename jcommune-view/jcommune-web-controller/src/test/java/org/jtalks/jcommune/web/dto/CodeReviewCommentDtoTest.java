@@ -15,13 +15,11 @@
 package org.jtalks.jcommune.web.dto;
 
 import org.joda.time.DateTime;
-import org.jtalks.jcommune.model.entity.CommentProperty;
 import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.PropertyType;
 import org.testng.annotations.Test;
 
-import java.util.List;
+import java.util.Map;
 
 import static org.testng.Assert.*;
 
@@ -30,8 +28,7 @@ public class CodeReviewCommentDtoTest {
     @Test
     public void testConstructor() {
         PostComment comment = createComment();
-        comment.addCustomProperty(new CommentProperty(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME,
-                PropertyType.INT, "1"));
+        comment.addOrOverrideAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
         
         CodeReviewCommentDto dto = new CodeReviewCommentDto(comment);
         
@@ -42,7 +39,7 @@ public class CodeReviewCommentDtoTest {
         assertEquals(dto.getAuthorUsername(), comment.getAuthor().getEncodedUsername());
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expectedExceptions = NumberFormatException.class)
     public void constructorShouldThrowExceptionIfNoLineNumberProperty() {
         PostComment comment = createComment();
         new CodeReviewCommentDto(comment);
@@ -51,17 +48,13 @@ public class CodeReviewCommentDtoTest {
     @Test
     public void testGetCommentProperties() {
         PostComment comment = createComment();
-        comment.addCustomProperty(new CommentProperty(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME,
-                PropertyType.INT, "1"));
+        comment.addOrOverrideAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
         CodeReviewCommentDto dto = new CodeReviewCommentDto(comment);
 
-        List<CommentProperty> properties = dto.getCommentProperties();
+        Map<String, String> properties = dto.getCommentProperties();
 
         assertEquals(properties.size(), 1);
-        CommentProperty prop = properties.get(0);
-        assertEquals(prop.getName(), CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME);
-        assertEquals(prop.getType(), PropertyType.INT);
-        assertEquals(prop.getValue(), "1");
+        assertEquals(properties.get(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME), "1");
     }
     
     private PostComment createComment() {

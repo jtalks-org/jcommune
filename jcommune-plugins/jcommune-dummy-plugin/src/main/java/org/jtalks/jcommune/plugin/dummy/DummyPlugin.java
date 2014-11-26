@@ -19,7 +19,7 @@ import org.jtalks.jcommune.plugin.api.core.StatefullPlugin;
 
 import java.util.*;
 
-import static org.jtalks.jcommune.model.entity.PropertyType.STRING;
+import static org.jtalks.jcommune.model.entity.PluginProperty.Type.STRING;
 
 /**
  *

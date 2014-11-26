@@ -31,7 +31,7 @@
         <property name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime"
                   column="MODIFICATION_DATE" not-null="false"/>
         <property name="postContent" type="text" column="POST_CONTENT" not-null="true"/>
-        <property name="rating" column="RATING" not-null="false"/>
+        <property name="rating" column="RATING"/>
         <many-to-one name="userCreated" column="USER_CREATED" class="org.jtalks.jcommune.model.entity.JCUser"
                      fetch="join"
                      foreign-key="FK_USER" lazy="false" not-null="true" cascade="save-update"/>
@@ -39,7 +39,7 @@
 
         <bag name="comments" cascade="all-delete-orphan" inverse="true" order-by="CREATION_DATE">
             <cache usage="nonstrict-read-write"/>
-            <key column="POST_ID" foreign-key="FC_COMMENT_POST"/>
+            <key column="POST_ID" foreign-key="FK_COMMENT_POST"/>
             <one-to-many class="org.jtalks.jcommune.model.entity.PostComment"/>
         </bag>
 

@@ -18,8 +18,8 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents one comment to one line in code review.
@@ -41,7 +41,7 @@ public class PostComment extends Entity {
     private DateTime creationDate;
     private String body;
     private Post post;
-    private List<CommentProperty> customProperties = new ArrayList<>();
+    private Map<String, String> attributes = new HashMap<>();
 
     /**
      * @return the author
@@ -116,41 +116,40 @@ public class PostComment extends Entity {
     }
 
     /**
-     * Gets list of custom properties of the comment
+     * Gets attributes of the comment
      *
-     * @return list of custom properties of the comment
+     * @return attributes of  the comment
      */
-    public List<CommentProperty> getCustomProperties() {
-        return customProperties;
+    public Map<String, String> getAttributes() {
+        return attributes;
     }
 
     /**
-     * Sets list of custom properties to the comment
+     * Sets specified attributes to the comment.
+     * For hibernate usage. Use PostComment#addOrOverrideAttribute or PostComment#addOrOverrideAttributes
      *
-     * @param customProperties list of custom properties to set
+     * @param attributes attributes to set
      */
-    public void setCustomProperties(List<CommentProperty> customProperties) {
-        this.customProperties = customProperties;
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
     }
 
     /**
-     * Adds custom property to comment's property list
+     * Adds new attribute or overrides existent attribute of the comment
      *
-     * @param property property to add
+     * @param attributeName name of the attribute
+     * @param attributeValue value of the attribute
      */
-    public void addCustomProperty(CommentProperty property) {
-        property.setComment(this);
-        customProperties.add(property);
+    public void addOrOverrideAttribute(String attributeName, String attributeValue) {
+        this.attributes.put(attributeName, attributeValue);
     }
 
     /**
-     * Adds all properties from list to comment's properties
+     * Adds new and overrides existent attributes of the comment
      *
-     * @param properties list of properties to add
+     * @param attributes map of attributes to add
      */
-    public void addCustomProperties(List<CommentProperty> properties) {
-        for (CommentProperty property : properties) {
-            addCustomProperty(property);
-        }
+    public void addOrOverrideAttributes(Map<String, String> attributes) {
+        this.attributes.putAll(attributes);
     }
 }

@@ -16,14 +16,10 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.exception.ConstraintViolationException;
 import org.jtalks.common.model.dao.Crud;
-import org.jtalks.jcommune.model.entity.CommentProperty;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.entity.PostComment;
-import org.jtalks.jcommune.model.entity.PropertyType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -101,66 +97,30 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
 
     @Test
     public void testSaveCommentWithCustomProperties() {
-        CommentProperty property = new CommentProperty("name", PropertyType.STRING, "value");
         PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
-        comment.addCustomProperty(property);
+        comment.addOrOverrideAttribute("name", "value");
         postCommentDao.saveOrUpdate(comment);
         flushAndClearSession();
 
         PostComment result = (PostComment)session.get(PostComment.class, comment.getId());
 
-        assertEquals(result.getCustomProperties().size(), comment.getCustomProperties().size());
+        assertEquals(result.getAttributes().get("name"), "value");
     }
 
     @Test
     public void commentPropertiesShouldBeUpdatedByCascade() {
-        PostComment comment = PersistedObjectsFactory.getCommentWithProperties();
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        comment.addOrOverrideAttribute("name", "value");
         postCommentDao.saveOrUpdate(comment);
         String updatedValue = "updatedValue";
-        comment.getCustomProperties().get(0).setValue(updatedValue);
+        comment.addOrOverrideAttribute("name", updatedValue);
 
         postCommentDao.saveOrUpdate(comment);
         flushAndClearSession();
 
         PostComment result = (PostComment)session.get(PostComment.class, comment.getId());
 
-        assertEquals(result.getCustomProperties().get(0).getValue(), updatedValue);
-    }
-
-    @Test(expectedExceptions = ConstraintViolationException.class)
-    public void testCascadeUpdateNotNulViolation() {
-        PostComment comment = PersistedObjectsFactory.getCommentWithProperties();
-        postCommentDao.saveOrUpdate(comment);
-        comment.getCustomProperties().get(0).setValue(null);
-
-        postCommentDao.saveOrUpdate(comment);
-        flushAndClearSession();
-    }
-
-    @Test
-    public void commentPropertiesShouldBeRemovedIfCommentRemoved() {
-        PostComment comment = PersistedObjectsFactory.getCommentWithProperties();
-        postCommentDao.saveOrUpdate(comment);
-        flushAndClearSession();
-
-        postCommentDao.delete(comment);
-
-        CommentProperty property = (CommentProperty)session.get(CommentProperty.class,
-                comment.getCustomProperties().get(0).getId());
-
-        assertNull(property);
-    }
-
-    @Test(expectedExceptions = DataIntegrityViolationException.class)
-    public void itShouldBeImpossibleToSaveCommentWithTwoIdenticalProperties() {
-        CommentProperty property1 = new CommentProperty("name", PropertyType.STRING, "value1");
-        CommentProperty property2 = new CommentProperty("name", PropertyType.STRING, "value1");
-        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
-        comment.addCustomProperty(property1);
-        comment.addCustomProperty(property2);
-
-        postCommentDao.saveOrUpdate(comment);
-        flushAndClearSession();
+        assertEquals(result.getAttributes().get("name"), updatedValue);
     }
 
     private void flushAndClearSession() {

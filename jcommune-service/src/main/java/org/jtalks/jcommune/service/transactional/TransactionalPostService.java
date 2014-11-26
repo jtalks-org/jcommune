@@ -21,7 +21,6 @@ import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.CommentProperty;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
@@ -44,6 +43,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -218,7 +218,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public PostComment addComment(Long postId, List<CommentProperty> properties, String body) throws NotFoundException {
+    public PostComment addComment(Long postId, Map<String, String> attributes, String body) throws NotFoundException {
         Post targetPost = get(postId);
         JCUser currentUser = userService.getCurrentUser();
         permissionService.checkPermission(
@@ -226,7 +226,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
                 AclClassName.BRANCH,
                 BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
         PostComment comment = new PostComment();
-        comment.addCustomProperties(properties);
+        comment.addOrOverrideAttributes(attributes);
         comment.setBody(body);
         comment.setCreationDate(new DateTime(System.currentTimeMillis()));
         comment.setAuthor(currentUser);
