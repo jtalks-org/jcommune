@@ -103,7 +103,7 @@ public class MailService {
         String url = this.getDeploymentRootUrl() + urlSuffix;
         String name = user.getUsername();
         Locale locale = user.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(NAME, name);
         model.put("newPassword", newPassword);
         model.put(LINK, url);
@@ -128,7 +128,7 @@ public class MailService {
             String urlSuffix = entity.prepareUrlSuffix();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
+            Map<String, Object> model = new HashMap<>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
             if (entity instanceof Branch) {
@@ -172,7 +172,7 @@ public class MailService {
             String urlSuffix = "/pm/inbox/" + pm.getId();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
+            Map<String, Object> model = new HashMap<>();
             model.put("recipient", recipient);
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
@@ -195,7 +195,7 @@ public class MailService {
             String urlSuffix = "/user/activate/" + recipient.getUuid();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
+            Map<String, Object> model = new HashMap<>();
             model.put(NAME, recipient.getUsername());
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
@@ -217,7 +217,7 @@ public class MailService {
         String urlSuffix = "/topics/" + topic.getId();
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(NAME, recipient.getUsername());
         model.put(LINK, url);
         model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(topic.getBranch()));
@@ -242,7 +242,7 @@ public class MailService {
         String urlSuffix = "/topics/" + topic.getId();
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(NAME, recipient.getUsername());
         model.put(CUR_USER, curUser);
         model.put(LINK, url);
@@ -269,7 +269,7 @@ public class MailService {
         String urlSuffix = "/posts/" + postId;
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(NAME, recipient.getUsername());
         model.put(LINK, url);
         model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
@@ -329,7 +329,7 @@ public class MailService {
      */
     private String mergeHtmlTemplate(String templateName, Map<String, Object> model) {
         String path = HTML_TEMPLATES_PATH + templateName;
-        return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, model);
+        return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, "UTF-8", model);
     }
 
     /**
@@ -342,7 +342,7 @@ public class MailService {
      */
     private String mergePlainTextTemplate(String templateName, Map<String, Object> model) {
         String path = PLAIN_TEXT_TEMPLATES_PATH + templateName;
-        return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, model);
+        return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, path, "UTF-8", model);
     }
 
     /**
@@ -474,7 +474,7 @@ public class MailService {
             String urlSuffix = "/topics/" + topic.getId();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = subscriber.getLanguage().getLocale();
-            Map<String, Object> model = new HashMap<String, Object>();
+            Map<String, Object> model = new HashMap<>();
             model.put(LINK, url);
             model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl()
                     + getUnsubscribeBranchLink(topic.getBranch()));
