@@ -222,7 +222,9 @@ public class Post extends Entity {
     }
 
     /**
-     * Gets rating of the post
+     * Gets rating of the post.
+     * Rating introduced to provide ability to vote for posts.
+     * In some topic types post may be ordered by rating.
      *
      * @return rating of the post
      */
