@@ -627,7 +627,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
 
     /**
      * Sets specified attributes to the topic
-     * For hibernate usage. Use Topic#addOrOverrideAttribute
+     * For hibernate usage. Use Topic#putAttribute
      *
      * @param attributes attributes to set
      */

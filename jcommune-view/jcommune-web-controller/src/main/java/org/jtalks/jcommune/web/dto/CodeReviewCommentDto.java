@@ -132,11 +132,11 @@ public class CodeReviewCommentDto {
     }
 
     /**
-     * Gets custom properties list for comment. In this case contains only line_number property
+     * Gets list of attributes for comment. In this case contains only line_number property
      *
      * @return list of custom properties
      */
-    public Map<String, String> getCommentProperties() {
+    public Map<String, String> getCommentAttributes() {
         Map<String, String> properties = new HashMap<>();
         properties.put(LINE_NUMBER_PROPERTY_NAME, String.valueOf(lineNumber));
         return properties;

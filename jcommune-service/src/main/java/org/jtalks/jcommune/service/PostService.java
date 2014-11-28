@@ -102,7 +102,7 @@ public interface PostService extends EntityService<Post> {
      * Adds comment to post with specified id
      *
      * @param postId id of post to which comment will be added
-     * @param properties list of custom comment properties
+     * @param attributes list of comment attributes
      * @param body text of the comment
 
      * @return newly created comment

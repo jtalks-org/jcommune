@@ -126,7 +126,7 @@ public class PostComment extends Entity {
 
     /**
      * Sets specified attributes to the comment.
-     * For hibernate usage. Use PostComment#addOrOverrideAttribute or PostComment#addOrOverrideAttributes
+     * For hibernate usage. Use PostComment#putAttribute or PostComment#putAllAttributes
      *
      * @param attributes attributes to set
      */
@@ -140,7 +140,7 @@ public class PostComment extends Entity {
      * @param attributeName name of the attribute
      * @param attributeValue value of the attribute
      */
-    public void addOrOverrideAttribute(String attributeName, String attributeValue) {
+    public void putAttribute(String attributeName, String attributeValue) {
         this.attributes.put(attributeName, attributeValue);
     }
 
@@ -149,7 +149,7 @@ public class PostComment extends Entity {
      *
      * @param attributes map of attributes to add
      */
-    public void addOrOverrideAttributes(Map<String, String> attributes) {
+    public void putAllAttributes(Map<String, String> attributes) {
         this.attributes.putAll(attributes);
     }
 }

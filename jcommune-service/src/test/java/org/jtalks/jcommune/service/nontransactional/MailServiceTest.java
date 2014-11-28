@@ -378,7 +378,7 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendRemovingTopicMail_ForMethodWith3Params() throws Exception{
+    public void testSendRemovingTopicMailCurrentUserAware() throws Exception{
         enableEmailNotifications();
 
         service.sendRemovingTopicMail(user, topic, "admin");
@@ -395,7 +395,7 @@ public class MailServiceTest {
     }
 
     @Test
-    public void removingTopicMailWhenShouldNotSentWhenForumNotificationsAreDisabled() throws Exception {
+    public void removingTopicMailShouldNotBeSentWhenForumNotificationsAreDisabled() throws Exception {
         disableEmailNotifications();
 
         service.sendRemovingTopicMail(user, topic);
@@ -404,7 +404,7 @@ public class MailServiceTest {
     }
 
     @Test
-    public void removingTopicMailWhenShouldNotSentWhenForumNotificationsAreDisabled_ForMethodWith3Params()
+    public void removingTopicMailCurrentUserAwareShouldNotBeSentWhenForumNotificationsAreDisabled()
             throws Exception {
         disableEmailNotifications();
 
@@ -414,7 +414,7 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendRemovingTopicWitCodeReviewMail() throws Exception {
+    public void testSendRemovingTopicWithCodeReviewMail() throws Exception {
         enableEmailNotifications();
         topic.setType(TopicTypeName.CODE_REVIEW.getName());
         service.sendRemovingTopicMail(user, topic);
@@ -432,7 +432,7 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendRemovingTopicWitCodeReviewMail_ForMethodWith3Params() throws Exception {
+    public void testSendRemovingTopicWithCodeReviewMailCurrentUserAware() throws Exception {
         enableEmailNotifications();
         topic.setType(TopicTypeName.CODE_REVIEW.getName());
         service.sendRemovingTopicMail(user, topic, "admin");

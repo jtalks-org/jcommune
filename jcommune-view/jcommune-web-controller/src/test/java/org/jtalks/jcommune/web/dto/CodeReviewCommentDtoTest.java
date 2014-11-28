@@ -28,7 +28,7 @@ public class CodeReviewCommentDtoTest {
     @Test
     public void testConstructor() {
         PostComment comment = createComment();
-        comment.addOrOverrideAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
+        comment.putAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
         
         CodeReviewCommentDto dto = new CodeReviewCommentDto(comment);
         
@@ -48,10 +48,10 @@ public class CodeReviewCommentDtoTest {
     @Test
     public void testGetCommentProperties() {
         PostComment comment = createComment();
-        comment.addOrOverrideAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
+        comment.putAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
         CodeReviewCommentDto dto = new CodeReviewCommentDto(comment);
 
-        Map<String, String> properties = dto.getCommentProperties();
+        Map<String, String> properties = dto.getCommentAttributes();
 
         assertEquals(properties.size(), 1);
         assertEquals(properties.get(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME), "1");

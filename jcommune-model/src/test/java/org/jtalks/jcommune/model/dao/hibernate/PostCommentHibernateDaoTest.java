@@ -98,7 +98,7 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
     @Test
     public void testSaveCommentWithCustomProperties() {
         PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
-        comment.addOrOverrideAttribute("name", "value");
+        comment.putAttribute("name", "value");
         postCommentDao.saveOrUpdate(comment);
         flushAndClearSession();
 
@@ -110,10 +110,10 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
     @Test
     public void commentPropertiesShouldBeUpdatedByCascade() {
         PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
-        comment.addOrOverrideAttribute("name", "value");
+        comment.putAttribute("name", "value");
         postCommentDao.saveOrUpdate(comment);
         String updatedValue = "updatedValue";
-        comment.addOrOverrideAttribute("name", updatedValue);
+        comment.putAttribute("name", updatedValue);
 
         postCommentDao.saveOrUpdate(comment);
         flushAndClearSession();

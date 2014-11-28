@@ -287,48 +287,27 @@ public class TransactionalPostServiceTest {
 
     @Test
     public void testPostsOfUser() {
-        String page = "1";
-        long branchId = 1L;
-        int pageSize = 50;
-        Branch branch = new Branch("branch","");
-        branch.setId(branchId);
-        Topic topic = new Topic();
-        topic.setBranch(branch);
-        Post post = new Post(user, "");
-        post.setTopic(topic);
-        List<Post> posts = Arrays.asList(post);
-        Page<Post> expectedPostsPage = new PageImpl<>(posts);
+        Page<Post> expectedPostsPage = getPageWithPost();
         when(postDao.getUserPosts(Matchers.<JCUser>any(), Matchers.<PageRequest>any(), Matchers.anyList()))
                 .thenReturn(expectedPostsPage);
-        when(topicDao.getAllowedBranchesIds(Matchers.<JCUser>any())).thenReturn(Arrays.asList(branchId));
+        when(topicDao.getAllowedBranchesIds(Matchers.<JCUser>any())).thenReturn(Arrays.asList(1L));
 
-        currentUser.setPageSize(pageSize);
+        currentUser.setPageSize(50);
 
-        Page<Post> actualPostsPage = postService.getPostsOfUser(user, page);
+        Page<Post> actualPostsPage = postService.getPostsOfUser(user, "1");
 
         assertEquals(actualPostsPage, expectedPostsPage);
     }
 
     @Test
     public void getPostsOfUserShouldReturnEmptyPageInNoBranchesAllowed() {
-        String page = "1";
-        long branchId = 1L;
-        int pageSize = 50;
-        Branch branch = new Branch("branch","");
-        branch.setId(branchId);
-        Topic topic = new Topic();
-        topic.setBranch(branch);
-        Post post = new Post(user, "");
-        post.setTopic(topic);
-        List<Post> posts = Arrays.asList(post);
-        Page<Post> postsOfUser = new PageImpl<>(posts);
         when(postDao.getUserPosts(Matchers.<JCUser>any(), Matchers.<PageRequest>any(), Matchers.anyList()))
-                .thenReturn(postsOfUser);
+                .thenReturn(getPageWithPost());
         when(topicDao.getAllowedBranchesIds(Matchers.<JCUser>any())).thenReturn(Collections.EMPTY_LIST);
 
-        currentUser.setPageSize(pageSize);
+        currentUser.setPageSize(50);
 
-        Page<Post> actualPostsPage = postService.getPostsOfUser(user, page);
+        Page<Post> actualPostsPage = postService.getPostsOfUser(user, "1");
 
         assertEquals(actualPostsPage.getSize(), 0);
     }
@@ -571,5 +550,15 @@ public class TransactionalPostServiceTest {
         post.setId(123L);//we don't care about ID
         topic.addPost(post);
         return post;
+    }
+
+    private Page<Post> getPageWithPost() {
+        Branch branch = new Branch("branch","");
+        branch.setId(1L);
+        Topic topic = new Topic();
+        topic.setBranch(branch);
+        Post post = new Post(user, "");
+        post.setTopic(topic);
+        return new PageImpl<>(Arrays.asList(post));
     }
 }

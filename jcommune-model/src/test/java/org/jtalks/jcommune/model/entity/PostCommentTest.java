@@ -77,50 +77,50 @@ public class PostCommentTest {
     }
 
     @Test
-    public void addOrOverrideAttributeShouldAddNewAttributes() {
+    public void putAttributeShouldAddNewAttributes() {
         String name = "name";
         String value = "value";
         PostComment postComment = new PostComment();
 
-        postComment.addOrOverrideAttribute(name, value);
+        postComment.putAttribute(name, value);
 
         assertEquals(value, postComment.getAttributes().get(name));
     }
 
     @Test
-    public void addOrOverrideAttributeShouldOverrideExistentAttribute() {
+    public void putAttributeShouldOverrideExistentAttribute() {
         String name = "name";
         String newValue = "newValue";
         PostComment postComment = new PostComment();
-        postComment.addOrOverrideAttribute(name, "value");
+        postComment.putAttribute(name, "value");
 
-        postComment.addOrOverrideAttribute(name, newValue);
+        postComment.putAttribute(name, newValue);
 
         assertEquals(newValue, postComment.getAttributes().get(name));
     }
 
     @Test
-    public void addOrOverrideAttributesShouldAddNewAttributes() {
+    public void putAllAttributesShouldAddNewAttributes() {
         Map<String, String> attributes = new HashMap<>();
         attributes.put("name1", "value1");
         attributes.put("name2", "value2");
         PostComment postComment = new PostComment();
 
-        postComment.addOrOverrideAttributes(attributes);
+        postComment.putAllAttributes(attributes);
 
         assertEquals("value1", postComment.getAttributes().get("name1"));
         assertEquals("value2", postComment.getAttributes().get("name2"));
     }
 
     @Test
-    public void addOrOverrideAttributesShouldOverrideExistentAttributes() {
+    public void putAllAttributesShouldOverrideExistentAttributes() {
         PostComment postComment = new PostComment();
-        postComment.addOrOverrideAttribute("name1", "value1");
+        postComment.putAttribute("name1", "value1");
         Map<String, String> attributes = new HashMap<>();
         attributes.put("name1", "newValue1");
         attributes.put("name2", "newValue2");
 
-        postComment.addOrOverrideAttributes(attributes);
+        postComment.putAllAttributes(attributes);
 
         assertEquals("newValue1", postComment.getAttributes().get("name1"));
         assertEquals("newValue2", postComment.getAttributes().get("name2"));

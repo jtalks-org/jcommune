@@ -32,10 +32,10 @@
         
         <many-to-one name="author" column="AUTHOR_ID" class="org.jtalks.jcommune.model.entity.JCUser"
                      lazy="false"
-                     not-null="true" foreign-key="FC_COMMENT_AUTHOR"/>
+                     not-null="true" foreign-key="FK_COMMENT_AUTHOR"/>
         <many-to-one name="post" column="POST_ID" class="org.jtalks.jcommune.model.entity.Post"
                      lazy="false"
-                     not-null="true" foreign-key="FC_COMMENT_POST"/>
+                     not-null="true" foreign-key="FK_COMMENT_POST"/>
         <map name="attributes" table="COMMENT_ATTRIBUTE" cascade="all-delete-orphan">
           <cache usage="read-write"/>
           <key column="COMMENT_ID" foreign-key="FK_COMMENT_ATTRIBUTE"/>

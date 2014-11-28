@@ -263,7 +263,7 @@ public class CodeReviewCommentControllerTest {
         PostComment comment = new PostComment();
         comment.setId(COMMENT_ID);
         comment.setBody(COMMENT_BODY);
-        comment.addOrOverrideAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
+        comment.putAttribute(CodeReviewCommentDto.LINE_NUMBER_PROPERTY_NAME, "1");
 
         JCUser user = currentUser();
         comment.setAuthor(user);
