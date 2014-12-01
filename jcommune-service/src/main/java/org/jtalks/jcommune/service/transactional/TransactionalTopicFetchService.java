@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.service.PluginTopicFetchService;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -37,7 +38,7 @@ import java.util.List;
  * conditions. Topic search operations are also performed here.
  */
 public class TransactionalTopicFetchService extends AbstractTransactionalEntityService<Topic, TopicDao>
-        implements TopicFetchService {
+        implements TopicFetchService, PluginTopicFetchService {
 
     private UserService userService;
     private TopicSearchDao searchDao;

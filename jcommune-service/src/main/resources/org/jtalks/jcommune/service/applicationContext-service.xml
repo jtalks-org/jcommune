@@ -423,6 +423,12 @@
     <property name="branchService" ref="topicBranchService"/>
   </bean>
 
+  <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService"
+        factory-method="getInstance">
+    <property name="topicFetchService" ref="topicFetchService"/>
+    <property name="topicModificationService" ref="topicModificationService"/>
+  </bean>
+
   <beans profile="performance">
     <!-- JETM implementation using bean -->
     <bean id="etmMonitor" class="etm.core.monitor.NestedMonitor" init-method="start" destroy-method="stop"/>

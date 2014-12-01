@@ -24,6 +24,7 @@ import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
+import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
 import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.dto.BreadcrumbLocation;
@@ -86,9 +87,9 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             throws NotFoundException{
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
+        Branch  branch = TransactionalPluginBranchService.getInstance().get(branchId);
         Map<String, Object> data = getDefaultModel(request);
         if (result.hasErrors()) {
-            Branch branch = TransactionalPluginBranchService.getInstance().get(branchId);
             topicDto.getTopic().setBranch(branch);
             data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topicDto.getTopic()));
             data.put("topicDto", topicDto);
@@ -96,7 +97,11 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                     "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
         }
-        return "plugin/plugin";
+        topicDto.getTopic().setBranch(branch);
+        topicDto.getTopic().setType("Question");
+        Topic createdQuestion = TransactionalTypeAwarePluginTopicService.getInstance().createTopic(topicDto.getTopic(),
+                topicDto.getBodyText());
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + createdQuestion.getId();
     }
 
     @RequestMapping(value = "new", method = RequestMethod.GET)
@@ -123,6 +128,22 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
+    }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public String showQuestion(HttpServletRequest request, Model model, @PathVariable("id") Long id)
+            throws NotFoundException {
+        Topic topic = TransactionalTypeAwarePluginTopicService.getInstance().get(id, "Question");
+        Map<String, Object> data = getDefaultModel(request);
+        data.put("question", topic);
+        data.put("postPage", new PageImpl<>(topic.getPosts()));
+        data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
+        data.put("subscribed", false);
+        VelocityEngine engine = new VelocityEngine(getProperties());
+        engine.init();
+        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
+                "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", data));
+        return "plugin/plugin";
     }
 
     private void processIconRequest(HttpServletRequest request, HttpServletResponse response, String iconPath)
