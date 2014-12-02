@@ -21,7 +21,7 @@
 //handling click on menu link Sign Up
 $(function () {
 
-    $(".signup").on('click', signUp);
+    $("#dialog-signup-link, #top-signup-link, #page-signup-link").on('click', signUp);
 
     clearPageForm();
 

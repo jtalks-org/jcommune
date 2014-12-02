@@ -29,8 +29,8 @@ $(function () {
             <div id="rememberme-area" class="control-group"> \
                 <label class="rememberme-lbl"><input name="_spring_security_remember_me" class="form-check-radio-box" type="checkbox" checked="checked">' + $labelRememberMe + '</label> \
             </div> \
-            <div class="signup" >\
-                <a href="' + $root + '/user/new' + '">' + $labelSignupRightNow + '</a> \
+            <div class="signup">\
+                <a id="dialog-signup-link" href="' + $root + '/user/new' + '">' + $labelSignupRightNow + '</a> \
             </div> \
             <div class="clearfix" /> \
             <div id="restore-passwd" class="control-group"> \
@@ -69,7 +69,7 @@ $(function () {
                 '#signin-submit-button'],
             handlers: {
                 '#signin-modal-dialog': {'submit': sendLoginPost},
-                '.signup': {'click': function(e){
+                '#dialog-signup-link': {'click': function(e){
                     jDialog.closeDialog();
                     signUp(e);
                 }}

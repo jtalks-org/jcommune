@@ -491,18 +491,18 @@ div.anchor {
     vertical-align: middle;
 }
 
-.signup a {
-    text-decoration: underline;
-    color: #a3a3a3;
-}
-
 div.signup {
     float: left;
     margin-left: 25px;
     margin-right: 5px;
 }
 
-a.signup {
+#dialog-signup-link {
+    text-decoration: underline;
+    color: #a3a3a3;
+}
+
+#page-signup-link {
     text-decoration: underline;
     color: #a3a3a3;
     margin-left: 15px;
