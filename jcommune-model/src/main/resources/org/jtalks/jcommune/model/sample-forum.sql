@@ -1,13 +1,5 @@
--- Creates users: registered, moderator, banned with respective permissions
--- Creates sections and branches to be able to see then and post something
-set @forum_component_id := 2;
-update COMPONENTS set DESCRIPTION='Available users: admin/admin registered/registered moderator/moderator banned/banned' where CMP_ID=2;
-
--- Delete old permissions for admin user
-delete from acl_entry where id=1;
-delete from acl_object_identity  where id=1;
-ALTER TABLE acl_entry AUTO_INCREMENT=1;
-ALTER TABLE acl_object_identity AUTO_INCREMENT=1;
+﻿SET @forum_component_id := 2;
+insert ignore into COMPONENTS (CMP_ID, COMPONENT_TYPE, UUID, `NAME`, DESCRIPTION) VALUES (2, 'FORUM', (SELECT UUID() FROM dual), 'JTalks Sample Forum', 'Available users: admin/admin registered/registered moderator/moderator banned/banned');
 
 insert ignore into SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, COMPONENT_ID) VALUES
   (1,(SELECT UUID() FROM dual),'Sport', 'All about sport', 1, @forum_component_id),
@@ -20,9 +12,9 @@ insert ignore into SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, CO
   (8,(SELECT UUID() FROM dual),'Hi-tech', 'Technologies', 8, @forum_component_id),
   (9,(SELECT UUID() FROM dual),'People', 'All about mankind', 9, @forum_component_id),
   (10,(SELECT UUID() FROM dual),'Leisure', 'Have free time?', 9, @forum_component_id);
-
+  
 -- GROUPS BEGIN
-
+insert ignore into GROUPS (UUID, `NAME`, DESCRIPTION) VALUES ((SELECT UUID() FROM dual), 'Moderators', 'General group for all moderators');
 SET @admin_group_id := (select GROUP_ID from GROUPS where `NAME`='Administrators');
 SET @registered_group_id := (select GROUP_ID from GROUPS where `NAME`='Registered Users');
 SET @banned_group_id := (select GROUP_ID from GROUPS where `NAME`='Banned Users');
@@ -40,7 +32,7 @@ insert ignore into BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SEC
   (3, UUID(), 'Field hockey', 'Sticks and balls on the grass', 2, 1 ,1),
   (4, UUID(), 'Korfball', 'It is NOT basketball!!', 3, 1 ,1),
   (5, UUID(), 'Sepak takraw', 'Rattan balls,', 4, 1 ,1),
-
+  
   (6, UUID(), 'Bicycle', 'Two wheels', 0, 2, 1),
   (7, UUID(), 'Rickshaw', '', 1, 2 ,1),
   (8, UUID(), 'Horse', 'Still actual', 2, 2 ,1),
@@ -52,43 +44,43 @@ insert ignore into BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SEC
   (13, UUID(), 'America', 'Other hemisphere', 2, 3 ,1),
   (14, UUID(), 'Africa', 'Too hot?', 3, 3 ,1),
   (15, UUID(), 'Australia', 'Something very interesting', 4, 3 ,1),
-
+  
   (16, UUID(), 'Classic', 'Checked by ages', 0, 4, 1),
   (17, UUID(), 'Rock', 'Something heavier?', 1, 4, 1),
   (18, UUID(), 'Electronic', '', 2, 4 ,1),
   (19, UUID(), 'Pop', 'La-la', 3, 4 ,1),
   (20, UUID(), 'Rap', 'Yo!', 4, 4 ,1),
-
+  
   (21, UUID(), 'Ancient', 'Rome, Greece', 0, 5, 1),
   (22, UUID(), 'Middle Ages', 'Europe', 1, 5 ,1),
   (23, UUID(), 'Renaissance', 'Still Europe', 2, 5 ,1),
   (24, UUID(), 'Modern', 'All Earth', 3, 5 ,1),
   (25, UUID(), 'Future', 'Go ahead all over the world', 4, 5 ,1),
-
+  
   (26, UUID(), 'Sci-fi', 'What about something unbelievable?', 0, 6, 1),
   (27, UUID(), 'Adventures', 'Breathtaking books', 1, 6 ,1),
   (28, UUID(), 'Fairytales', 'Not only for kids', 2, 6 ,1),
   (29, UUID(), 'Realism', 'All about our life', 3, 6 ,1),
   (30, UUID(), 'Comedy', 'LOL', 4, 6 ,1),
-
+  
   (31, UUID(), 'TV shows', 'Funny and useful', 0, 7, 1),
   (32, UUID(), 'News', 'From north to south', 1, 7 ,1),
   (33, UUID(), 'Cartoon', 'Kids time', 2, 7 ,1),
   (34, UUID(), 'Discovery', 'All Earth', 3, 7 ,1),
   (35, UUID(), 'Advertisement', 'Part of the TV', 4, 7 ,1),
-
+  
   (36, UUID(), 'Hard', 'Components', 0, 8, 1),
   (37, UUID(), 'Soft', 'Applications', 1, 8 ,1),
   (38, UUID(), 'Programming', 'Development', 2, 8 ,1),
   (39, UUID(), 'Network', 'World wide web', 3, 8 ,1),
   (40, UUID(), 'Electronics', 'Devices', 4, 8 ,1),
-
+  
   (41, UUID(), 'Philosophy', 'Wisdom', 0, 9, 1),
   (42, UUID(), 'Sociology', 'Human behaviour', 1, 9 ,1),
   (43, UUID(), 'Psychology', 'Human motives', 2, 9 ,1),
   (44, UUID(), 'Education', 'Evolution', 3, 9 ,1),
   (45, UUID(), 'Religion', 'Human faith', 4, 9 ,1),
-
+  
   (46, UUID(), 'Theatre', 'Performances', 0, 10, 1),
   (47, UUID(), 'Cinema', 'New blockbusters', 1, 10 ,1),
   (48, UUID(), 'Exhibitions', 'Art', 2, 10 ,1),
@@ -97,10 +89,12 @@ insert ignore into BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SEC
 -- ****USERS CREATION BEGIN****
 -- Creates a default users with admin/admin, registered/registered, moderator/moderator, banned/banned credentials to be able to log in without manual registration
 insert ignore into USERS (UUID, USERNAME, ENCODED_USERNAME, EMAIL, PASSWORD, ROLE, SALT, ENABLED) VALUES
+  ((SELECT UUID() FROM dual), 'admin', 'admin', 'admin@jtalks.org', MD5('admin'), 'USER_ROLE', '',true),
   ((SELECT UUID() FROM dual), 'registered', 'registered', 'registered@jtalks.org', MD5('registered'), 'USER_ROLE', '',true),
   ((SELECT UUID() FROM dual), 'moderator', 'moderator', 'moderator@jtalks.org', MD5('moderator'), 'USER_ROLE', '', true),
   ((SELECT UUID() FROM dual), 'banned', 'banned', 'banned@jtalks.org', MD5('banned'), 'USER_ROLE', '', true);
 insert ignore into JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT) values
+  ((select ID from USERS where USERNAME = 'admin'), NOW(), 0),
   ((select ID from USERS where USERNAME = 'registered'), NOW(), 0),
   ((select ID from USERS where USERNAME = 'moderator'), NOW(), 0),
   ((select ID from USERS where USERNAME = 'banned'), NOW(), 0) ;
@@ -108,12 +102,14 @@ insert ignore into JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT) valu
 
 -- Add users to appropriate groups
 insert ignore into GROUP_USER_REF select @registered_group_id, ID from USERS;
-insert ignore into GROUP_USER_REF select @moderator_group_id, ID from USERS where USERNAME = 'moderator';
+insert ignore into GROUP_USER_REF select @moderator_group_id, ID from USERS where USERNAME in ('moderator', 'admin');
+insert ignore into GROUP_USER_REF select @admin_group_id, ID from USERS where USERNAME = 'admin';
 insert ignore into GROUP_USER_REF select @banned_group_id, ID from USERS where USERNAME = 'banned';
 
 set @component_acl_class=1;
 set @group_acl_class=2;
 set @branch_acl_class=3;
+insert ignore into acl_class values (@branch_acl_class,'BRANCH'), (@group_acl_class,'GROUP'), (@component_acl_class,'COMPONENT');
 
 insert into acl_sid(principal, sid) values (0, @moderator_group_sid);
 
