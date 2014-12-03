@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.dao.BranchReadedMarkerDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.plugin.api.service.PluginLastReadPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,7 +35,7 @@ import java.util.List;
  * @author Evgeniy Naumenko
  * @author Anuar_Nurmakanov
  */
-public class TransactionalLastReadPostService implements LastReadPostService {
+public class TransactionalLastReadPostService implements LastReadPostService, PluginLastReadPostService {
 
     private final UserService userService;
     private final LastReadPostDao lastReadPostDao;

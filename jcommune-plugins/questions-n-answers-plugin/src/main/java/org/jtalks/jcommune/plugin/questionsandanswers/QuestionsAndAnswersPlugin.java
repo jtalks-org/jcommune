@@ -32,6 +32,7 @@ import java.util.*;
  * @author Evgeniy Myslovets
  */
 public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements TopicPlugin {
+    public static final String TOPIC_TYPE = "Question";
     private static final String ORDER_PROPERTY = "label.order";
     private static final String ORDER_HINT = "label.order.hint";
     private static final int DEFAULT_ORDER_VALUE = 102;
@@ -166,5 +167,10 @@ public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements To
     @Override
     public PluginController getController() {
         return new QuestionsAndAnswersController();
+    }
+
+    @Override
+    public String getTopicType() {
+        return TOPIC_TYPE;
     }
 }
