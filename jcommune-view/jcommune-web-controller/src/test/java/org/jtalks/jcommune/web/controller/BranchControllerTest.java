@@ -130,7 +130,7 @@ public class BranchControllerTest {
         @SuppressWarnings("unchecked")
         Page<Topic> actualTopicsPage = 
             (Page<Topic>) assertAndReturnModelAttributeOfType(mav, "topicsPage", Page.class);
-        assertEquals(actualTopicsPage, topicsPage);
+        assertEquals(actualTopicsPage.getSize(), topicsPage.getSize());
         
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }

@@ -17,6 +17,7 @@ package org.jtalks.jcommune.plugin.api.web.dto;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.TopicTypeName;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
 
@@ -38,6 +39,10 @@ public class TopicDto {
     @BbCodeAwareSize(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
     @BbCodeNesting
     private String bodyText;
+
+    private String topicUrl;
+    private String unreadIconUrl;
+    private String readIconUrl;
 
     /**
      * Plain object for topic creation
@@ -105,6 +110,30 @@ public class TopicDto {
      */
     public void setPoll(Poll poll) {
         topic.setPoll(poll);
+    }
+
+    public String getTopicUrl() {
+        return topicUrl;
+    }
+
+    public void setTopicUrl(String topicUrl) {
+        this.topicUrl = topicUrl;
+    }
+
+    public String getUnreadIconUrl() {
+        return unreadIconUrl;
+    }
+
+    public void setUnreadIconUrl(String unreadIconUrl) {
+        this.unreadIconUrl = unreadIconUrl;
+    }
+
+    public String getReadIconUrl() {
+        return readIconUrl;
+    }
+
+    public void setReadIconUrl(String readIconUrl) {
+        this.readIconUrl = readIconUrl;
     }
 
     /**

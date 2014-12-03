@@ -429,6 +429,11 @@
     <property name="topicModificationService" ref="topicModificationService"/>
   </bean>
 
+  <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService"
+        factory-method="getInstance">
+  <property name="lastReadPostService" ref="lastReadPostService"/>
+  </bean>
+
   <beans profile="performance">
     <!-- JETM implementation using bean -->
     <bean id="etmMonitor" class="etm.core.monitor.NestedMonitor" init-method="start" destroy-method="stop"/>

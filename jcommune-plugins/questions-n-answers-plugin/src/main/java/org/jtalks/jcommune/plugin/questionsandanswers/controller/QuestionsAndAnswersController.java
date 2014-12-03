@@ -24,6 +24,7 @@ import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
+import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
 import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
@@ -121,10 +122,10 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         return "plugin/plugin";
     }
 
-    @RequestMapping(value = "icon/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "{name}.png", method = RequestMethod.GET)
     public void getIcon(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String name) {
         try {
-            processIconRequest(request, response, PATH_TO_IMAGES + name);
+            processIconRequest(request, response, PATH_TO_IMAGES + name + ".png");
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -139,6 +140,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put("postPage", new PageImpl<>(topic.getPosts()));
         data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put("subscribed", false);
+        TransactionalPluginLastReadPostService.getInstance().markTopicPageAsRead(topic, 1);
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
