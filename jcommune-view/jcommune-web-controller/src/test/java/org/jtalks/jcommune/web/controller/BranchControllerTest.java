@@ -19,12 +19,14 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
+import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.mockito.Mock;
 import org.springframework.data.domain.Page;
@@ -77,6 +79,8 @@ public class BranchControllerTest {
     private SecurityContextFacade securityContextFacade;
     @Mock
     private PluginLoader pluginLoader;
+    @Mock
+    private EntityToDtoConverter converter;
 
     private BranchController controller;
 
@@ -93,7 +97,8 @@ public class BranchControllerTest {
                 postService,
                 permissionEvaluator,
                 securityContextFacade,
-                pluginLoader);
+                pluginLoader,
+                converter);
     }
 
     @Test
@@ -104,13 +109,14 @@ public class BranchControllerTest {
         branch.setId(branchId);
         Pageable pageRequest = new PageRequest(2, 5);
         Page<Topic> topicsPage = new PageImpl<>(Collections.<Topic> emptyList(), pageRequest, 0);
+        Page<TopicDto> dtoPage = new PageImpl<>(Collections.<TopicDto> emptyList(), pageRequest, 0);
         //set expectations
         when(branchService.get(branchId)).thenReturn(branch);
         when(topicFetchService.getTopics(branch, page)).thenReturn(topicsPage);
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<>());
-
+        when(converter.convertToDtoPage(topicsPage)).thenReturn(dtoPage);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
         Authentication authentication = mock(Authentication.class);
@@ -128,9 +134,9 @@ public class BranchControllerTest {
         assertEquals(actualBranch.getId(), branchId);
 
         @SuppressWarnings("unchecked")
-        Page<Topic> actualTopicsPage = 
-            (Page<Topic>) assertAndReturnModelAttributeOfType(mav, "topicsPage", Page.class);
-        assertEquals(actualTopicsPage.getSize(), topicsPage.getSize());
+        Page<TopicDto> actualTopicsPage =
+            (Page<TopicDto>) assertAndReturnModelAttributeOfType(mav, "topicsPage", Page.class);
+        assertEquals(actualTopicsPage.getSize(), dtoPage.getSize());
         
         assertModelAttributeAvailable(mav, "breadcrumbList");
     }
@@ -139,8 +145,10 @@ public class BranchControllerTest {
     public void recentTopicsPage() throws NotFoundException {
         String page = "1";
         Page<Topic> topicsPage = new PageImpl<>(new ArrayList<Topic>());
+        Page<TopicDto> dtoPage = new PageImpl<>(new ArrayList<TopicDto>());
         //set expectations
         when(topicFetchService.getRecentTopics(page)).thenReturn(topicsPage);
+        when(converter.convertToDtoPage(topicsPage)).thenReturn(dtoPage);
 
         //invoke the object under test
         ModelAndView mav = controller.recentTopicsPage(page);
@@ -158,8 +166,10 @@ public class BranchControllerTest {
     public void unansweredTopicsPage() {
         String page = "1";
         Page<Topic> topicsPage = new PageImpl<>(new ArrayList<Topic>());
+        Page<TopicDto> dtoPage = new PageImpl<>(new ArrayList<TopicDto>());
         //set expectations
         when(topicFetchService.getUnansweredTopics(page)).thenReturn(topicsPage);
+        when(converter.convertToDtoPage(topicsPage)).thenReturn(dtoPage);
 
         //invoke the object under test
         ModelAndView mav = controller.unansweredTopicsPage(page);

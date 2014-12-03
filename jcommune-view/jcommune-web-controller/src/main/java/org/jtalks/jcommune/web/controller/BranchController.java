@@ -16,7 +16,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.service.security.SecurityContextFacade;
-import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -26,16 +25,15 @@ import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.web.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
-import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -71,6 +69,7 @@ public class BranchController {
     private PluginLoader pluginLoader;
     private final PermissionEvaluator aclEvaluator;
     private final SecurityContextFacade securityContextFacade;
+    private EntityToDtoConverter converter;
 
     /**
      * Post count in the RSS for recent posts in the branch
@@ -107,7 +106,8 @@ public class BranchController {
                             PostService postService,
                             PermissionEvaluator aclEvaluator,
                             SecurityContextFacade securityContextFacade,
-                            PluginLoader pluginLoader) {
+                            PluginLoader pluginLoader,
+                            EntityToDtoConverter converter) {
         this.branchService = branchService;
         this.topicFetchService = topicFetchService;
         this.lastReadPostService = lastReadPostService;
@@ -118,6 +118,7 @@ public class BranchController {
         this.aclEvaluator = aclEvaluator;
         this.securityContextFacade = securityContextFacade;
         this.pluginLoader = pluginLoader;
+        this.converter = converter;
     }
 
     /**
@@ -145,7 +146,7 @@ public class BranchController {
         return new ModelAndView("topic/topicList")
                 .addObject("viewList", locationService.getUsersViewing(branch))
                 .addObject("branch", branch)
-                .addObject("topicsPage", convertToDtoPage(topicsPage))
+                .addObject("topicsPage", converter.convertToDtoPage(topicsPage))
                 .addObject("breadcrumbList", breadcrumbs)
                 .addObject("topicTypes", getTopicTypes(branchId))
                 .addObject("subscribed", branch.getSubscribers().contains(currentUser));
@@ -236,7 +237,7 @@ public class BranchController {
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
         return new ModelAndView("topic/recent")
-                .addObject("topicsPage", convertToDtoPage(topicsPage))
+                .addObject("topicsPage", converter.convertToDtoPage(topicsPage))
                 .addObject("topics", topicsPage.getContent());  // for rssViewer
     }
 
@@ -252,7 +253,7 @@ public class BranchController {
         Page<Topic> topicsPage = topicFetchService.getUnansweredTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
         return new ModelAndView("topic/unansweredTopics")
-                .addObject("topicsPage", convertToDtoPage(topicsPage));
+                .addObject("topicsPage", converter.convertToDtoPage(topicsPage));
     }
 
     /**
@@ -299,36 +300,4 @@ public class BranchController {
     }
 
 
-    private Page<TopicDto> convertToDtoPage(Page<Topic> source) {
-        List<TopicPlugin> plugins = getEnabledTopicPlugins();
-        List<TopicDto> dtos = new ArrayList<>();
-        for (Topic topic : source) {
-            dtos.add(createTopicDto(topic, plugins));
-        }
-        return new PageImpl<TopicDto>(dtos, PageRequest.fetchFromPage(source), source.getTotalElements());
-    }
-
-    private TopicDto createTopicDto(Topic topic, List<TopicPlugin> plugins) {
-        TopicDto dto = new TopicDto(topic);
-        for (TopicPlugin plugin : plugins) {
-            if (plugin.getTopicType().equals(topic.getType())) {
-                dto.setTopicUrl("/" + plugin.getTopicType().toLowerCase() + "/" + topic.getId());
-                dto.setReadIconUrl("/" + plugin.getTopicType().toLowerCase() + "/read.png");
-                dto.setUnreadIconUrl("/" + plugin.getTopicType().toLowerCase() + "/unread.png");
-                return dto;
-            }
-        }
-        dto.setTopicUrl("/topics/" + topic.getId());
-        if (topic.isCodeReview()) {
-            dto.setUnreadIconUrl("/resources/images/code-review-new-posts.png");
-            dto.setReadIconUrl("/resources/images/code-review-no-new-posts.png");
-        } else if (topic.isClosed()) {
-            dto.setUnreadIconUrl("/resources/images/closed-new-posts.png");
-            dto.setReadIconUrl("/resources/images/closed-no-new-posts.png");
-        } else {
-            dto.setUnreadIconUrl("/resources/images/new-posts.png");
-            dto.setReadIconUrl("/resources/images/no-new-posts.png");
-        }
-        return dto;
-    }
 }

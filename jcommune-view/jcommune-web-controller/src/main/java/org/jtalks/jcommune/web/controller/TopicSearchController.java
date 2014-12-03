@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicFetchService;
+import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,7 @@ public class TopicSearchController {
     private TopicFetchService topicSearchService;
     
     private LastReadPostService lastReadPostService;
+    private EntityToDtoConverter converter;
 
     /**
      * Constructor for controller instantiating, dependencies injected via autowiring.
@@ -61,9 +63,11 @@ public class TopicSearchController {
      */
     @Autowired
     public TopicSearchController(TopicFetchService topicSearchService,
-                                 LastReadPostService lastReadPostService) {
+                                 LastReadPostService lastReadPostService,
+                                 EntityToDtoConverter converter) {
         this.topicSearchService = topicSearchService;
         this.lastReadPostService = lastReadPostService;
+        this.converter = converter;
     }
 
     /**
@@ -89,7 +93,7 @@ public class TopicSearchController {
         HashMap<String, Object> urlParams = new HashMap<>();
         urlParams.put("text", searchText);
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
-                addObject(SEARCH_RESULT_ATTRIBUTE_NAME, searchResultPage).
+                addObject(SEARCH_RESULT_ATTRIBUTE_NAME, converter.convertToDtoPage(searchResultPage)).
                 addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText).
                 addObject("urlParams", urlParams);
     }
