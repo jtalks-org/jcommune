@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.api.service;
 
+import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
@@ -33,4 +34,20 @@ public interface PluginTopicModificationService {
      *          when branch not found
      */
     Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException;
+
+    /**
+     * Delete topic by id. Sends notifications to subscribers and performs logging.
+     *
+     * @param topic topic to be deleted
+     * @throws NotFoundException when topic not found
+     */
+    void deleteTopic(Topic topic) throws NotFoundException;
+
+    /**
+     * Update current topic with given title and body.
+     *
+     * @param topic topic to be updated
+     * @param poll  poll of the updated topic, if any (added for compatibility)
+     */
+    void updateTopic(Topic topic, Poll poll);
 }

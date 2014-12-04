@@ -33,5 +33,33 @@ public interface TypeAwarePluginTopicService {
      */
     Topic get(Long id, String type) throws NotFoundException;
 
+    /**
+     * Add new topic with given title and body.
+     * Author is current user.
+     *
+     * @param topicDto    topic that used as dto
+     * @param bodyText body of topic
+     * @return created topic
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
+     *          when branch not found
+     */
+    Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException;
+
+    /**
+     * Deletes topic if topic have specified type
+     *
+     * @param topic topic to delete
+     *
+     * @throws NotFoundException if topic not found
+     */
+    void deleteTopic(Topic topic) throws NotFoundException;
+
+    /**
+     * Update current topic with given title and body.
+     *
+     * @param topic topic to be updated
+     */
+    void updateTopic(Topic topic) throws NotFoundException;
+
 
 }

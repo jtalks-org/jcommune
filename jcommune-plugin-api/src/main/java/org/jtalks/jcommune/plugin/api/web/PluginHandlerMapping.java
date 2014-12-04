@@ -183,6 +183,12 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
     }
 
     protected HandlerMethod findHandlerMethod(MethodAwareKey key) {
+        //firstly try to find absolutely equal
+        HandlerMethod method = pluginHandlerMethods.get(key);
+        if (method != null) {
+            return method;
+        }
+        //if not found try to find matching
         for (Map.Entry<MethodAwareKey, HandlerMethod> entry : pluginHandlerMethods.entrySet()) {
             if (key.urlRegExp.matches(entry.getKey().urlRegExp) && key.getMethod() == entry.getKey().getMethod()) {
                 return entry.getValue();
@@ -222,7 +228,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
 
         public MethodAwareKey(RequestMethod method, String url) {
             this.method = method;
-            this.urlRegExp = url.replaceAll(PATH_VARIABLE_REGEXP, "(.*?)");
+            this.urlRegExp = url.replaceAll(PATH_VARIABLE_REGEXP, "([^/]+)");
         }
 
         public RequestMethod getMethod() {

@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <head>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
-  <title>${esc.html("Question Tilte")}</title>
+  <title>${esc.html(${question.title})}</title>
 </head>
 <body>
 ##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
@@ -83,7 +83,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         #set($votedDownClass = "vote-down-pressed")
         #set($voteUpClass = "")
       #end
-      #set($rating = 2 - $velocityCount)
+      #set($rating = ${post.rating})
       #set($voteResultClass = "")
       #if($rating > 0)
         #set($voteResultClass = "positive")
@@ -161,14 +161,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                         </a>
                       #end
                         #if($canEdit)
-                          <a href="/edit" data-rel=""
+                          <a href="${request.contextPath}/question/${question.id}/edit" data-rel=""
                              class="edit_button btn btn-mini" title="${esc.html(${messages.getString("label.tips.edit.$postClass")})}">
                             <i class="icon-edit"></i>
                             ${esc.html(${messages.getString("label.edit")})}
                           </a>
                         #end
                         #if($canDelete)
-                          <a href="/delete" class="btn btn-mini btn-danger delete"
+                          <a href="${request.contextPath}/question/${question.id}" class="btn btn-mini btn-danger delete"
                              title="${esc.html(${messages.getString("label.tips.remove.$postClass")})}"
                              data-confirmationMessage="${esc.html(${messages.getString("label.confirm.delete.$postClass")})}">
                             <i class="icon-remove icon-white"></i>
@@ -218,7 +218,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <strong>${esc.html(${messages.getString("label.topic.now_browsing")})}</strong>
   </div>
 
-  <form id="deleteForm" method="DELETE"/>
+  <form id="deleteForm"  method="post">
+    <input name="_method" value="DELETE" type="hidden">
+  </form>
 
 </div>
 </body>

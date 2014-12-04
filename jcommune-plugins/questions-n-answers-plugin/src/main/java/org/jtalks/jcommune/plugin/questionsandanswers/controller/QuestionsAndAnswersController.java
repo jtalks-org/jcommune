@@ -97,6 +97,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             data.put("result", result);
             model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                     "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
+            return "plugin/plugin";
         }
         topicDto.getTopic().setBranch(branch);
         topicDto.getTopic().setType("Question");
@@ -117,15 +118,16 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Map<String, Object> data = getDefaultModel(request);
         data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put("topicDto", dto);
+        data.put("edit", false);
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
         return "plugin/plugin";
     }
 
-    @RequestMapping(value = "{name}.png", method = RequestMethod.GET)
+    @RequestMapping(value = "icon/{name}", method = RequestMethod.GET)
     public void getIcon(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String name) {
         try {
-            processIconRequest(request, response, PATH_TO_IMAGES + name + ".png");
+            processIconRequest(request, response, PATH_TO_IMAGES + name);
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
@@ -146,6 +148,54 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
                 "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", data));
         return "plugin/plugin";
+    }
+
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public String deleteQuestion(@PathVariable("id") Long id) throws NotFoundException {
+        Topic topic = TransactionalTypeAwarePluginTopicService.getInstance().get(id, "Question");
+        TransactionalTypeAwarePluginTopicService.getInstance().deleteTopic(topic);
+        return "redirect:/branches/" + topic.getBranch().getId();
+    }
+
+    @RequestMapping(value = "{id}/edit", method = RequestMethod.GET)
+    public String editQuestionPage(HttpServletRequest request, Model model, @PathVariable("id") Long id)
+            throws NotFoundException{
+        Topic topic = TransactionalTypeAwarePluginTopicService.getInstance().get(id, "Question");
+        TopicDto topicDto = new TopicDto(topic);
+        VelocityEngine engine = new VelocityEngine(getProperties());
+        engine.init();
+        Map<String, Object> data = getDefaultModel(request);
+        data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
+        data.put("topicDto", topicDto);
+        data.put("edit", true);
+        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
+                "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
+        return "plugin/plugin";
+    }
+
+    @RequestMapping(value = "{id}/edit", method = RequestMethod.POST)
+    public String updateQuestion(@Valid @ModelAttribute TopicDto topicDto, BindingResult result, Model model,
+                                 @PathVariable("id") Long id, HttpServletRequest request)
+            throws NotFoundException {
+        Topic topic = TransactionalTypeAwarePluginTopicService.getInstance().get(id, "Question");
+        Map<String, Object> data = getDefaultModel(request);
+        if (result.hasErrors()) {
+            topicDto.getTopic().setId(topic.getId());
+            topicDto.getTopic().setBranch(topic.getBranch());
+            VelocityEngine engine = new VelocityEngine(getProperties());
+            engine.init();
+            data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
+            data.put("topicDto", topicDto);
+            data.put("edit", true);
+            data.put("result", result);
+            model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
+                    "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
+            return "plugin/plugin";
+
+        }
+        topicDto.fillTopic(topic);
+        TransactionalTypeAwarePluginTopicService.getInstance().updateTopic(topic);
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + topic.getId();
     }
 
     private void processIconRequest(HttpServletRequest request, HttpServletResponse response, String iconPath)

@@ -23,8 +23,7 @@ import org.jtalks.jcommune.plugin.api.service.TypeAwarePluginTopicService;
 /**
  * @author Mikhail Stryzhonok
  */
-public class TransactionalTypeAwarePluginTopicService implements TypeAwarePluginTopicService,
-        PluginTopicModificationService {
+public class TransactionalTypeAwarePluginTopicService implements TypeAwarePluginTopicService {
 
     private static final TransactionalTypeAwarePluginTopicService INSTANCE =
             new TransactionalTypeAwarePluginTopicService();
@@ -57,6 +56,16 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
             throw new NotFoundException();
         }
         return topic;
+    }
+
+    @Override
+    public void deleteTopic(Topic topic) throws NotFoundException {
+        topicModificationService.deleteTopic(topic);
+    }
+
+    @Override
+    public void updateTopic(Topic topic) throws NotFoundException {
+        topicModificationService.updateTopic(topic, null);
     }
 
     @Override

@@ -52,8 +52,8 @@ public class EntityToDtoConverter {
         for (TopicPlugin plugin : plugins) {
             if (plugin.getTopicType().equals(topic.getType())) {
                 dto.setTopicUrl("/" + plugin.getTopicType().toLowerCase() + "/" + topic.getId());
-                dto.setReadIconUrl("/" + plugin.getTopicType().toLowerCase() + "/read.png");
-                dto.setUnreadIconUrl("/" + plugin.getTopicType().toLowerCase() + "/unread.png");
+                dto.setReadIconUrl("/" + plugin.getTopicType().toLowerCase() + "/icon/read.png");
+                dto.setUnreadIconUrl("/" + plugin.getTopicType().toLowerCase() + "/icon/unread.png");
                 return dto;
             }
         }
