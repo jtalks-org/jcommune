@@ -8,14 +8,14 @@ insert ignore into COMPONENTS (CMP_ID, COMPONENT_TYPE, UUID, `NAME`, DESCRIPTION
 
 -- 'FROM COMPONENTS' are not used, but query mast contain 'FROM dual' clause
 --  @see <a href="http://dev.mysql.com">http://dev.mysql.com/doc/refman/5.0/en/select.html/a>.
-insert ignore into GROUPS (UUID, `NAME`, DESCRIPTION) VALUES ((SELECT UUID() FROM dual), 'Moderators', 'General group for all moderators');
+insert into GROUPS (UUID, `NAME`, DESCRIPTION) select (SELECT UUID() FROM dual), 'Moderators', 'General group for all moderators' from dual where not exists (select GROUP_ID from GROUPS where `NAME`='Moderators');
 
 -- IGNORE can be used here because USERNAME is unique column, so if table contain user with username='Admin', record
 --  will not be added.
 insert ignore into USERS (UUID, USERNAME, ENCODED_USERNAME, EMAIL, PASSWORD, ROLE, SALT, ENABLED) VALUES
   ((SELECT UUID() FROM dual), 'admin', 'admin', 'admin@jtalks.org', MD5('admin'), 'USER_ROLE', '',true);
-insert ignore into JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT) values
-  ((select ID from USERS where USERNAME = 'admin'), NOW(), 0);
+insert ignore into JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT) select
+  (select ID from USERS where USERNAME = 'admin'), NOW(), 0 from dual where not exists (select * from JC_USER_DETAILS where USER_ID = (select ID from USERS where USERNAME = 'admin'));
 
 -- Adding created Admin to Administrators group(created at this migration or common migration) ).
 SET @admin_group_id := (select GROUP_ID from GROUPS where `NAME`='Administrators');
@@ -32,14 +32,12 @@ SET @acl_sid_user := (SELECT GROUP_CONCAT('user:', CONVERT(ID, char(19))) FROM U
 SET @object_id_identity := (SELECT component.CMP_ID FROM COMPONENTS component WHERE component.COMPONENT_TYPE = @forumComponentType);
 
 -- Adding record to acl_sid table, this record wires sid and user id.
-INSERT IGNORE INTO acl_sid (principal, sid)
-VALUES(1, @acl_sid_user);
+insert ignore into acl_sid (principal, sid) values(1, @acl_sid_user);
 
 SET @acl_sid_id_user := (SELECT sid.id FROM acl_sid sid WHERE sid.sid = @acl_sid_user);
 
 -- Adding record to acl_sid table, this record wires sid and group id.
-INSERT IGNORE INTO acl_sid (principal, sid)
-VALUES(0, @acl_sid_group);
+insert ignore into acl_sid (principal, sid) values(0, @acl_sid_group);
 
 SET @acl_sid_id_group := (SELECT sid.id FROM acl_sid sid WHERE sid.sid = @acl_sid_group);
 

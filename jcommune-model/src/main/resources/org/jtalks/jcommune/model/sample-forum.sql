@@ -1,11 +1,13 @@
--- Creates users: registered, moderator, banned with respective permissions
+﻿-- Creates users: registered, moderator, banned with respective permissions
 -- Creates sections and branches to be able to see then and post something
 set @forum_component_id := 2;
 update COMPONENTS set DESCRIPTION='Available users: admin/admin registered/registered moderator/moderator banned/banned' where CMP_ID=2;
 
 -- Delete old permissions for admin user
-delete from acl_entry where id=1;
-delete from acl_object_identity  where id=1;
+set @rows_acl_entry := (select count(*) from acl_entry);
+set @rows_acl_object_identity := (select count(*) from acl_object_identity);
+delete from acl_entry where id=1 and @rows_acl_entry=1;
+delete from acl_object_identity  where id=1 and @rows_acl_object_identity=1;
 ALTER TABLE acl_entry AUTO_INCREMENT=1;
 ALTER TABLE acl_object_identity AUTO_INCREMENT=1;
 
@@ -22,7 +24,7 @@ insert ignore into SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, CO
   (10,(SELECT UUID() FROM dual),'Leisure', 'Have free time?', 9, @forum_component_id);
 
 -- GROUPS BEGIN
-
+insert into GROUPS (UUID, `NAME`, DESCRIPTION) select (SELECT UUID() FROM dual), 'Moderators', 'General group for all moderators' from dual where not exists (select GROUP_ID from GROUPS where `NAME`='Moderators');
 SET @admin_group_id := (select GROUP_ID from GROUPS where `NAME`='Administrators');
 SET @registered_group_id := (select GROUP_ID from GROUPS where `NAME`='Registered Users');
 SET @banned_group_id := (select GROUP_ID from GROUPS where `NAME`='Banned Users');
@@ -114,6 +116,7 @@ insert ignore into GROUP_USER_REF select @banned_group_id, ID from USERS where U
 set @component_acl_class=1;
 set @group_acl_class=2;
 set @branch_acl_class=3;
+insert ignore into acl_class values (@branch_acl_class,'BRANCH'), (@group_acl_class,'GROUP'), (@component_acl_class,'COMPONENT');
 
 insert into acl_sid(principal, sid) values (0, @moderator_group_sid);
 
