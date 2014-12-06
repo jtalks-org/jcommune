@@ -49,7 +49,7 @@
                 <c:out value="${topicDto.topic.topicStarter.username}"/>
               </a>
               <c:if test="${showBranchColumn}">
-                <span class="margin-right-big"><spring:message code="label.topic.section.in"/></span>
+                <span class="margin-right-big margin-left-big"><spring:message code="label.topic.section.in"/></span>
                 <a href="${pageContext.request.contextPath}/branches/${topicDto.topic.branch.id}">
                   <c:out value="${topicDto.topic.branch.name}"/>
                 </a>
