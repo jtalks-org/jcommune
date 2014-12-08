@@ -51,9 +51,14 @@ public class EntityToDtoConverter {
         TopicDto dto = new TopicDto(topic);
         for (TopicPlugin plugin : plugins) {
             if (plugin.getTopicType().equals(topic.getType())) {
-                dto.setTopicUrl("/" + plugin.getTopicType().toLowerCase() + "/" + topic.getId());
-                dto.setReadIconUrl("/" + plugin.getTopicType().toLowerCase() + "/icon/read.png");
-                dto.setUnreadIconUrl("/" + plugin.getTopicType().toLowerCase() + "/icon/unread.png");
+                dto.setTopicUrl("/topics/" + plugin.getTopicType().toLowerCase() + "/" + topic.getId());
+                if (dto.getTopic().isClosed()) {
+                    dto.setReadIconUrl("/topics/" + plugin.getTopicType().toLowerCase() + "/icon/closed_read.png");
+                    dto.setUnreadIconUrl("/topics/" + plugin.getTopicType().toLowerCase() + "/icon/closed_unread.png");
+                } else {
+                    dto.setReadIconUrl("/topics/" + plugin.getTopicType().toLowerCase() + "/icon/read.png");
+                    dto.setUnreadIconUrl("/topics/" + plugin.getTopicType().toLowerCase() + "/icon/unread.png");
+                }
                 return dto;
             }
         }

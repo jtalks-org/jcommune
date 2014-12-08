@@ -59,11 +59,6 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
     }
 
     @Override
-    public void deleteTopic(Topic topic) throws NotFoundException {
-        topicModificationService.deleteTopic(topic);
-    }
-
-    @Override
     public void updateTopic(Topic topic) throws NotFoundException {
         topicModificationService.updateTopic(topic, null);
     }
@@ -71,5 +66,9 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
     @Override
     public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
         return topicModificationService.createTopic(topicDto, bodyText);
+    }
+
+    public void checkViewTopicPermission(Long branchId) {
+        topicFetchService.checkViewTopicPermission(branchId);
     }
 }

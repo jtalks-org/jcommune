@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
+import org.jtalks.jcommune.plugin.api.service.nontransactional.BbToHtmlConverter;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
@@ -137,24 +138,20 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     public String showQuestion(HttpServletRequest request, Model model, @PathVariable("id") Long id)
             throws NotFoundException {
         Topic topic = TransactionalTypeAwarePluginTopicService.getInstance().get(id, "Question");
+        TransactionalTypeAwarePluginTopicService.getInstance().checkViewTopicPermission(topic.getBranch().getId());
         Map<String, Object> data = getDefaultModel(request);
         data.put("question", topic);
         data.put("postPage", new PageImpl<>(topic.getPosts()));
         data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put("subscribed", false);
+        data.put("converter", BbToHtmlConverter.getInstance());
         TransactionalPluginLastReadPostService.getInstance().markTopicPageAsRead(topic, 1);
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
-        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
-                "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", data));
+        String c = VelocityEngineUtils.mergeTemplateIntoString(engine,
+                "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", data);
+        model.addAttribute("content", c);
         return "plugin/plugin";
-    }
-
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public String deleteQuestion(@PathVariable("id") Long id) throws NotFoundException {
-        Topic topic = TransactionalTypeAwarePluginTopicService.getInstance().get(id, "Question");
-        TransactionalTypeAwarePluginTopicService.getInstance().deleteTopic(topic);
-        return "redirect:/branches/" + topic.getBranch().getId();
     }
 
     @RequestMapping(value = "{id}/edit", method = RequestMethod.GET)

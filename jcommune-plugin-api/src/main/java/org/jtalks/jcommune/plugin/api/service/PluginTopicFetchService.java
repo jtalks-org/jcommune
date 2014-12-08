@@ -33,4 +33,13 @@ public interface PluginTopicFetchService {
      */
     Topic get(Long id) throws NotFoundException;
 
+    /**
+     * Check if user has given permission. Throws
+     * {@link org.springframework.security.access.AccessDeniedException} if user
+     * don't have specified permission.
+     *
+     * @param branchId ID of the branch which holds permissions
+     */
+    void checkViewTopicPermission(Long branchId);
+
 }

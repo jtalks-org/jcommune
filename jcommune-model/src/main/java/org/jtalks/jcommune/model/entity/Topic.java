@@ -653,4 +653,8 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     public boolean isCodeReview() {
         return type != null && type.equals(TopicTypeName.CODE_REVIEW.getName());
     }
+
+    public boolean isPlugable() {
+        return !(this.isCodeReview() || type.equals(TopicTypeName.DISCUSSION.getName()));
+    }
 }

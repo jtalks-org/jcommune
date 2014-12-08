@@ -166,7 +166,9 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("( not #topicDto.codeReview " +
             "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS'))" +
             "or (#topicDto.codeReview " +
-            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW'))")
+            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW'))" +
+            "or (#topicDto.plugable " +
+            "and canCreatePlugableTopic(#topicDto.branch.id, #topicDto.type))")
     public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
         JCUser currentUser = userService.getCurrentUser();
         Branch branch = topicDto.getBranch();

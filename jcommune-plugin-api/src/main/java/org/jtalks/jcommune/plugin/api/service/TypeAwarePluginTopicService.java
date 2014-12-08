@@ -46,20 +46,19 @@ public interface TypeAwarePluginTopicService {
     Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException;
 
     /**
-     * Deletes topic if topic have specified type
-     *
-     * @param topic topic to delete
-     *
-     * @throws NotFoundException if topic not found
-     */
-    void deleteTopic(Topic topic) throws NotFoundException;
-
-    /**
      * Update current topic with given title and body.
      *
      * @param topic topic to be updated
      */
     void updateTopic(Topic topic) throws NotFoundException;
 
+    /**
+     * Check if user has given permission. Throws
+     * {@link org.springframework.security.access.AccessDeniedException} if user
+     * don't have specified permission.
+     *
+     * @param branchId ID of the branch which holds permissions
+     */
+    void checkViewTopicPermission(Long branchId);
 
 }

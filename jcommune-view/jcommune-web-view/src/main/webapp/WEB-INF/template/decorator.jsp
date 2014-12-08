@@ -165,8 +165,6 @@ in the future.
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-xq.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/prettify/lang-yaml.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/wysiwyg-bbcode/editor.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/bootstrap.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/fileuploader.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5.js"></script>

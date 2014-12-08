@@ -31,10 +31,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <div class="container">
     #breadcrumb(${breadcrumbList})
     #if(${edit})
-    <form action="${request.contextPath}/question/${topicDto.topic.id}/edit"
+    <form action="${request.contextPath}/topics/question/${topicDto.topic.id}/edit"
           method="POST" id="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
     #else
-      <form action="${request.contextPath}/question/new?branchId=${topicDto.topic.branch.id}"
+      <form action="${request.contextPath}/topics/question/new?branchId=${topicDto.topic.branch.id}"
            method="POST" id="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
     #end
       <div class='control-group hide-on-preview'>

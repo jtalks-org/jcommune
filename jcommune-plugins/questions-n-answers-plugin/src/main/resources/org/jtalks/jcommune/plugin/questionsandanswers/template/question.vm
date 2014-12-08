@@ -161,14 +161,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                         </a>
                       #end
                         #if($canEdit)
-                          <a href="${request.contextPath}/question/${question.id}/edit" data-rel=""
+                          <a href="${request.contextPath}/topics/question/${question.id}/edit" data-rel=""
                              class="edit_button btn btn-mini" title="${esc.html(${messages.getString("label.tips.edit.$postClass")})}">
                             <i class="icon-edit"></i>
                             ${esc.html(${messages.getString("label.edit")})}
                           </a>
                         #end
                         #if($canDelete)
-                          <a href="${request.contextPath}/question/${question.id}" class="btn btn-mini btn-danger delete"
+                          <a href="${request.contextPath}/topics/${question.id}" class="btn btn-mini btn-danger delete"
                              title="${esc.html(${messages.getString("label.tips.remove.$postClass")})}"
                              data-confirmationMessage="${esc.html(${messages.getString("label.confirm.delete.$postClass")})}">
                             <i class="icon-remove icon-white"></i>
@@ -188,7 +188,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             </div>
 
             <div class="question-content" style="min-height: 0px">
-              ${esc.html(${post.postContent})}
+              ${converter.convertBbToHtml(${post.postContent})}
             </div>
 
             <div class="question-footer">

@@ -12,24 +12,33 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.plugin.api.service;
+package org.jtalks.jcommune.plugin.api.service.nontransactional;
+
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.plugin.api.service.PluginBbCodeService;
+import org.springframework.data.domain.Page;
 
 /**
  * @author Mikhail Stryzhonok
  */
-public interface PluginBbCodeService {
+public class BbToHtmlConverter  {
+    private static final BbToHtmlConverter INSTANCE = new BbToHtmlConverter();
 
-    String stripBBCodes(String bbCode);
+    private PluginBbCodeService bbCodeService;
 
-    /**
-     * <p>Converts BB-encoded text into HTML-encoded one. Actual transformation result depends on kefirBB.xml
-     * configuration and the CSS styles mentioned in it's patterns. Uses pre-processors to do some work on input text,
-     * like closing un-closed tags. Also it uses post-processors e.g. for code reviews to return back [code] tag after
-     * it was removed in the pre-processors.</p> If input text contains <i>no</i> BB-compatible tags it's returned as
-     * is.
-     *
-     * @param bbEncodedText string with BB-style markup
-     * @return the same text with HTML markup to be shown
-     */
-    String convertBbToHtml(String bbEncodedText);
+    private BbToHtmlConverter(){
+
+    }
+
+    public static BbToHtmlConverter getInstance() {
+        return INSTANCE;
+    }
+
+    public String convertBbToHtml(String post) {
+        return bbCodeService.convertBbToHtml(post);
+    }
+
+    public void setBbCodeService(PluginBbCodeService bbCodeService) {
+        this.bbCodeService = bbCodeService;
+    }
 }
