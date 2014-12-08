@@ -26,11 +26,12 @@ import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.web.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.*;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.PermissionEvaluator;
@@ -68,6 +69,7 @@ public class BranchController {
     private PluginLoader pluginLoader;
     private final PermissionEvaluator aclEvaluator;
     private final SecurityContextFacade securityContextFacade;
+    private EntityToDtoConverter converter;
 
     /**
      * Post count in the RSS for recent posts in the branch
@@ -104,7 +106,8 @@ public class BranchController {
                             PostService postService,
                             PermissionEvaluator aclEvaluator,
                             SecurityContextFacade securityContextFacade,
-                            PluginLoader pluginLoader) {
+                            PluginLoader pluginLoader,
+                            EntityToDtoConverter converter) {
         this.branchService = branchService;
         this.topicFetchService = topicFetchService;
         this.lastReadPostService = lastReadPostService;
@@ -115,6 +118,7 @@ public class BranchController {
         this.aclEvaluator = aclEvaluator;
         this.securityContextFacade = securityContextFacade;
         this.pluginLoader = pluginLoader;
+        this.converter = converter;
     }
 
     /**
@@ -123,7 +127,7 @@ public class BranchController {
      * @param branchId branch for display
      * @param page     page
      * @return {@code ModelAndView} with topics list and vars for pagination
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          when branch not found
      */
     @RequestMapping(value = "/branches/{branchId}", method = RequestMethod.GET)
@@ -142,7 +146,7 @@ public class BranchController {
         return new ModelAndView("topic/topicList")
                 .addObject("viewList", locationService.getUsersViewing(branch))
                 .addObject("branch", branch)
-                .addObject("topicsPage", topicsPage)
+                .addObject("topicsPage", converter.convertToDtoPage(topicsPage))
                 .addObject("breadcrumbList", breadcrumbs)
                 .addObject("topicTypes", getTopicTypes(branchId))
                 .addObject("subscribed", branch.getSubscribers().contains(currentUser));
@@ -233,7 +237,7 @@ public class BranchController {
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
         return new ModelAndView("topic/recent")
-                .addObject("topicsPage", topicsPage)
+                .addObject("topicsPage", converter.convertToDtoPage(topicsPage))
                 .addObject("topics", topicsPage.getContent());  // for rssViewer
     }
 
@@ -249,7 +253,7 @@ public class BranchController {
         Page<Topic> topicsPage = topicFetchService.getUnansweredTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
         return new ModelAndView("topic/unansweredTopics")
-                .addObject("topicsPage", topicsPage);
+                .addObject("topicsPage", converter.convertToDtoPage(topicsPage));
     }
 
     /**
@@ -294,4 +298,6 @@ public class BranchController {
                 on(Branch.class).getName());
         return dtos.toArray(new BranchDto[dtos.size()]);
     }
+
+
 }

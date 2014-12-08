@@ -32,7 +32,7 @@ import org.jtalks.jcommune.model.entity.SimplePage;
 import org.jtalks.jcommune.service.SimplePageService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.SimplePageDto;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

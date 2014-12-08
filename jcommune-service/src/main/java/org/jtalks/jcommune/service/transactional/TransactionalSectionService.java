@@ -25,7 +25,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.SectionService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -119,7 +119,7 @@ public class TransactionalSectionService extends AbstractTransactionalEntityServ
         Section section = get(sectionId);
 
         //Create tmp list to avoid ConcurrentModificationException
-        List<Branch> loopList = new ArrayList<Branch>(section.getBranches());
+        List<Branch> loopList = new ArrayList<>(section.getBranches());
         for (Branch branch : loopList) {
             branchService.deleteAllTopics(branch.getId());
         }

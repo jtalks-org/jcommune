@@ -38,6 +38,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.jtalks.jcommune.model.matchers.HasPages.hasPages;
 import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Kirill Afonin
@@ -88,6 +89,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         topic.setTitle(newTitle);
 
         dao.saveOrUpdate(topic);
+        session.flush();
         session.evict(topic);
         Topic result = (Topic) session.get(Topic.class, topic.getId());
 
@@ -104,12 +106,12 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     private List<Topic> createAndSaveTopicList(int size) {
-        List<Topic> topics = new ArrayList<Topic>();
+        List<Topic> topics = new ArrayList<>();
         JCUser author = ObjectsFactory.getDefaultUser();
         session.save(author);
         Branch branch = ObjectsFactory.getDefaultBranch();
         for (int i = 0; i < size; i++) {
-            Topic newTopic = new Topic(author, "title" + i);
+            Topic newTopic = new Topic(author, "title" + i, "Discussion");
             newTopic.addPost(new Post(author, "post_content" + i));
             branch.addTopic(newTopic);
             topics.add(newTopic);
@@ -310,9 +312,15 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCUser author = PersistedObjectsFactory.getDefaultUserWithGroups();
 
         Branch branch = ObjectsFactory.getDefaultBranch();
-        branch.addTopic(ObjectsFactory.getTopic(author, 1));
-        branch.addTopic(ObjectsFactory.getTopic(author, 1));
-        branch.addTopic(ObjectsFactory.getTopic(author, 2));
+        Topic topic1 = ObjectsFactory.getTopic(author, 1);
+        topic1.setType("Discussion");
+        branch.addTopic(topic1);
+        Topic topic2 = ObjectsFactory.getTopic(author, 1);
+        topic2.setType("Discussion");
+        branch.addTopic(topic2);
+        Topic topic3 = ObjectsFactory.getTopic(author, 2);
+        topic3.setType("Discussion");
+        branch.addTopic(topic3);
         session.save(branch);
 
         PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(branch.getId(),
@@ -327,7 +335,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     public void testGetLastUpdatedTopicInBranch() {
         Topic firstTopic = PersistedObjectsFactory.getDefaultTopic();
         Branch branch = firstTopic.getBranch();
-        Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic");
+        Topic secondTopic = new Topic(firstTopic.getTopicStarter(), "Second topic", "Discussion");
         branch.addTopic(secondTopic);
         Topic expectedLastUpdatedTopic = firstTopic;
         ReflectionTestUtils.setField(
@@ -370,7 +378,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         Topic topic = PersistedObjectsFactory.getDefaultTopic();
         JCUser user = topic.getTopicStarter();
         Branch branch = topic.getBranch();
-        branch.addTopic(new Topic(user, "Second topic"));
+        branch.addTopic(new Topic(user, "Second topic", "Discussion"));
         session.save(branch);
         int expectedCount = branch.getTopics().size();
 
@@ -425,45 +433,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     }
 
     @Test
-    public void testAddCodeReview() {
-        Topic topic = PersistedObjectsFactory.getDefaultTopic();
-
-        CodeReview review = new CodeReview();
-        topic.setCodeReview(review);
-        review.setTopic(topic);
-        dao.saveOrUpdate(topic);
-        session.evict(topic);
-        assertNotNull(dao.get(topic.getId()).getCodeReview());
-    }
-
-    @Test
-    public void testRemoveCodeReview() {
-        Topic topic = PersistedObjectsFactory.getCodeReviewTopic();
-
-        topic.getCodeReview().setTopic(null);
-        topic.setCodeReview(null);
-        dao.saveOrUpdate(topic);
-
-        session.evict(topic);
-
-        assertNull(dao.get(topic.getId()).getCodeReview());
-    }
-
-    @Test
-    public void testDeleteCodeReviewTopic() {
-        Topic topic = PersistedObjectsFactory.getCodeReviewTopic();
-        long reviewId = topic.getCodeReview().getId();
-
-        Branch topicBranch = topic.getBranch();
-        topicBranch.deleteTopic(topic);
-        session.update(topicBranch);
-        session.flush();
-
-        assertNull(dao.get(topic.getId()));
-        assertNull(session.get(CodeReview.class, reviewId));
-    }
-
-    @Test
     public void testGetSubscribersWithAllowedPermission() {
         Topic topic = createAndSaveTopicWithSubscribers();
         JCUser subscriber = topic.getTopicStarter();
@@ -509,6 +478,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         JCUser subscriber = PersistedObjectsFactory.getDefaultUserWithGroups();
         Branch branch = ObjectsFactory.getDefaultBranch();
         Topic topic = ObjectsFactory.getTopic(subscriber, 5);
+        topic.setType("Discussion");
         topic.getSubscribers().add(subscriber);
         branch.addTopic(topic);
         session.save(branch);
@@ -603,4 +573,38 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         List<Long> collection = this.dao.getAllowedBranchesIds(user);
         assertTrue(collection.isEmpty());
     }
+
+    @Test
+    public void testSaveTopicWithAttributes() {
+        Topic topic = new Topic(PersistedObjectsFactory.getDefaultUser(), "title", "Discussion");
+        topic.addOrOverrideAttribute("name", "value");
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
+
+        Topic result = dao.get(topic.getId());
+
+        assertEquals(result.getAttributes().size(), 1);
+        assertReflectionEquals("value", result.getAttributes().get("name"));
+    }
+
+    @Test
+    public void topicAttributeShouldBeUpdatedByCascade() {
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
+        topic.addOrOverrideAttribute("name", "value");
+        dao.saveOrUpdate(topic);
+        topic.addOrOverrideAttribute("name", "newValue");
+
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
+
+        Topic result = (Topic)session.get(Topic.class, topic.getId());
+
+        assertEquals("newValue", result.getAttributes().get("name"));
+    }
+
+    private void flushAndClearSession() {
+        session.flush();
+        session.clear();
+    }
+
 }

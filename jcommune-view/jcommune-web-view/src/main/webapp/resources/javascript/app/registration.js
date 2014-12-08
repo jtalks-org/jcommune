@@ -17,116 +17,11 @@
  * This script handles registration popup
  * todo: split and refine it
  */
+
 //handling click on menu link Sign Up
 $(function () {
 
-    $("#signup").on('click', function (e) {
-        e.preventDefault();
-
-        $.ajax({
-            type: 'GET',
-            url: $root + '/user/new_ajax',
-            dataType: 'json',
-            success: function (resp) {
-                if (resp.status == 'SUCCESS') {
-                    createRegistrationForm(resp.result);
-                }
-            },
-            error: function (resp) {
-                jDialog.prepareDialog(jDialog.dialog);
-                jDialog.showErrors(jDialog.dialog, resp.result, '', '');
-            }
-        });
-
-        function createRegistrationForm(params) {
-
-            var widthStyle = 'width:90%'; //The class may be overridden by other classes. But the attribute Style has highest priority.
-            var bodyContent =
-                Utils.createFormElement($labelUsername, 'username', 'text', 'first', widthStyle) +
-                    Utils.createFormElement($labelEmail, 'email', 'text', null, widthStyle) +
-                    Utils.createFormElement($labelPassword, 'password', 'password', null, widthStyle) +
-                    Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password', null, widthStyle) +
-                    Utils.createFormElement($lableHoneypotCaptcha, 'honeypotCaptcha', 'text', 'hide-element', widthStyle);
-            for (var pluginId in params) {
-                bodyContent += params[pluginId];
-            }
-
-            var footerContent = '<button id="signup-submit-button" class="btn btn-primary btn-block" name="commit"> \
-            ' + $signupButtonLabel + '</button>';
-
-            // submit button handler
-            var submitFunc = function (e) {
-                e.preventDefault();
-                // disable all elements before and during submission
-                jDialog.dialog.find('*').attr('disabled', true);
-                var query = composeQuery(jDialog.dialog);
-                $.ajax({
-                    type: 'POST',
-                    url: $root + '/user/new_ajax',
-                    data: query,
-                    dataType: 'html',
-                    success: function (resp) {
-                        resp = eval('(' + resp + ')'); // warning: not safe
-                        if (resp.status == 'SUCCESS') {
-                            // hide dialog and show success message
-                            jDialog.createDialog({
-                                dialogId: 'registration-successful-dialog',
-                                type: jDialog.alertType,
-                                bodyMessage: $labelRegistrationSuccess
-                            });
-                        } else {
-                            if (!resp.result.customError) {
-                                // we need to remove complex part (userDto. and userDto.captchas[..]) of complex fields,
-                                // such as userDto.email, because these fields are used as elements ids,
-                                // and jquery selector doesn't work with id containing dot.
-                                for (var i = 0; i < resp.result.length; i++) {
-                                    resp.result[i].field = resp.result[i].field.replace(/userDto.captchas\[/g, '')
-                                        .replace(/]/g, '').replace(/userDto./g, '');
-                                    if (resp.result[i].field == "passwordConfirm") {
-                                        $('#password').val('');
-                                        $('#passwordConfirm').val('');
-                                    }
-                                }
-                                // remove previous errors and show new errors
-                                jDialog.prepareDialog(jDialog.dialog);
-                                refreshCaptcha(jDialog.dialog);
-                                jDialog.showErrors(jDialog.dialog, resp.result, '', '');
-                                jDialog.focusFirstElement();
-                            } else {
-                                jDialog.createDialog({
-                                    type: jDialog.alertType,
-                                    bodyMessage: getCustomErrorMessage(resp.result.customError)
-                                });
-                            }
-                        }
-                    },
-                    error: function (resp) {
-                        jDialog.createDialog({
-                            type: jDialog.alertType,
-                            bodyMessage: $labelRegistrationFailture
-                        });
-                    }
-                });
-            };
-
-            //check to fix double windows when click registration on jsp registration page
-            if($('#signup-modal-dialog').length == 0){
-                jDialog.createDialog({
-                    dialogId: 'signup-modal-dialog',
-                    title: $labelRegistration,
-                    bodyContent: bodyContent,
-                    footerContent: footerContent,
-                    maxWidth: 400,
-                    maxHeight: 600,
-                    tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '.captcha', '#signup-submit-button'],
-                    handlers: {
-                        '#signup-submit-button': {'click': submitFunc},
-                        '.captcha-refresh, .captcha-img': {'click' : refreshCaptcha}
-                    }
-                });
-            }
-        }
-    });
+    $("#dialog-signup-link, #top-signup-link, #page-signup-link").on('click', signUp);
 
     clearPageForm();
 
@@ -148,6 +43,115 @@ $(function () {
     }
 });
 
+function signUp(e) {
+
+    e.preventDefault();
+
+    $.ajax({
+        type: 'GET',
+        url: $root + '/user/new_ajax',
+        dataType: 'json',
+        success: function (resp) {
+            if (resp.status == 'SUCCESS') {
+                createRegistrationForm(resp.result);
+            }
+        },
+        error: function (resp) {
+            jDialog.prepareDialog(jDialog.dialog);
+            jDialog.showErrors(jDialog.dialog, resp.result, '', '');
+        }
+    });
+
+    function createRegistrationForm(params) {
+
+        var widthStyle = 'width:90%'; //The class may be overridden by other classes. But the attribute Style has highest priority.
+        var bodyContent =
+            Utils.createFormElement($labelUsername, 'username', 'text', 'first', widthStyle) +
+            Utils.createFormElement($labelEmail, 'email', 'text', null, widthStyle) +
+            Utils.createFormElement($labelPassword, 'password', 'password', null, widthStyle) +
+            Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password', null, widthStyle) +
+            Utils.createFormElement($lableHoneypotCaptcha, 'honeypotCaptcha', 'text', 'hide-element', widthStyle);
+        for (var pluginId in params) {
+            bodyContent += params[pluginId];
+        }
+
+        var footerContent = '<button id="signup-submit-button" class="btn btn-primary btn-block" name="commit"> \
+            ' + $signupButtonLabel + '</button>';
+
+        // submit button handler
+        var submitFunc = function (e) {
+            e.preventDefault();
+            // disable all elements before and during submission
+            jDialog.dialog.find('*').attr('disabled', true);
+            var query = composeQuery(jDialog.dialog);
+            $.ajax({
+                type: 'POST',
+                url: $root + '/user/new_ajax',
+                data: query,
+                dataType: 'html',
+                success: function (resp) {
+                    resp = eval('(' + resp + ')'); // warning: not safe
+                    if (resp.status == 'SUCCESS') {
+                        // hide dialog and show success message
+                        jDialog.createDialog({
+                            dialogId: 'registration-successful-dialog',
+                            type: jDialog.alertType,
+                            bodyMessage: $labelRegistrationSuccess
+                        });
+                    } else {
+                        if (!resp.result.customError) {
+                            // we need to remove complex part (userDto. and userDto.captchas[..]) of complex fields,
+                            // such as userDto.email, because these fields are used as elements ids,
+                            // and jquery selector doesn't work with id containing dot.
+                            for (var i = 0; i < resp.result.length; i++) {
+                                resp.result[i].field = resp.result[i].field.replace(/userDto.captchas\[/g, '')
+                                    .replace(/]/g, '').replace(/userDto./g, '');
+                                if (resp.result[i].field == "passwordConfirm") {
+                                    $('#password').val('');
+                                    $('#passwordConfirm').val('');
+                                }
+                            }
+                            // remove previous errors and show new errors
+                            jDialog.prepareDialog(jDialog.dialog);
+                            refreshCaptcha(jDialog.dialog);
+                            jDialog.showErrors(jDialog.dialog, resp.result, '', '');
+                            jDialog.focusFirstElement();
+                        } else {
+                            jDialog.createDialog({
+                                type: jDialog.alertType,
+                                bodyMessage: getCustomErrorMessage(resp.result.customError)
+                            });
+                        }
+                    }
+                },
+                error: function (resp) {
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: $labelRegistrationFailture
+                    });
+                }
+            });
+        };
+
+        //check to fix double windows when click registration on jsp registration page
+        if($('#signup-modal-dialog').length == 0){
+            jDialog.createDialog({
+                dialogId: 'signup-modal-dialog',
+                title: $labelRegistration,
+                bodyContent: bodyContent,
+                footerContent: footerContent,
+                maxWidth: 400,
+                maxHeight: 600,
+                tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '.captcha', '#signup-submit-button'],
+                handlers: {
+                    '#signup-submit-button': {'click': submitFunc},
+                    '.captcha-refresh, .captcha-img': {'click' : refreshCaptcha}
+                }
+            });
+        }
+
+    }
+}
 
 /**
  * Get new captcha images

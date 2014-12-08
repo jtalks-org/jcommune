@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         #end
         #if(${breadcrumb.value} == 'Forum')
           <a href="${request.contextPath}/${breadcrumb.breadcrumbLocation.name}">
-            ${esc.html(${messages.getString("label.forum")})}
+            <jcommune:message>label.forum</jcommune:message>
           </a>
         #else
           <a href="${request.contextPath}/${breadcrumb.breadcrumbLocation.name}/${breadcrumb.id}">

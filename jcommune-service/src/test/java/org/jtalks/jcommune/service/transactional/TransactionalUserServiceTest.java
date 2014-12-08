@@ -33,7 +33,7 @@ import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
@@ -569,7 +569,7 @@ public class TransactionalUserServiceTest {
     }
     
     public static <T> Set<T> asSet(T... values) {
-        return new HashSet<T>(asList(values));
+        return new HashSet<>(asList(values));
     }
 
     private void boundMockHttpRequestToThread(String contextPath) {

@@ -74,7 +74,7 @@ public class PostTest {
     
     @Test
     public void getTopicSubscribersShouldReturnSubscribersOfParentTopic() {
-        Set<JCUser> expectedSubscribers = new HashSet<JCUser>();
+        Set<JCUser> expectedSubscribers = new HashSet<>();
         expectedSubscribers.add(new JCUser());
         expectedSubscribers.add(new JCUser());
         post.getTopic().setSubscribers(expectedSubscribers);
@@ -84,5 +84,15 @@ public class PostTest {
         assertEquals(actualSubscribers, expectedSubscribers,
                 "Post should have the same subscribers as parent topic.");
     
+    }
+
+    @Test
+    public void testAddComment() {
+        PostComment comment = new PostComment();
+
+        post.addComment(comment);
+
+        assertTrue(post.getComments().contains(comment));
+        assertEquals(comment.getOwnerPost(), post);
     }
 }

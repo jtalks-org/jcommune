@@ -19,7 +19,7 @@ import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
 import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
 import org.mockito.Mock;
@@ -85,7 +85,7 @@ public class PrivateMessageControllerTest {
         String page = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
-        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+        Page<PrivateMessage> expectedPage = new PageImpl<>(messages);
 
         when(pmService.getInboxForCurrentUser(page)).thenReturn(expectedPage);
         when(userService.getCurrentUser()).thenReturn(JC_USER);
@@ -106,7 +106,7 @@ public class PrivateMessageControllerTest {
         String page = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
-        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+        Page<PrivateMessage> expectedPage = new PageImpl<>(messages);
 
         when(pmService.getOutboxForCurrentUser(page)).thenReturn(expectedPage);
         when(userService.getCurrentUser()).thenReturn(JC_USER);
@@ -126,7 +126,7 @@ public class PrivateMessageControllerTest {
         String page = "1";
         List<PrivateMessage> messages = Arrays.asList(new PrivateMessage(JC_USER, JC_USER,
                 "Message title", "Private message body"));
-        Page<PrivateMessage> expectedPage = new PageImpl<PrivateMessage>(messages);
+        Page<PrivateMessage> expectedPage = new PageImpl<>(messages);
 
         when(pmService.getDraftsForCurrentUser(page)).thenReturn(expectedPage);
 

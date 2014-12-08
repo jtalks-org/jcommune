@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.plugin.api.service.PluginBbCodeService;
 import org.jtalks.jcommune.service.bb2htmlprocessors.TextPostProcessor;
 import org.kefirsf.bb.BBProcessorFactory;
 import org.kefirsf.bb.TextProcessor;
@@ -28,21 +29,21 @@ import java.util.List;
  *
  * @author Evgeniy Naumenko
  */
-public class BBCodeService {
+public class BBCodeService implements PluginBbCodeService {
     private static final String QUOTE_PATEERN = "[quote=\"%s\"]%s[/quote]";
     /** Processor is thread safe as it's explicitly stated in documentation */
     private final TextProcessor processor = BBProcessorFactory.getInstance().create();
     /** Processor to strip bb-codes */
     private final TextProcessor stripBBCodesProcessor = BBProcessorFactory.getInstance().createFromResource("kefirbb-strip-config.xml");
     /** Preprocessors of BB encoded text used before actual BB2HTML converter */
-    private final List<TextProcessor> preprocessors = new ArrayList<TextProcessor>();
+    private final List<TextProcessor> preprocessors = new ArrayList<>();
 
     /**
      * Postprocessors of BB decoded text used after actual BB2HTML converter. This is needed for instance in case of
      * Code Reviews when we first change user's input to get rid of extra bb-codes, and then put them back after bb
      * codes has been processed.
      */
-    private final List<TextPostProcessor> postprocessors = new ArrayList<TextPostProcessor>();
+    private final List<TextPostProcessor> postprocessors = new ArrayList<>();
 
     /**
      * Quotes text given as a valid BB-coded quote. Such a quotes are rendered automatically in posts or forum messages.

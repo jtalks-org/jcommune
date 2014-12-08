@@ -16,12 +16,24 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
 
 /**
  * Serves all kinds of fetch topic requests
  */
-public interface TopicFetchService extends EntityService<Topic>{
+public interface TopicFetchService extends EntityService<Topic> {
+
+    /**
+     * Gets topic with specified id without increasing views counter
+     *
+     * @param id id of interested topic
+     *
+     * @return topic with specified id
+     *
+     * @throws NotFoundException if topic with specified id not found
+     */
+    Topic getTopicSilently(Long id) throws NotFoundException;
 
     /**
      * Get topics in the branch.

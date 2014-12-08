@@ -120,7 +120,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         //records of posts in topics
         Map<Long, DateTime> actualCountOfPosts = getTopicAndLatestPostDateInBranch(topics);
-        Map<Long, DateTime> resultOfGetTopics = new HashMap<Long, DateTime>();
+        Map<Long, DateTime> resultOfGetTopics = new HashMap<>();
         @SuppressWarnings("unchecked")
         List<Object[]> resultCheckGetTopics = session.getNamedQuery("getTopicAndLatestPostDateInBranch")
                 .setParameter("branch", topics.get(0).getBranch().getId())
@@ -140,11 +140,11 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
         List<Topic> topicsOfFirstBranch = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         List<Topic> topicsOfSecondBranch = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
         //records of posts in topics
-        Map<Long, DateTime> listCountPostsToTopicsInFBranch = new HashMap<Long, DateTime>();
-        Map<Long, DateTime> listCountPostsToTopicsInSBranch = new HashMap<Long, DateTime>();
+        Map<Long, DateTime> listCountPostsToTopicsInFBranch = new HashMap<>();
+        Map<Long, DateTime> listCountPostsToTopicsInSBranch = new HashMap<>();
         //records in database about read topic
-        Map<Long, DateTime> actualCountPostsToTopicsInFBranch = new HashMap<Long, DateTime>();
-        Map<Long, DateTime> actualCountPostsToTopicsInSBranch = new HashMap<Long, DateTime>();
+        Map<Long, DateTime> actualCountPostsToTopicsInFBranch = new HashMap<>();
+        Map<Long, DateTime> actualCountPostsToTopicsInSBranch = new HashMap<>();
 
         listCountPostsToTopicsInFBranch = markAllTopicsASRead(topicsOfFirstBranch, user);
         listCountPostsToTopicsInSBranch = markAllTopicsASRead(topicsOfSecondBranch, user);
@@ -207,21 +207,6 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
 
     }
 
-    @Test
-    public void deleteLastReadPostsShouldDeleteAllRecodrsForGivenUser() {
-        List<Topic> topics = PersistedObjectsFactory.createAndSaveTopicListWithPosts(10);
-        JCUser user = PersistedObjectsFactory.getDefaultUser();
-        markAllTopicsASRead(topics, user);
-
-        lastReadPostDao.deleteLastReadPostsFor(user);
-
-        @SuppressWarnings("unchecked")
-        List<LastReadPost> lastReadPostsOfUser = session.getNamedQuery("getAllOfUser")
-                .setParameter("user", user).list();
-        assertTrue(lastReadPostsOfUser.isEmpty(), "User shouldn't have any records, because they were cleared");
-
-    }
-
     /**
      * Method marks topics as read to user
      *
@@ -253,7 +238,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
      * @return List of last read dates for each topic, for verification, stored in the database
      */
     private Map<Long, DateTime> getActualListCountPostsToTopics(List<Topic> topics, JCUser user) {
-        Map<Long, DateTime> listCountPostsToTopics = new HashMap<Long, DateTime>();
+        Map<Long, DateTime> listCountPostsToTopics = new HashMap<>();
 
         SQLQuery checkInsert = (SQLQuery) session.createSQLQuery("select TOPIC_ID, " +
                 "LAST_READ_POST_DATE FROM LAST_READ_POSTS where TOPIC_ID IN (select TOPIC_ID from TOPIC where " +
@@ -276,7 +261,7 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
      * @return List of count posts for each topic
      */
     private Map<Long, DateTime> getTopicAndLatestPostDateInBranch(List<Topic> topics) {
-        Map<Long, DateTime> result = new HashMap<Long, DateTime>();
+        Map<Long, DateTime> result = new HashMap<>();
         for (Topic topic : topics) {
             //second parameter it's index of last post
             result.put(topic.getId(), topic.getLastPost().getCreationDate());

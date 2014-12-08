@@ -55,6 +55,16 @@ public interface PermissionService {
     boolean hasPermission(long targetId, String targetType, String permission);
 
     /**
+     * Checks if current user can create topic provided by plugin
+     *
+     * @param branchId id of the branch where topic will be created
+     * @param type type of the topic
+     *
+     * @return true if the permission is granted, false otherwise
+     */
+    boolean canCreatePlugableTopic(long branchId, String type);
+
+    /**
      * Emulates @PreAuthorize('hasPermission(...)')
      *
      * @param targetId    the identifier for the object instance

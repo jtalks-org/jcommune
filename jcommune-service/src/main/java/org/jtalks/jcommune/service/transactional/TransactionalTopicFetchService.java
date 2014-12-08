@@ -22,9 +22,10 @@ import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.service.PluginTopicFetchService;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +38,7 @@ import java.util.List;
  * conditions. Topic search operations are also performed here.
  */
 public class TransactionalTopicFetchService extends AbstractTransactionalEntityService<Topic, TopicDao>
-        implements TopicFetchService {
+        implements TopicFetchService, PluginTopicFetchService {
 
     private UserService userService;
     private TopicSearchDao searchDao;
@@ -85,6 +86,11 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
         return this.getDao().getUnansweredTopics(pageRequest, userService.getCurrentUser());
     }
 
+    @Override
+    public Topic getTopicSilently(Long id) throws NotFoundException {
+        return super.get(id);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -112,7 +118,7 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
 
             return searchDao.searchByTitleAndContent(normalizedPhrase, pageRequest, allowedBranchesIds);
         }
-        return new PageImpl<Topic>(Collections.<Topic>emptyList());
+        return new PageImpl<>(Collections.<Topic>emptyList());
     }
 
     /**

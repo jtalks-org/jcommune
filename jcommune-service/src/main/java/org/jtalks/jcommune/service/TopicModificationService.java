@@ -17,7 +17,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
 /**
  * This interface should have methods which give us more abilities in manipulating Topic persistent entity.
@@ -43,7 +43,7 @@ public interface TopicModificationService {
      * @param answerBody the text of the answer
      * @param branchId   target branch primary id.
      * @return created {@link Post}
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          when topic not found
      */
     Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException;
@@ -55,24 +55,10 @@ public interface TopicModificationService {
      * @param topic    topic that used as dto
      * @param bodyText body of topic
      * @return created topic
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          when branch not found
      */
     Topic createTopic(Topic topic, String bodyText) throws NotFoundException;
-
-    /**
-     * Add new code review with given title and body.
-     * Author is current user.<br>
-     * <b>NOTE</b>: The whole body will be wrapped with [code] if it is not wrapped,
-     * because CR implies that there is no usual text in the post body.
-     *
-     * @param topicDto topic that used as dto
-     * @param bodyText body of topic
-     * @return created code review topic
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
-     *          when branch not found
-     */
-    Topic createCodeReview(Topic topicDto, String bodyText) throws NotFoundException;
 
     /**
      * Update current topic with given title and body.

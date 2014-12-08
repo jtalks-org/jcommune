@@ -41,4 +41,11 @@ public interface TopicPlugin extends PluginWithBranchPermissions {
      * @return permission which allows to create topic
      */
     JtalksPermission getCreateTopicPermission();
+
+    /**
+     * Gets topic type supported by plugin
+     *
+     * @return topic type
+     */
+    String getTopicType();
 }

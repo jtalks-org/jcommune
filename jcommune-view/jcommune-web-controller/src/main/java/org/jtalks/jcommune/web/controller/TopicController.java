@@ -17,10 +17,10 @@ package org.jtalks.jcommune.web.controller;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.PostDto;
-import org.jtalks.jcommune.web.dto.TopicDto;
+import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.validation.editors.DateTimeEditor;
 import org.slf4j.Logger;
@@ -169,8 +169,8 @@ public class TopicController {
         }
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
+        topic.setType(TopicTypeName.DISCUSSION.getName());
         Topic createdTopic = createTopicWithLockHandling(topic, topicDto);
-
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
     }
 
@@ -251,7 +251,7 @@ public class TopicController {
     @RequestMapping(value = "/topics/{topicId}/edit", method = RequestMethod.GET)
     public ModelAndView editTopicPage(@PathVariable(TOPIC_ID) Long topicId) throws NotFoundException {
         Topic topic = topicFetchService.get(topicId);
-        if (topic.getCodeReview() != null) {
+        if (topic.isCodeReview()) {
             throw new AccessDeniedException("Edit page for code review");
         }
         TopicDto topicDto = new TopicDto(topic);

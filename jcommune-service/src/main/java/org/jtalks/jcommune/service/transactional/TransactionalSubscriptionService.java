@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
-import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.*;
@@ -39,22 +38,18 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     private UserService userService;
     private BranchDao branchDao;
     private TopicDao topicDao;
-    private Crud<CodeReview> codeReviewDao;
 
     /**
      * @param userService to determine the current user requested the operation
      * @param branchDao       for branch subscription updates
      * @param topicDao        for topic subscription updates
-     * @param codeReviewDao for code review subscription updates
      */
     public TransactionalSubscriptionService(UserService userService,
                                             BranchDao branchDao,
-                                            TopicDao topicDao,
-                                            Crud<CodeReview> codeReviewDao) {
+                                            TopicDao topicDao) {
         this.userService = userService;
         this.branchDao = branchDao;
         this.topicDao = topicDao;
-        this.codeReviewDao = codeReviewDao;
     }
 
     /**
@@ -115,16 +110,16 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     public Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity){
         if (entity instanceof Topic) {
             return this.topicDao.getAllowedSubscribers(entity);
-        } else if (entity instanceof CodeReview) {
-            return this.topicDao.getAllowedSubscribers(((CodeReview) entity).getTopic());
         } else{
             return this.branchDao.getAllowedSubscribers(entity);
         }
     }
 
     private void saveChanges(SubscriptionAwareEntity entityToSubscribe) {
-        if (entityToSubscribe instanceof CodeReview) {
-            codeReviewDao.saveOrUpdate((CodeReview) entityToSubscribe);
+        if (entityToSubscribe instanceof Topic) {
+            topicDao.saveOrUpdate((Topic) entityToSubscribe);
+        } else {
+            branchDao.saveOrUpdate((Branch) entityToSubscribe);
         }
     }
 }

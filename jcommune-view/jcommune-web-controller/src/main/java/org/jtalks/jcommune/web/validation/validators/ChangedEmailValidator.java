@@ -18,7 +18,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.dto.UserProfileDto;
 import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -71,12 +71,12 @@ ul.lang-menu li img {
     color: rgb(85, 85, 85);
 }
 
-.span9 #right-block {
+.span7 #right-block {
     float: right;
     overflow: hidden;
 }
 
-.span9 #right-block a {
+.span7 #right-block a {
     font-weight: bold;
     padding-left: 2px;
     color: rgb(85, 85, 85);
@@ -216,9 +216,11 @@ ul.lang-menu li img {
 }
 
 #topics-table .created-by {
-    font-style: italic;
-    font-size: 12px;
-    white-space: nowrap;
+    font-size: 11px;
+}
+
+#topics-table .created-by a {
+    color: #000;
 }
 
 #topics-table .latest-by {
@@ -272,18 +274,11 @@ ul.lang-menu li img {
 }
 
 @media (max-width: 479px) {
-    #topics-table .posts-views {
+    #topics-table .latest-by {
         display: none;
     }
 }
 
-
-
-@media (max-width: 480px) {
-    .posts-views {
-        display: none;
-    }
-}
 
 #top-line-links-drop-down {
     display: none;
@@ -301,8 +296,6 @@ ul.lang-menu li img {
     .created-by {
         font-style: italic;
         font-size: 12px;
-        display: inline;
-        white-space: nowrap;
     }
     .posts-td-small_2{
         max-width: 40px;
@@ -427,9 +420,9 @@ ul.lang-menu li img {
     clear: both;
 }
 
-@media (max-width: 480px) {
-    .upper-pagination {
-        display: none;
+@media (max-width: 479px) {
+    .pagination a {
+        padding: 0px 7px;
     }
 }
 
@@ -472,7 +465,8 @@ div.anchor {
 }
 
 #signin-modal-dialog #rememberme-area {
-    margin: 0px 10px 9px 25px;
+    margin: 0px 10px 0px 25px;
+    float: left;
 }
 
 .rememberme-lbl:hover {
@@ -495,6 +489,23 @@ div.anchor {
 
 #signup-modal-dialog .captcha-images img {
     vertical-align: middle;
+}
+
+div.signup {
+    float: left;
+    margin-left: 25px;
+    margin-right: 5px;
+}
+
+#dialog-signup-link {
+    text-decoration: underline;
+    color: #a3a3a3;
+}
+
+#page-signup-link {
+    text-decoration: underline;
+    color: #a3a3a3;
+    margin-left: 15px;
 }
 
 .btn-block {
@@ -1101,7 +1112,7 @@ pre.prettyprint {
     margin-right: 10%;
 }
 
-.label, .badge {
+.badge {
     display: inline-block;
     padding: 2px 4px;
     font-size: 11.844px;
@@ -1124,4 +1135,10 @@ pre.prettyprint {
 
 .label-inverse, .badge-inverse {
     background-color: #444444;
+}
+
+.new-topic-buttons {
+    float: left;
+    display: inline-block;
+    margin-bottom: 10px;
 }

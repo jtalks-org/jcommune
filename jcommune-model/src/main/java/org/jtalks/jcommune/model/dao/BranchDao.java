@@ -52,15 +52,6 @@ public interface BranchDao extends Crud<Branch> {
     int getCountPostsInBranch(Branch branch);
 
     /**
-     * Get state of unread posts in the branch.
-     *
-     * @param branch the branch
-     * @param user   the user
-     * @return state of unread posts in the branch for user
-     */
-    boolean isUnreadPostsInBranch(Branch branch, JCUser user);
-
-    /**
      * Get subscribers for specified branch with allowed permission to read this branch.
      *
      * @param entity the branch

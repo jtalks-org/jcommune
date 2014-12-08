@@ -19,10 +19,8 @@ import org.hibernate.SessionFactory;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.dao.LastReadPostDao;
 import org.jtalks.jcommune.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -50,8 +48,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     private SessionFactory sessionFactory;
     @Autowired
     private BranchDao dao;
-    @Autowired
-    private LastReadPostDao lastReadPostDao;
     private Session session;
     Branch branch;
 
@@ -85,6 +81,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(null);
 
         dao.saveOrUpdate(branch);
+        session.flush();
     }
 
     @Test
@@ -113,6 +110,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(newName);
 
         dao.saveOrUpdate(branch);
+        session.flush();
         session.evict(branch);
         Branch result = (Branch) session.get(Branch.class, branch.getId());
 
@@ -126,6 +124,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         branch.setName(null);
 
         dao.saveOrUpdate(branch);
+        session.flush();
     }
 
     @Test
@@ -146,7 +145,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         Branch branch = ObjectsFactory.getDefaultBranch();
         JCUser author = ObjectsFactory.getDefaultUser();
         session.save(author);
-        Topic topic = new Topic(author, "title");
+        Topic topic = new Topic(author, "title", "Discussion");
         Post post = new Post(author, "content");
         topic.addPost(post);
         branch.addTopic(topic);
@@ -166,7 +165,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
     }
 
     private List<Branch> createAndSaveBranchList(int size, int sectionPosition) {
-        List<Branch> branches = new ArrayList<Branch>();
+        List<Branch> branches = new ArrayList<>();
         Section section = ObjectsFactory.getDefaultSection();
         section.setPosition(sectionPosition);
         for (int i = 0; i < size; i++) {
@@ -194,7 +193,7 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         List<Branch> branchesOfSecondSection = createAndSaveBranchList(sectionSize, 0);
 
         // build desired order
-        List<Branch> createdBranches = new ArrayList<Branch>(branchesOfSecondSection);
+        List<Branch> createdBranches = new ArrayList<>(branchesOfSecondSection);
         createdBranches.addAll(branchesOfFirstSection);
 
         List<Branch> selectedBranches = dao.getAllBranches();
@@ -217,62 +216,6 @@ public class BranchHibernateDaoTest extends AbstractTransactionalTestNGSpringCon
         int actualCount = dao.getCountPostsInBranch(branch);
 
         assertEquals(actualCount, expectedCount, "Count of posts in the branch is wrong");
-    }
-
-    @Test
-    @Rollback(false)
-    /**
-     * User have unread posts in branch
-     */
-    public void testUnreadPostsInBranchWithExist() {
-        Topic topic = PersistedObjectsFactory.getDefaultTopic();
-        Branch branch = topic.getBranch();
-        JCUser user = topic.getTopicStarter();
-        //add post
-        topic.addPost(new Post(topic.getTopicStarter(), "New post"));
-
-        session.save(branch);
-
-        PersistedObjectsFactory.createViewUnreadPostsInBranch();
-        boolean expectedState = true;
-        boolean actualState = dao.isUnreadPostsInBranch(branch, user);
-
-        //manual rollback
-        session.delete(branch);
-        session.delete(user);
-        PersistedObjectsFactory.deleteViewUnreadPostsInBranch();
-        session.flush();
-
-        assertEquals(actualState, expectedState, "State of unread posts in the branch is wrong");
-    }
-
-    @Test
-    @Rollback(false)
-    /**
-     * User have't unread posts in branch
-     */
-    public void testUnreadPostsInBranchWithoutExist() {
-        Topic topic = PersistedObjectsFactory.getDefaultTopic();
-        Branch branch = topic.getBranch();
-        JCUser user = topic.getTopicStarter();
-        //add post
-        topic.addPost(new Post(topic.getTopicStarter(), "New post"));
-
-        session.save(branch);
-
-        PersistedObjectsFactory.createViewUnreadPostsInBranch();
-        lastReadPostDao.markAllRead(topic.getTopicStarter(), branch);
-        boolean expectedState = false;
-        boolean actualState = dao.isUnreadPostsInBranch(branch, user);
-
-        //manual rollback
-        session.delete(branch);
-        session.delete(user);
-        PersistedObjectsFactory.deleteViewUnreadPostsInBranch();
-        session.delete(lastReadPostDao.getLastReadPost(user, topic));
-        session.flush();
-
-        assertEquals(actualState, expectedState, "State of unread posts in the branch is wrong");
     }
 
     @Test

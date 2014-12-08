@@ -101,10 +101,10 @@
 </c:if>
 
 <%-- Setup indicators --%>
-<c:if test="${topic.codeReview != null}">
+<c:if test="${topic.codeReview}">
   <%-- Below  hidden properties are used in CR script --%>
   <input type="hidden" id="has-code-review" value="true"/>
-  <input type="hidden" id="codeReviewId" value="${topic.codeReview.id}"/>
+  <input type="hidden" id="firstPostId" value="${topic.firstPost.id}"/>
   <input type="hidden" id="branchId" value="${topic.branch.id}"/>
   <sec:authorize access="isAuthenticated()">
     <sec:authentication property="principal.id" var="userId"/>
@@ -128,7 +128,7 @@
 
 <%--We need different logic for code review and other posts because CR uses differnet phpBB processing--%>
 <c:remove var="isCodeReviewPost" scope="request"/>
-<c:if test="${isFirstPost && (topic.codeReview != null)}">
+<c:if test="${isFirstPost && (topic.codeReview)}">
   <c:set var="isCodeReviewPost" value="true" scope="request"/>
 </c:if>
 
@@ -170,21 +170,21 @@
             <%--Edit post button start --%>
             <c:set var="isEditButtonAvailable" value="false"/>
             <%--  An ability to edit posts for author of this posts --%>
-            <c:if test='${userId == post.userCreated.id && topic.codeReview == null}'>
+            <c:if test='${userId == post.userCreated.id && !topic.codeReview}'>
               <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
                                     permission="BranchPermission.EDIT_OWN_POSTS">
                 <c:set var="isEditButtonAvailable" value="true"/>
               </jtalks:hasPermission>
             </c:if>
             <%--  An ability to edit posts for administrators and branch moderators --%>
-            <c:if test='${userId != post.userCreated.id && topic.codeReview == null}'>
+            <c:if test='${userId != post.userCreated.id && !topic.codeReview}'>
               <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                     permission='BranchPermission.EDIT_OTHERS_POSTS'>
 
                 <c:set var="isEditButtonAvailable" value="true"/>
               </jtalks:hasPermission>
             </c:if>
-            <c:if test='${topic.codeReview == null}'>
+            <c:if test='${!topic.codeReview}'>
               <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
                                     permission="BranchPermission.CLOSE_TOPICS">
                 <c:set var="hasCloseTopicPermission" value="true"/>
@@ -253,7 +253,7 @@
              href="${pageContext.request.contextPath}/posts/${post.id}">
             <i class="icon-link"></i>
           </a>
-          <c:if test='${(!topic.closed || hasCloseTopicPermission) && topic.codeReview == null}'>
+          <c:if test='${(!topic.closed || hasCloseTopicPermission) && !topic.codeReview}'>
             <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                   permission='BranchPermission.CREATE_POSTS'>
               <a class="btn btn-mini" onmousedown="quote(${post.id}, ${i.index})"
@@ -346,7 +346,7 @@
 </div>
 
 <%--User can answer either if the topic is open, or he has a permission to close/open it--%>
-<c:if test="${(!topic.closed || hasCloseTopicPermission) && topic.codeReview == null}">
+<c:if test="${(!topic.closed || hasCloseTopicPermission) && !topic.codeReview}">
   <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                         permission='BranchPermission.CREATE_POSTS'>
     <form:form

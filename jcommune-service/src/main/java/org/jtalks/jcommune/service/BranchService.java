@@ -19,7 +19,7 @@ import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public interface BranchService extends EntityService<Branch> {
      * @param sectionId section id from which we obtain branches
      * @param currentTopicId topic id that we want to move
      * @return list of {@code Branch} objects
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          when section not found
      */
     List<Branch> getAvailableBranchesInSection(long sectionId, long currentTopicId) throws NotFoundException;

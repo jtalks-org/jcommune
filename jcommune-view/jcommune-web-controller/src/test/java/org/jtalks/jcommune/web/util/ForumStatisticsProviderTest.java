@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.ForumStatisticsService;
 import org.jtalks.jcommune.web.listeners.SessionStatisticListener;
 import org.springframework.security.core.session.SessionRegistry;

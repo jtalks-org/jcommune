@@ -21,6 +21,10 @@ import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.security.AclClassName;
 import org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator;
 import org.jtalks.jcommune.service.security.PermissionManager;
@@ -44,6 +48,7 @@ public class TransactionalPermissionService implements PermissionService {
     private SecurityContextHolderFacade contextFacade;
     private AclGroupPermissionEvaluator aclEvaluator;
     private PermissionManager permissionManager;
+    private PluginLoader pluginLoader;
 
     /**
      * @param contextFacade to get {@link Authentication} object from security context
@@ -74,6 +79,18 @@ public class TransactionalPermissionService implements PermissionService {
     public boolean hasPermission(long targetId, String targetType, String permission) {
         Authentication authentication = contextFacade.getContext().getAuthentication();
         return aclEvaluator.hasPermission(authentication, targetId, targetType, permission);
+    }
+
+    @Override
+    public boolean canCreatePlugableTopic(long targetId, String type) {
+        List<Plugin> plugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class));
+        for (Plugin plugin : plugins) {
+            TopicPlugin topicPlugin = (TopicPlugin) plugin;
+            if (topicPlugin.isEnabled() && topicPlugin.getTopicType().equals(type)) {
+                return hasBranchPermission(targetId, topicPlugin.getCreateTopicPermission());
+            }
+        }
+        return false;
     }
 
     /**

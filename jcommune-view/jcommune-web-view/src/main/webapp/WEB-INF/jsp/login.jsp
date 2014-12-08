@@ -72,7 +72,11 @@
         </div>
 
       <div class="form-actions">
-        <input type="submit" class="btn btn-primary" value="<spring:message code="label.signin"/>"/><br/>
+        <input type="submit" class="btn btn-primary" value="<spring:message code="label.signin"/>"/>
+        <a id="page-signup-link" href="${pageContext.request.contextPath}/user/new"><spring:message
+                  code="label.signup.rightnow"/></a>
+
+        <br/>
         <a href='<c:url value="/password/restore"/>'><spring:message
                 code="label.restorePassword.prompt"/></a>
       </div>

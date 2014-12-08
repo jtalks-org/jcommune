@@ -18,63 +18,74 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-    <!-- Web-level helper beans -->
-    <bean name="forumStaticsProvider" class="org.jtalks.jcommune.web.util.ForumStatisticsProvider">
-        <constructor-arg index="0" ref="sessionRegistry"/>
-        <constructor-arg index="1" ref="sessionStatisticListener"/>
-        <constructor-arg index="2" ref="forumStatisticsService"/>
-    </bean>
+  <!-- Web-level helper beans -->
+  <bean name="forumStaticsProvider" class="org.jtalks.jcommune.web.util.ForumStatisticsProvider">
+    <constructor-arg index="0" ref="sessionRegistry"/>
+    <constructor-arg index="1" ref="sessionStatisticListener"/>
+    <constructor-arg index="2" ref="forumStatisticsService"/>
+  </bean>
 
-    <bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"/>
-    <bean id="breadcrumbBuilder" class="org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder"/>
-    <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.SessionStatisticListener"/>
-     
-    <bean id="jsonUtils" class="org.jtalks.jcommune.web.util.JSONUtils">
-        <constructor-arg>
-            <bean class="org.codehaus.jackson.JsonFactory"/>
-        </constructor-arg>
-        <constructor-arg>
-            <bean class="org.codehaus.jackson.map.ObjectMapper"/>
-        </constructor-arg>
-    </bean>
+  <bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl"/>
+  <bean id="breadcrumbBuilder" class="org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder"/>
+  <bean id="sessionStatisticListener" class="org.jtalks.jcommune.web.listeners.SessionStatisticListener"/>
 
-    <bean id="avatarControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
-        <constructor-arg ref="avatarService"/>
-        <constructor-arg ref="jsonUtils"/>
-    </bean>
+  <bean id="jsonUtils" class="org.jtalks.jcommune.web.util.JSONUtils">
+    <constructor-arg>
+      <bean class="org.codehaus.jackson.JsonFactory"/>
+    </constructor-arg>
+    <constructor-arg>
+      <bean class="org.codehaus.jackson.map.ObjectMapper"/>
+    </constructor-arg>
+  </bean>
 
-    <bean id="forumLogoControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
-        <constructor-arg ref="forumLogoService"/>
-        <constructor-arg ref="jsonUtils"/>
-    </bean>
+  <bean id="avatarControllerUtils" class="org.jtalks.jcommune.web.util.ImageControllerUtils">
+    <constructor-arg ref="avatarService"/>
+    <constructor-arg ref="jsonUtils"/>
+  </bean>
 
-    <bean id="favIconIcoControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
-        <constructor-arg ref="favIconServiceIco"/>
-        <constructor-arg ref="jsonUtils"/>
-    </bean>
+  <bean id="forumLogoControllerUtils" class="org.jtalks.jcommune.web.util.ImageControllerUtils">
+    <constructor-arg ref="forumLogoService"/>
+    <constructor-arg ref="jsonUtils"/>
+  </bean>
 
-    <bean id="favIconPngControllerUtils"  class="org.jtalks.jcommune.web.util.ImageControllerUtils">
-        <constructor-arg ref="favIconServicePng"/>
-        <constructor-arg ref="jsonUtils"/>
-    </bean>
-    
-    <bean id="rememberMeCookieDecoder" class="org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoderImpl" />
-    
-    <bean id="rememberMeCheckService" class="org.jtalks.jcommune.web.rememberme.RememberMeCheckService">
-          <constructor-arg ref="tokenRepository"/>
-    </bean>
-    
-    <bean id="tokenRepository"
-          class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl">
-        <property name="dataSource" ref="dataSource"/>     
-    </bean>
-    
-    <bean id="loggingConfigurationFilter" class="org.jtalks.jcommune.web.filters.LoggingConfigurationFilter" >
-        <constructor-arg ref="securityService" />
-        <constructor-arg>
-            <bean class="org.jtalks.jcommune.web.logging.LoggerMdc"/>
-        </constructor-arg>
-    </bean>
+  <bean id="favIconIcoControllerUtils" class="org.jtalks.jcommune.web.util.ImageControllerUtils">
+    <constructor-arg ref="favIconServiceIco"/>
+    <constructor-arg ref="jsonUtils"/>
+  </bean>
 
+  <bean id="favIconPngControllerUtils" class="org.jtalks.jcommune.web.util.ImageControllerUtils">
+    <constructor-arg ref="favIconServicePng"/>
+    <constructor-arg ref="jsonUtils"/>
+  </bean>
+
+  <bean id="rememberMeCookieDecoder" class="org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoderImpl"/>
+
+  <bean id="rememberMeCheckService" class="org.jtalks.jcommune.web.rememberme.RememberMeCheckService">
+    <constructor-arg ref="tokenRepository"/>
+  </bean>
+
+  <bean id="tokenRepository"
+        class="org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl">
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
+
+  <bean id="loggingConfigurationFilter" class="org.jtalks.jcommune.web.filters.LoggingConfigurationFilter">
+    <constructor-arg ref="securityService"/>
+    <constructor-arg>
+      <bean class="org.jtalks.jcommune.web.logging.LoggerMdc"/>
+    </constructor-arg>
+  </bean>
+
+  <bean id="tagFilter" class="org.jtalks.jcommune.web.filters.TagFilter">
+    <property name="parsers">
+      <list>
+        <bean id="messageTagParser" class="org.jtalks.jcommune.web.filters.parsers.MessageTagParser"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="entityToDtoConverter" class="org.jtalks.jcommune.web.dto.EntityToDtoConverter">
+      <constructor-arg ref="pluginLoader"/>
+  </bean>
 </beans>
 

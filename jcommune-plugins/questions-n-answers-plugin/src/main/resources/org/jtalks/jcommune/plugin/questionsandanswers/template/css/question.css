@@ -157,10 +157,12 @@
 
 .comment-header {
     margin-top: 5px;
+    overflow: hidden;
 }
 .comment-author {
     font-size: 13px;
     color: #3b73af;
+    margin-right: 12px;
 }
 
 .comment-list {
@@ -210,6 +212,6 @@
     margin-right: -4px;
 }
 
-.comment-buttons {
-    margin: 0px 12px;
+.comment-date {
+    margin-left: 12px;
 }

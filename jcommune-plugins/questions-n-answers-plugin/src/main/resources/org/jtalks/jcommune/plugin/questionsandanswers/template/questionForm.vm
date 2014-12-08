@@ -1,0 +1,70 @@
+#*
+
+Copyright (C) 2011  JTalks.org Team
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+*#
+#parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/breadcrumb.vm")
+#parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/bbeditor.vm")
+<head>
+  <meta name="description" content="${esc.html(${topicDto.topic.branch.name})}">
+  <title>
+    ${esc.html(${topicDto.topic.branch.name})} -
+    #if(${edit})
+      Edit question
+    #else
+      Ask question
+    #end
+  </title>
+</head>
+<body>
+  <div class="container">
+    #breadcrumb(${breadcrumbList})
+    #if(${edit})
+    <form action="${request.contextPath}/topics/question/${topicDto.topic.id}/edit"
+          method="POST" id="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
+    #else
+      <form action="${request.contextPath}/topics/question/new?branchId=${topicDto.topic.branch.id}"
+           method="POST" id="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
+    #end
+      <div class='control-group hide-on-preview'>
+        <div class='controls'>
+          #if(!${topicDto.topic.title})
+            #set(${topicDto.topic.title} = "")
+          #end
+          #if(!${topicDto.bodyText})
+            #set(${topicDto.bodyText} = "")
+          #end
+          <input name="topic.title" id="subject" type="text"  size="45"
+            maxlength="255" tabindex="100"
+            class="span11 script-confirm-unsaved" placeholder="Question title"
+            value="${esc.html(${topicDto.topic.title})}"/>
+          #jtalksBinding(${result} "topic.title")
+        </div>
+      </div>
+      #set($submitText = "Ask")
+      #if(${edit})
+        #set($submitText = "Save")
+      #end
+      #bbeditor("$submitText" "" "${esc.html(${topicDto.bodyText})}" "bodyText" true "Description" ${result})
+    </form>
+
+    <a href="${request.contextPath}/branches/${topicDto.topic.branch.id}" tabindex="1000" class='back-btn'>
+      <i class="icon-arrow-left"></i>
+      <jcommune:message>label.back</jcommune:message>
+    </a>
+</div>
+<script>
+    Utils.focusFirstEl('#subject');
+</script>
+</body>

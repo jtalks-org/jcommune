@@ -53,7 +53,7 @@
     <property name="order" value="1"/>
     <property name="exceptionMappings">
       <props>
-        <prop key="org.jtalks.jcommune.service.exceptions.NotFoundException">redirect:/errors/404</prop>
+        <prop key="org.jtalks.jcommune.plugin.api.exceptions.NotFoundException">redirect:/errors/404</prop>
         <prop key="org.springframework.security.access.AccessDeniedException">redirect:/errors/403</prop>
         <prop key="org.springframework.beans.TypeMismatchException">redirect:/errors/400</prop>
         <prop key="org.springframework.security.web.authentication.rememberme.CookieTheftException">/login?login_error=2</prop>

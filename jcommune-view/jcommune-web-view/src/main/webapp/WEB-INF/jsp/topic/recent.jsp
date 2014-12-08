@@ -48,10 +48,10 @@
   </c:if>
 
   <div class="row-fluid upper-pagination forum-pagination-container">
-    <div class="span3">
+    <div class="span5">
       <h3><spring:message code="label.recent"/></h3>
     </div>
-    <div class="span9">
+    <div class="span7">
       <%--
           In cases when we have more than one pages we should show "mark all read pages" above pagination,
           otherwise "mark all read pages" should be in a place of pagination.

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dto;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -43,6 +44,11 @@ public class PageRequest implements Pageable {
     public PageRequest(String requestedPageNumber, int pageSize) {
         this.pageNumber = preparePageNumber(requestedPageNumber);
         this.pageSize = preparePageSize(pageSize);
+    }
+
+    private PageRequest(int pageNumber, int pageSize) {
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
     }
 
     private int preparePageSize(int pageSize) {
@@ -137,6 +143,11 @@ public class PageRequest implements Pageable {
         if (pageNumber > maxPageNumber) {
             pageNumber = maxPageNumber;
         }
+    }
+
+
+    public static PageRequest fetchFromPage(Page page) {
+        return new PageRequest(page.getNumber(), page.getSize());
     }
 
 }

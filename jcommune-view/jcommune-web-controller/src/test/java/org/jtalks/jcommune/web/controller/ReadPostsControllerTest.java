@@ -20,7 +20,7 @@ import static org.testng.Assert.assertEquals;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.mockito.Mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 

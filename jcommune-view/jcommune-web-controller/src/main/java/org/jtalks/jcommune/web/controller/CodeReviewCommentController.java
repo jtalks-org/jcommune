@@ -14,11 +14,13 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.CodeReviewComment;
-import org.jtalks.jcommune.service.CodeReviewCommentService;
-import org.jtalks.jcommune.service.CodeReviewService;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PostComment;
+import org.jtalks.jcommune.service.PostCommentService;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
+import org.jtalks.jcommune.web.dto.CodeReviewDto;
 import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
 import org.jtalks.jcommune.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
@@ -30,13 +32,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -49,23 +45,21 @@ import javax.validation.Valid;
 @Controller
 public class CodeReviewCommentController {
 
-    public static final String BRANCH_ID = "branchId";
-    public static final String REVIEW_ID = "reviewId";
+    public static final String POST_ID = "postId";
     public static final String COMMENT_ID = "commentId";
-    public static final String BREADCRUMB_LIST = "breadcrumbList";
-    
-    private CodeReviewService codeReviewService;
-    private CodeReviewCommentService codeReviewCommentService;
-    
+
+    private PostCommentService postCommentService;
+    private PostService postService;
+
     /**
-     * @param codeReviewService        to operate with {@link org.jtalks.jcommune.model.entity.CodeReview} entities
-     * @param codeReviewCommentService to operate with (@link {@link CodeReviewComment} entities
+     * @param postCommentService to operate with {@link org.jtalks.jcommune.model.entity.PostComment} entities
+     * @param postService to operate with {@link org.jtalks.jcommune.model.entity.Post} entities
      */
     @Autowired
-    public CodeReviewCommentController(CodeReviewService codeReviewService,
-                                CodeReviewCommentService codeReviewCommentService) {
-        this.codeReviewService = codeReviewService;
-        this.codeReviewCommentService = codeReviewCommentService;
+    public CodeReviewCommentController(PostCommentService postCommentService,
+                                PostService postService) {
+        this.postCommentService = postCommentService;
+        this.postService = postService;
     }
     
     /**
@@ -82,10 +76,27 @@ public class CodeReviewCommentController {
     }
 
     /**
+     * Returns code review by its ID as JSON data
+     *
+     * @param postId ID of post
+     * @return JSON response object containing string status and review DTO as
+     *         result field
+     * @throws NotFoundException if code review was not found
+     */
+    @RequestMapping(value = "/reviews/{postId}/json", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse getCodeReview(@PathVariable("postId") Long postId) throws NotFoundException {
+
+        Post post = postService.get(postId);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, new CodeReviewDto(post));
+    }
+
+
+    /**
      * Adds CR comment to review
      * @param commentDto incoming DTO object from client
      * @param bindingResult object contains validation information
-     * @param reviewId ID of review where add comment to
+     * @param postId ID of post where add comment to
      * @return response with status 'success' and comment DTO object if comment 
      *          was added or 'fail' with no objects if there were some errors
      * @throws NotFoundException when no review with <code>reviewId</code>was found
@@ -95,12 +106,12 @@ public class CodeReviewCommentController {
     public JsonResponse addComment(
             @Valid @ModelAttribute CodeReviewCommentDto commentDto,
             BindingResult bindingResult,
-            @RequestParam("reviewId") Long reviewId) throws NotFoundException {
+            @RequestParam("postId") Long postId) throws NotFoundException {
         if (bindingResult.hasErrors()) {
             return new FailValidationJsonResponse(bindingResult.getAllErrors());
         }
-        CodeReviewComment addedComment = codeReviewService.addComment(
-                reviewId, commentDto.getLineNumber(), commentDto.getBody());
+        PostComment addedComment = postService.addComment(postId, commentDto.getCommentAttributes(),
+                commentDto.getBody());
         CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(addedComment);
         return new JsonResponse(JsonResponseStatus.SUCCESS, addedCommentDto);
     }
@@ -109,7 +120,7 @@ public class CodeReviewCommentController {
      * Deletes CR comment from review
      *
      * @param commentId comment ID
-     * @param reviewId  ID of review where delete comment to
+     * @param postId  ID of post where delete comment to
      * @return response with status 'success' if comment
      *         was deleted or 'fail' with no objects if there were some errors
      * @throws NotFoundException when no review with <code>reviewId</code>
@@ -119,8 +130,8 @@ public class CodeReviewCommentController {
     @ResponseBody
     public JsonResponse deleteComment(
             @RequestParam(COMMENT_ID) Long commentId,
-            @RequestParam(REVIEW_ID) Long reviewId) throws NotFoundException {
-        codeReviewService.deleteComment(codeReviewCommentService.get(commentId), codeReviewService.get(reviewId));
+            @RequestParam(POST_ID) Long postId) throws NotFoundException {
+        postService.deleteComment(postService.get(postId), postCommentService.get(commentId));
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
     
@@ -142,7 +153,7 @@ public class CodeReviewCommentController {
         if (bindingResult.hasErrors()) {
             return new FailValidationJsonResponse(bindingResult.getAllErrors());
         }
-        CodeReviewComment editedComment = codeReviewCommentService.updateComment(
+        PostComment editedComment = postCommentService.updateComment(
                 commentDto.getId(), commentDto.getBody(), branchId);
         CodeReviewCommentDto editedCommentDto = new CodeReviewCommentDto(editedComment);
         return new JsonResponse(JsonResponseStatus.SUCCESS, editedCommentDto);

@@ -108,6 +108,7 @@ public class PrivateMessageHibernateDaoTest extends AbstractTransactionalTestNGS
         pm.setBody(newBody);
 
         dao.saveOrUpdate(pm);
+        session.flush();
         session.evict(pm);
         PrivateMessage result = (PrivateMessage) session.get(PrivateMessage.class, pm.getId());
 

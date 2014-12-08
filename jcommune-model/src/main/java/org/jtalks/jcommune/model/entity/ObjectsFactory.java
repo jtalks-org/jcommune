@@ -14,10 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import com.google.common.collect.Lists;
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
-import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.*;
 
 import java.util.ArrayList;
@@ -71,7 +68,7 @@ public final class ObjectsFactory {
     }
 
     public static List<Branch> getDefaultBranchList() {
-        List<Branch> branches = new ArrayList<Branch>();
+        List<Branch> branches = new ArrayList<>();
         for (Long i = 1L; i <= 3; i++) {
             branches.add(getDefaultBranch(i));
         }
@@ -111,9 +108,9 @@ public final class ObjectsFactory {
     }
 
     public static List<Topic> topics(JCUser author, int topicCount) {
-        List<Topic> topics = new ArrayList<Topic>();
+        List<Topic> topics = new ArrayList<>();
         for (int i = 0; i < topicCount; i++) {
-            Topic topic = new Topic(author, "title");
+            Topic topic = new Topic(author, "title", "Discussion");
             topic.setBranch(getDefaultBranch());
             topic.addPost(new Post(author, "post-content"));
             topics.add(topic);
@@ -122,8 +119,7 @@ public final class ObjectsFactory {
     }
 
     public static Topic getDefaultTopic() {
-        Topic topic = new Topic(getDefaultUser(), "title");
-        topic.setId(1);
+        Topic topic = new Topic(getDefaultUser(), "title", "Discussion");
         return topic;
     }
 
@@ -159,7 +155,7 @@ public final class ObjectsFactory {
     }
 
     public static List<ExternalLink> getExternalLinks(int size) {
-        List<ExternalLink> result = new ArrayList<ExternalLink>();
+        List<ExternalLink> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             result.add(getDefaultExternalLink());
         }
@@ -174,7 +170,7 @@ public final class ObjectsFactory {
     }
 
     public static List<Group> getDefaultGroupList() {
-        List<Group> groups = new ArrayList<Group>();
+        List<Group> groups = new ArrayList<>();
         Group group = new Group("Administrators");
         group.setId(13L);
         groups.add(group);
@@ -191,30 +187,6 @@ public final class ObjectsFactory {
         return new SimplePage("name", "content", "pathName");
     }
 
-    public static CodeReview getDefaultCodeReview() {
-        CodeReview review = new CodeReview();
-        review.setId(1L);
-
-        CodeReviewComment comment1 = new CodeReviewComment();
-        comment1.setId(1L);
-        comment1.setAuthor(getDefaultUser());
-        comment1.setBody("Comment1 body");
-        comment1.setLineNumber(1);
-        comment1.setCreationDate(new DateTime(1));
-        review.addComment(comment1);
-
-        CodeReviewComment comment2 = new CodeReviewComment();
-        comment2.setId(2L);
-        comment2.setAuthor(getDefaultUser());
-        comment2.setBody("Comment2 body");
-        comment2.setLineNumber(2);
-        comment2.setCreationDate(new DateTime(2));
-        review.addComment(comment2);
-
-
-        return review;
-    }
-
     public static Banner getDefaultBanner() {
         Banner banner = new Banner();
         banner.setPositionOnPage(BannerPosition.TOP);
@@ -224,7 +196,7 @@ public final class ObjectsFactory {
 
     public static List<Banner> getBanners() {
         int bannersCount = 3;
-        List<Banner> banners = new ArrayList<Banner>();
+        List<Banner> banners = new ArrayList<>();
         for (int i = 0; i < bannersCount; i++) {
             Banner banner = new Banner();
             banner.setContent("<html></html>");

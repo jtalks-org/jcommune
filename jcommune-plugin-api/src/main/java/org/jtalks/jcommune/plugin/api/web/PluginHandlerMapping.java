@@ -20,6 +20,7 @@ import org.jtalks.jcommune.plugin.api.core.WebControllerPlugin;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.HandlerMethodSelector;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -42,7 +43,7 @@ import java.util.ArrayList;
 public class PluginHandlerMapping extends RequestMappingHandlerMapping {
 
     private static final PluginHandlerMapping INSTANCE = new PluginHandlerMapping();
-    private final Map<String, HandlerMethod> pluginHandlerMethods = new HashMap<>();
+    private final Map<MethodAwareKey, HandlerMethod> pluginHandlerMethods = new HashMap<>();
     private PluginLoader pluginLoader;
 
     private PluginHandlerMapping() {
@@ -86,7 +87,13 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
             throw new IllegalStateException("Controller method " + method.getName() + " mapped to " + patterns.size()
                     + " urls. Expected 1 url");
         }
-        pluginHandlerMethods.put(getUniformUrl(patterns.iterator().next()), createHandlerMethod(handler, method));
+        Set<RequestMethod> methods = mapping.getMethodsCondition().getMethods();
+        if (methods.size() != 1) {
+            throw new IllegalStateException("Controller method " + method.getName() + " mapped to " + methods.size()
+                    + " methods. Expected 1 method");
+        }
+        pluginHandlerMethods.put(new MethodAwareKey(methods.iterator().next(), getUniformUrl(patterns.iterator().next())),
+                createHandlerMethod(handler, method));
     }
 
 
@@ -110,9 +117,10 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      * @param controller controller bean to disable handlers
      */
     public void deactivateController(PluginController controller) {
-        List<String> urls = getPluginControllerUrls(controller);
-        for (String url : urls) {
-            pluginHandlerMethods.remove(url);
+        List<MethodAwareKey> keys = getPluginControllerUrls(controller);
+        for (MethodAwareKey key : keys) {
+
+            pluginHandlerMethods.remove(key);
         }
     }
 
@@ -122,8 +130,8 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      * @param controller controller object
      * @return list of URLs
      */
-    private List<String> getPluginControllerUrls(PluginController controller) {
-        List<String> urls = new ArrayList<>();
+    private List<MethodAwareKey> getPluginControllerUrls(PluginController controller) {
+        List<MethodAwareKey> keys = new ArrayList<>();
         final Class controllerType = controller.getClass();
         Set<Method> methods = HandlerMethodSelector.selectMethods(controllerType, new ReflectionUtils.MethodFilter() {
             public boolean matches(Method method) {
@@ -140,11 +148,16 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
                     throw new IllegalStateException("Controller method " + method.getName() + " mapped to "
                             + patterns.size() + " urls. Expected 1 url");
                 }
-                urls.add(getUniformUrl(patterns.iterator().next()));
+                Set<RequestMethod> requestMethods = mapping.getMethodsCondition().getMethods();
+                if (requestMethods.size() != 1) {
+                    throw new IllegalStateException("Controller method " + method.getName() + " mapped to " + methods.size()
+                            + " methods. Expected 1 method");
+                }
+                keys.add(new MethodAwareKey(requestMethods.iterator().next(), getUniformUrl(patterns.iterator().next())));
             }
         }
 
-        return urls;
+        return keys;
     }
 
     /**
@@ -157,12 +170,31 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
         //We should update Web plugins before resolving handler
         pluginLoader.reloadPlugins(new TypeFilter(WebControllerPlugin.class));
         String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
-        HandlerMethod handlerMethod = pluginHandlerMethods.get(getUniformUrl(lookupPath));
+        MethodAwareKey key = new MethodAwareKey(RequestMethod.valueOf(request.getMethod()), getUniformUrl(lookupPath));
+        HandlerMethod handlerMethod = findHandlerMethod(key);
         if (handlerMethod != null) {
+            RequestMappingInfo mappingInfo = getMappingForMethod(handlerMethod.getMethod(), handlerMethod.getBeanType());
+            //IMPORTANT: Should be called to set request attributes which allows resolve path variables
+            handleMatch(mappingInfo, lookupPath, request);
             return handlerMethod;
         } else {
             return super.getHandlerInternal(request);
         }
+    }
+
+    protected HandlerMethod findHandlerMethod(MethodAwareKey key) {
+        //firstly try to find absolutely equal
+        HandlerMethod method = pluginHandlerMethods.get(key);
+        if (method != null) {
+            return method;
+        }
+        //if not found try to find matching
+        for (Map.Entry<MethodAwareKey, HandlerMethod> entry : pluginHandlerMethods.entrySet()) {
+            if (key.urlRegExp.matches(entry.getKey().urlRegExp) && key.getMethod() == entry.getKey().getMethod()) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     /**
@@ -177,7 +209,7 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
 
     //Needed for tests only
     @VisibleForTesting
-    Map<String, HandlerMethod> getPluginHandlerMethods() {
+    Map<MethodAwareKey, HandlerMethod> getPluginHandlerMethods() {
         return pluginHandlerMethods;
     }
 
@@ -187,5 +219,52 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
 
     public void setPluginLoader(PluginLoader pluginLoader) {
         this.pluginLoader = pluginLoader;
+    }
+
+    static class MethodAwareKey {
+        private static String PATH_VARIABLE_REGEXP = "\\{(.*?)\\}";
+        private RequestMethod method;
+        private String urlRegExp;
+
+        public MethodAwareKey(RequestMethod method, String url) {
+            this.method = method;
+            this.urlRegExp = url.replaceAll(PATH_VARIABLE_REGEXP, "([^/]+)");
+        }
+
+        public RequestMethod getMethod() {
+            return method;
+        }
+
+        public String getUrlRegExp() {
+            return urlRegExp;
+        }
+
+        /**
+         * equals and hashCode needed for removing from map.
+         * for searching use {@link PluginHandlerMapping#findHandlerMethod(MethodAwareKey)} method
+         * this method compares urls using regexp
+         */
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            MethodAwareKey that = (MethodAwareKey) o;
+
+            return method == that.method && !(urlRegExp != null ? !urlRegExp.equals(that.urlRegExp) : that.urlRegExp != null);
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = method != null ? method.hashCode() : 0;
+            result = 31 * result + (urlRegExp != null ? urlRegExp.hashCode() : 0);
+            return result;
+        }
     }
 }

@@ -113,17 +113,19 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(user);
         user.setFirstName(newName);
         dao.saveOrUpdate(user);
+        session.flush();
         session.evict(user);
         JCUser result = (JCUser) session.get(JCUser.class, user.getId());//!
         assertEquals(result.getFirstName(), newName);
     }
 
-    @Test(expectedExceptions = org.springframework.dao.DataIntegrityViolationException.class)
+    @Test(expectedExceptions = org.hibernate.exception.ConstraintViolationException.class)
     public void testUpdateNotNullViolation() {
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
         user.setEmail(null);
         dao.saveOrUpdate(user);
+        session.flush();
     }
 
     @Test

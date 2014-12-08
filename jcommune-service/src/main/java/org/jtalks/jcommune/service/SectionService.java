@@ -16,7 +16,7 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public interface SectionService extends EntityService<Section> {
     /**
      *  Deletes all topics in all the sections, causing post count updates.
      *
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException if object for deletion has not been found
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException if object for deletion has not been found
      */
     void deleteAllTopicsInForum() throws NotFoundException;
 

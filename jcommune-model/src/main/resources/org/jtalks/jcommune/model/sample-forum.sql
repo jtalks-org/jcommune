@@ -1,6 +1,4 @@
--- Creates users: default, admin, banned with respective permissions
--- Creates sections and branches to be able to see then and post something
-set @forum_component_id := 2;
+﻿SET @forum_component_id := 2;
 insert ignore into COMPONENTS (CMP_ID, COMPONENT_TYPE, UUID, `NAME`, DESCRIPTION) VALUES (2, 'FORUM', (SELECT UUID() FROM dual), 'JTalks Sample Forum', 'Available users: admin/admin registered/registered moderator/moderator banned/banned');
 
 insert ignore into SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, COMPONENT_ID) VALUES

@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
 /**
  * This is generic interface for services which would interact with database entities via DAO object.
@@ -32,7 +32,7 @@ public interface EntityService<T extends Entity> {
      * @param id primary id of persistent object to find, id could not be negative.
      *           If negative id value will be put IllegalAgrumentEception will be thrown.
      * @return persistent object T or null if row with primary id = id is absent.
-     * @throws org.jtalks.jcommune.service.exceptions.NotFoundException
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
      *          when entity not found
      */
     T get(Long id) throws NotFoundException;

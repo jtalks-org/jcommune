@@ -22,7 +22,7 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.common.validation.annotations.Email;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.web.validation.annotations.BbCodeNesting;
+import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
 import org.jtalks.jcommune.web.validation.annotations.ChangedEmail;
 import org.jtalks.jcommune.web.validation.annotations.PageSize;
 

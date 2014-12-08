@@ -94,7 +94,7 @@
 
   <%-- Upper pagination --%>
   <div class="row-fluid upper-pagination forum-pagination-container">
-    <div class="span4">
+    <div class="new-topic-buttons">
       <c:choose>
         <c:when test="${fn:length(topicTypes) == 0}">
           &nbsp; <%-- For proper pagination layout without buttons--%>
@@ -106,7 +106,7 @@
              href="${pageContext.request.contextPath}${topicTypes[0].link}"
              title="<spring:message code='${topicTypes[0].toolTipKey}' text='${topicTypes[0].toolTipKey}'/>"
              data-placement="right">
-            <spring:message code='${topicTypes[0].displayNameKey}' text='${topicType.displayNameKey}'/>
+            <spring:message code='${topicTypes[0].displayNameKey}' text='${topicTypes[0].displayNameKey}'/>
           </a>
         </c:when>
         <c:otherwise>
@@ -136,14 +136,13 @@
         </c:otherwise>
       </c:choose>
     </div>
-    <div class="span8">
+    <div>
       <div class="pagination pull-right forum-pagination">
         <ul>
           <jtalks:pagination uri="${branch.id}" page="${topicsPage}"/>
         </ul>
       </div>
     </div>
-
   </div>
   <%-- END OF Upper pagination --%>
 
@@ -153,7 +152,7 @@
 
   <%-- Bottom pagination --%>
   <div class="row-fluid upper-pagination forum-pagination-container">
-    <div class="span4">
+    <div class="new-topic-buttons">
       <c:choose>
         <c:when test="${fn:length(topicTypes) == 0}">
           &nbsp; <%-- For proper pagination layout without buttons--%>
@@ -196,7 +195,7 @@
       </c:choose>
     </div>
 
-    <div class="span8">
+    <div>
       <div class="pagination pull-right forum-pagination">
         <ul><jtalks:pagination uri="${branch.id}" page="${topicsPage}"/></ul>
       </div>

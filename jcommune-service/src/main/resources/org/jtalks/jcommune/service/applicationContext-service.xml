@@ -210,6 +210,7 @@
     <constructor-arg ref="lastReadPostService"/>
     <constructor-arg ref="userService"/>
     <constructor-arg ref="branchLastPostService"/>
+    <constructor-arg ref="permissionService"/>
   </bean>
 
   <bean id="topicModificationService"
@@ -221,11 +222,12 @@
     <constructor-arg ref="subscriptionService"/>
     <constructor-arg ref="userService"/>
     <constructor-arg ref="pollService"/>
-    <constructor-arg ref="topicFetchService"/>
     <constructor-arg ref="securityContextFacade"/>
     <constructor-arg ref="aclGroupPermissionEvaluator"/>
     <constructor-arg ref="branchLastPostService"/>
     <constructor-arg ref="lastReadPostService"/>
+    <constructor-arg ref="postDao"/>
+    <constructor-arg ref="topicFetchService"/>
   </bean>
 
   <bean id="topicFetchService"
@@ -285,7 +287,6 @@
     <constructor-arg ref="userService"/>
     <constructor-arg ref="topicBranchDao"/>
     <constructor-arg ref="topicDao"/>
-    <constructor-arg ref="codeReviewDao"/>
   </bean>
 
   <bean id="securityService"
@@ -303,6 +304,7 @@
     <constructor-arg ref="userService"/>
     <constructor-arg ref="lastReadPostHibernateDao"/>
     <constructor-arg ref="userDao"/>
+    <constructor-arg ref="markBranchAsReadDao"/>
   </bean>
 
   <bean id="simplePageService"
@@ -336,16 +338,9 @@
     </property>
   </bean>
 
-  <bean id="codeReviewService" class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewService">
-    <constructor-arg ref="codeReviewDao"/>
-    <constructor-arg ref="userService"/>
-    <constructor-arg ref="permissionService"/>
-    <constructor-arg ref="notificationService"/>
-  </bean>
-
-  <bean id="codeReviewCommentService"
-        class="org.jtalks.jcommune.service.transactional.TransactionalCodeReviewCommentService">
-    <constructor-arg ref="codeReviewCommentDao"/>
+  <bean id="postReviewCommentService"
+        class="org.jtalks.jcommune.service.transactional.TransactionalPostCommentService">
+    <constructor-arg ref="postCommentDao"/>
     <constructor-arg ref="permissionService"/>
     <constructor-arg ref="userService"/>
   </bean>
@@ -421,6 +416,26 @@
 
   <bean class="org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService" factory-method="getInstance">
     <property name="userReader" ref="userService"/>
+  </bean>
+
+  <bean class="org.jtalks.jcommune.plugin.api.service.nontransactional.BbToHtmlConverter" factory-method="getInstance">
+    <property name="bbCodeService" ref="bbCodeService"/>
+  </bean>
+  
+  <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService"
+        factory-method="getInstance">
+    <property name="branchService" ref="topicBranchService"/>
+  </bean>
+
+  <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService"
+        factory-method="getInstance">
+    <property name="topicFetchService" ref="topicFetchService"/>
+    <property name="topicModificationService" ref="topicModificationService"/>
+  </bean>
+
+  <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService"
+        factory-method="getInstance">
+  <property name="lastReadPostService" ref="lastReadPostService"/>
   </bean>
 
   <beans profile="performance">

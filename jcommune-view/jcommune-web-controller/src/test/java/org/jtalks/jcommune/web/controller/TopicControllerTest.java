@@ -17,10 +17,10 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
-import org.jtalks.jcommune.web.dto.TopicDto;
+import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -93,7 +93,8 @@ public class TopicControllerTest {
                 userService,
                 breadcrumbBuilder,
                 locationService,
-                registry, topicFetchService);
+                registry,
+                topicFetchService);
     }
 
     @BeforeMethod
@@ -235,6 +236,7 @@ public class TopicControllerTest {
         Topic topic = this.createTopic();
         Post post = new Post(user, "content");
         topic.addPost(post);
+        topic.setType(TopicTypeName.DISCUSSION.getName());
         //
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
@@ -263,6 +265,7 @@ public class TopicControllerTest {
         topic.setSubscribers(subscribers);
         Post post = new Post(user, "content");
         topic.addPost(post);
+        topic.setType(TopicTypeName.DISCUSSION.getName());
         //
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
@@ -286,7 +289,7 @@ public class TopicControllerTest {
     @Test(expectedExceptions = AccessDeniedException.class)
     public void editTopicPageShouldNotBePossibleForCodeReview() throws NotFoundException {
         Topic topic = this.createTopic();
-        topic.setCodeReview(new CodeReview());
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
         when(userService.getCurrentUser()).thenReturn(user);

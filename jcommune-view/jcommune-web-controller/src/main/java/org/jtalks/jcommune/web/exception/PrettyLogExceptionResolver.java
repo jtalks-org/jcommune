@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.exception;
 
-import org.jtalks.jcommune.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 

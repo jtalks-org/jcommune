@@ -108,6 +108,17 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!--Needed to allow plugins to use messages from forum properties
+    Applied only for text/html response content type-->
+    <filter>
+      <filter-name>tagFilter</filter-name>
+      <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+      <filter-name>tagFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!--We need this filter as we use HTTP DELETE to delete posts & topics-->
     <filter>
         <filter-name>httpMethodFilter</filter-name>

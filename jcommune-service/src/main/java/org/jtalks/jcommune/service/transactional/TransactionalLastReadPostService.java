@@ -17,8 +17,10 @@ package org.jtalks.jcommune.service.transactional;
 import org.apache.commons.collections.ListUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.dao.LastReadPostDao;
+import org.jtalks.jcommune.model.dao.BranchReadedMarkerDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.plugin.api.service.PluginLastReadPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,12 +35,12 @@ import java.util.List;
  * @author Evgeniy Naumenko
  * @author Anuar_Nurmakanov
  */
-public class TransactionalLastReadPostService implements LastReadPostService {
+public class TransactionalLastReadPostService implements LastReadPostService, PluginLastReadPostService {
 
     private final UserService userService;
     private final LastReadPostDao lastReadPostDao;
     private final UserDao userDao;
-
+    private final BranchReadedMarkerDao branchReadedMarkerDao;
     /**
      * Constructs an instance with required fields.
      *
@@ -49,10 +51,12 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     public TransactionalLastReadPostService(
             UserService userService,
             LastReadPostDao lastReadPostDao,
-            UserDao userDao) {
+            UserDao userDao,
+            BranchReadedMarkerDao branchReadedMarkerDao) {
         this.userService = userService;
         this.lastReadPostDao = lastReadPostDao;
         this.userDao = userDao;
+        this.branchReadedMarkerDao = branchReadedMarkerDao;
     }
 
     /**
@@ -62,9 +66,8 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     public List<Topic> fillLastReadPostForTopics(List<Topic> topics) {
         JCUser currentUser = userService.getCurrentUser();
         if (!currentUser.isAnonymous()) {
-            DateTime forumMarkedAsReadDate = currentUser.getAllForumMarkedAsReadTime();
             List<Topic> notModifiedTopics = extractNotModifiedTopicsSinceForumMarkedAsRead(
-                    forumMarkedAsReadDate, topics);
+                    currentUser, topics);
             for (Topic notModifiedTopic : notModifiedTopics) {
                 Post lastPost = notModifiedTopic.getLastPost();
                 notModifiedTopic.setLastReadPostDate(lastPost.getCreationDate());
@@ -78,24 +81,54 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     }
 
     /**
-     * Extract topics that don't have modifications after marking all forum as read.
+     * Extract topics that don't have modifications after marking all forum as read
+     * or after marking their branch as read.
      *
-     * @param forumMarkAsReadDate the date when user marked all forum as read
+     * @param currentUser the current user of application
      * @param sourceTopics        the list of topics that must be processed
      * @return topics that don't have modification after marking all forum as read
      */
     private List<Topic> extractNotModifiedTopicsSinceForumMarkedAsRead(
-            DateTime forumMarkAsReadDate,
+            JCUser currentUser,
             List<Topic> sourceTopics) {
-        List<Topic> topics = new ArrayList<Topic>();
-        if (forumMarkAsReadDate != null) {
+        DateTime forumMarkAsReadDate = currentUser.getAllForumMarkedAsReadTime();
+        List<Topic> topics = new ArrayList<>();
+        if (!sourceTopics.isEmpty()) {
+            Branch branch = sourceTopics.get(0).getBranch();
+            BranchReadedMarker markBranch = branchReadedMarkerDao.getMarkerFor(currentUser, branch);
+            DateTime markTime = getLastMarkDateTime(markBranch, forumMarkAsReadDate);
             for (Topic topic : sourceTopics) {
-                if (topic.getModificationDate().isBefore(forumMarkAsReadDate)) {
+                if (!topic.getBranch().equals(branch)) {
+                    branch = topic.getBranch();
+                    markBranch = branchReadedMarkerDao.getMarkerFor(currentUser, branch);
+                    markTime = getLastMarkDateTime(markBranch, forumMarkAsReadDate);
+                }
+                if(markTime != null && topic.getModificationDate().isBefore(markTime)) {
                     topics.add(topic);
                 }
             }
         }
         return topics;
+    }
+
+    /**
+     * Compares date from marker with specified date and returns greater value
+     *
+     * @param marker marker object
+     * @param date date to compare
+     *
+     * @return greater value if both not null
+     *         null if both null
+     *         not null one if another null
+     */
+    private DateTime getLastMarkDateTime(BranchReadedMarker marker, DateTime date) {
+        if (marker == null) {
+            return date;
+        } else if (date == null) {
+            return marker.getMarkTime();
+        } else {
+            return marker.getMarkTime().isBefore(date) ? date : marker.getMarkTime();
+        }
     }
 
     /**
@@ -207,7 +240,11 @@ public class TransactionalLastReadPostService implements LastReadPostService {
     public void markAllTopicsAsRead(Branch branch) {
         JCUser user = userService.getCurrentUser();
         if (!user.isAnonymous()) {
-            lastReadPostDao.markAllRead(user, branch);
+            // would be logical to remove per-topic Last Read Post records from DB,
+            // but it's not worth it since most people will anyway press on global Mark All As Read
+            // at some point and this will clean the records for user. Ergo, it's not expected
+            // that the DB will be overwhelmed with per-topic Last Read Post records.
+            branchReadedMarkerDao.markBranchAsRead(user, branch);
         }
     }
 
