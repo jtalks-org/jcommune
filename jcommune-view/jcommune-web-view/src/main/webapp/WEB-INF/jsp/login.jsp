@@ -73,6 +73,7 @@
 
       <div class="form-actions">
         <input type="submit" class="btn btn-primary" value="<spring:message code="label.signin"/>"/>
+        <br/>
         <a id="page-signup-link" href="${pageContext.request.contextPath}/user/new"><spring:message
                   code="label.signup.rightnow"/></a>
 
