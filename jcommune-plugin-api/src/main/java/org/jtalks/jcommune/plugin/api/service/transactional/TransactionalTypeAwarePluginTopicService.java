@@ -21,9 +21,12 @@ import org.jtalks.jcommune.plugin.api.service.PluginTopicModificationService;
 import org.jtalks.jcommune.plugin.api.service.TypeAwarePluginTopicService;
 
 /**
+ * Service for operating with topic types provided by plugins.
+ * Should be used in plugins only. For core topic types use classes provided by service module
+ *
  * @author Mikhail Stryzhonok
  */
-public class TransactionalTypeAwarePluginTopicService implements TypeAwarePluginTopicService {
+public class TransactionalTypeAwarePluginTopicService implements TypeAwarePluginTopicService{
 
     private static final TransactionalTypeAwarePluginTopicService INSTANCE =
             new TransactionalTypeAwarePluginTopicService();
@@ -31,25 +34,48 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
     private PluginTopicFetchService topicFetchService;
     private PluginTopicModificationService topicModificationService;
 
+    /** Use {@link #getInstance()}, this class is singleton. */
     private TransactionalTypeAwarePluginTopicService() {
 
     }
 
-    public static TransactionalTypeAwarePluginTopicService getInstance() {
+    /**
+     * Gets instance of {@link TransactionalTypeAwarePluginTopicService}
+     *
+     * @return instance of {@link TransactionalTypeAwarePluginTopicService}
+     */
+    public static TypeAwarePluginTopicService getInstance() {
         return INSTANCE;
     }
 
 
-
+    /**
+     * Sets topic fetch service. Should be used once, during initialization
+     *
+     * @param topicFetchService topic fetch service to set
+     */
     public void setTopicFetchService(PluginTopicFetchService topicFetchService) {
         this.topicFetchService = topicFetchService;
     }
 
+    /**
+     * Sets topic modification service. Should be used once, during initialization
+     *
+     * @param topicModificationService topic modification service to set
+     */
     public void setTopicModificationService(PluginTopicModificationService topicModificationService) {
         this.topicModificationService = topicModificationService;
     }
 
-    @Override
+    /**
+     * Gets topic with specified type by id
+     *
+     * @param id id of interested topic
+     * @param type type of interested topic
+     *
+     * @return topic with specified id and type
+     * @throws NotFoundException if topic with specified id is not found or has different type
+     */
     public Topic get(Long id, String type) throws NotFoundException {
         Topic topic =  topicFetchService.get(id);
         if (!topic.getType().equals(type)) {
@@ -58,16 +84,38 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
         return topic;
     }
 
-    @Override
+    /**
+     * Updates topic. Should be used top modify existent topics
+     *
+     * @param topic topic with modifications
+     *
+     * @throws NotFoundException if modifying totic not found
+     */
     public void updateTopic(Topic topic) throws NotFoundException {
         topicModificationService.updateTopic(topic, null);
     }
 
-    @Override
+    /**
+     * Creates new topic with specified body text
+     *
+     * @param topicDto topic used as dto
+     * @param bodyText text of first post
+     *
+     * @return newly created topic
+     * @throws NotFoundException if {@link org.jtalks.jcommune.model.entity.Branch} not found
+     */
     public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
         return topicModificationService.createTopic(topicDto, bodyText);
     }
 
+    /**
+     * Check if user has given permission. Throws
+     *
+     * @param branchId ID of the branch which holds permissions
+     *
+     * @throws org.springframework.security.access.AccessDeniedException} if user
+     * don't have specified permission.
+     */
     public void checkViewTopicPermission(Long branchId) {
         topicFetchService.checkViewTopicPermission(branchId);
     }

@@ -24,6 +24,7 @@ import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
@@ -97,6 +98,8 @@ public class TransactionalTopicModificationServiceTest {
     private MentionedUsers mentionedUsers;
     @Mock
     private PostDao postDao;
+    @Mock
+    private PluginLoader pluginLoader;
 
     private CompoundAclBuilder<User> aclBuilder;
 
@@ -117,7 +120,8 @@ public class TransactionalTopicModificationServiceTest {
                 branchLastPostService,
                 lastReadPostService,
                 postDao,
-                topicFetchService);
+                topicFetchService,
+                pluginLoader);
 
         user = new JCUser("username", "email@mail.com", "password");
         when(securityContextFacade.getContext()).thenReturn(securityContext);

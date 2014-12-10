@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.filters.StateFilter;
 import org.jtalks.jcommune.plugin.api.web.dto.CreateTopicBtnDto;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.*;
@@ -177,31 +178,17 @@ public class BranchController {
                     "/reviews/new?branchId=" + branchId, CREATE_CODE_REVIEW_BUTTON_ORDER));
         }
 
-        List<TopicPlugin> topicPlugins = getEnabledTopicPlugins();
-        for (TopicPlugin topicPlugin : topicPlugins) {
-            if (aclEvaluator.hasPermission(authentication, branchId, "BRANCH", topicPlugin.getCreateTopicPermission())) {
-                topicTypes.add(topicPlugin.getCreateTopicBtnDto(branchId));
+        List<Plugin> topicPlugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class),
+                new StateFilter(Plugin.State.ENABLED));
+        for (Plugin topicPlugin : topicPlugins) {
+            if (aclEvaluator.hasPermission(authentication, branchId, "BRANCH",
+                    ((TopicPlugin)topicPlugin).getCreateTopicPermission())) {
+                topicTypes.add(((TopicPlugin)topicPlugin).getCreateTopicBtnDto(branchId));
             }
         }
         Collections.sort(topicTypes, new CreateTopicBtnDto.CreateTopicBtnDtoComparator());
 
         return topicTypes;
-    }
-
-    /**
-     * Gets list of enabled topic plugins
-     * @return list of topic plugins
-     * @see org.jtalks.jcommune.plugin.api.core.TopicPlugin
-     */
-    private List<TopicPlugin> getEnabledTopicPlugins() {
-        List<TopicPlugin> topicPlugins = new ArrayList<>();
-        List<Plugin> plugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class));
-        for (Plugin plugin : plugins) {
-            if (plugin.isEnabled()) {
-                topicPlugins.add((TopicPlugin) plugin);
-            }
-        }
-        return topicPlugins;
     }
 
     /**

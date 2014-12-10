@@ -654,7 +654,14 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         return type != null && type.equals(TopicTypeName.CODE_REVIEW.getName());
     }
 
+    /**
+     * Determines if topic is provided by plugin.
+     * NOTE: currently jcommune provides two topic types: "Code review" and "Discussion" all other
+     * topic types are provided by plugins
+     *
+     * @return true if topic is provided by plugin otherwise false
+     */
     public boolean isPlugable() {
-        return !(this.isCodeReview() || type.equals(TopicTypeName.DISCUSSION.getName()));
+        return type != null && !(this.isCodeReview() || type.equals(TopicTypeName.DISCUSSION.getName()));
     }
 }
