@@ -19,6 +19,13 @@ package org.jtalks.jcommune.plugin.api.service;
  */
 public interface PluginBbCodeService {
 
+    /**
+     * Remove bb-codes from the specified string.
+     * It remove ONLY VALID bb-codes. So, something like [zzz][/zzz] is unchanged.
+     * Also it doesn't strip open bb-code when there are no appropriate close tag.
+     * @param bbCode text with bb-codes
+     * @return text without bb-codes
+     */
     String stripBBCodes(String bbCode);
 
     /**

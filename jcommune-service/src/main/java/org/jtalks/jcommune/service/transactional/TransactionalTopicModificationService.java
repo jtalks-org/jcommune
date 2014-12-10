@@ -21,6 +21,11 @@ import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.filters.StateFilter;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.service.PluginTopicModificationService;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -65,6 +70,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private BranchLastPostService branchLastPostService;
     private LastReadPostService lastReadPostService;
     private TopicFetchService topicFetchService;
+    private PluginLoader pluginLoader;
 
     /**
      * Create an instance of User entity based service.
@@ -93,7 +99,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  BranchLastPostService branchLastPostService,
                                                  LastReadPostService lastReadPostService,
                                                  PostDao postDao,
-                                                 TopicFetchService topicFetchService) {
+                                                 TopicFetchService topicFetchService,
+                                                 PluginLoader pluginLoader) {
         this.dao = dao;
         this.securityService = securityService;
         this.branchDao = branchDao;
@@ -107,6 +114,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.lastReadPostService = lastReadPostService;
         this.postDao = postDao;
         this.topicFetchService = topicFetchService;
+        this.pluginLoader = pluginLoader;
     }
 
     /**
@@ -166,10 +174,9 @@ public class TransactionalTopicModificationService implements TopicModificationS
     @PreAuthorize("( not #topicDto.codeReview " +
             "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS'))" +
             "or (#topicDto.codeReview " +
-            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW'))" +
-            "or (#topicDto.plugable " +
-            "and canCreatePlugableTopic(#topicDto.branch.id, #topicDto.type))")
+            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW'))")
     public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
+        assertCreationAllowedForPlugableTopic(topicDto);
         JCUser currentUser = userService.getCurrentUser();
         Branch branch = topicDto.getBranch();
 
@@ -206,6 +213,35 @@ public class TransactionalTopicModificationService implements TopicModificationS
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), topic.getBranch().getId(), currentUser.getUsername()});
         return topic;
+    }
+
+    /**
+     * Checks for plugable topic if current user is granted to create topics with type.
+     *
+     * @param topic topic to be checked
+     * @throws AccessDeniedException if user not granted to create current topic type
+     *                               or if type of current topic is unknown
+     */
+    private void assertCreationAllowedForPlugableTopic(Topic topic) {
+        if (topic.isPlugable()) {
+            Authentication auth = securityContextFacade.getContext().getAuthentication();
+            List<Plugin> topicPlugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class),
+                    new StateFilter(Plugin.State.ENABLED));
+            boolean pluginFound = false;
+            for (Plugin plugin : topicPlugins) {
+                TopicPlugin topicPlugin = (TopicPlugin)plugin;
+                if (topicPlugin.getTopicType().equals(topic.getType()))  {
+                    pluginFound = true;
+                    if (permissionEvaluator.hasPermission(auth, topic.getBranch().getId(),
+                            "BRANCH", topicPlugin.getCreateTopicPermission())) {
+                        throw new AccessDeniedException("Creating of topic with type " + topic.getType() + " is forbidden");
+                    }
+                }
+            }
+            if (!pluginFound) {
+                throw new AccessDeniedException("Creating of unknown topic type is forbidden");
+            }
+        }
     }
 
     /**

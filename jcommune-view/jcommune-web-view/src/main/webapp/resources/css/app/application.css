@@ -466,7 +466,6 @@ div.anchor {
 
 #signin-modal-dialog #rememberme-area {
     margin: 0px 10px 0px 25px;
-    float: left;
 }
 
 .rememberme-lbl:hover {
@@ -492,20 +491,8 @@ div.anchor {
 }
 
 div.signup {
-    float: left;
     margin-left: 25px;
     margin-right: 5px;
-}
-
-#dialog-signup-link {
-    text-decoration: underline;
-    color: #a3a3a3;
-}
-
-#page-signup-link {
-    text-decoration: underline;
-    color: #a3a3a3;
-    margin-left: 15px;
 }
 
 .btn-block {

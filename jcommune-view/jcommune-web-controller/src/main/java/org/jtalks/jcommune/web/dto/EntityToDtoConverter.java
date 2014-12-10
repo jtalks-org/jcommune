@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.filters.StateFilter;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Class for conversion entity to dto
+ *
  * @author Mikhail Stryzhonok
  */
 public class EntityToDtoConverter {
@@ -38,8 +41,15 @@ public class EntityToDtoConverter {
         this.pluginLoader = pluginLoader;
     }
 
+    /**
+     * Convert page of {@link Topic} to page of {@link TopicDto}
+     *
+     * @param source page of {@link Topic}
+     * @return page of {@link TopicDto}
+     */
     public Page<TopicDto> convertToDtoPage(Page<Topic> source) {
-        List<TopicPlugin> plugins = getEnabledTopicPlugins();
+        List<Plugin> plugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class),
+                new StateFilter(Plugin.State.ENABLED));
         List<TopicDto> dtos = new ArrayList<>();
         for (Topic topic : source) {
             dtos.add(createTopicDto(topic, plugins));
@@ -47,17 +57,18 @@ public class EntityToDtoConverter {
         return new PageImpl<>(dtos, PageRequest.fetchFromPage(source), source.getTotalElements());
     }
 
-    private TopicDto createTopicDto(Topic topic, List<TopicPlugin> plugins) {
+    private TopicDto createTopicDto(Topic topic, List<Plugin> plugins) {
         TopicDto dto = new TopicDto(topic);
-        for (TopicPlugin plugin : plugins) {
-            if (plugin.getTopicType().equals(topic.getType())) {
-                dto.setTopicUrl("/topics/" + plugin.getTopicType().toLowerCase() + "/" + topic.getId());
+        for (Plugin plugin : plugins) {
+            TopicPlugin topicPlugin = (TopicPlugin)plugin;
+            if (topicPlugin.getTopicType().equals(topic.getType())) {
+                dto.setTopicUrl("/topics/" + topicPlugin.getTopicType().toLowerCase() + "/" + topic.getId());
                 if (dto.getTopic().isClosed()) {
-                    dto.setReadIconUrl("/topics/" + plugin.getTopicType().toLowerCase() + "/icon/closed_read.png");
-                    dto.setUnreadIconUrl("/topics/" + plugin.getTopicType().toLowerCase() + "/icon/closed_unread.png");
+                    dto.setReadIconUrl("/topics/" + topicPlugin.getTopicType().toLowerCase() + "/icon/closed_read.png");
+                    dto.setUnreadIconUrl("/topics/" + topicPlugin.getTopicType().toLowerCase() + "/icon/closed_unread.png");
                 } else {
-                    dto.setReadIconUrl("/topics/" + plugin.getTopicType().toLowerCase() + "/icon/read.png");
-                    dto.setUnreadIconUrl("/topics/" + plugin.getTopicType().toLowerCase() + "/icon/unread.png");
+                    dto.setReadIconUrl("/topics/" + topicPlugin.getTopicType().toLowerCase() + "/icon/read.png");
+                    dto.setUnreadIconUrl("/topics/" + topicPlugin.getTopicType().toLowerCase() + "/icon/unread.png");
                 }
                 return dto;
             }
@@ -75,22 +86,5 @@ public class EntityToDtoConverter {
         }
         return dto;
     }
-
-    /**
-     * Gets list of enabled topic plugins
-     * @return list of topic plugins
-     * @see org.jtalks.jcommune.plugin.api.core.TopicPlugin
-     */
-    private List<TopicPlugin> getEnabledTopicPlugins() {
-        List<TopicPlugin> topicPlugins = new ArrayList<>();
-        List<Plugin> plugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class));
-        for (Plugin plugin : plugins) {
-            if (plugin.isEnabled()) {
-                topicPlugins.add((TopicPlugin) plugin);
-            }
-        }
-        return topicPlugins;
-    }
-
 
 }

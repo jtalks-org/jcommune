@@ -17,19 +17,20 @@ package org.jtalks.jcommune.plugin.questionsandanswers.controller;
 import com.google.common.io.ByteStreams;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.tools.generic.EscapeTool;
-import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.*;
-import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.service.PluginBranchService;
+import org.jtalks.jcommune.plugin.api.service.PluginLastReadPostService;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
+import org.jtalks.jcommune.plugin.api.service.TypeAwarePluginTopicService;
+import org.jtalks.jcommune.plugin.api.service.UserReader;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.BbToHtmlConverter;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
 import org.jtalks.jcommune.plugin.api.web.PluginController;
-import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
-import org.jtalks.jcommune.plugin.api.web.dto.BreadcrumbLocation;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
@@ -38,7 +39,6 @@ import org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -59,72 +59,108 @@ import java.util.*;
 import static org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin.MESSAGE_PATH;
 
 /**
+ * Class for processing question management web requests
+ *
  * @author Mikhail Stryzhonok
  */
 @Controller
 @RequestMapping(QuestionsAndAnswersPlugin.CONTEXT)
 public class QuestionsAndAnswersController implements ApplicationContextAware, PluginController {
+
     private static final String PATH_TO_IMAGES = "/org/jtalks/jcommune/plugin/questionsandanswers/images/";
     private static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
-    public static final String BRANCH_ID = "branchId";
     private static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z";
+    private static final String TEMPLATE_PATH = "org/jtalks/jcommune/plugin/questionsandanswers/template/";
+    private static final String QUESTION_FORM_TEMPLATE_PATH = TEMPLATE_PATH + "questionForm.vm";
+    private static final String QUESTION_TEMPLATE_PATH = TEMPLATE_PATH + "question.vm";
+    private static final String BREADCRUMB_LIST = "breadcrumbList";
+    private static final String TOPIC_DTO = "topicDto";
+    private static final String EDIT = "edit";
+    private static final String RESULT = "result";
+    private static final String QUESTION = "question";
+    private static final String POST_PAGE = "postPage";
+    private static final String SUBSCRIBED = "subscribed";
+    private static final String CONVERTER = "converter";
+    public static final String PLUGIN_VIEW_NAME = "plugin/plugin";
+    public static final String BRANCH_ID = "branchId";
+    public static final String CONTENT = "content";
+
 
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
     private String apiPath;
     private ApplicationContext applicationContext;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String showVelocity(Model model, HttpServletRequest request) {
+    /**
+     * Shows question creation page
+     *
+     * @param branchId id of the branch in which user want to create question
+     * @param model model for transferring to jsp
+     * @param request HttpServletRequest
+     *
+     * @return plugin view name
+     * @throws NotFoundException if branch with specified id not found
+     */
+    @RequestMapping(value = "new", method = RequestMethod.GET)
+    public String showNewQuestionPage(@RequestParam(BRANCH_ID) Long branchId, Model model, HttpServletRequest request)
+            throws NotFoundException {
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
-        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
-                "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", getModel(request)));
-        return "plugin/plugin";
+        Branch branch = getPluginBranchService().get(branchId);
+        Topic topic = new Topic();
+        topic.setBranch(branch);
+        TopicDto dto = new TopicDto(topic);
+        Map<String, Object> data = getDefaultModel(request);
+        data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+        data.put(TOPIC_DTO, dto);
+        data.put(EDIT, false);
+        model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
+        return PLUGIN_VIEW_NAME;
     }
 
+    /**
+     * Saves question after form submission.
+     *
+     * @param topicDto Dto populated in form
+     * @param result validation result
+     * @param model model for transferring to jsp
+     * @param branchId branch, where topic will be created
+     * @param request HttpServletRequest
+     *
+     * @return redirect to newly created topic if no validation errors
+     *         plugin view name if validation errors occurred
+     * @throws NotFoundException if branch with specified id not found
+     */
     @RequestMapping(value = "new", method = RequestMethod.POST)
     public String createQuestion(@Valid @ModelAttribute TopicDto topicDto, BindingResult result, Model model,
                                  @RequestParam(BRANCH_ID) Long branchId, HttpServletRequest request)
             throws NotFoundException{
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
-        Branch  branch = TransactionalPluginBranchService.getInstance().get(branchId);
+        Branch  branch = getPluginBranchService().get(branchId);
         Map<String, Object> data = getDefaultModel(request);
         if (result.hasErrors()) {
             topicDto.getTopic().setBranch(branch);
-            data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topicDto.getTopic()));
-            data.put("topicDto", topicDto);
-            data.put("result", result);
-            model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
-                    "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
-            return "plugin/plugin";
+            data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topicDto.getTopic()));
+            data.put(TOPIC_DTO, topicDto);
+            data.put(RESULT, result);
+            model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
+            return PLUGIN_VIEW_NAME;
         }
         topicDto.getTopic().setBranch(branch);
-        topicDto.getTopic().setType("Question");
-        Topic createdQuestion = TransactionalTypeAwarePluginTopicService.getInstance().createTopic(topicDto.getTopic(),
+        topicDto.getTopic().setType(QuestionsAndAnswersPlugin.TOPIC_TYPE);
+        Topic createdQuestion = getTypeAwarePluginTopicService().createTopic(topicDto.getTopic(),
                 topicDto.getBodyText());
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + createdQuestion.getId();
     }
 
-    @RequestMapping(value = "new", method = RequestMethod.GET)
-    public String showNewQuestionPage(@RequestParam(BRANCH_ID) Long branchId, Model model, HttpServletRequest request)
-            throws NotFoundException {
-        VelocityEngine engine = new VelocityEngine(getProperties());
-        engine.init();
-        Branch branch = TransactionalPluginBranchService.getInstance().get(branchId);
-        Topic topic = new Topic();
-        topic.setBranch(branch);
-        TopicDto dto = new TopicDto(topic);
-        Map<String, Object> data = getDefaultModel(request);
-        data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
-        data.put("topicDto", dto);
-        data.put("edit", false);
-        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
-                "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
-        return "plugin/plugin";
-    }
-
+    /**
+     * Writes question icon into response
+     *
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param name name of icon
+     */
     @RequestMapping(value = "icon/{name}", method = RequestMethod.GET)
     public void getIcon(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String name) {
         try {
@@ -134,67 +170,105 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         }
     }
 
+    /**
+     * Shows question page
+     *
+     * @param request HttpServletRequest
+     * @param model model for transferring to jsp
+     * @param id id of question
+     *
+     * @return plugin view name
+     * @throws NotFoundException if question with specified id not found
+     */
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public String showQuestion(HttpServletRequest request, Model model, @PathVariable("id") Long id)
             throws NotFoundException {
-        Topic topic = TransactionalTypeAwarePluginTopicService.getInstance().get(id, "Question");
-        TransactionalTypeAwarePluginTopicService.getInstance().checkViewTopicPermission(topic.getBranch().getId());
+        Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
+        getTypeAwarePluginTopicService().checkViewTopicPermission(topic.getBranch().getId());
         Map<String, Object> data = getDefaultModel(request);
-        data.put("question", topic);
-        data.put("postPage", new PageImpl<>(topic.getPosts()));
-        data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
-        data.put("subscribed", false);
-        data.put("converter", BbToHtmlConverter.getInstance());
-        TransactionalPluginLastReadPostService.getInstance().markTopicPageAsRead(topic, 1);
+        data.put(QUESTION, topic);
+        data.put(POST_PAGE, new PageImpl<>(topic.getPosts()));
+        data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+        data.put(SUBSCRIBED, false);
+        data.put(CONVERTER, BbToHtmlConverter.getInstance());
+        getPluginLastReadPostService().markTopicPageAsRead(topic, 1);
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
-        String c = VelocityEngineUtils.mergeTemplateIntoString(engine,
-                "org/jtalks/jcommune/plugin/questionsandanswers/template/question.vm", "UTF-8", data);
-        model.addAttribute("content", c);
-        return "plugin/plugin";
+        model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_TEMPLATE_PATH, "UTF-8", data));
+        return PLUGIN_VIEW_NAME;
     }
 
+    /**
+     * Show edit question page
+     *
+     * @param request HttpServletRequest
+     * @param model model for transferring to jsp
+     * @param id id of question to edit
+     *
+     * @return plugin view name
+     * @throws NotFoundException if question with specified id not found
+     */
     @RequestMapping(value = "{id}/edit", method = RequestMethod.GET)
     public String editQuestionPage(HttpServletRequest request, Model model, @PathVariable("id") Long id)
             throws NotFoundException{
-        Topic topic = TransactionalTypeAwarePluginTopicService.getInstance().get(id, "Question");
+        Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
         TopicDto topicDto = new TopicDto(topic);
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
         Map<String, Object> data = getDefaultModel(request);
-        data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
-        data.put("topicDto", topicDto);
-        data.put("edit", true);
-        model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
-                "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
-        return "plugin/plugin";
+        data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+        data.put(TOPIC_DTO, topicDto);
+        data.put(EDIT, true);
+        model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
+        return PLUGIN_VIEW_NAME;
     }
 
+    /**
+     * Updates question
+     *
+     * @param topicDto Dto populated in form
+     * @param result validation result
+     * @param model model for transferring to jsp
+     * @param id id of question to edit
+     * @param request HttpServletRequest
+     *
+     * @return redirect to newly created topic if no validation errors
+     *         plugin view name if validation errors occurred
+     * @throws NotFoundException if question with specified id not found
+     */
     @RequestMapping(value = "{id}/edit", method = RequestMethod.POST)
     public String updateQuestion(@Valid @ModelAttribute TopicDto topicDto, BindingResult result, Model model,
                                  @PathVariable("id") Long id, HttpServletRequest request)
             throws NotFoundException {
-        Topic topic = TransactionalTypeAwarePluginTopicService.getInstance().get(id, "Question");
+        Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
         Map<String, Object> data = getDefaultModel(request);
         if (result.hasErrors()) {
             topicDto.getTopic().setId(topic.getId());
             topicDto.getTopic().setBranch(topic.getBranch());
             VelocityEngine engine = new VelocityEngine(getProperties());
             engine.init();
-            data.put("breadcrumbList", breadcrumbBuilder.getForumBreadcrumb(topic));
-            data.put("topicDto", topicDto);
-            data.put("edit", true);
-            data.put("result", result);
-            model.addAttribute("content", VelocityEngineUtils.mergeTemplateIntoString(engine,
-                    "org/jtalks/jcommune/plugin/questionsandanswers/template/questionForm.vm", "UTF-8", data));
-            return "plugin/plugin";
+            data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+            data.put(TOPIC_DTO, topicDto);
+            data.put(EDIT, true);
+            data.put(RESULT, result);
+            model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
+            return PLUGIN_VIEW_NAME;
 
         }
         topicDto.fillTopic(topic);
-        TransactionalTypeAwarePluginTopicService.getInstance().updateTopic(topic);
+        getTypeAwarePluginTopicService().updateTopic(topic);
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + topic.getId();
     }
 
+    /**
+     * Writes icon to response and set apropriate response geaders
+     *
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param iconPath path to icon to be writed
+     *
+     * @throws IOException if icon not found
+     */
     private void processIconRequest(HttpServletRequest request, HttpServletResponse response, String iconPath)
             throws IOException {
         if(request.getHeader(IF_MODIFIED_SINCE_HEADER) != null) {
@@ -218,16 +292,30 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
                 Locale.US));
     }
 
+    /**
+     * Gets resource bundle with locale of current user
+     *
+     * @param currentUser current user
+     *
+     * @return resource bundle with locale of current user
+     */
     private ResourceBundle getLocalizedMessagesBundle(JCUser currentUser) {
         return ResourceBundle.getBundle(MESSAGE_PATH, currentUser.getLanguage().getLocale());
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * Gets properties of velocity engine
+     *
+     * @return properties of velocity engine
+     */
     protected Properties getProperties() {
         Properties properties = new Properties();
         properties.put("resource.loader", "jar");
@@ -238,50 +326,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         properties.put("jar.resource.loader.path", jars);
         properties.put("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogSystem");
         return properties;
-    }
-
-    private Map<String, Object> getModel(HttpServletRequest request) {
-        Map<String, Object> data = new HashMap<>();
-        List<Breadcrumb> breadcrumbList = new ArrayList<>();
-        Breadcrumb forum = new Breadcrumb(1L, BreadcrumbLocation.FORUM, "Forum");
-        breadcrumbList.add(forum);
-        Breadcrumb section = new Breadcrumb(1L, BreadcrumbLocation.SECTION, "Sport");
-        breadcrumbList.add(section);
-        Breadcrumb branch = new Breadcrumb(1L, BreadcrumbLocation.BRANCH, "Russian Hockey");
-        breadcrumbList.add(branch);
-        List<Post> posts = new ArrayList<>();
-        JCUser mrVasiliy = new JCUser("Mr. Vasiliy", "", "");
-        PostComment comment = new PostComment();
-        comment.setAuthor(mrVasiliy);
-        comment.setBody("Lorem ipsum <strong>dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-        comment.setCreationDate(new DateTime());
-        Post p1 = new Post(mrVasiliy, "Lorem ipsum <strong>dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-        p1.getComments().add(comment);
-        p1.getComments().add(comment);
-        p1.getComments().add(comment);
-        p1.getComments().add(comment);
-        p1.getComments().add(comment);
-        p1.getComments().add(comment);
-        posts.add(p1);
-        JCUser mrKakashka = new JCUser("Mr. Kakashka", "", "");
-        Post p2 = new Post(mrKakashka, "Lorem ipsum <strong>dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-        p2.getComments().add(comment);
-        p2.getComments().add(comment);
-        p2.getComments().add(comment);
-        p2.getComments().add(comment);
-        posts.add(p2);
-        JCUser mrTolik = new JCUser("Mr. Tolik", "", "");
-        Post p3 = new Post(mrTolik, "Lorem ipsum <strong>dolor</strong> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-        p3.getComments().add(comment);
-        p3.getComments().add(comment);
-        posts.add(p3);
-        Page<Post> postPage = new PageImpl<>(posts);
-        data.putAll(getDefaultModel(request));
-        data.put("postPage", postPage);
-        data.put("question", new Topic(mrVasiliy, "Test title"));
-        data.put("subscribed", false);
-        data.put("breadcrumbList", breadcrumbList);
-        return data;
     }
 
     /**
@@ -296,7 +340,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         model.put("request", request);
         model.put("dateTool", new JodaDateTimeTool(request));
         model.put("esc", new EscapeTool());
-        JCUser currentUser = ReadOnlySecurityService.getInstance().getCurrentUser();
+        JCUser currentUser = getUserReader().getCurrentUser();
         PermissionTool tool = new PermissionTool(applicationContext);
         model.put("currentUser", currentUser);
         model.put("messages", getLocalizedMessagesBundle(currentUser));
@@ -304,7 +348,53 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         return model;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void setApiPath(String apiPath) {
         this.apiPath = apiPath;
+    }
+
+    /**
+     * Needed for mocking
+     */
+    PluginBranchService getPluginBranchService() {
+        return TransactionalPluginBranchService.getInstance();
+    }
+
+    /**
+     * Needed for mocking
+     */
+    PluginLastReadPostService getPluginLastReadPostService() {
+        return TransactionalPluginLastReadPostService.getInstance();
+    }
+
+    /**
+     * Needed for mocking
+     */
+    TypeAwarePluginTopicService getTypeAwarePluginTopicService() {
+        return TransactionalTypeAwarePluginTopicService.getInstance();
+    }
+
+    /**
+     * Needed for mocking
+     */
+    UserReader getUserReader() {
+        return ReadOnlySecurityService.getInstance();
+    }
+
+    /**
+     * Needed for mocking
+     */
+    String getMergedTemplate(VelocityEngine velocityEngine, String templateLocation, String encoding,
+                             Map<String, Object> model) throws VelocityException {
+        return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, templateLocation, encoding, model);
+    }
+
+    /**
+     * Needed for tests
+     */
+    void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
+        this.breadcrumbBuilder = breadcrumbBuilder;
     }
 }

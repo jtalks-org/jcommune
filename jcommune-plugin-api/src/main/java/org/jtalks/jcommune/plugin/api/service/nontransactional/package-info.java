@@ -12,23 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.plugin.api.service;
-
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
-
 /**
- * @author Mikhail Stryzhonok
+ * Package for nontransactional services which will be used in plugins
  */
-public interface PluginBranchService {
-
-    /**
-     * Searches in database {@link org.jtalks.jcommune.model.entity.Branch} with specified id
-     *
-     * @param id id of interested branch
-     * @return {@link org.jtalks.jcommune.model.entity.Branch} with specified id
-     *
-     * @throws NotFoundException if branch not found
-     */
-    Branch get(Long id) throws NotFoundException;
-}
+package org.jtalks.jcommune.plugin.api.service.nontransactional;

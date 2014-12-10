@@ -20,6 +20,10 @@ import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.PluginBranchService;
 
 /**
+ * Service for manipulating {@link org.jtalks.jcommune.model.entity.Branch} instances from plugins.
+ * For manipulating {@link org.jtalks.jcommune.model.entity.Branch} instances from jcommune use classes from service
+ * module
+ *
  * @author Mikhail Stryzhonok
  */
 public class TransactionalPluginBranchService implements PluginBranchService {
@@ -27,18 +31,32 @@ public class TransactionalPluginBranchService implements PluginBranchService {
 
     private PluginBranchService branchService;
 
+    /** Use {@link #getInstance()}, this class is singleton. */
     private TransactionalPluginBranchService() {
     }
 
+    /**
+     * Gets instance of {@link TransactionalPluginBranchService}
+     *
+     * @return instance of {@link TransactionalPluginBranchService}
+     */
     public static PluginBranchService getInstance() {
         return INSTANCE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Branch get(Long id) throws NotFoundException {
         return branchService.get(id);
     }
 
+    /**
+     * Sets branch service. Should be used once, during initialization
+     *
+     * @param branchService
+     */
     public void setBranchService(PluginBranchService branchService) {
         this.branchService = branchService;
     }

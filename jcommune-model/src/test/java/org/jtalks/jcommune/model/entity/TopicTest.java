@@ -244,4 +244,32 @@ public class TopicTest {
 
         assertFalse(topic.isCodeReview());
     }
+
+    @Test
+    public void isPlugableShouldReturnFalseForDiscussion() {
+        topic.setType(TopicTypeName.DISCUSSION.getName());
+
+        assertFalse(topic.isPlugable());
+    }
+
+    @Test
+    public void isPlugableShouldReturnFalseForCodeReview() {
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
+
+        assertFalse(topic.isPlugable());
+    }
+
+    @Test
+    public void isPlugableShouldReturnTrueForUnknownTopicType() {
+        topic.setType("Any plugable");
+
+        assertTrue(topic.isPlugable());
+    }
+
+    @Test
+    public void isPlugableShouldReturnFalseIfTopicTypeNotSet() {
+        topic.setType(null);
+
+        assertFalse(topic.isPlugable());
+    }
 }

@@ -14,30 +14,54 @@
  */
 package org.jtalks.jcommune.plugin.api.service.nontransactional;
 
-import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.plugin.api.service.PluginBbCodeService;
-import org.springframework.data.domain.Page;
 
 /**
+ * Service for processing bb-codes in plugins.
+ * For processing bb-codes in jcommune use classes from service module
+ *
  * @author Mikhail Stryzhonok
  */
-public class BbToHtmlConverter  {
+public class BbToHtmlConverter implements PluginBbCodeService {
     private static final BbToHtmlConverter INSTANCE = new BbToHtmlConverter();
 
     private PluginBbCodeService bbCodeService;
 
+    /** Use {@link #getInstance()}, this class is singleton. */
     private BbToHtmlConverter(){
 
     }
 
-    public static BbToHtmlConverter getInstance() {
+    /**
+     * Gets instance of this class
+     *
+     * @return instance of {@link BbToHtmlConverter}
+     */
+    public static PluginBbCodeService getInstance() {
         return INSTANCE;
     }
 
+    /**
+     *  {@inheritDoc}
+     */
+    @Override
+    public String stripBBCodes(String bbCode) {
+        return bbCodeService.stripBBCodes(bbCode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String convertBbToHtml(String post) {
         return bbCodeService.convertBbToHtml(post);
     }
 
+    /**
+     * Sets bb-code service. Should be used once, during initialization
+     *
+     * @param bbCodeService bb-code service to set
+     */
     public void setBbCodeService(PluginBbCodeService bbCodeService) {
         this.bbCodeService = bbCodeService;
     }

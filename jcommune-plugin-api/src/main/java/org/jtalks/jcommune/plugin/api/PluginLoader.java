@@ -108,6 +108,7 @@ public class PluginLoader {
     public synchronized List<Plugin> getPlugins(PluginFilter... filters) {
         this.synchronizePluginList();
         List<Plugin> filtered = new ArrayList<>(plugins.size());
+        loadConfigurationFor(plugins);
         plugins:
         for (Plugin plugin : plugins) {
             for (PluginFilter filter : filters) {
@@ -118,7 +119,6 @@ public class PluginLoader {
             filtered.add(plugin);
         }
         LOGGER.trace("JCommune forum has {} plugins now.", filtered.size());
-        loadConfigurationFor(filtered);
         return filtered;
     }
 
