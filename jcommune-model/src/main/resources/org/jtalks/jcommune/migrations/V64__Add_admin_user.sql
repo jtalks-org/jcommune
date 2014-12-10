@@ -4,6 +4,8 @@ SET @forumComponentName := 'JTalks Sample Forum';
 SET @forumComponentType := 'FORUM';
 SET @aclClass :='COMPONENT';
 
+ALTER TABLE JC_USER_DETAILS ADD UNIQUE (USER_ID);
+
 insert ignore into COMPONENTS (CMP_ID, COMPONENT_TYPE, UUID, `NAME`, DESCRIPTION) VALUES (2, @forumComponentType, (SELECT UUID() FROM dual), @forumComponentName, 'Available users: admin/admin');
 
 -- 'FROM COMPONENTS' are not used, but query mast contain 'FROM dual' clause
@@ -14,8 +16,7 @@ insert into GROUPS (UUID, `NAME`, DESCRIPTION) select (SELECT UUID() FROM dual),
 --  will not be added.
 insert ignore into USERS (UUID, USERNAME, ENCODED_USERNAME, EMAIL, PASSWORD, ROLE, SALT, ENABLED) VALUES
   ((SELECT UUID() FROM dual), 'admin', 'admin', 'admin@jtalks.org', MD5('admin'), 'USER_ROLE', '',true);
-insert ignore into JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT) select
-  (select ID from USERS where USERNAME = 'admin'), NOW(), 0 from dual where not exists (select * from JC_USER_DETAILS where USER_ID = (select ID from USERS where USERNAME = 'admin'));
+insert ignore into JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT) values ((select ID from USERS where USERNAME = 'admin'), NOW(), 0);
 
 -- Adding created Admin to Administrators group(created at this migration or common migration) ).
 SET @admin_group_id := (select GROUP_ID from GROUPS where `NAME`='Administrators');
