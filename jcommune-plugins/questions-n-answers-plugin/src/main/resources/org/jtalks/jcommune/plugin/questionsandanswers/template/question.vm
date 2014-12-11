@@ -24,8 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <title>${esc.html(${question.title})}</title>
 </head>
 <body>
-##IMPORTANT: now branch id hardcoded in should be replaced with ${question.branch.id}
-  #set($targedId = 3)
+  #set($targedId = ${question.branch.id})
   #set($canLeavePosts=false)
   #if((!${question.closed} || ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CLOSE_TOPICS")})
   && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CREATE_POSTS")})
@@ -91,8 +90,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         #set($voteResultClass = "negative")
       #end
       #set($isFirstPost = false)
-    ##dummy version. should be == 1 in future
-      #if(${postPage.number} < 2 && $velocityCount == 1)
+      #if($velocityCount == 1)
         #set($isFirstPost = true)
       #end
       #set($postClass = "")
