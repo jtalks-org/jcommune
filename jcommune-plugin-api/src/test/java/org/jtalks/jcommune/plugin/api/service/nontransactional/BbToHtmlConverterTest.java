@@ -29,7 +29,6 @@ import static org.testng.AssertJUnit.assertEquals;
 public class BbToHtmlConverterTest {
     @Mock
     private PluginBbCodeService bbCodeService;
-    private String in = "[b]text[/b]";
 
     @BeforeMethod
     public void init() {
@@ -41,6 +40,7 @@ public class BbToHtmlConverterTest {
 
     @Test
     public void testStripBbCodes() {
+        String in = "[b]text[/b]";
         String out = "text";
         when(bbCodeService.stripBBCodes(in)).thenReturn(out);
 
@@ -51,6 +51,7 @@ public class BbToHtmlConverterTest {
 
     @Test
     public void testConvertBbToHtml() {
+        String in = "[b]text[/b]";
         String out = "<span style=\"font-weight:bold;\" data-original-title=\"\">text</span>";
         when(bbCodeService.convertBbToHtml(in)).thenReturn(out);
 

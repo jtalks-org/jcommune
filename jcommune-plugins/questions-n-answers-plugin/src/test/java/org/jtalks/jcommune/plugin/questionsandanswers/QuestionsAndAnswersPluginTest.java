@@ -182,4 +182,11 @@ public class QuestionsAndAnswersPluginTest {
         CreateTopicBtnDto createTopicBtnDto = new QuestionsAndAnswersPlugin().getCreateTopicBtnDto(1);
         assertEquals("Ask Question", createTopicBtnDto.getDisplayNameKey());
     }
+
+    @Test
+    public void getTopicTypeTest() {
+        QuestionsAndAnswersPlugin plugin = new QuestionsAndAnswersPlugin();
+
+        assertEquals(plugin.getTopicType(), QuestionsAndAnswersPlugin.TOPIC_TYPE);
+    }
 }

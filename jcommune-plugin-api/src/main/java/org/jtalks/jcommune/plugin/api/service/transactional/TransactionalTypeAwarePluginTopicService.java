@@ -24,6 +24,9 @@ import org.jtalks.jcommune.plugin.api.service.TypeAwarePluginTopicService;
  * Service for operating with topic types provided by plugins.
  * Should be used in plugins only. For core topic types use classes provided by service module
  *
+ * This class is  singleton because we can't use spring dependency injection mechanism in plugins due plugins can be
+ * added or removed in runtime.
+ *
  * @author Mikhail Stryzhonok
  */
 public class TransactionalTypeAwarePluginTopicService implements TypeAwarePluginTopicService{

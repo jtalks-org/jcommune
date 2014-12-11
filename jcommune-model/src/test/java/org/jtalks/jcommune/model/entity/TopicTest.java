@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.joda.time.DateTime;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.HashSet;
@@ -24,16 +23,6 @@ import java.util.Set;
 import static org.testng.Assert.*;
 
 public class TopicTest {
-    private Topic topic;
-    Post post1 = new Post();
-    Post post2 = new Post();
-
-    @BeforeMethod
-    public void setUp() {
-        topic = new Topic(new JCUser(), "title");
-        topic.addPost(post1);
-        topic.addPost(post2);
-    }
 
     @Test
     public void getNeighborPostIfOnlyOnePostInTheTopic() {
@@ -61,20 +50,23 @@ public class TopicTest {
 
     @Test
     public void getNeighborPostForLastPostInTheTopic() {
-        Post post = topic.getNeighborPost(post2);
+        Topic topic = createTopic();
+        Post post = topic.getNeighborPost(topic.getPosts().get(1));
         // previous post (post1) should be returned
-        assertEquals(post, post1);
+        assertEquals(post, topic.getPosts().get(0));
     }
 
     @Test
     public void firstPostShouldReturnFirstPostOfTheTopic() {
+        Topic topic = createTopic();
         Post firstPost = topic.getFirstPost();
 
-        assertEquals(firstPost, post1);
+        assertEquals(firstPost, topic.getPosts().get(0));
     }
 
     @Test
     public void addPostShouldUpdateModificationDate() throws InterruptedException {
+        Topic topic = createTopic();
         DateTime prevDate = topic.getModificationDate();
         Thread.sleep(25); // millisecond precise is a kind of fiction
         topic.addPost(new Post());
@@ -84,15 +76,17 @@ public class TopicTest {
 
 
     public void updatePostShouldUpdateModificationDate() throws InterruptedException {
+        Topic topic = createTopic();
         DateTime prevDate = topic.getModificationDate();
         Thread.sleep(25); // millisecond precise is a kind of fiction
-        post1.updateModificationDate();
+        topic.getPosts().get(0).updateModificationDate();
 
         assertTrue(topic.getModificationDate().isBefore(prevDate));
     }
 
     @Test
     public void updateModificationDateShouldChangeTheModificationDate() {
+        Topic topic = createTopic();
         DateTime prevDate = topic.getModificationDate();
 
         DateTime modDate = topic.updateModificationDate();
@@ -102,6 +96,7 @@ public class TopicTest {
     
     @Test
     public void recalculateModificationDateShouldSetModificationDateAsTheLatestDateAmongAllPosts() {
+        Topic topic = createTopic();
         DateTime lastModificationDate = new DateTime();
         
         topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
@@ -119,17 +114,24 @@ public class TopicTest {
 
     @Test
     public void hasUpdatesShouldReturnTrueByDefault() {
+        Topic topic = createTopic();
+
         assertTrue(topic.isHasUpdates());
     }
 
     @Test
     public void hasUpdatesShouldReturnTrueInCaseOfUpdatesExist() {
-        topic.setLastReadPostDate(topic.getFirstPost().getCreationDate());
+        Topic topic = createTopic();
+        DateTime creationDate = new DateTime();
+        topic.getFirstPost().setCreationDate(creationDate);
+        topic.getLastPost().setCreationDate(creationDate.plusDays(1));
+        topic.setLastReadPostDate(creationDate);
         assertTrue(topic.isHasUpdates());
     }
 
     @Test
     public void hasUpdatesShouldReturnFalseInCaseOfNoUpdatesExist() {
+        Topic topic = createTopic();
         DateTime lastModificationDate = new DateTime();
 
         topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
@@ -141,6 +143,7 @@ public class TopicTest {
 
     @Test
     public void getFirstUnreadPostIdShouldReturnTheNextPostAfterLastRead() {
+        Topic topic = createTopic();
         DateTime lastModificationDate = new DateTime();
 
         topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
@@ -150,11 +153,12 @@ public class TopicTest {
 
         long id = topic.getFirstUnreadPostId();
 
-        assertEquals(post2.getId(), id);
+        assertEquals(topic.getPosts().get(1).getId(), id);
     }
 
     @Test
     public void getFirstUnreadPostIdShouldReturnFirstPostIdIfAllPostAreRead() {
+        Topic topic = createTopic();
         DateTime lastModificationDate = new DateTime();
 
         topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
@@ -162,12 +166,14 @@ public class TopicTest {
 
         long id = topic.getFirstUnreadPostId();
 
-        assertEquals(post1.getId(), id);
+        assertEquals(topic.getPosts().get(0).getId(), id);
     }
 
     @Test
     public void topicShouldHasNoUpdatesIfLastReadPostIsTheLatestPost() {
-        DateTime lastPostCreationDate = topic.getLastPost().getCreationDate();
+        Topic topic = createTopic();
+        DateTime lastPostCreationDate = new DateTime();
+        topic.getLastPost().setCreationDate(lastPostCreationDate);
         topic.setLastReadPostDate(lastPostCreationDate);
         assertEquals(topic.getLastReadPostDate(), lastPostCreationDate);
         assertFalse(topic.isHasUpdates());
@@ -175,16 +181,19 @@ public class TopicTest {
 
     @Test
     public void removePostShouldRemovePostFromTheTopic() {
+        Topic topic = createTopic();
         DateTime lastModification = new DateTime(1900, 11, 11, 11, 11, 11, 11);
         topic.setModificationDate(lastModification);
+        Post toRemove = topic.getPosts().get(0);
 
-        topic.removePost(post1);
+        topic.removePost(toRemove);
 
-        assertFalse(topic.getPosts().contains(post1), "The post isn't removed from the topic");
+        assertFalse(topic.getPosts().contains(toRemove), "The post isn't removed from the topic");
     }
 
     @Test
     public void setSubscribersShouldSubscribeUserToTheTopic() {
+        Topic topic = createTopic();
         JCUser subscribedUser = new JCUser();
         JCUser notSubscribedUser = new JCUser();
         Set<JCUser> subscribers = new HashSet<>();
@@ -196,6 +205,7 @@ public class TopicTest {
 
     @Test
     public void addOrOverrideAttributeShouldAddAttributes() {
+        Topic topic = createTopic();
         String name = "name";
         String value = "value";
 
@@ -206,6 +216,7 @@ public class TopicTest {
 
     @Test
     public void addOrOverrideAttributeShouldOverrideExistentAttributes() {
+        Topic topic = createTopic();
         String name = "name";
         String newValue = "newValue";
         topic.addOrOverrideAttribute(name, "value");
@@ -226,6 +237,7 @@ public class TopicTest {
 
     @Test
     public void isCodeReviewShouldReturnTrueIfTopicTypeIsCodeReview() {
+        Topic topic = createTopic();
         topic.setType(TopicTypeName.CODE_REVIEW.getName());
 
         assertTrue(topic.isCodeReview());
@@ -233,6 +245,7 @@ public class TopicTest {
 
     @Test
     public void isCodeReviewShouldReturnFalseIfTopicTypeIsNotCodeReview() {
+        Topic topic = createTopic();
         topic.setType(TopicTypeName.DISCUSSION.getName());
 
         assertFalse(topic.isCodeReview());
@@ -240,6 +253,7 @@ public class TopicTest {
 
     @Test
     public void isCodeReviewShouldReturnFalseIfTopicTypeNotSet() {
+        Topic topic = createTopic();
         topic.setType(null);
 
         assertFalse(topic.isCodeReview());
@@ -247,6 +261,7 @@ public class TopicTest {
 
     @Test
     public void isPlugableShouldReturnFalseForDiscussion() {
+        Topic topic = createTopic();
         topic.setType(TopicTypeName.DISCUSSION.getName());
 
         assertFalse(topic.isPlugable());
@@ -254,6 +269,7 @@ public class TopicTest {
 
     @Test
     public void isPlugableShouldReturnFalseForCodeReview() {
+        Topic topic = createTopic();
         topic.setType(TopicTypeName.CODE_REVIEW.getName());
 
         assertFalse(topic.isPlugable());
@@ -261,6 +277,7 @@ public class TopicTest {
 
     @Test
     public void isPlugableShouldReturnTrueForUnknownTopicType() {
+        Topic topic = createTopic();
         topic.setType("Any plugable");
 
         assertTrue(topic.isPlugable());
@@ -268,8 +285,19 @@ public class TopicTest {
 
     @Test
     public void isPlugableShouldReturnFalseIfTopicTypeNotSet() {
+        Topic topic = createTopic();
         topic.setType(null);
 
         assertFalse(topic.isPlugable());
+    }
+
+    private Topic createTopic() {
+        Post post1 = new Post();
+        post1.setCreationDate(new DateTime());
+        Post post2 = new Post();
+        Topic topic = new Topic(new JCUser(), "title");
+        topic.addPost(post1);
+        topic.addPost(post2);
+        return topic;
     }
 }

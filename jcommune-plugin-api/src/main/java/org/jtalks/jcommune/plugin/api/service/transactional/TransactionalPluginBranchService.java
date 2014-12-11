@@ -24,6 +24,9 @@ import org.jtalks.jcommune.plugin.api.service.PluginBranchService;
  * For manipulating {@link org.jtalks.jcommune.model.entity.Branch} instances from jcommune use classes from service
  * module
  *
+ * This class is  singleton because we can't use spring dependency injection mechanism in plugins due plugins can be
+ * added or removed in runtime.
+ *
  * @author Mikhail Stryzhonok
  */
 public class TransactionalPluginBranchService implements PluginBranchService {

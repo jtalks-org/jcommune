@@ -75,7 +75,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     private static final String QUESTION_TEMPLATE_PATH = TEMPLATE_PATH + "question.vm";
     private static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String TOPIC_DTO = "topicDto";
-    private static final String EDIT = "edit";
+    private static final String EDIT_MODE = "edit";
     private static final String RESULT = "result";
     private static final String QUESTION = "question";
     private static final String POST_PAGE = "postPage";
@@ -113,7 +113,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Map<String, Object> data = getDefaultModel(request);
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(TOPIC_DTO, dto);
-        data.put(EDIT, false);
+        data.put(EDIT_MODE, false);
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
     }
@@ -218,7 +218,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Map<String, Object> data = getDefaultModel(request);
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(TOPIC_DTO, topicDto);
-        data.put(EDIT, true);
+        data.put(EDIT_MODE, true);
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
     }
@@ -249,7 +249,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             engine.init();
             data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
             data.put(TOPIC_DTO, topicDto);
-            data.put(EDIT, true);
+            data.put(EDIT_MODE, true);
             data.put(RESULT, result);
             model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
             return PLUGIN_VIEW_NAME;

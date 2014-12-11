@@ -232,7 +232,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
                 TopicPlugin topicPlugin = (TopicPlugin)plugin;
                 if (topicPlugin.getTopicType().equals(topic.getType()))  {
                     pluginFound = true;
-                    if (permissionEvaluator.hasPermission(auth, topic.getBranch().getId(),
+                    if (!permissionEvaluator.hasPermission(auth, topic.getBranch().getId(),
                             "BRANCH", topicPlugin.getCreateTopicPermission())) {
                         throw new AccessDeniedException("Creating of topic with type " + topic.getType() + " is forbidden");
                     }

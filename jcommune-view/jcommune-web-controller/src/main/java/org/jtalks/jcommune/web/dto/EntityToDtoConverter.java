@@ -35,6 +35,19 @@ import java.util.List;
  */
 public class EntityToDtoConverter {
 
+    public static final String PREFIX = "/topics/";
+    public static final String PLUGABLE_UNREAD = "/icon/unread.png";
+    public static final String PLUGABLE_READ = "/icon/read.png";
+    public static final String PLUGABLE_CLOSED_UNREAD = "/icon/closed_unread.png";
+    public static final String PLUGABLE_CLOSED_READ = "/icon/closed_unread.png";
+    public static final String CODE_REVIEW_NEW_POSTS = "/resources/images/code-review-new-posts.png";
+    public static final String CODE_REVIEW_NO_NEW_POSTS = "/resources/images/code-review-no-new-posts.png";
+    public static final String DISCUSSION_CLOSED_NEW_POSTS = "/resources/images/closed-new-posts.png";
+    public static final String DISCUSSION_CLOSED_NO_NEW_POSTS = "/resources/images/closed-no-new-posts.png";
+    public static final String DISCUSSION_NEW_POSTS = "/resources/images/new-posts.png";
+    public static final String DISCUSSION_NO_NEW_POSTS = "/resources/images/no-new-posts.png";
+
+
     private PluginLoader pluginLoader;
 
     public EntityToDtoConverter(PluginLoader pluginLoader) {
@@ -57,34 +70,66 @@ public class EntityToDtoConverter {
         return new PageImpl<>(dtos, PageRequest.fetchFromPage(source), source.getTotalElements());
     }
 
+    /**
+     * Creates topic dto depends of topic type and state of plugin which provides this topic
+     *
+     * @param topic {@link Topic} entity
+     * @param plugins list of enabled topic plugins
+     *
+     * @return topic dto
+     */
     private TopicDto createTopicDto(Topic topic, List<Plugin> plugins) {
         TopicDto dto = new TopicDto(topic);
-        for (Plugin plugin : plugins) {
-            TopicPlugin topicPlugin = (TopicPlugin)plugin;
-            if (topicPlugin.getTopicType().equals(topic.getType())) {
-                dto.setTopicUrl("/topics/" + topicPlugin.getTopicType().toLowerCase() + "/" + topic.getId());
-                if (dto.getTopic().isClosed()) {
-                    dto.setReadIconUrl("/topics/" + topicPlugin.getTopicType().toLowerCase() + "/icon/closed_read.png");
-                    dto.setUnreadIconUrl("/topics/" + topicPlugin.getTopicType().toLowerCase() + "/icon/closed_unread.png");
-                } else {
-                    dto.setReadIconUrl("/topics/" + topicPlugin.getTopicType().toLowerCase() + "/icon/read.png");
-                    dto.setUnreadIconUrl("/topics/" + topicPlugin.getTopicType().toLowerCase() + "/icon/unread.png");
+        if (topic.isPlugable()) {
+            for (Plugin plugin : plugins) {
+                TopicPlugin topicPlugin = (TopicPlugin) plugin;
+                if (topicPlugin.getTopicType().equals(topic.getType())) {
+                    return populatePlugableTopicDto(dto, topicPlugin);
                 }
-                return dto;
             }
         }
-        dto.setTopicUrl("/topics/" + topic.getId());
-        if (topic.isCodeReview()) {
-            dto.setUnreadIconUrl("/resources/images/code-review-new-posts.png");
-            dto.setReadIconUrl("/resources/images/code-review-no-new-posts.png");
-        } else if (topic.isClosed()) {
-            dto.setUnreadIconUrl("/resources/images/closed-new-posts.png");
-            dto.setReadIconUrl("/resources/images/closed-no-new-posts.png");
+        return populateCoreTopicDto(dto);
+    }
+
+    /**
+     * Populate topicUrl, readIconUrl, unreadIconUrl parameters of dto for topics provided by plugins
+     *
+     * @param plugableTopicDto dto to be populated
+     * @param plugin plugin which provides this topic
+     *
+     * @return populated dto
+     */
+    private TopicDto populatePlugableTopicDto(TopicDto plugableTopicDto, TopicPlugin plugin) {
+        plugableTopicDto.setTopicUrl(PREFIX + plugin.getTopicType().toLowerCase() + "/" + plugableTopicDto.getTopic().getId());
+        if (plugableTopicDto.getTopic().isClosed()) {
+            plugableTopicDto.setReadIconUrl(PREFIX + plugin.getTopicType().toLowerCase() + PLUGABLE_CLOSED_READ);
+            plugableTopicDto.setUnreadIconUrl(PREFIX + plugin.getTopicType().toLowerCase() + PLUGABLE_CLOSED_UNREAD);
         } else {
-            dto.setUnreadIconUrl("/resources/images/new-posts.png");
-            dto.setReadIconUrl("/resources/images/no-new-posts.png");
+            plugableTopicDto.setReadIconUrl(PREFIX + plugin.getTopicType().toLowerCase() + PLUGABLE_READ);
+            plugableTopicDto.setUnreadIconUrl(PREFIX + plugin.getTopicType().toLowerCase() + PLUGABLE_UNREAD);
+        }
+        return plugableTopicDto;
+    }
+
+    /**
+     * Populate topicUrl, readIconUrl, unreadIconUrl parameters of dto for topics (Discussion and CodeReview)
+     *
+     * @param dto dto to be populated
+     *
+     * @return populated dto
+     */
+    private TopicDto populateCoreTopicDto(TopicDto dto) {
+        dto.setTopicUrl(PREFIX + dto.getTopic().getId());
+        if (dto.getTopic().isCodeReview()) {
+            dto.setUnreadIconUrl(CODE_REVIEW_NEW_POSTS);
+            dto.setReadIconUrl(CODE_REVIEW_NO_NEW_POSTS);
+        } else if (dto.getTopic().isClosed()) {
+            dto.setUnreadIconUrl(DISCUSSION_CLOSED_NEW_POSTS);
+            dto.setReadIconUrl(DISCUSSION_CLOSED_NO_NEW_POSTS);
+        } else {
+            dto.setUnreadIconUrl(DISCUSSION_NEW_POSTS);
+            dto.setReadIconUrl(DISCUSSION_NO_NEW_POSTS);
         }
         return dto;
     }
-
 }

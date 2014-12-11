@@ -20,6 +20,9 @@ import org.jtalks.jcommune.plugin.api.service.PluginBbCodeService;
  * Service for processing bb-codes in plugins.
  * For processing bb-codes in jcommune use classes from service module
  *
+ * This class is  singleton because we can't use spring dependency injection mechanism in plugins due plugins can be
+ * added or removed in runtime.
+ *
  * @author Mikhail Stryzhonok
  */
 public class BbToHtmlConverter implements PluginBbCodeService {
