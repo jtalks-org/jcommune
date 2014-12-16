@@ -438,6 +438,11 @@
         factory-method="getInstance">
   <property name="lastReadPostService" ref="lastReadPostService"/>
   </bean>
+  
+  <bean class="org.jtalks.jcommune.plugin.api.service.nontransactional.PluginLocationServiceImpl" 
+        factory-method="getInstance">
+    <property name="locationService" ref="locationService"/>
+  </bean>
 
   <beans profile="performance">
     <!-- JETM implementation using bean -->

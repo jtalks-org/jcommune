@@ -171,10 +171,11 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("( not #topicDto.codeReview " +
-            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS'))" +
+    @PreAuthorize("( (not #topicDto.codeReview) and (not #topicDto.plugable) " +
+            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')) " +
             "or (#topicDto.codeReview " +
-            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW'))")
+            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW')) " +
+            " or #topicDto.plugable") //we check permission for plugable topic creation inside method
     public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
         assertCreationAllowedForPlugableTopic(topicDto);
         JCUser currentUser = userService.getCurrentUser();

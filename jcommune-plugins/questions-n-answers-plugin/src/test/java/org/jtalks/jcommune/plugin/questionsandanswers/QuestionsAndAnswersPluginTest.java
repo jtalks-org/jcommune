@@ -126,7 +126,7 @@ public class QuestionsAndAnswersPluginTest {
 
     @Test
     public void translateLabelWithoutExistingTranslation() {
-        assertEquals("label.ask", new QuestionsAndAnswersPlugin().translateLabel("label.ask", Locale.forLanguageTag("en")));
+        assertEquals("label.unexisted", new QuestionsAndAnswersPlugin().translateLabel("label.unexisted", Locale.forLanguageTag("en")));
     }
 
     @Test

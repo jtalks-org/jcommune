@@ -18,6 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/breadcrumb.vm")
 #parse("org/jtalks/jcommune/plugin/questionsandanswers/template/comments.vm")
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/bbeditor.vm")
+#parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/userStats.vm")
 <head>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
@@ -34,7 +35,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="container">
   <div id="branch-header">
     <h1>
-      <a class="invisible-link" href="${request.contextPath}/topics/${question.id}">${esc.html(${question.title})}</a>
+      <a class="invisible-link" href="${request.contextPath}/topics/question/${question.id}">${esc.html(${question.title})}</a>
     </h1>
 
     <div id="right-block">
@@ -183,12 +184,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
             </div>
 
-            <div class="question-content" style="min-height: 0px">
+            <div class="content">
               ${converter.convertBbToHtml(${post.postContent})}
             </div>
 
             <div class="question-footer">
-              <div class="comments" style="margin-left: 60px">
+              <div class="comments">
                 #comments(${post} $canLeavePosts ${permissionTool} $targedId ${currentUser})
               </div>
 
@@ -209,9 +210,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   #end
 
   <div id="users-stats" class="well forum-user-stats-container">
-    <strong>${esc.html(${messages.getString("permissions.moderators")})}</strong>
+    #moderators( ${question.branch.moderatorsGroup.users} true ${request})
     <br/>
     <strong>${esc.html(${messages.getString("label.topic.now_browsing")})}</strong>
+    #users(${viewList} ${question.branch} ${request})
   </div>
 
   <form id="deleteForm"  method="post">

@@ -52,7 +52,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           #jtalksBinding(${result} "topic.title")
         </div>
       </div>
-      #bbeditor("<jcommune:message>label.save</jcommune:message>" "" "${esc.html(${topicDto.bodyText})}" "bodyText" true ${messages.getString("label.question.details")} ${result})
+      #bbeditor(${messages.getString("label.ask")} "" "${esc.html(${topicDto.bodyText})}" "bodyText" true ${messages.getString("label.question.details")} ${result})
     </form>
 
     <a href="${request.contextPath}/branches/${topicDto.topic.branch.id}" tabindex="1000" class='back-btn'>
