@@ -265,6 +265,36 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     }
 
     /**
+     * Closes question with specified id.
+     *
+     * @param id id of question to close
+     *
+     * @return redirect to closed topic
+     * @throws NotFoundException if question with specified id not found
+     */
+    @RequestMapping(value = "{id}/close", method = RequestMethod.GET)
+    public String closeQuestion(@PathVariable("id") Long id) throws NotFoundException {
+        Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
+        getTypeAwarePluginTopicService().closeTopic(topic);
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + topic.getId();
+    }
+
+    /**
+     * Opens question with specified id.
+     *
+     * @param id of question to open
+     *
+     * @return redirect to opened question
+     * @throws NotFoundException if question with specified if not found
+     */
+    @RequestMapping(value = "{id}/open", method = RequestMethod.GET)
+    public String openQuestion(@PathVariable("id") Long id) throws NotFoundException {
+        Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
+        getTypeAwarePluginTopicService().openTopic(topic);
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + topic.getId();
+    }
+
+    /**
      * Writes icon to response and set apropriate response geaders
      *
      * @param request HttpServletRequest

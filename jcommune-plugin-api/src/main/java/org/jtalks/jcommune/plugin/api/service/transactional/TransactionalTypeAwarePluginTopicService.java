@@ -122,4 +122,20 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
     public void checkViewTopicPermission(Long branchId) {
         topicFetchService.checkViewTopicPermission(branchId);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void closeTopic(Topic topic) {
+        topicModificationService.closeTopic(topic);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void openTopic(Topic topic) {
+        topicModificationService.openTopic(topic);
+    }
 }
