@@ -18,8 +18,8 @@
     margin-left: 140px;
 }
 
-.question-content {
-    min-height: 135px;
+.content {
+    min-height: 0px;
     padding-left: 10px;
     padding-top: 5px;
 }
@@ -110,7 +110,7 @@
 }
 
 .comments {
-    margin-left: 140px;
+    margin-left: 60px;
     margin-bottom: 8px;
     background: rgb(247, 247, 247);
     padding: 10px;

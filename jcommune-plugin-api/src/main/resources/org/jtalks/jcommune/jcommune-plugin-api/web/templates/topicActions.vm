@@ -27,11 +27,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     #if($permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CLOSE_TOPICS"))
       #if($topic.closed)
         <a href="$request.contextPath/topics/$topic.id/open"
+           title="<jcommune:message>label.tips.open</jcommune:message>"
            class="open_topic btn space-left-medium-nf">
             <jcommune:message>label.topic.open</jcommune:message>
         </a>
       #else
         <a href="$request.contextPath/topics/$topic.id/close"
+           title="<jcommune:message>label.tips.close</jcommune:message>"
            class="open_topic btn space-left-medium-nf">
             <jcommune:message>label.topic.close</jcommune:message>
         </a>

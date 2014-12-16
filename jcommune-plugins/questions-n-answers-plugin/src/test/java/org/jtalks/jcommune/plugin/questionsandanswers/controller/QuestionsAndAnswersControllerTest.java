@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.plugin.questionsandanswers.controller;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
@@ -22,6 +23,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.PluginBranchService;
 import org.jtalks.jcommune.plugin.api.service.PluginLastReadPostService;
+import org.jtalks.jcommune.plugin.api.service.PluginLocationService;
 import org.jtalks.jcommune.plugin.api.service.TypeAwarePluginTopicService;
 import org.jtalks.jcommune.plugin.api.service.UserReader;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
@@ -70,6 +72,8 @@ public class QuestionsAndAnswersControllerTest {
     private BreadcrumbBuilder breadcrumbBuilder;
     @Mock
     private BindingResult result;
+    @Mock
+    private PluginLocationService locationService;
     @Spy
     private QuestionsAndAnswersController controller = new QuestionsAndAnswersController();
     private String content = "some html";
@@ -82,10 +86,12 @@ public class QuestionsAndAnswersControllerTest {
         when(controller.getTypeAwarePluginTopicService()).thenReturn(topicService);
         when(controller.getProperties()).thenReturn(new Properties());
         when(controller.getUserReader()).thenReturn(userReader);
+        when(controller.getLocationService()).thenReturn(locationService);
         when(userReader.getCurrentUser()).thenReturn(new JCUser("name", "example@mail.ru", "pwd"));
         controller.setApplicationContext(context);
         controller.setBreadcrumbBuilder(breadcrumbBuilder);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(Collections.EMPTY_LIST);
+        when(locationService.getUsersViewing(any(Entity.class))).thenReturn(Collections.EMPTY_LIST);
         doReturn(content).when(controller).getMergedTemplate(any(VelocityEngine.class), anyString(),
                 anyString(), anyMap());
     }

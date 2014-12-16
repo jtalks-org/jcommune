@@ -21,6 +21,9 @@ import org.jtalks.jcommune.plugin.api.service.PluginLastReadPostService;
  * Class for marking topics provided by plugins as read.
  * For core topic types use classes from service module
  *
+ * This class is  singleton because we can't use spring dependency injection mechanism in plugins due plugins can be
+ * added or removed in runtime.
+ *
  * @author Mikhail Stryzhonok
  */
 public class TransactionalPluginLastReadPostService implements PluginLastReadPostService {

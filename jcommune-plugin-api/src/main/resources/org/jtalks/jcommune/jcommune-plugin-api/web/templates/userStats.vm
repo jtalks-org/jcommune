@@ -1,0 +1,57 @@
+#*
+
+Copyright (C) 2011  JTalks.org Team
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+*#
+
+#macro(moderators $moderators $visibleIfEmpty $request)
+  #if($moderators.empty && $visibleIfEmpty)
+    <strong><jcommune:message>label.moderators</jcommune:message></strong>
+    <jcommune:message>label.branch.moderators.empty</jcommune:message>
+  #end
+  #if(!$moderators.empty)
+    <strong><jcommune:message>label.moderators</jcommune:message></strong>
+    #foreach($moderator in $moderators)
+      <a class="space-left-small" href="$request.contextPath/users/$moderator.id"
+        title="<jcommune:message>label.tips.view_profile</jcommune:message>">
+        $moderator.username
+      </a>
+    #end
+  #end
+#end
+
+#macro(users $users $branch $request)
+  #if(!$users.empty)
+    #foreach($user in $users)
+      #set($class = "")
+      #if($branch)
+        #foreach($group in $user.groups)
+          #if($group.id == $branch.moderatorsGroup.id)
+            #set($class = "label label-success")
+          #end
+        #end
+      #end
+      #foreach($group in $user.groups)
+        #if($group.name == "Administrators")
+          #set($class = "label label-important")
+        #end
+      #end
+      <a href="$$request.contextPath/users/${user.id}"
+       class="$class space-left-small"
+       title="<jcommune:message>label.tips.view_profile</jcommune:message>">$user.username</a>&thinsp;
+    #end
+  #else
+    <jcommune:message>label.branch.moderators.empty</jcommune:message>
+  #end
+#end

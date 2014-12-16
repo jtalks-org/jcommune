@@ -73,13 +73,13 @@
 
 <%-- Upper pagination --%>
 <div class="row-fluid upper-pagination forum-pagination-container">
-  <div class="span3">
+  <div class="span4">
     <jtalks:topicControls topic="${topic}"/>
     &nbsp; <%-- For proper pagination layout without buttons--%>
   </div>
 
   <%-- Pagination --%>
-  <div class="span9">
+  <div class="span8">
     <div class="pagination pull-right forum-pagination">
       <ul>
         <jtalks:pagination uri="${topicId}" page="${postsPage}"/>
@@ -329,13 +329,13 @@
 </div>
 
 <div class="row-fluid forum-pagination-container">
-  <div class="span3">
+  <div class="span4">
     <jtalks:topicControls topic="${topic}"/>
     &nbsp; <%-- For proper pagination layout without buttons--%>
   </div>
 
   <%-- Pagination --%>
-  <div class="span9">
+  <div class="span8">
     <div class="pagination pull-right forum-pagination">
       <ul>
         <jtalks:pagination uri="${topicId}" page="${postsPage}"/>

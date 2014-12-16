@@ -171,10 +171,11 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("( not #topicDto.codeReview " +
-            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS'))" +
+    @PreAuthorize("( (not #topicDto.codeReview) and (not #topicDto.plugable) " +
+            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')) " +
             "or (#topicDto.codeReview " +
-            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW'))")
+            "and hasPermission(#topicDto.branch.id, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW')) " +
+            " or #topicDto.plugable") //we check permission for plugable topic creation inside method
     public Topic createTopic(Topic topicDto, String bodyText) throws NotFoundException {
         assertCreationAllowedForPlugableTopic(topicDto);
         JCUser currentUser = userService.getCurrentUser();
@@ -232,7 +233,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
                 TopicPlugin topicPlugin = (TopicPlugin)plugin;
                 if (topicPlugin.getTopicType().equals(topic.getType()))  {
                     pluginFound = true;
-                    if (permissionEvaluator.hasPermission(auth, topic.getBranch().getId(),
+                    if (!permissionEvaluator.hasPermission(auth, topic.getBranch().getId(),
                             "BRANCH", topicPlugin.getCreateTopicPermission())) {
                         throw new AccessDeniedException("Creating of topic with type " + topic.getType() + " is forbidden");
                     }

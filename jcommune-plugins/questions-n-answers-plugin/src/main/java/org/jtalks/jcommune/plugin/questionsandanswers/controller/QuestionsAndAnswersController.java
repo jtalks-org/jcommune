@@ -23,10 +23,12 @@ import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.PluginBranchService;
 import org.jtalks.jcommune.plugin.api.service.PluginLastReadPostService;
+import org.jtalks.jcommune.plugin.api.service.PluginLocationService;
 import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
 import org.jtalks.jcommune.plugin.api.service.TypeAwarePluginTopicService;
 import org.jtalks.jcommune.plugin.api.service.UserReader;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.BbToHtmlConverter;
+import org.jtalks.jcommune.plugin.api.service.nontransactional.PluginLocationServiceImpl;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
@@ -75,12 +77,13 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     private static final String QUESTION_TEMPLATE_PATH = TEMPLATE_PATH + "question.vm";
     private static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String TOPIC_DTO = "topicDto";
-    private static final String EDIT = "edit";
+    private static final String EDIT_MODE = "edit";
     private static final String RESULT = "result";
     private static final String QUESTION = "question";
     private static final String POST_PAGE = "postPage";
     private static final String SUBSCRIBED = "subscribed";
     private static final String CONVERTER = "converter";
+    private static final String VIEW_LIST = "viewList";
     public static final String PLUGIN_VIEW_NAME = "plugin/plugin";
     public static final String BRANCH_ID = "branchId";
     public static final String CONTENT = "content";
@@ -113,7 +116,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Map<String, Object> data = getDefaultModel(request);
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(TOPIC_DTO, dto);
-        data.put(EDIT, false);
+        data.put(EDIT_MODE, false);
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
     }
@@ -191,6 +194,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(SUBSCRIBED, false);
         data.put(CONVERTER, BbToHtmlConverter.getInstance());
+        data.put(VIEW_LIST, getLocationService().getUsersViewing(topic));
         getPluginLastReadPostService().markTopicPageAsRead(topic, 1);
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
@@ -218,7 +222,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Map<String, Object> data = getDefaultModel(request);
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(TOPIC_DTO, topicDto);
-        data.put(EDIT, true);
+        data.put(EDIT_MODE, true);
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
     }
@@ -249,7 +253,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             engine.init();
             data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
             data.put(TOPIC_DTO, topicDto);
-            data.put(EDIT, true);
+            data.put(EDIT_MODE, true);
             data.put(RESULT, result);
             model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
             return PLUGIN_VIEW_NAME;
@@ -389,6 +393,12 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     String getMergedTemplate(VelocityEngine velocityEngine, String templateLocation, String encoding,
                              Map<String, Object> model) throws VelocityException {
         return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, templateLocation, encoding, model);
+    }
+    /**
+     * Needed for mocking
+     */
+    PluginLocationService getLocationService() {
+        return PluginLocationServiceImpl.getInstance();
     }
 
     /**

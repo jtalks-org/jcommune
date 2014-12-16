@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.plugin.api.service.PluginLocationService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
@@ -33,10 +34,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Andrey Kluev
  */
 @Component
-public class LocationService {
+public class LocationService implements PluginLocationService {
     private UserService userService;
     private SessionRegistry sessionRegistry;
-    private Map<JCUser, String> registerUserMap = new ConcurrentHashMap<JCUser, String>();
+    private Map<JCUser, String> registerUserMap = new ConcurrentHashMap<>();
 
     /**
      * @param userService     to figure out the current user
@@ -57,7 +58,7 @@ public class LocationService {
      *         there are no viewers or view tracking is not supported for this entity type
      */
     public List<JCUser> getUsersViewing(Entity entity) {
-        List<JCUser> viewList = new ArrayList<JCUser>();
+        List<JCUser> viewList = new ArrayList<>();
         JCUser currentUser = userService.getCurrentUser();
         /**
          * This condition does not allow Anonymous add to the map of active users.

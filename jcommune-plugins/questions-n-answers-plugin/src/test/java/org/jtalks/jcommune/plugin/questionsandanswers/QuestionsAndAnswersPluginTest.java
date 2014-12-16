@@ -126,7 +126,7 @@ public class QuestionsAndAnswersPluginTest {
 
     @Test
     public void translateLabelWithoutExistingTranslation() {
-        assertEquals("label.ask", new QuestionsAndAnswersPlugin().translateLabel("label.ask", Locale.forLanguageTag("en")));
+        assertEquals("label.unexisted", new QuestionsAndAnswersPlugin().translateLabel("label.unexisted", Locale.forLanguageTag("en")));
     }
 
     @Test
@@ -181,5 +181,12 @@ public class QuestionsAndAnswersPluginTest {
 
         CreateTopicBtnDto createTopicBtnDto = new QuestionsAndAnswersPlugin().getCreateTopicBtnDto(1);
         assertEquals("Ask Question", createTopicBtnDto.getDisplayNameKey());
+    }
+
+    @Test
+    public void getTopicTypeTest() {
+        QuestionsAndAnswersPlugin plugin = new QuestionsAndAnswersPlugin();
+
+        assertEquals(plugin.getTopicType(), QuestionsAndAnswersPlugin.TOPIC_TYPE);
     }
 }

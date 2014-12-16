@@ -14,49 +14,44 @@
  */
 package org.jtalks.jcommune.plugin.api.service.nontransactional;
 
-import org.jtalks.jcommune.plugin.api.service.PluginBbCodeService;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.service.PluginLocationService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class BbToHtmlConverterTest {
+public class PluginLocationServiceImplTest {
     @Mock
-    private PluginBbCodeService bbCodeService;
+    private PluginLocationService locationService;
 
     @BeforeMethod
     public void init() {
         initMocks(this);
-        BbToHtmlConverter converter = (BbToHtmlConverter)BbToHtmlConverter.getInstance();
-        converter.setBbCodeService(bbCodeService);
-
+        PluginLocationServiceImpl service = (PluginLocationServiceImpl)PluginLocationServiceImpl.getInstance();
+        service.setLocationService(locationService);
     }
 
     @Test
-    public void testStripBbCodes() {
-        String in = "[b]text[/b]";
-        String out = "text";
-        when(bbCodeService.stripBBCodes(in)).thenReturn(out);
+    public void testGetUsersViewing() {
+        JCUser user = new JCUser("name", "mail@example.com", "password");
+        Topic topic = new Topic();
+        when(locationService.getUsersViewing(topic)).thenReturn(Arrays.asList(user));
 
-        String result = BbToHtmlConverter.getInstance().stripBBCodes(in);
+        List<JCUser> users = PluginLocationServiceImpl.getInstance().getUsersViewing(topic);
 
-        assertEquals(result, out);
-    }
-
-    @Test
-    public void testConvertBbToHtml() {
-        String in = "[b]text[/b]";
-        String out = "<span style=\"font-weight:bold;\" data-original-title=\"\">text</span>";
-        when(bbCodeService.convertBbToHtml(in)).thenReturn(out);
-
-        String result = BbToHtmlConverter.getInstance().convertBbToHtml(in);
-
-        assertEquals(result, out);
+        assertEquals(users.size(), 1);
+        assertEquals(users.get(0), user);
     }
 }
+

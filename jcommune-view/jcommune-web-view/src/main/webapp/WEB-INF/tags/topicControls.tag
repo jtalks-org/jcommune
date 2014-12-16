@@ -27,12 +27,14 @@
   <c:choose>
     <c:when test="${topic.closed}">
       <a href="${pageContext.request.contextPath}/topics/${topic.id}/open"
+         title="<spring:message code='label.tips.open'/>"
          class="open_topic btn space-left-medium-nf">
         <spring:message code="label.topic.open"/>
       </a>
     </c:when>
     <c:otherwise>
       <a href="${pageContext.request.contextPath}/topics/${topic.id}/close"
+         title="<spring:message code='label.tips.close'/>"
          class="open_topic btn space-left-medium-nf">
         <spring:message code="label.topic.close"/>
       </a>

@@ -14,58 +14,44 @@
  */
 package org.jtalks.jcommune.plugin.api.service.nontransactional;
 
-import org.jtalks.jcommune.plugin.api.service.PluginBbCodeService;
+import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.plugin.api.service.PluginLocationService;
+
+import java.util.List;
 
 /**
- * Service for processing bb-codes in plugins.
- * For processing bb-codes in jcommune use classes from service module
+ * Tracks user's location on the forum.
+ * As for now  is mostly used to show who's browsing the topic/branch/etc.
+ *
+ * For tracking user location jcommune use classes from service module
  *
  * This class is  singleton because we can't use spring dependency injection mechanism in plugins due plugins can be
  * added or removed in runtime.
  *
  * @author Mikhail Stryzhonok
  */
-public class BbToHtmlConverter implements PluginBbCodeService {
-    private static final BbToHtmlConverter INSTANCE = new BbToHtmlConverter();
+public class PluginLocationServiceImpl implements PluginLocationService {
 
-    private PluginBbCodeService bbCodeService;
+    private static final PluginLocationServiceImpl INSTANCE = new PluginLocationServiceImpl();
+
+    private PluginLocationService locationService;
 
     /** Use {@link #getInstance()}, this class is singleton. */
-    private BbToHtmlConverter(){
+    private PluginLocationServiceImpl() {
 
     }
 
-    /**
-     * Gets instance of this class
-     *
-     * @return instance of {@link BbToHtmlConverter}
-     */
-    public static PluginBbCodeService getInstance() {
+    public static PluginLocationService getInstance() {
         return INSTANCE;
     }
 
-    /**
-     *  {@inheritDoc}
-     */
     @Override
-    public String stripBBCodes(String bbCode) {
-        return bbCodeService.stripBBCodes(bbCode);
+    public List<JCUser> getUsersViewing(Entity entity) {
+        return locationService.getUsersViewing(entity);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String convertBbToHtml(String post) {
-        return bbCodeService.convertBbToHtml(post);
-    }
-
-    /**
-     * Sets bb-code service. Should be used once, during initialization
-     *
-     * @param bbCodeService bb-code service to set
-     */
-    public void setBbCodeService(PluginBbCodeService bbCodeService) {
-        this.bbCodeService = bbCodeService;
+    public void setLocationService(PluginLocationService locationService) {
+        this.locationService = locationService;
     }
 }

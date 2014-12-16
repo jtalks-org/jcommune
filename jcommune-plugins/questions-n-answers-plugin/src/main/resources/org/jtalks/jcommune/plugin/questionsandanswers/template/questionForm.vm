@@ -21,9 +21,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <title>
     ${esc.html(${topicDto.topic.branch.name})} -
     #if(${edit})
-      Edit question
+      ${messages.getString("label.tips.edit.question")}
     #else
-      Ask question
+      ${messages.getString("label.addQuestion")}
     #end
   </title>
 </head>
@@ -47,16 +47,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           #end
           <input name="topic.title" id="subject" type="text"  size="45"
             maxlength="255" tabindex="100"
-            class="span11 script-confirm-unsaved" placeholder="Question title"
+            class="span11 script-confirm-unsaved" placeholder="${messages.getString("label.question")}"
             value="${esc.html(${topicDto.topic.title})}"/>
           #jtalksBinding(${result} "topic.title")
         </div>
       </div>
-      #set($submitText = "Ask")
-      #if(${edit})
-        #set($submitText = "Save")
-      #end
-      #bbeditor("$submitText" "" "${esc.html(${topicDto.bodyText})}" "bodyText" true "Description" ${result})
+      #bbeditor(${messages.getString("label.ask")} "" "${esc.html(${topicDto.bodyText})}" "bodyText" true ${messages.getString("label.question.details")} ${result})
     </form>
 
     <a href="${request.contextPath}/branches/${topicDto.topic.branch.id}" tabindex="1000" class='back-btn'>
