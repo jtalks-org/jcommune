@@ -119,4 +119,20 @@ public class TransactionalTypeAwarePluginTopicServiceTest {
 
         verify(topicFetchService).checkViewTopicPermission(1L);
     }
+
+    @Test
+    public void testOpenTopic() {
+        Topic topic = new Topic();
+        TransactionalTypeAwarePluginTopicService.getInstance().openTopic(topic);
+
+        verify(topicModificationService).openTopic(topic);
+    }
+
+    @Test
+    public void testCloseTopic() {
+        Topic topic = new Topic();
+        TransactionalTypeAwarePluginTopicService.getInstance().closeTopic(topic);
+
+        verify(topicModificationService).closeTopic(topic);
+    }
 }

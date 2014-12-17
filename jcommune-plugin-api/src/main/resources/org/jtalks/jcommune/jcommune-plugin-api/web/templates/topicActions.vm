@@ -25,18 +25,28 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       </a>
     #end
     #if($permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CLOSE_TOPICS"))
-      #if($topic.closed)
-        <a href="$request.contextPath/topics/$topic.id/open"
-           title="<jcommune:message>label.tips.open</jcommune:message>"
-           class="open_topic btn space-left-medium-nf">
-            <jcommune:message>label.topic.open</jcommune:message>
-        </a>
-      #else
-        <a href="$request.contextPath/topics/$topic.id/close"
-           title="<jcommune:message>label.tips.close</jcommune:message>"
-           class="open_topic btn space-left-medium-nf">
-            <jcommune:message>label.topic.close</jcommune:message>
-        </a>
+      #if(!$topic.codeReview)
+        #if($topic.closed)
+          #if(!$topic.plugable)
+            <a href="$request.contextPath/topics/$topic.id/open"
+          #else
+            <a href="$request.contextPath/topics/$topic.type.toLowerCase()/$topic.id/open"
+          #end
+            title="<jcommune:message>label.tips.open</jcommune:message>"
+            class="open_topic btn space-left-medium-nf">
+              <jcommune:message>label.topic.open</jcommune:message>
+          </a>
+        #else
+          #if(!$topic.plugable)
+            <a href="$request.contextPath/topics/$topic.id/close"
+          #else
+            <a href="$request.contextPath/topics/$topic.type.toLowerCase()/$topic.id/close"
+          #end
+            title="<jcommune:message>label.tips.close</jcommune:message>"
+            class="open_topic btn space-left-medium-nf">
+              <jcommune:message>label.topic.close</jcommune:message>
+          </a>
+        #end
       #end
     #end
   </div>

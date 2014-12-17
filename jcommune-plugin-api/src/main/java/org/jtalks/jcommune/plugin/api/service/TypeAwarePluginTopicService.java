@@ -61,4 +61,26 @@ public interface TypeAwarePluginTopicService {
      */
     void checkViewTopicPermission(Long branchId);
 
+    /**
+     * Closes topic so no one can add new post until it's not open again.
+     * For the topic already closed does nothing.
+     *
+     * We can't close plugin topic as core topic because we need to redirect to different page
+     * after closing plugin topic
+     *
+     * @param topic topic we want to close, hibernate session-bound
+     */
+    void closeTopic(Topic topic);
+
+    /**
+     * Opens topic so granted users may add posts again.
+     * For the topic already open does nothing.
+     *
+     * We can't open plugin topic as core topic because we need to redirect to different page
+     * after opening plugin topic
+     *
+     * @param topic topic we want to open, hibernate session-bound
+     */
+    void openTopic(Topic topic);
+
 }

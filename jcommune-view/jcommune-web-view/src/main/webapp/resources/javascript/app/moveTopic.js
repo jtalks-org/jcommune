@@ -36,7 +36,7 @@ $(function () {
                 e.preventDefault();
                 disableMoveButton(false);
                 branchId = $(this).val();
-            }
+            };
 
             var submitFunc = function (e) {
                 e.preventDefault();
@@ -44,8 +44,10 @@ $(function () {
                     url: baseUrl + '/topics/move/json/' + topicId,
                     type: 'POST',
                     data: {"branchId": branchId},
-                    success: function () {
-                        document.location = baseUrl + '/topics/' + topicId;
+                    dataType: 'html',
+                    success: function (resp) {
+                        resp = eval('(' + resp + ')');
+                        document.location = baseUrl + resp.result;
                     },
                     error: function () {
                         jDialog.createDialog({
@@ -54,7 +56,7 @@ $(function () {
                         });
                     }
                 });
-            }
+            };
 
             var bodyContent = createSectionsForModalWindow(sections);
 
@@ -183,5 +185,5 @@ $(function () {
     function disableMoveButton(action) {
         $("#move-button-save").attr('disabled', action);
     }
-})
+});
 

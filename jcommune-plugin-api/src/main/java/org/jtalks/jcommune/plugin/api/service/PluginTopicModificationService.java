@@ -42,4 +42,20 @@ public interface PluginTopicModificationService {
      * @param poll  poll of the updated topic, if any (added for compatibility)
      */
     void updateTopic(Topic topic, Poll poll) throws NotFoundException;
+
+    /**
+     * Closes topic so no one can add new post until it's not open again.
+     * For the topic already closed does nothing.
+     *
+     * @param topic topic we want to close, hibernate session-bound
+     */
+    void closeTopic(Topic topic);
+
+    /**
+     * Opens topic so granted users may add posts again.
+     * For the topic already open does nothing.
+     *
+     * @param topic topic we want to open, hibernate session-bound
+     */
+    void openTopic(Topic topic);
 }

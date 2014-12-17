@@ -69,6 +69,20 @@ public class EntityToDtoConverterTest {
     }
 
     @Test
+    public void testConvertTopicToDtoForDiscussionWhenTopicNotClosedAndNoTopicPluginsEnabled() {
+        Topic topic = createTopic();
+        topic.setType(TopicTypeName.DISCUSSION.getName());
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class))).thenReturn(Collections.EMPTY_LIST);
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_NO_NEW_POSTS);
+    }
+
+    @Test
     public void testConvertToDtoPageForDiscussionWhenTopicNotClosedButTopicPluginsEnabled() {
         Topic topic = createTopic();
         topic.setType(TopicTypeName.DISCUSSION.getName());
@@ -81,6 +95,22 @@ public class EntityToDtoConverterTest {
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_NO_NEW_POSTS);
+    }
+
+    @Test
+    public void testConvertTopicToDtoForDiscussionWhenTopicNotClosedButTopicPluginsEnabled() {
+        Topic topic = createTopic();
+        topic.setType(TopicTypeName.DISCUSSION.getName());
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn("Type 1");
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
         assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
         assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_NEW_POSTS);
         assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_NO_NEW_POSTS);
@@ -105,6 +135,22 @@ public class EntityToDtoConverterTest {
     }
 
     @Test
+    public void testConvertTopicToDtoPluginsShouldNotOverrideDiscussionTopicTypeWhenTopicNotClosed() {
+        Topic topic = createTopic();
+        topic.setType(TopicTypeName.DISCUSSION.getName());
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn(TopicTypeName.DISCUSSION.getName());
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_NO_NEW_POSTS);
+    }
+
+    @Test
     public void testConvertToDtoPageForDiscussionWhenTopicClosedAndNoTopicPluginsEnabled() {
         Topic topic = createTopic();
         topic.setType(TopicTypeName.DISCUSSION.getName());
@@ -116,6 +162,21 @@ public class EntityToDtoConverterTest {
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NO_NEW_POSTS);
+    }
+
+    @Test
+    public void testConvertTopicToDtoForDiscussionWhenTopicClosedAndNoTopicPluginsEnabled() {
+        Topic topic = createTopic();
+        topic.setType(TopicTypeName.DISCUSSION.getName());
+        topic.setClosed(true);
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class))).thenReturn(Collections.EMPTY_LIST);
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
         assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
         assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NEW_POSTS);
         assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NO_NEW_POSTS);
@@ -141,6 +202,23 @@ public class EntityToDtoConverterTest {
     }
 
     @Test
+    public void testConvertTopicToDtoForDiscussionWhenTopicClosedButTopicPluginsEnabled() {
+        Topic topic = createTopic();
+        topic.setType(TopicTypeName.DISCUSSION.getName());
+        topic.setClosed(true);
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn("Type 1");
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NO_NEW_POSTS);
+    }
+
+    @Test
     public void pluginsShouldNotOverrideDiscussionTopicTypeWhenTopicClosed() {
         Topic topic = createTopic();
         topic.setType(TopicTypeName.DISCUSSION.getName());
@@ -160,6 +238,23 @@ public class EntityToDtoConverterTest {
     }
 
     @Test
+    public void testConvertTopicToDtoPluginsShouldNotOverrideDiscussionTopicTypeWhenTopicClosed() {
+        Topic topic = createTopic();
+        topic.setType(TopicTypeName.DISCUSSION.getName());
+        topic.setClosed(true);
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn(TopicTypeName.DISCUSSION.getName());
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NO_NEW_POSTS);
+    }
+
+    @Test
     public void testConvertToDtoPageForCodeReviewWhenNoTopicPluginsEnabled() {
         Topic topic = createTopic();
         topic.setType(TopicTypeName.CODE_REVIEW.getName());
@@ -170,6 +265,20 @@ public class EntityToDtoConverterTest {
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.CODE_REVIEW_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.CODE_REVIEW_NO_NEW_POSTS);
+    }
+
+    @Test
+    public void testConvertTopicToDtoForCodeReviewWhenNoTopicPluginsEnabled() {
+        Topic topic = createTopic();
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class))).thenReturn(Collections.EMPTY_LIST);
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
         assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
         assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.CODE_REVIEW_NEW_POSTS);
         assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.CODE_REVIEW_NO_NEW_POSTS);
@@ -194,6 +303,22 @@ public class EntityToDtoConverterTest {
     }
 
     @Test
+    public void testConvertTopicToDtoForCodeReviewWhenTopicPluginsEnabled() {
+        Topic topic = createTopic();
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn("Type 1");
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.CODE_REVIEW_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.CODE_REVIEW_NO_NEW_POSTS);
+    }
+
+    @Test
     public void pluginShouldNotOverrideCodeReviewTopicType() {
         Topic topic = createTopic();
         topic.setType(TopicTypeName.CODE_REVIEW.getName());
@@ -206,6 +331,22 @@ public class EntityToDtoConverterTest {
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.CODE_REVIEW_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.CODE_REVIEW_NO_NEW_POSTS);
+    }
+
+    @Test
+    public void testConvertTopicToDtoPluginShouldNotOverrideCodeReviewTopicType() {
+        Topic topic = createTopic();
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn(TopicTypeName.CODE_REVIEW.getName());
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
         assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
         assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.CODE_REVIEW_NEW_POSTS);
         assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.CODE_REVIEW_NO_NEW_POSTS);
@@ -225,6 +366,25 @@ public class EntityToDtoConverterTest {
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topicType.toLowerCase() + "/" + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.PREFIX + topicType.toLowerCase()
+                + EntityToDtoConverter.PLUGABLE_UNREAD );
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.PREFIX + topicType.toLowerCase()
+                + EntityToDtoConverter.PLUGABLE_READ);
+    }
+
+    @Test
+    public void testConvertTopicToDtoForPlugableTopicWhenAppropriatePluginEnabledAndTopicNotClosed() {
+        String topicType = "Type1";
+        Topic topic = createTopic();
+        topic.setType(topicType);
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn(topicType);
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
         assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topicType.toLowerCase() + "/" + topic.getId());
         assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.PREFIX + topicType.toLowerCase()
                 + EntityToDtoConverter.PLUGABLE_UNREAD );
@@ -255,6 +415,26 @@ public class EntityToDtoConverterTest {
     }
 
     @Test
+    public void testConvertTopicToDtoForPlugableTopicWhenAppropriatePluginEnabledAndTopicClosed() {
+        String topicType = "Type1";
+        Topic topic = createTopic();
+        topic.setType(topicType);
+        topic.setClosed(true);
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn(topicType);
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topicType.toLowerCase() + "/" + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.PREFIX + topicType.toLowerCase()
+                + EntityToDtoConverter.PLUGABLE_CLOSED_UNREAD );
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.PREFIX + topicType.toLowerCase()
+                + EntityToDtoConverter.PLUGABLE_CLOSED_READ);
+    }
+
+    @Test
     public void plugableTopicShouldUseDefaultsWhenAppropriateDisabledAndTopicNotClosed() {
         String topicType = "Type1";
         Topic topic = createTopic();
@@ -266,6 +446,21 @@ public class EntityToDtoConverterTest {
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_NO_NEW_POSTS);
+    }
+
+    @Test
+    public void testConvertTopicToDtoPlugableTopicShouldUseDefaultsWhenAppropriateDisabledAndTopicNotClosed() {
+        String topicType = "Type1";
+        Topic topic = createTopic();
+        topic.setType(topicType);
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class))).thenReturn(Collections.EMPTY_LIST);
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
         assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
         assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_NEW_POSTS);
         assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_NO_NEW_POSTS);
@@ -284,6 +479,22 @@ public class EntityToDtoConverterTest {
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
+        assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
+        assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NEW_POSTS);
+        assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NO_NEW_POSTS);
+    }
+
+    @Test
+    public void testConvertTopicToDtoplugableTopicShouldUseDefaultsWhenAppropriateDisabledAndTopicClosed() {
+        String topicType = "Type1";
+        Topic topic = createTopic();
+        topic.setType(topicType);
+        topic.setClosed(true);
+
+        when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class))).thenReturn(Collections.EMPTY_LIST);
+
+        TopicDto dto = converter.convertTopicToDto(topic);
+
         assertEquals(dto.getTopicUrl(), EntityToDtoConverter.PREFIX + topic.getId());
         assertEquals(dto.getUnreadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NEW_POSTS);
         assertEquals(dto.getReadIconUrl(), EntityToDtoConverter.DISCUSSION_CLOSED_NO_NEW_POSTS);

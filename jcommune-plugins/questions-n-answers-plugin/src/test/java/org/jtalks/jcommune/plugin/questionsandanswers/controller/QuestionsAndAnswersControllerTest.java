@@ -283,5 +283,48 @@ public class QuestionsAndAnswersControllerTest {
 
         assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_FOUND);
     }
+
+    @Test
+    public void testOpenQuestionSuccess() throws Exception {
+        Long id = 1L;
+        Topic topic = new Topic();
+        topic.setId(id);
+
+        when(topicService.get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE)).thenReturn(topic);
+
+        String result = controller.openQuestion(id);
+
+        assertEquals(result, "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + topic.getId());
+        verify(topicService).openTopic(topic);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void openQuestionShouldThrowExceptionWhenQuestionNotFound() throws Exception {
+        when(topicService.get(anyLong(), anyString())).thenThrow(new NotFoundException());
+
+        controller.openQuestion(1L);
+    }
+
+    @Test
+    public void testCloseQuestionSuccess() throws Exception {
+        Long id = 1L;
+        Topic topic = new Topic();
+        topic.setId(id);
+
+        when(topicService.get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE)).thenReturn(topic);
+
+        String result = controller.closeQuestion(id);
+
+        assertEquals(result, "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + topic.getId());
+        verify(topicService).closeTopic(topic);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void closeQuestionShouldThrowExceptionWhenQuestionNotFound() throws Exception {
+        when(topicService.get(anyLong(), anyString())).thenThrow(new NotFoundException());
+
+        controller.closeQuestion(1L);
+    }
+
 }
 
