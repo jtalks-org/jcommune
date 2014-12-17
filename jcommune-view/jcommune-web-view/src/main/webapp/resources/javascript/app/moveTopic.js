@@ -47,12 +47,7 @@ $(function () {
                     dataType: 'html',
                     success: function (resp) {
                         resp = eval('(' + resp + ')');
-                        console.log(resp);
-                        if (resp.result == "Discussion" || resp.result == "Code review") {
-                            document.location = baseUrl + '/topics/' + topicId;
-                        } else {
-                            document.location = baseUrl + '/topics/' + resp.result.toLocaleLowerCase() + '/' + topicId;
-                        }
+                        document.location = baseUrl + resp.result;
                     },
                     error: function () {
                         jDialog.createDialog({

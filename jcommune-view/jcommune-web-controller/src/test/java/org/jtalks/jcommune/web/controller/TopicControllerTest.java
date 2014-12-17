@@ -22,6 +22,7 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Matchers;
@@ -81,6 +82,8 @@ public class TopicControllerTest {
     private SessionRegistry registry;
     @Mock
     private LastReadPostService lastReadPostService;
+    @Mock
+    private EntityToDtoConverter converter;
 
     private TopicController controller;
 
@@ -96,7 +99,8 @@ public class TopicControllerTest {
                 breadcrumbBuilder,
                 locationService,
                 registry,
-                topicFetchService);
+                topicFetchService,
+                converter);
     }
 
     @BeforeMethod
@@ -333,16 +337,18 @@ public class TopicControllerTest {
 
     @Test
     public void moveTopic() throws NotFoundException {
-        String type = "Discussion";
+        String url = "example.com";
         Topic topic = createTopic();
-        topic.setType(type);
+        TopicDto topicDto = new TopicDto(topic);
+        topicDto.setTopicUrl(url);
 
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
+        when(converter.convertTopicToDto(topic)).thenReturn(topicDto);
 
         JsonResponse response = controller.moveTopic(TOPIC_ID, BRANCH_ID);
 
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
-        assertEquals(response.getResult(), type);
+        assertEquals(response.getResult(), url);
         verify(topicModificationService).moveTopic(topic, BRANCH_ID);
     }
 

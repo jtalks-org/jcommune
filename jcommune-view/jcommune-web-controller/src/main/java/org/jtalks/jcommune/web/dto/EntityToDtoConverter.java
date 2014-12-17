@@ -71,6 +71,19 @@ public class EntityToDtoConverter {
     }
 
     /**
+     * Converts {@link Topic} to {@link TopicDto}
+     *
+     * @param topic {@link Topic} to be converted
+     *
+     * @return resulted {@link TopicDto}
+     */
+    public TopicDto convertTopicToDto(Topic topic) {
+        List<Plugin> plugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class),
+                new StateFilter(Plugin.State.ENABLED));
+        return createTopicDto(topic, plugins);
+    }
+
+    /**
      * Creates topic dto depends of topic type and state of plugin which provides this topic
      *
      * @param topic {@link Topic} entity
