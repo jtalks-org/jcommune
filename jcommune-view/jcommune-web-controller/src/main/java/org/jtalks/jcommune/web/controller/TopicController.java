@@ -22,6 +22,8 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.validation.editors.DateTimeEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -300,10 +302,11 @@ public class TopicController {
      */
     @RequestMapping(value = "/topics/move/json/{topicId}", method = RequestMethod.POST)
     @ResponseBody
-    public void moveTopic(@PathVariable(TOPIC_ID) Long topicId,
+    public JsonResponse moveTopic(@PathVariable(TOPIC_ID) Long topicId,
                           @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Topic topic = topicFetchService.get(topicId);
         topicModificationService.moveTopic(topic, branchId);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, topic.getType());
     }
 
     /**

@@ -36,7 +36,7 @@ $(function () {
                 e.preventDefault();
                 disableMoveButton(false);
                 branchId = $(this).val();
-            }
+            };
 
             var submitFunc = function (e) {
                 e.preventDefault();
@@ -44,8 +44,15 @@ $(function () {
                     url: baseUrl + '/topics/move/json/' + topicId,
                     type: 'POST',
                     data: {"branchId": branchId},
-                    success: function () {
-                        document.location = baseUrl + '/topics/' + topicId;
+                    dataType: 'html',
+                    success: function (resp) {
+                        resp = eval('(' + resp + ')');
+                        console.log(resp);
+                        if (resp.result == "Discussion" || resp.result == "Code review") {
+                            document.location = baseUrl + '/topics/' + topicId;
+                        } else {
+                            document.location = baseUrl + '/topics/' + resp.result.toLocaleLowerCase() + '/' + topicId;
+                        }
                     },
                     error: function () {
                         jDialog.createDialog({
@@ -54,7 +61,7 @@ $(function () {
                         });
                     }
                 });
-            }
+            };
 
             var bodyContent = createSectionsForModalWindow(sections);
 
@@ -183,5 +190,5 @@ $(function () {
     function disableMoveButton(action) {
         $("#move-button-save").attr('disabled', action);
     }
-})
+});
 
