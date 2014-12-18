@@ -42,7 +42,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #if(!${currentUser.anonymous})
         <span id="subscribe">
           <i class="icon-star"></i>
-          #if(${subscribed})
+          #if(${question.subscribers.contains(${currentUser})})
             <a id="subscription" class="button top_button"
                href="${request.contextPath}/topics/${question.id}/unsubscribe"
                title="${messages.getString("label.unsubscribe.tooltip")}">
