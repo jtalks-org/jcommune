@@ -21,7 +21,8 @@
 .content {
     min-height: 0px;
     padding-left: 10px;
-    padding-top: 5px;
+    padding: 6px;
+    word-wrap: break-word;
 }
 
 .question-author {
