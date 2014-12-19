@@ -16,14 +16,13 @@ package org.jtalks.jcommune.model.entity;
 
 import org.apache.solr.analysis.*;
 import org.hibernate.search.annotations.*;
-import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.validation.annotations.NotBlankSized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -121,12 +120,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
-    /**
-     * Should be used both annotations
-     * @see Topic#MIN_NAME_SIZE
-     */
-    @NotBlank
-    @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE)
+    @NotBlankSized(min = MIN_NAME_SIZE, max = MAX_NAME_SIZE, message = "{length.constraint}")
     private String title;
     private boolean sticked;
     private boolean announcement;
@@ -143,10 +137,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     // transient, makes sense for current user only if set explicitly
     private transient DateTime lastReadPostDate;
 
-    /**
-     * Set to 0 because we can't get null value from pure html used in plugins
-     */
-    public static final int MIN_NAME_SIZE = 0;
+    public static final int MIN_NAME_SIZE = 1;
     public static final int MAX_NAME_SIZE = 120;
 
     /**
