@@ -71,16 +71,18 @@
             <label class="rememberme-lbl"><input type="checkbox" name="_spring_security_remember_me" class="form-check-radio-box" checked="checked"><spring:message code="label.auto_logon"/></label>
         </div>
 
-      <div class="form-actions">
-        <input type="submit" class="btn btn-primary" value="<spring:message code="label.signin"/>"/>
-        <br/>
-        <br/>
-        <a id="page-signup-link" href="${pageContext.request.contextPath}/user/new"><spring:message
-                  code="label.signup.rightnow"/></a>
+        <div>
+            <a id="page-signup-link" href="${pageContext.request.contextPath}/user/new"><spring:message
+                    code="label.signup.rightnow"/></a>
+            <br/>
+            <a href='<c:url value="/password/restore"/>'><spring:message
+                    code="label.restorePassword.prompt"/></a>
+        </div>
 
+      <div class="form-actions">
+        <input type="submit" id="page-signin-submit-button" class="btn btn-primary" value="<spring:message code="label.signin"/>"/>
         <br/>
-        <a href='<c:url value="/password/restore"/>'><spring:message
-                code="label.restorePassword.prompt"/></a>
+
       </div>
     </fieldset>
     <input type="hidden" name="referer" id="referer" value="<c:url value='${referer}'/>" />

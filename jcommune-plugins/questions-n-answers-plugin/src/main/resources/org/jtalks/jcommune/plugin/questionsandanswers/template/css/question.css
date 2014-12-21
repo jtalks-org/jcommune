@@ -21,7 +21,8 @@
 .content {
     min-height: 0px;
     padding-left: 10px;
-    padding-top: 5px;
+    padding: 6px;
+    word-wrap: break-word;
 }
 
 .question-author {
@@ -67,8 +68,8 @@
 .vote-up, .vote-down {
     width: 0;
     height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
+    border-left: 20px inset transparent;
+    border-right: 20px inset transparent;
     margin-left: 32.5%;
 }
 

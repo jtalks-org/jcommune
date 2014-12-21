@@ -496,6 +496,17 @@ div.signup {
     margin-right: 5px;
 }
 
+#page-signin-submit-button {
+    clear: left;
+    width: 220px;
+    height: 32px;
+    font-size: 13px;
+}
+
+#login-form .form-actions {
+    padding-left: 0px;
+}
+
 .btn-block {
     display: block;
     width: 100%;
