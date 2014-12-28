@@ -105,7 +105,7 @@ public class KaptchaPluginService {
      */
     private boolean isValid(String value) {
         String sessionCaptchaId = (String) getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
-        return StringUtils.equals(sessionCaptchaId, value);
+        return sessionCaptchaId != null && StringUtils.equals(sessionCaptchaId, value);
     }
 
     protected Properties getProperties() {
