@@ -80,7 +80,14 @@
           </td>
         </tr>
         <c:forEach var="branch" items="${section.branches}" varStatus="i">
+          <c:set var="isBranchVisible" value="false"/>
           <jtalks:hasPermission targetId='${branch.id}' targetType='BRANCH' permission='BranchPermission.VIEW_TOPICS'>
+            <c:set var="isBranchVisible" value="true"/>
+          </jtalks:hasPermission>
+          <c:if test="${sessionScope.adminMode == true}">
+            <c:set var="isBranchVisible" value="true"/>
+          </c:if>
+          <c:if test="${isBranchVisible}">
             <tr>
                 <%--TODO: fix in milstone 2--%>
                 <%--<sec:authorize access="isAuthenticated()">--%>
@@ -154,7 +161,7 @@
                 </td>
               </c:if>
             </tr>
-          </jtalks:hasPermission>
+          </c:if>
         </c:forEach>
         <c:if test="${sessionScope.adminMode == true}">
           <tr>

@@ -191,7 +191,7 @@ public class AdministrationController {
     public ModelAndView showBranchPermissions(@PathVariable("branchId") long branchId) throws NotFoundException {
         long forumId = componentService.getComponentOfForum().getId();
         GroupsPermissions permissions = branchService.getPermissionsFor(forumId, branchId);
-        Branch branch = branchService.get(branchId);
+        Branch branch = branchService.getBranchOfComponent(forumId, branchId);
         return new ModelAndView("branchPermissions")
                 .addObject("branch", branch)
                 .addObject("permissions", permissions);

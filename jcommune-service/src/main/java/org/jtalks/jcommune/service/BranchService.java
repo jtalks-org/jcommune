@@ -35,6 +35,17 @@ import java.util.List;
 public interface BranchService extends EntityService<Branch> {
 
     /**
+     * Gets branch with specified id
+     *
+     * @param componentId ID of the component of the branch (needed only for the authorization purpose)
+     * @param branchId ID of the interested branch
+     *
+     * @return branch with specified ID
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException if branch with given id not found
+     */
+    Branch getBranchOfComponent(long componentId, long branchId) throws NotFoundException;
+
+    /**
      * Get all available for move topic branches.
      *
      * @param currentTopicId topic id that we want to move
