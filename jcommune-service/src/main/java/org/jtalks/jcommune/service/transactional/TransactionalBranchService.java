@@ -89,6 +89,16 @@ public class TransactionalBranchService extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.VIEW_TOPICS') " +
+            "or hasPermission(#componentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public Branch getBranchOfComponent(long componentId, long branchId) throws NotFoundException {
+        return super.get(branchId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<Branch> getAllAvailableBranches(long currentTopicId) {
         List<Section> allSections = sectionDao.getAll();
         List<Branch> allBranches = new ArrayList<>();

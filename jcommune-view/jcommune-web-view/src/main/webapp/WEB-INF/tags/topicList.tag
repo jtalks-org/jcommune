@@ -44,12 +44,12 @@
               </a>
             </h2>
             <sub class="created-by">
-              <span class="margin-right-big"><spring:message code="label.topic.created_by"/></span>
-              <a class="margin-right-big" href="${pageContext.request.contextPath}/users/${topicDto.topic.topicStarter.id}">
+              <span><spring:message code="label.topic.created_by"/>&nbsp;</span>
+              <a href="${pageContext.request.contextPath}/users/${topicDto.topic.topicStarter.id}">
                 <c:out value="${topicDto.topic.topicStarter.username}"/>
-              </a>
+              </a>&nbsp;&nbsp;
               <c:if test="${showBranchColumn}">
-                <span class="margin-right-big margin-left-big"><spring:message code="label.topic.section.in"/></span>
+                <span><spring:message code="label.topic.section.in"/>&nbsp;</span>
                 <a href="${pageContext.request.contextPath}/branches/${topicDto.topic.branch.id}">
                   <c:out value="${topicDto.topic.branch.name}"/>
                 </a>
@@ -59,7 +59,7 @@
           <td class="latest-by shrink-to-fit">
             <div>
               <i class="icon-calendar"></i>
-              <a class="date margin-right-big" href="${pageContext.request.contextPath}/posts/${topicDto.topic.id}"
+              <a class="date margin-right-big" href="${pageContext.request.contextPath}/posts/${topicDto.topic.lastPost.id}"
                  data-original-title="<spring:message code="label.branch.header.lastMessage.tooltip"/>">
                 <jtalks:format value="${topicDto.topic.lastPost.creationDate}"/>
               </a>

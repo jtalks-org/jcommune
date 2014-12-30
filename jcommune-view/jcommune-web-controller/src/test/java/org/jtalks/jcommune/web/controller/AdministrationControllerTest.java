@@ -182,7 +182,7 @@ public class AdministrationControllerTest {
 
         GroupsPermissions expectedPermissions = new GroupsPermissions();
         Branch expectedBranch = new Branch("name", "description");
-        when(branchService.get(branchId)).thenReturn(expectedBranch);
+        when(branchService.getBranchOfComponent(component.getId(), branchId)).thenReturn(expectedBranch);
         doReturn(expectedPermissions).when(branchService).getPermissionsFor(component.getId(), branchId);
 
         mockMvc = MockMvcBuilders.standaloneSetup(administrationController).build();

@@ -83,6 +83,16 @@ public class KaptchaPluginServiceTest {
         assertTrue(errors.isEmpty(), "Validation of captcha with valid value should not return any errors.");
     }
 
+    @Test
+    public void testValidateCaptchaWhenImagesInBrowserIsDisabled() {
+        UserDto userDto = createUserDto();
+        session.setAttribute(Constants.KAPTCHA_SESSION_KEY, null);
+
+        Map<String, String> errors = service.validateCaptcha(userDto, 1L);
+
+        assertFalse(errors.isEmpty());
+    }
+
     private UserDto createUserDto() {
         UserDto userDto = new UserDto();
         Map<String, String> captchas = new HashMap<>();

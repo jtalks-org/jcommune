@@ -379,4 +379,23 @@ public class TransactionalBranchServiceTest {
 
         branchService.changeBranchPermissions(0, branchId, false, changes);
     }
+
+    @Test
+    public void testGetBranchOfComponent() throws Exception {
+        Branch branch = new Branch("name", "description");
+
+        when(branchDao.isExist(1L)).thenReturn(true);
+        when(branchDao.get(1L)).thenReturn(branch);
+
+        Branch result = branchService.getBranchOfComponent(1L, 1L);
+
+        assertEquals(result, branch);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void getBranchOfComponentShouldThrowExceptionWhenBranchNotFound() throws Exception {
+        when(branchDao.isExist(anyLong())).thenReturn(false);
+
+        branchService.getBranchOfComponent(1L, 1L);
+    }
 }
