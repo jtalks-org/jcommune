@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.web.exception;
 
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
@@ -43,6 +44,8 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
     @Override
     protected void logException(Exception ex, HttpServletRequest request) {
         if (ex instanceof NotFoundException) {
+            logger.info(ex.getMessage());
+        } else if (ex instanceof TypeMismatchException) {
             logger.info(ex.getMessage());
         } else if (ex instanceof AccessDeniedException) {
             String url = request.getRequestURL().toString();

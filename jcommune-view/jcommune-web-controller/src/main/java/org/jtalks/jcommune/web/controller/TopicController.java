@@ -28,6 +28,7 @@ import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.validation.editors.DateTimeEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
@@ -221,11 +222,12 @@ public class TopicController {
      * @param page    page
      * @return {@code ModelAndView}
      * @throws NotFoundException when topic or branch not found
+     * @throws org.springframework.beans.TypeMismatchException when topicId has illegal type
      */
     @RequestMapping(value = "/topics/{topicId}", method = RequestMethod.GET)
     public ModelAndView showTopicPage(WebRequest request, @PathVariable(TOPIC_ID) Long topicId,
                                       @RequestParam(value = "page", defaultValue = "1", required = false) String page)
-            throws NotFoundException {
+            throws NotFoundException, TypeMismatchException {
         JCUser currentUser = userService.getCurrentUser();
         Topic topic = topicFetchService.get(topicId);
 
