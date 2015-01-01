@@ -3088,6 +3088,10 @@ button.btn.small, input[type="submit"].btn.small {
     font-weight: 200;
     line-height: 1;
     color: #ffffff;
+    max-width: 55%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .navbar .navbar-text {
