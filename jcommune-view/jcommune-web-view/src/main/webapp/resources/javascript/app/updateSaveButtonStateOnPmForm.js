@@ -30,17 +30,19 @@ function toggleSaveButtonEnabled(isContainSomething) {
 }
 
 $(document).ready(function () {
-    var mark_class = ".script-confirm-unsaved";
+    const mark_class = ".script-confirm-unsaved";
+    const pmFormSelector = "form.personal-message-form";
+    var pmFormControlsSelector = pmFormSelector + " input" + mark_class + ", " + pmFormSelector + " textarea" + mark_class;
 
-    if ($("input" + mark_class + ", textarea" + mark_class).length > 0) {
+    if ($(pmFormControlsSelector).length > 0) {
         updateSaveButtonState();
 
 
-        $("input" + mark_class + ", textarea" + mark_class).keyup(function () {
+        $(pmFormControlsSelector).keyup(function () {
             updateSaveButtonState();
         });
 
-        $("input" + mark_class + ", textarea" + mark_class).keypress(function () {
+        $(pmFormControlsSelector).keypress(function () {
             updateSaveButtonState();
         });
     }
