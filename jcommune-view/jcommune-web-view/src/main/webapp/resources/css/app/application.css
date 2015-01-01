@@ -1141,3 +1141,10 @@ pre.prettyprint {
     display: inline-block;
     margin-bottom: 10px;
 }
+
+.brand {
+    max-width: 55%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
