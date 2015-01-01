@@ -86,10 +86,10 @@
                     </div>
                     <div class="pm_message_userTo_link">
                         <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
-                            <i class="icon-white-user"></i><c:out value="${pm.userFrom.username}"/>
+                            <i class="icon-user"></i><c:out value="${pm.userFrom.username}"/>
                         </a>
                         <br/>
-                        <span><i class="icon-white-calendar"></i><jtalks:format value="${pm.creationDate}"/></span>
+                        <span><i class="icon-calendar"></i><jtalks:format value="${pm.creationDate}"/></span>
                     </div>
                 </div>
                 <div class="pm-text-box">
