@@ -30,8 +30,8 @@ function toggleSaveButtonEnabled(isContainSomething) {
 }
 
 $(document).ready(function () {
-    const mark_class = ".script-confirm-unsaved";
-    const pmFormSelector = "form.personal-message-form";
+    var mark_class = ".script-confirm-unsaved";
+    var pmFormSelector = "form.personal-message-form";
     var pmFormControlsSelector = pmFormSelector + " input" + mark_class + ", " + pmFormSelector + " textarea" + mark_class;
 
     if ($(pmFormControlsSelector).length > 0) {
