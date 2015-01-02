@@ -6,28 +6,34 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt_rt" %>
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%--actual icon depends on both new posts presence and topic closed status--%>
-<c:if test="${topicDto.topic.hasUpdates}">
-  <%--if there are new posts this icon should be a link--%>
-  <a href="${pageContext.request.contextPath}/posts/${topicDto.topic.firstUnreadPostId}">
-</c:if>
 
 <c:choose>
-  <c:when test="${topicDto.topic.hasUpdates && authenticated}">
-    <c:set var="iconUrl" value="${topicDto.unreadIconUrl}"/>
-     <c:set var="titleCode" value="label.topic.new_posts"/>
+  <c:when test="${topicDto.topic.hasUpdates}">
+    <%-- if there are new posts this icon should be a link to the first unread post --%>
+    <c:set var="linkUrl" value="${pageContext.request.contextPath}/posts/${topicDto.topic.firstUnreadPostId}"/>
   </c:when>
   <c:otherwise>
-    <c:set var="iconUrl" value="${topicDto.readIconUrl}"/>
-    <c:set var="titleCode" value="label.topic.no_new_posts"/>
+    <%-- if all posts have been read this icon should be a link to the last post in topic --%>
+    <c:set var="linkUrl" value="${pageContext.request.contextPath}/posts/${topicDto.topic.lastPost.id}"/>
   </c:otherwise>
 </c:choose>
 
+<%--actual icon depends on both new posts presence and topic closed status--%>
+<a href="${linkUrl}">
+  <c:choose>
+    <c:when test="${topicDto.topic.hasUpdates && authenticated}">
+      <c:set var="iconUrl" value="${topicDto.unreadIconUrl}"/>
+       <c:set var="titleCode" value="label.topic.new_posts"/>
+    </c:when>
+    <c:otherwise>
+      <c:set var="iconUrl" value="${topicDto.readIconUrl}"/>
+      <c:set var="titleCode" value="label.topic.no_new_posts"/>
+    </c:otherwise>
+  </c:choose>
 
-<img class="status-img-small"
-     src="${pageContext.request.contextPath}${iconUrl}"
-     data-original-title="<spring:message code="${titleCode}" htmlEscape="true" javaScriptEscape="true"/>"
-     alt="<spring:message code="${titleCode}" htmlEscape="true" javaScriptEscape="true"/>"/>
-<c:if test="${topicDto.topic.hasUpdates}">
-  </a>
-</c:if>
+
+  <img class="status-img-small"
+       src="${pageContext.request.contextPath}${iconUrl}"
+       data-original-title="<spring:message code="${titleCode}" htmlEscape="true" javaScriptEscape="true"/>"
+       alt="<spring:message code="${titleCode}" htmlEscape="true" javaScriptEscape="true"/>"/>
+</a>
