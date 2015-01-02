@@ -83,6 +83,7 @@ function signUp(e) {
             e.preventDefault();
             // disable all elements before and during submission
             jDialog.dialog.find('*').attr('disabled', true);
+            $('#username').val($('#username').val().trim());
             var query = composeQuery(jDialog.dialog);
             $.ajax({
                 type: 'POST',
