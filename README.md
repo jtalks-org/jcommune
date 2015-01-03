@@ -6,7 +6,7 @@ JCommune is a part of [JTalks](http://jtalks.org) ecosystem of projects which re
 * You can find live production instance: [JavaTalks Forum](http://javatalks.ru)
 
 For developers/QA/PMs/Leads:
-* [How to join us](http://wiki.jtalks.org/display/jtalks/Contribute%21)
+* [How to join us](docs/how-to-join-us.md)
 * [Sonar](http://sonar.jtalks.org/dashboard/index/1)
 * [Deployment Pipeline](http://ci.jtalks.org/view/JCommune.%20Pipeline)
 * [Stack of Technologies](http://wiki.jtalks.org/display/jtalks/Stack+of+technologies)
