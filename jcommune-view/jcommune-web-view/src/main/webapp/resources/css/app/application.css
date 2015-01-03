@@ -293,7 +293,7 @@ ul.lang-menu li img {
         display: none;
     }
 
-    .created-by {
+    .created-by:not(.tooltip){
         font-style: italic;
         font-size: 12px;
     }

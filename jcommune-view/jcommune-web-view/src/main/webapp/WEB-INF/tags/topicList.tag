@@ -43,9 +43,10 @@
                 <c:out value="${topicDto.topic.title}"/>
               </a>
             </h2>
-            <sub class="created-by">
+            <div class="created-by">
               <span><spring:message code="label.topic.created_by"/>&nbsp;</span>
-              <a href="${pageContext.request.contextPath}/users/${topicDto.topic.topicStarter.id}">
+              <a href="${pageContext.request.contextPath}/users/${topicDto.topic.topicStarter.id}"
+                 data-original-title="<spring:message code="label.tips.view_profile"/>" data-placement="right">
                 <c:out value="${topicDto.topic.topicStarter.username}"/>
               </a>&nbsp;&nbsp;
               <c:if test="${showBranchColumn}">
@@ -54,7 +55,7 @@
                   <c:out value="${topicDto.topic.branch.name}"/>
                 </a>
               </c:if>
-            </sub>
+            </div>
           </td>
           <td class="latest-by shrink-to-fit">
             <div>
