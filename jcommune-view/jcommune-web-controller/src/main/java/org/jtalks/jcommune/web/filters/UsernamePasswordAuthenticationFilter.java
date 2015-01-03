@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.filters;
 
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.web.rememberme.RememberMeCheckService;
 import org.jtalks.jcommune.web.rememberme.RememberMeCookieDecoder;
 
@@ -71,7 +72,7 @@ public class UsernamePasswordAuthenticationFilter
      */
     private void extractAndCheckRememberMeToken(HttpServletRequest request) {
         String rememberMeCookieValue = rememberMeCookieDecoder.exctractRememberMeCookieValue(request);
-        if (rememberMeCookieValue != null) {
+        if (!StringUtils.isBlank(rememberMeCookieValue)) {
             String[] seriesAndToken = rememberMeCookieDecoder.extractSeriesAndToken(rememberMeCookieValue);
             int seriesAndTokenMinLength = 2;
             if (seriesAndToken.length >= seriesAndTokenMinLength) {
