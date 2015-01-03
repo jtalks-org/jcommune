@@ -20,7 +20,9 @@ ErrorUtils.patternForErrorRow = '<span class="help-inline">${message}</span>';
 
 /** Add necessary classes to page elements to highlight errors for current design */
 ErrorUtils.fixErrorHighlighting = function() {
-	$('.help-inline').closest('div.control-group').addClass('error');
+	if ($('.help-inline').closest('div.control-group').length) {
+		$('div.control-group:not(:has(.rememberme-lbl))').addClass('error');
+	}
 }
 
 /** Add required classes to highlight errors in specified input for current design 
