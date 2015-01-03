@@ -72,7 +72,7 @@ public class UsernamePasswordAuthenticationFilter
      */
     private void extractAndCheckRememberMeToken(HttpServletRequest request) {
         String rememberMeCookieValue = rememberMeCookieDecoder.exctractRememberMeCookieValue(request);
-        if (!StringUtils.isBlank(rememberMeCookieValue)) {
+        if (StringUtils.isNotBlank(rememberMeCookieValue)) {
             String[] seriesAndToken = rememberMeCookieDecoder.extractSeriesAndToken(rememberMeCookieValue);
             int seriesAndTokenMinLength = 2;
             if (seriesAndToken.length >= seriesAndTokenMinLength) {

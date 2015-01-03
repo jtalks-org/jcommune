@@ -86,16 +86,30 @@ public class UsernamePasswordAuthenticationFilterTest {
     }
     
     @Test
-    public void notPassedRememberMeTokenInShouldNotBeChecked() throws IOException, ServletException {
+    public void nullRememberMeCookieShouldNotBeChecked() throws IOException, ServletException {
+        testIfRememberMeTokenHaveBeenCheckedWithCookie(null);
+    }
+
+    @Test
+    public void emptyRememberMeCookieShouldNotBeChecked() throws IOException, ServletException {
+        testIfRememberMeTokenHaveBeenCheckedWithCookie("");
+    }
+
+    @Test
+    public void spaceRememberMeCookieShouldNotBeChecked() throws IOException, ServletException {
+        testIfRememberMeTokenHaveBeenCheckedWithCookie(" ");
+    }
+
+    private void testIfRememberMeTokenHaveBeenCheckedWithCookie(String cookie) throws IOException, ServletException {
         HttpServletRequest request = new MockHttpServletRequest();
         FilterChain filterChain = new MockFilterChain();
         when(rememberMeCookieDecoder.exctractRememberMeCookieValue(request))
-            .thenReturn(null);
+                .thenReturn(cookie);
 
         filter.doFilter(request, new MockHttpServletResponse(), filterChain);
 
         verify(rememberMeCookieDecoder, never()).extractSeriesAndToken(anyString());
         verify(rememberMeCheckService, never())
-            .equalWithPersistentToken(anyString(), anyString());
+                .equalWithPersistentToken(anyString(), anyString());
     }
 }
