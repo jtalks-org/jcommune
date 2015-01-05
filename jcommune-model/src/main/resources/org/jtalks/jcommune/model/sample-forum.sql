@@ -1,15 +1,12 @@
 ﻿-- Creates users: registered, moderator, banned with respective permissions
 -- Creates sections and branches to be able to see then and post something
 set @forum_component_id := 2;
+set @poulpeComponentName := 'Admin panel';
+SET @poulpeComponentType := 'ADMIN_PANEL';
 update COMPONENTS set DESCRIPTION='Available users: admin/admin registered/registered moderator/moderator banned/banned' where CMP_ID=2;
-
--- Delete old permissions for admin user
-set @rows_acl_entry := (select count(*) from acl_entry);
-set @rows_acl_object_identity := (select count(*) from acl_object_identity);
-delete from acl_entry where id=1 and @rows_acl_entry=1;
-delete from acl_object_identity  where id=1 and @rows_acl_object_identity=1;
-ALTER TABLE acl_entry AUTO_INCREMENT=1;
-ALTER TABLE acl_object_identity AUTO_INCREMENT=1;
+INSERT IGNORE INTO COMPONENTS (CMP_ID, COMPONENT_TYPE, UUID, `NAME`, DESCRIPTION)
+  SELECT 1, @poulpeComponentType, '7241a11-5620-87a0-a810-ed26496z92m7',@poulpeComponentName,'JTalks Admin panel' FROM dual
+    WHERE NOT EXISTS (SELECT * FROM COMPONENTS components WHERE components.COMPONENT_TYPE=@poulpeComponentType);
 
 insert ignore into SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, COMPONENT_ID) VALUES
   (1,(SELECT UUID() FROM dual),'Sport', 'All about sport', 1, @forum_component_id),
@@ -37,8 +34,6 @@ SET @moderator_group_sid := concat('usergroup:',@moderator_group_id);
 -- GROUPS END
 
 insert ignore into BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SECTION_ID, MODERATORS_GROUP_ID) VALUES
-  (1, UUID(), 'Curling', 'Brooms and stones', 0, 1, 1),
-  (2, UUID(), 'Cricet', 'Balls and bats', 1, 1 ,1),
   (3, UUID(), 'Field hockey', 'Sticks and balls on the grass', 2, 1 ,1),
   (4, UUID(), 'Korfball', 'It is NOT basketball!!', 3, 1 ,1),
   (5, UUID(), 'Sepak takraw', 'Rattan balls,', 4, 1 ,1),
@@ -94,7 +89,9 @@ insert ignore into BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SEC
   (46, UUID(), 'Theatre', 'Performances', 0, 10, 1),
   (47, UUID(), 'Cinema', 'New blockbusters', 1, 10 ,1),
   (48, UUID(), 'Exhibitions', 'Art', 2, 10 ,1),
-  (49, UUID(), 'Competitions', 'Some sport', 3, 10 ,1);
+  (49, UUID(), 'Competitions', 'Some sport', 3, 10 ,1),
+  (50, UUID(), 'Curling', 'Brooms and stones', 0, 1, 1),
+  (51, UUID(), 'Cricet', 'Balls and bats', 1, 1 ,1);
 
 -- ****USERS CREATION BEGIN****
 -- Creates a default users with admin/admin, registered/registered, moderator/moderator, banned/banned credentials to be able to log in without manual registration
@@ -148,14 +145,37 @@ SET @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK := 22;
 SET @ADMIN_MASK := 16;
 -- PERMISSIONS END
 
+-- Poulpe
+SET @poulpe_aclClass :='COMPONENT';
+SET @poulpe_acl_class_id :=(SELECT class.id FROM acl_class class WHERE class.class = @poulpe_aclClass);
+SET @poulpe_object_id_identity := (SELECT component.CMP_ID FROM COMPONENTS component WHERE component.COMPONENT_TYPE = @poulpeComponentType);
+SET @acl_sid_user := (SELECT GROUP_CONCAT('user:', CONVERT(ID, char(19))) FROM USERS u WHERE u.USERNAME = 'admin');
+SET @poulpe_acl_sid_id_user := (SELECT sid.id FROM acl_sid sid WHERE sid.sid = @acl_sid_user);
+
+INSERT IGNORE INTO acl_object_identity (object_id_class, object_id_identity, owner_sid, entries_inheriting)
+  SELECT @poulpe_acl_class_id, @poulpe_object_id_identity, @poulpe_acl_sid_id_user, 1 FROM dual;
+
+SET @acl_class_id :=(SELECT class.id FROM acl_class class WHERE class.class = @aclClass);
+
+SET @acl_object_identity_id := (SELECT aoi.id FROM acl_object_identity aoi
+                                  WHERE aoi.object_id_class = @poulpe_acl_class_id
+                                    AND aoi.object_id_identity = @poulpe_object_id_identity);
+                                    
+SET @poulpe_acl_sid_group := (SELECT GROUP_CONCAT('usergroup:', CONVERT(GROUP_ID, char(19))) FROM GROUPS g WHERE g.NAME = 'Administrators');
+SET @poulpe_acl_sid_id_group := (SELECT sid.id FROM acl_sid sid WHERE sid.sid = @poulpe_acl_sid_group);
+
+INSERT IGNORE INTO acl_entry (acl_object_identity, sid, ace_order, mask, granting, audit_success, audit_failure)
+  SELECT @acl_object_identity_id, @poulpe_acl_sid_id_group, 1, 16, 1, 0 , 0 FROM dual;
+-- End Poulpe
+
 insert ignore into acl_object_identity
  SELECT BranchTable.BRANCH_ID, @branch_acl_class, BranchTable.BRANCH_ID, NULL, 1, 1
  FROM (SELECT BRANCH_ID FROM BRANCHES) BranchTable;
 
 set @branches_count = (SELECT COUNT(*) FROM BRANCHES);
-set @registered_group_object_identity=@branches_count + 1;
-set @admin_group_object_identity=@branches_count + 2;
-set @banned_group_object_identity=@branches_count + 3;
+set @registered_group_object_identity=@branches_count + 3;
+set @admin_group_object_identity=@branches_count + 4;
+set @banned_group_object_identity=@branches_count + 5;
 
 insert ignore into acl_object_identity values
   (@registered_group_object_identity, @group_acl_class, @registered_group_id, NULL, 1, 1),
