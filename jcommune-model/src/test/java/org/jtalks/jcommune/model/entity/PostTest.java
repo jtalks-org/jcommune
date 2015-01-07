@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.model.entity;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.HashSet;
@@ -122,5 +123,121 @@ public class PostTest {
         assertEquals(result.getPost(), vote.getPost());
         assertEquals(result.getVoteDate(), vote.getVoteDate());
         assertEquals(result.isVotedUp(), false);
+    }
+
+    @Test
+    public void isVotedUpByShouldReturnTrueIfUserVotedUpForPost() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(true);
+        post.putVote(vote);
+
+        assertTrue(post.isVotedUpBy(user));
+    }
+
+    @Test
+    public void isVotedUpByShouldReturnFalseIfUserVotedDown() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(false);
+        post.putVote(vote);
+
+        assertFalse(post.isVotedUpBy(user));
+    }
+
+    @Test
+    public void isVotedUpByShouldReturnFalseIfUserNotVoted() {
+        Post post = new Post();
+
+        assertFalse(post.isVotedUpBy(ObjectsFactory.getDefaultUser()));
+    }
+
+    @Test
+    public void isVotedDownByShouldReturnTrueIfUserVotedDownForPost() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(false);
+        post.putVote(vote);
+
+        assertTrue(post.isVotedDownBy(user));
+    }
+
+    @Test
+    public void isVotedDownByShouldReturnFalseIfUserVotedUp() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(true);
+        post.putVote(vote);
+
+        assertFalse(post.isVotedDownBy(user));
+    }
+
+    @Test
+    public void isVotedDownByShouldReturnFalseIfUserNotVoted() {
+        Post post = new Post();
+
+        assertFalse(post.isVotedDownBy(ObjectsFactory.getDefaultUser()));
+    }
+
+    @Test
+    public void canBeVotedByShouldReturnTrueIfUserTryToVoteUpAndStillNotVoted() {
+        Post post = new Post();
+
+        assertTrue(post.canBeVotedBy(ObjectsFactory.getDefaultUser(), true));
+    }
+
+    @Test
+    public void canBeVotedByShouldReturnTrueIfUserTryToVoteDownAndStillNotVoted() {
+        Post post = new Post();
+
+        assertTrue(post.canBeVotedBy(ObjectsFactory.getDefaultUser(), false));
+    }
+
+    @Test
+    public void canBeVotedByShouldReturnTrueIfUserTyToUpOldVote() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(false);
+        post.putVote(vote);
+
+        assertTrue(post.canBeVotedBy(user, true));
+    }
+
+    @Test
+    public void canBeVotedByShouldReturnTrueIfUserTyToDownOldVote() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(true);
+        post.putVote(vote);
+
+        assertTrue(post.canBeVotedBy(user, false));
+    }
+
+    @Test
+    public void canBeVotedByFalseIfUserTryToVoteUpSecondTime() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(true);
+        post.putVote(vote);
+
+        assertFalse(post.canBeVotedBy(user, true));
+    }
+
+    @Test
+    public void canBeVotedByFalseIfUserTryToVoteDownSecondTime() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(false);
+        post.putVote(vote);
+
+        assertFalse(post.canBeVotedBy(user, false));
     }
 }

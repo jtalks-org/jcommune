@@ -527,6 +527,55 @@ public class TransactionalPostServiceTest {
         verify(postDao).saveOrUpdate(post);
     }
 
+    @Test
+    public void testVoteUpSuccess() {
+        Post post = new Post(null, null);
+        post.setId(1L);
+        PostVote vote = new PostVote();
+        vote.setVotedUp(true);
+        JCUser user = new JCUser("username", null, null);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        Post result = postService.vote(post, vote);
+
+        assertTrue(result.getVotes().contains(vote));
+        verify(postDao).saveOrUpdate(post);
+        verify(postDao).incrementRating(1L);
+    }
+
+    @Test
+    public void testVoteDownSuccess() {
+        Post post = new Post(null, null);
+        post.setId(1L);
+        PostVote vote = new PostVote();
+        vote.setVotedUp(false);
+        JCUser user = new JCUser("username", null, null);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        Post result = postService.vote(post, vote);
+
+        assertTrue(result.getVotes().contains(vote));
+        verify(postDao).saveOrUpdate(post);
+        verify(postDao).decrementRating(1L);
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void voteForPostInSameDirectionMoreThanOneTimeShouldThrowException() {
+        Post post = new Post(null, null);
+        post.setId(1L);
+        JCUser user = new JCUser("username", null, null);
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(true);
+        post.putVote(vote);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        postService.vote(post, vote);
+
+    }
+
     private Post getPostWithTopicInBranch() {
         Branch branch = new Branch(null, null);
         Topic topic = new Topic();

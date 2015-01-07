@@ -15,11 +15,7 @@
 package org.jtalks.jcommune.service;
 
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.PostComment;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.data.domain.Page;
 
@@ -118,4 +114,14 @@ public interface PostService extends EntityService<Post> {
      * @param comment comment to remove
      */
     void deleteComment(Post post, PostComment comment);
+
+    /**
+     * Votes for specified post in direction specified by vote
+     *
+     * @param post post to vote
+     * @param vote {@link org.jtalks.jcommune.model.entity.PostVote} object
+     *
+     * @return post with vote
+     */
+    Post vote(Post post, PostVote vote);
 }

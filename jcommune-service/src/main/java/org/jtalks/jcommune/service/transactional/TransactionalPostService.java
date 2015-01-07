@@ -251,4 +251,26 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         post.getComments().remove(comment);
         getDao().saveOrUpdate(post);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS') " +
+            "and #post.userCreated.username != principal.username")
+    public Post vote(Post post, PostVote vote) {
+        JCUser currentUser = userService.getCurrentUser();
+        if (!post.canBeVotedBy(currentUser, vote.isVotedUp())) {
+            throw new AccessDeniedException("User cant vote in same direction more than one time");
+        }
+        vote.setUser(currentUser);
+        post.putVote(vote);
+        getDao().saveOrUpdate(post);
+        if (vote.isVotedUp()) {
+            getDao().incrementRating(post.getId());
+        } else {
+            getDao().decrementRating(post.getId());
+        }
+        return post;
+    }
 }

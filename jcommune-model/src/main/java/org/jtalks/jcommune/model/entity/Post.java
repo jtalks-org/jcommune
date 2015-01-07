@@ -274,4 +274,55 @@ public class Post extends Entity {
             votes.add(vote);
         }
     }
+
+    /**
+     * Determines if user voted up for the post
+     *
+     * @param user user to check
+     *
+     * @return true if user voted up for the post
+     *         false if user voted down for the post
+     *         false if user not voted for the post
+     */
+    public boolean isVotedUpBy(JCUser user) {
+        for (PostVote vote : votes) {
+            if (vote.getUser().equals(user)) {
+                return vote.isVotedUp();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determines if user voted down for the post
+     *
+     * @param user user to check
+     *
+     * @return true if user voted down for the post
+     *         false if user voted up for the post
+     *         false if user not voted for the post
+     */
+    public boolean isVotedDownBy(JCUser user) {
+        for (PostVote vote : votes) {
+            if (vote.getUser().equals(user)) {
+                return !vote.isVotedUp();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Determines if user can vote for the post in specified direction.
+     * If direction is true possibility to vote up will be checked.
+     * If direction if false possibility to vote down will be checked.
+     *
+     * @param user user to check
+     * @param direction direction of vote
+     *
+     * @return true if user can vote in specified direction otherwise false
+     */
+    public boolean canBeVotedBy(JCUser user, boolean direction) {
+        return direction ? !isVotedUpBy(user) : !isVotedDownBy(user);
+    }
+
 }
