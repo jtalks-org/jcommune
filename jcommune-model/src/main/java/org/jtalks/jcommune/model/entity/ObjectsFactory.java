@@ -119,8 +119,7 @@ public final class ObjectsFactory {
     }
 
     public static Topic getDefaultTopic() {
-        Topic topic = new Topic(getDefaultUser(), "title", "Discussion");
-        return topic;
+        return new Topic(getDefaultUser(), "title", "Discussion");
     }
 
     public static Topic getTopic(JCUser author, int numberOfPosts) {
@@ -210,6 +209,10 @@ public final class ObjectsFactory {
      */
     public static Group getRandomGroup() {
         return new Group("group" + RandomUtils.nextInt(10000), "description" + RandomUtils.nextInt(10000));
+    }
+
+    public static PostVote getDefaultPostVote() {
+        return new PostVote(getDefaultUser());
     }
 
 }

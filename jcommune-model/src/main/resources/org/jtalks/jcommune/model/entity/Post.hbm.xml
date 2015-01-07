@@ -43,6 +43,12 @@
             <one-to-many class="org.jtalks.jcommune.model.entity.PostComment"/>
         </bag>
 
+        <set name="votes" cascade="all-delete-orphan" inverse="true" lazy="false">
+            <cache usage="read-write"/>
+            <key column="POST_ID" foreign-key="FK_VOTE_POST"/>
+            <one-to-many class="org.jtalks.jcommune.model.entity.PostVote"/>
+        </set>
+
     </class>
     <query name="getAllPostsInTopic">
         <![CDATA[FROM Post as post
@@ -72,6 +78,10 @@
     <query name="getLastPostForBranch">
         <![CDATA[FROM Post p WHERE p.topic.branch.id = :branchId AND creationDate =
                     (SELECT MAX(pp.creationDate) FROM Post pp WHERE pp.topic.branch.id = :branchId)]]>
+    </query>
+
+    <query name="increaseRating">
+        <![CDATA[UPDATE Post SET rating = rating + :valueToAdd WHERE id = :postId]]>
     </query>
 
 </hibernate-mapping>

@@ -88,8 +88,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         post.setPostContent(newContent);
 
         dao.saveOrUpdate(post);
-        session.flush();
-        session.evict(post);
+        flushAndClearSession();
         Post result = (Post) session.get(Post.class, post.getId());
 
         assertEquals(result.getPostContent(), newContent);
@@ -158,8 +157,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
         Page<Post> postsPage = dao.getUserPosts(author, pageRequest, allowedBranchesIds);
 
-        boolean asc = false;
-        assertTrue(isPostListSortedByDate(postsPage.getContent(), asc));
+        assertTrue(isPostListSortedByDate(postsPage.getContent(), false));
     }
 
     @Test
@@ -352,8 +350,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         post.addComment(comment);
 
         dao.saveOrUpdate(post);
-        session.flush();
-        session.evict(post);
+        flushAndClearSession();
 
         Post actualPost = dao.get(post.getId());
 
@@ -367,8 +364,7 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
         post.addComment(comment);
         session.save(post);
-        session.flush();
-        session.evict(post);
+        flushAndClearSession();
 
         dao.delete(post);
 
@@ -383,12 +379,10 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
         post.addComment(comment);
         session.save(post);
-        session.flush();
-        session.evict(post);
+        flushAndClearSession();
         post.getComments().remove(0);
         dao.saveOrUpdate(post);
-        session.flush();
-        session.evict(post);
+        flushAndClearSession();
 
         Post result = dao.get(post.getId());
 
@@ -396,6 +390,83 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     }
 
+    @Test
+    public void testIncrementRating() {
+        Post post = PersistedObjectsFactory.getDefaultPost();
+        session.save(post);
+        int oldRating = post.getRating();
+
+        dao.incrementRating(post.getId());
+        flushAndClearSession();
+        Post postFromDb = (Post)session.get(Post.class, post.getId());
+
+        assertEquals(postFromDb.getRating(), oldRating + 1);
+    }
+
+    @Test
+    public void testDecrementDating() {
+        Post post = PersistedObjectsFactory.getDefaultPost();
+        session.save(post);
+        int oldRating = post.getRating();
+
+        dao.decrementRating(post.getId());
+        flushAndClearSession();
+        Post postFromDb = (Post)session.get(Post.class, post.getId());
+
+        assertEquals(postFromDb.getRating(), oldRating - 1);
+
+    }
+
+    @Test
+    public void testAddVoteToPost() {
+        Post post = PersistedObjectsFactory.getDefaultPost();
+        session.save(post);
+        PostVote vote = PersistedObjectsFactory.getDefaultPostVote();
+
+        post.putVote(vote);
+        dao.saveOrUpdate(post);
+        flushAndClearSession();
+
+        Post postFromDb = (Post)session.get(Post.class, post.getId());
+
+        assertEquals(postFromDb.getVotes().size(), 1);
+        assertTrue(postFromDb.getVotes().contains(vote));
+    }
+
+    @Test
+    public void testCascadeUpdateVote() {
+        Post post = PersistedObjectsFactory.getDefaultPost();
+        post.putVote(PersistedObjectsFactory.getDefaultPostVote());
+        session.save(post);
+        flushAndClearSession();
+
+        PostVote updatedVote = (PostVote)post.getVotes().toArray()[0];
+        updatedVote.setVoteDate(updatedVote.getVoteDate().plusDays(1));
+        post.putVote(updatedVote);
+        dao.saveOrUpdate(post);
+        flushAndClearSession();
+
+        Post postFromDb = (Post)session.get(Post.class, post.getId());
+
+        assertTrue(postFromDb.getVotes().contains(updatedVote));
+        PostVote result = (PostVote)postFromDb.getVotes().toArray()[0];
+        assertEquals(result.getVoteDate(), updatedVote.getVoteDate());
+    }
+
+    @Test
+    public void testOrphanVotesRemoving() {
+        Post post = PersistedObjectsFactory.getDefaultPost();
+        PostVote vote = PersistedObjectsFactory.getDefaultPostVote();
+        post.putVote(vote);
+        session.save(post);
+        flushAndClearSession();
+
+        dao.delete(post);
+
+        PostVote result = (PostVote)session.get(PostVote.class, vote.getId());
+
+        assertNull(result);
+    }
 
     private boolean isPostListSortedByDate(List<Post> postList, boolean asc) {
         boolean result = false;
@@ -411,5 +482,10 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
             }
         }
         return result;
+    }
+
+    private void flushAndClearSession() {
+        session.flush();
+        session.clear();
     }
 }

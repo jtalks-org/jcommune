@@ -20,6 +20,7 @@ import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.search.BbCodeFilterBridge;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,6 +47,7 @@ public class Post extends Entity {
     private int rating;
 
     private List<PostComment> comments = new ArrayList<>();
+    private Set<PostVote> votes = new HashSet<>();
 
     public static final int MAX_LENGTH = 20000;
     public static final int MIN_LENGTH = 2;
@@ -239,5 +241,37 @@ public class Post extends Entity {
      */
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    /**
+     * Gets set of votes for this post
+     *
+     * @return set of votes for this post
+     */
+    public Set<PostVote> getVotes() {
+        return votes;
+    }
+
+    /**
+     * Sets set of votes as votes for this post. Needed only for Hibernate
+     * use {@link #putVote(PostVote)} to add or update vote of post
+     *
+     * @param votes set of votes to set
+     */
+    public void setVotes(Set<PostVote> votes) {
+        this.votes = votes;
+    }
+
+    /**
+     * Adds new vote to the post or overrides existent
+     *
+     * @param vote vote to add or override
+     */
+    public void putVote(PostVote vote) {
+        vote.setPost(this);
+        if (!votes.add(vote)) {
+            votes.remove(vote);
+            votes.add(vote);
+        }
     }
 }

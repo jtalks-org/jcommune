@@ -259,6 +259,10 @@ public final class PersistedObjectsFactory {
         return comment2;
     }
 
+    public static PostVote getDefaultPostVote() {
+        return new PostVote(getDefaultUser());
+    }
+
     public static Component getDefaultComponent() {
         Component component = new Component();
         component.setName("component.name");

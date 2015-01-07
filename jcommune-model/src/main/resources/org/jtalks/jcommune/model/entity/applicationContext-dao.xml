@@ -203,6 +203,7 @@
         <value>/org/jtalks/jcommune/model/entity/PluginConfiguration.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/PluginProperty.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/BranchReadedMarker.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/PostVote.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">

@@ -65,7 +65,7 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
         query.setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings("unchecked")
         List<Post> posts = (List<Post>) query.list();
-        return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());
+        return new PageImpl<>(posts, pageRequest, totalCount.intValue());
     }
 
     /**
@@ -85,7 +85,7 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
         query.setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings("unchecked")
         List<Post> posts = (List<Post>) query.list();
-        return new PageImpl<Post>(posts, pageRequest, totalCount.intValue());
+        return new PageImpl<>(posts, pageRequest, totalCount.intValue());
     }
 
     /**
@@ -115,10 +115,31 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
      */
     @Override
     public List<Post> getLastPostsFor(List<Long> branchIds, int postCount) {
-        List<Post> result = (List<Post>) session()
+        return (List<Post>) session()
                 .getNamedQuery("getLastPostsForBranch")
                 .setParameterList("branchIds", branchIds)
                 .setMaxResults(postCount).list();
-        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void incrementRating(Long postId) {
+        session().getNamedQuery("increaseRating")
+                .setInteger("valueToAdd", 1)
+                .setParameter("postId", postId)
+                .executeUpdate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void decrementRating(Long postId) {
+        session().getNamedQuery("increaseRating")
+                .setInteger("valueToAdd", -1)
+                .setParameter("postId", postId)
+                .executeUpdate();
     }
 }

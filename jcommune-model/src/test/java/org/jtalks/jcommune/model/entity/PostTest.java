@@ -95,4 +95,32 @@ public class PostTest {
         assertTrue(post.getComments().contains(comment));
         assertEquals(comment.getOwnerPost(), post);
     }
+
+    @Test
+    public void testPutVote() {
+        Post post = new Post();
+        PostVote vote = ObjectsFactory.getDefaultPostVote();
+
+        post.putVote(vote);
+
+        assertTrue(post.getVotes().contains(vote));
+    }
+
+    @Test
+    public void putVoteShouldOverrideVoteIfAlreadyExist() {
+        Post post = new Post();
+        PostVote vote = ObjectsFactory.getDefaultPostVote();
+        vote.setVotedUp(true);
+        post.putVote(vote);
+
+        vote.setVotedUp(false);
+        post.putVote(vote);
+
+        assertEquals(post.getVotes().size(), 1);
+        PostVote result = (PostVote)post.getVotes().toArray()[0];
+        assertEquals(result.getUser(), vote.getUser());
+        assertEquals(result.getPost(), vote.getPost());
+        assertEquals(result.getVoteDate(), vote.getVoteDate());
+        assertEquals(result.isVotedUp(), false);
+    }
 }
