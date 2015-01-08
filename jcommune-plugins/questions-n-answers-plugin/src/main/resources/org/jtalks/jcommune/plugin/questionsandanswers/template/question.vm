@@ -117,9 +117,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
               <img src="${request.contextPath}/users/${post.userCreated.id}/avatar" alt=""/>
             </div>
             <div class="question-votes">
-              <div class="vote-up $voteUpClass"></div>
-              <span class="vote-result $voteResultClass">$rating</span>
-              <div class="vote-down $votedDownClass"></div>
+              <div id="${post.id}-up" class="vote-up $voteUpClass"></div>
+              <span id="${post.id}-rating" class="vote-result $voteResultClass">$rating</span>
+              <div id="${post.id}-down" class="vote-down $votedDownClass"></div>
             </div>
           </div>
 

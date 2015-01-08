@@ -39,6 +39,10 @@ public class PostVote extends Entity {
         this.user = user;
     }
 
+    public PostVote(boolean votedUp) {
+        this.votedUp = votedUp;
+    }
+
     /**
      * Gets the voted user
      *
@@ -128,10 +132,7 @@ public class PostVote extends Entity {
 
         PostVote postVote = (PostVote) o;
 
-        if (!post.equals(postVote.post)) {
-            return false;
-        }
-        return user.equals(postVote.user);
+        return post.equals(postVote.post) && user.equals(postVote.user);
 
     }
 

@@ -14,6 +14,8 @@
  */
 
 $(function () {
+    var baseUrl = $root;
+
     $('.comment-prompt').click(function (e) {
         e.preventDefault();
         $(this).hide();
@@ -42,6 +44,39 @@ $(function () {
         }
     });
 
+    $(".vote-up").mouseup(function(e){
+        var postId = getVotedPostId($(this).attr('id'));
+        $.ajax({
+            url: baseUrl + "/posts/" + postId + "/voteup",
+            type: "GET",
+            success: function(data) {
+                console.log("success");
+                var rating = parseInt($("#" + postId + "-rating").text());
+                rating = rating + 1;
+                $("#" + postId + "-rating").text(rating);
+            },
+            error: function() {
+                console.log("error");
+            }
+        });
+    });
+
+    $(".vote-down").mouseup(function(e){
+        var postId = getVotedPostId($(this).attr('id'));
+        $.ajax({
+            url: baseUrl + "/posts/" + postId + "/votedown",
+            type: "GET",
+            success: function() {
+                var rating = parseInt($("#" + postId + "-rating").text());
+                rating = rating - 1;
+                $("#" + postId + "-rating").text(rating);
+            },
+            error: function() {
+                console.log("error");
+            }
+        });
+    });
+
     $('#answer').click(function(e){
         e.preventDefault();
         $('#postBody').focus();
@@ -51,6 +86,16 @@ $(function () {
         $('#postBody').focus();
     }
 });
+
+/**
+ * Gets id of voted post based on arrow element id
+ *
+ * @param elementId arrow element id
+ * @return {String} id of voted post
+ */
+function getVotedPostId(elementId) {
+    return elementId.split("-")[0];
+}
 
 $(document).mouseup(function(e) {
     if (!($(e.target).hasClass("comment-submit") || $(e.target).hasClass("comment-textarea"))) {

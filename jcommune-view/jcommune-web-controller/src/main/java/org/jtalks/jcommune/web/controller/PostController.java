@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PostVote;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -316,6 +317,24 @@ public class PostController {
     @RequestMapping(method = RequestMethod.POST, value = "/topics/bbToHtml")
     public ModelAndView preview(@Valid @ModelAttribute TopicDto topicDto, BindingResult result) throws Exception {
         return getPreviewModelAndView(result).addObject("content", topicDto.getBodyText());
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}/voteup")
+    @ResponseBody
+    public JsonResponse voteUp(@PathVariable Long postId) throws NotFoundException{
+        Post post = postService.get(postId);
+        PostVote vote = new PostVote(true);
+        postService.vote(post, vote);
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}/votedown")
+    @ResponseBody
+    public JsonResponse voteDown(@PathVariable Long postId) throws NotFoundException{
+        Post post = postService.get(postId);
+        PostVote vote = new PostVote(false);
+        postService.vote(post, vote);
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
     /**
