@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.api.service.transactional;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.PluginTopicFetchService;
@@ -138,4 +139,11 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
     public void openTopic(Topic topic) {
         topicModificationService.openTopic(topic);
     }
+
+    @Override
+    public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
+        return topicModificationService.replyToTopic(topicId, answerBody, branchId);
+    }
+
+
 }

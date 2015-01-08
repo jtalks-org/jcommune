@@ -152,7 +152,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                   #if($canAnswer || $canEdit || $canDelete)
                     <div class="btn-group question-btn-group">
                       #if($canAnswer)
-                        <a href="/answer" data-rel=""
+                        <a id="answer"
                            class="edit_button btn btn-mini"
                            title="${esc.html(${messages.getString("label.tips.answer")})}">
                           <i class="icon-pencil"></i>
@@ -202,10 +202,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   </div>
   #topicActions($targedId ${request} ${question} ${permissionTool})
   #if($canLeavePosts)
-    <form action="/answer"
-          method="POST" class='well anti-multipost submit-form' modelAttribute="postDto">
+    #if(!${postDto.bodyText})
+      #set(${postDto.bodyText} = "")
+    #end
+    <form id="answerForm" action="${request.contextPath}/topics/question/${question.id}"
+          method="POST" class='well anti-multipost submit-form'>
       <form path="topicId"/>
-      #bbeditor(${messages.getString("label.answer")} "" "" "bodyText" true "<jcommune:message>placeholder.editor.content</jcommune:message>")
+      #bbeditor(${messages.getString("label.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
     </form>
   #end
 

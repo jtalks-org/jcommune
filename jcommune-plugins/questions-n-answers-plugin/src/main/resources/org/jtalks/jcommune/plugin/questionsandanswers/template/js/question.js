@@ -41,6 +41,15 @@ $(function () {
             thirdComment.addClass("bordered");
         }
     });
+
+    $('#answer').click(function(e){
+        e.preventDefault();
+        $('#postBody').focus();
+    });
+
+    if ($('#answerForm .error:visible').length > 0) {
+        $('#postBody').focus();
+    }
 });
 
 $(document).mouseup(function(e) {

@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.plugin.api.service;
 
 import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
@@ -58,4 +59,17 @@ public interface PluginTopicModificationService {
      * @param topic topic we want to open, hibernate session-bound
      */
     void openTopic(Topic topic);
+
+    /**
+     * Add the answer to the topic. Add the specified message to the target topic and save.
+     * User should be authorized to answer to the topic. Otherwise {@link IllegalStateException} will be thrown.
+     *
+     * @param topicId    target topic primary id.
+     * @param answerBody the text of the answer
+     * @param branchId   target branch primary id.
+     * @return created {@link org.jtalks.jcommune.model.entity.Post}
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
+     *          when topic not found
+     */
+    Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException;
 }

@@ -19,20 +19,19 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.tools.generic.EscapeTool;
-import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
-import org.jtalks.jcommune.plugin.api.service.PluginBranchService;
-import org.jtalks.jcommune.plugin.api.service.PluginLastReadPostService;
-import org.jtalks.jcommune.plugin.api.service.PluginLocationService;
-import org.jtalks.jcommune.plugin.api.service.ReadOnlySecurityService;
-import org.jtalks.jcommune.plugin.api.service.TypeAwarePluginTopicService;
-import org.jtalks.jcommune.plugin.api.service.UserReader;
+import org.jtalks.jcommune.plugin.api.service.*;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.BbToHtmlConverter;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.PluginLocationServiceImpl;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
 import org.jtalks.jcommune.plugin.api.web.PluginController;
+import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
@@ -46,11 +45,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,6 +72,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     private static final String QUESTION_TEMPLATE_PATH = TEMPLATE_PATH + "question.vm";
     private static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String TOPIC_DTO = "topicDto";
+    private static final String POST_DTO = "postDto";
     private static final String EDIT_MODE = "edit";
     private static final String RESULT = "result";
     private static final String QUESTION = "question";
@@ -195,6 +191,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put(SUBSCRIBED, false);
         data.put(CONVERTER, BbToHtmlConverter.getInstance());
         data.put(VIEW_LIST, getLocationService().getUsersViewing(topic));
+        data.put(POST_DTO, new PostDto());
         getPluginLastReadPostService().markTopicPageAsRead(topic, 1);
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
@@ -262,6 +259,43 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         topicDto.fillTopic(topic);
         getTypeAwarePluginTopicService().updateTopic(topic);
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + topic.getId();
+    }
+
+    /**
+     * Process the answer form. Adds new answer to the specified question and redirects to the
+     * question view page.
+     *
+     * @param postDto dto that contains data entered in form
+     * @param result  validation result
+     * @return redirect to the answer or back to answer page if validation failed
+     * @throws NotFoundException when question or branch not found
+     */
+    @RequestMapping(value = "{id}", method = RequestMethod.POST)
+    public String create(@RequestParam(value = "page", defaultValue = "1", required = false) String page,
+                               @PathVariable("id") Long questionId,
+                               @Valid @ModelAttribute PostDto postDto,
+                               BindingResult result, Model model, HttpServletRequest request) throws NotFoundException {
+        postDto.setTopicId(questionId);
+        Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
+        if (result.hasErrors()) {
+            Map<String, Object> data = getDefaultModel(request);
+            VelocityEngine engine = new VelocityEngine(getProperties());
+            engine.init();
+            data.put(QUESTION, topic);
+            data.put(POST_PAGE, new PageImpl<>(topic.getPosts()));
+            data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+            data.put(SUBSCRIBED, false);
+            data.put(RESULT, result);
+            data.put(CONVERTER, BbToHtmlConverter.getInstance());
+            data.put(VIEW_LIST, getLocationService().getUsersViewing(topic));
+            data.put(POST_DTO, postDto);
+            model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_TEMPLATE_PATH, "UTF-8", data));
+            return PLUGIN_VIEW_NAME;
+        }
+
+        Post newbie = getTypeAwarePluginTopicService().replyToTopic(questionId, postDto.getBodyText(), topic.getBranch().getId());
+        getPluginLastReadPostService().markTopicPageAsRead(newbie.getTopic(), Integer.valueOf(page));
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + questionId;
     }
 
     /**
