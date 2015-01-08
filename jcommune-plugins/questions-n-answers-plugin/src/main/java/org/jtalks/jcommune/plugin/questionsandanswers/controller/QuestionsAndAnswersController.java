@@ -29,6 +29,7 @@ import org.jtalks.jcommune.plugin.api.service.nontransactional.BbToHtmlConverter
 import org.jtalks.jcommune.plugin.api.service.nontransactional.PluginLocationServiceImpl;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService;
+import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginPostService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
 import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
@@ -46,6 +47,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -237,7 +239,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      *         plugin view name if validation errors occurred
      * @throws NotFoundException if question with specified id not found
      */
-    @RequestMapping(value = "{id}/edit", method = RequestMethod.POST)
+    @RequestMapping(value = "{id}/edit/question", method = RequestMethod.POST)
     public String updateQuestion(@Valid @ModelAttribute TopicDto topicDto, BindingResult result, Model model,
                                  @PathVariable("id") Long id, HttpServletRequest request)
             throws NotFoundException {
@@ -326,6 +328,36 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
         getTypeAwarePluginTopicService().openTopic(topic);
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + topic.getId();
+    }
+
+    /**
+     * Deletes answer by given id
+     *
+     * @param answerId id of the answer
+     * @return redirect to question page
+     * @throws NotFoundException when answer was not found
+     */
+    @RequestMapping(method = RequestMethod.DELETE, value = "{answerId}/answer")
+    public String deleteAnswer(@PathVariable Long answerId)
+            throws NotFoundException {
+        Post answer = getPluginPostService().get(answerId);
+        getPluginPostService().deletePost(answer);
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId();
+    }
+
+    /**
+     * Deletes question by given id
+     *
+     * @param id id of the question
+     * @return redirect to question page
+     * @throws NotFoundException when answer was not found
+     */
+    @RequestMapping(method = RequestMethod.DELETE, value = "{id}/question")
+    public ModelAndView deleteQuestion(@PathVariable Long id)
+            throws NotFoundException {
+        Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
+        getTypeAwarePluginTopicService().deleteTopic(topic);
+        return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 
     /**
@@ -421,6 +453,13 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      */
     public void setApiPath(String apiPath) {
         this.apiPath = apiPath;
+    }
+
+    /**
+     * Needed for mocking
+     */
+    PluginPostService getPluginPostService() {
+        return TransactionalPluginPostService.getInstance();
     }
 
     /**

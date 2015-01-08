@@ -145,5 +145,10 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
         return topicModificationService.replyToTopic(topicId, answerBody, branchId);
     }
 
+    @Override
+    public void deleteTopic(Topic topic) throws NotFoundException {
+        topicModificationService.deleteTopic(topic);
+    }
+
 
 }

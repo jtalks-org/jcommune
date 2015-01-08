@@ -434,6 +434,11 @@
     <property name="topicModificationService" ref="topicModificationService"/>
   </bean>
 
+  <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginPostService"
+        factory-method="getInstance">
+    <property name="postService" ref="postService"/>
+  </bean>
+
   <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService"
         factory-method="getInstance">
   <property name="lastReadPostService" ref="lastReadPostService"/>
