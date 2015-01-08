@@ -150,5 +150,4 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
         topicModificationService.deleteTopic(topic);
     }
 
-
 }

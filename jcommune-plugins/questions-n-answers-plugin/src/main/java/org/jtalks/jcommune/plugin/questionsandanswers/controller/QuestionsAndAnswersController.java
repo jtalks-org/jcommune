@@ -265,6 +265,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     }
 
     /**
+<<<<<<< HEAD
      * Show edit answer page
      *
      * @param request HttpServletRequest
@@ -322,6 +323,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     }
 
     /**
+=======
+>>>>>>> #JC-2029 Implemented "Answer" button on the question page.
      * Process the answer form. Adds new answer to the specified question and redirects to the
      * question view page.
      *
@@ -331,7 +334,9 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @throws NotFoundException when question or branch not found
      */
     @RequestMapping(value = "{id}", method = RequestMethod.POST)
-    public String create(@PathVariable("id") Long questionId, @Valid @ModelAttribute PostDto postDto,
+    public String create(@RequestParam(value = "page", defaultValue = "1", required = false) String page,
+                               @PathVariable("id") Long questionId,
+                               @Valid @ModelAttribute PostDto postDto,
                                BindingResult result, Model model, HttpServletRequest request) throws NotFoundException {
         postDto.setTopicId(questionId);
         Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
@@ -353,7 +358,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
         Post newbie = getTypeAwarePluginTopicService().replyToTopic(questionId, postDto.getBodyText(), topic.getBranch().getId());
         getPluginLastReadPostService().markTopicPageAsRead(newbie.getTopic(), 1);
-        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + questionId + "#" + newbie.getId();
+        getPluginLastReadPostService().markTopicPageAsRead(newbie.getTopic(), Integer.valueOf(page));
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + questionId;
     }
 
     /**

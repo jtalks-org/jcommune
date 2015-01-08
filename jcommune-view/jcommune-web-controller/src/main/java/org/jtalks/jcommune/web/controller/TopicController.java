@@ -17,6 +17,8 @@ package org.jtalks.jcommune.web.controller;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
+import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
