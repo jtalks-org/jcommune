@@ -77,16 +77,12 @@ public interface PostDao extends Crud<Post> {
     List<Post> getLastPostsFor(List<Long> branchIds, int postCount);
 
     /**
-     * Increases rating of the post with specified id by 1
+     * Changes rating of post with specified id by specified value
      *
-     * @param postId id of the post to increase rating
+     * @param postId id of the post to change rating
+     * @param changes value of rating changes
+     *
      */
-    void incrementRating(Long postId);
+    void changeRating(Long postId, int changes);
 
-    /**
-     * Decreases rating of the post with specified id by 1
-     *
-     * @param postId id of the post to decrease rating
-     */
-    void decrementRating(Long postId);
 }

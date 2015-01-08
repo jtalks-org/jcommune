@@ -126,9 +126,6 @@ public class PostVote extends Entity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if (!super.equals(o)) {
-            return false;
-        }
 
         PostVote postVote = (PostVote) o;
 
@@ -141,7 +138,7 @@ public class PostVote extends Entity {
      */
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        int result = 17;
         result = 31 * result + user.hashCode();
         result = 31 * result + post.hashCode();
         return result;

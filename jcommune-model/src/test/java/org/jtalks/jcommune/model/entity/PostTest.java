@@ -240,4 +240,61 @@ public class PostTest {
 
         assertFalse(post.canBeVotedBy(user, false));
     }
+
+    @Test
+    public void testCalculateRatingChangesWhenUserCanNotVote() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(false);
+        post.putVote(vote);
+
+        assertEquals(post.calculateRatingChanges(vote), 0);
+    }
+
+    @Test
+    public void testCalculateRatingChangesWhenUserVoteUpFirstTime() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(true);
+
+        assertEquals(post.calculateRatingChanges(vote), 1);
+    }
+
+    @Test
+    public void testCalculateRatingChangesWhenUserVoteDownFirstTime() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote = new PostVote(user);
+        vote.setVotedUp(false);
+
+        assertEquals(post.calculateRatingChanges(vote), -1);
+    }
+
+    @Test
+    public void testCalculateRatingChangesWhenUserChangesVoteFromUpToDown() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote1 = new PostVote(user);
+        vote1.setVotedUp(true);
+        post.putVote(vote1);
+        PostVote vote2 = new PostVote(user);
+        vote2.setVotedUp(false);
+
+        assertEquals(post.calculateRatingChanges(vote2), -2);
+    }
+
+    @Test
+    public void testCalculateRatingChangesWhenUserChangesVoteFromDownToUp() {
+        Post post = new Post();
+        JCUser user = ObjectsFactory.getDefaultUser();
+        PostVote vote1 = new PostVote(user);
+        vote1.setVotedUp(false);
+        post.putVote(vote1);
+        PostVote vote2 = new PostVote(user);
+        vote2.setVotedUp(true);
+
+        assertEquals(post.calculateRatingChanges(vote2), 2);
+    }
 }

@@ -46,14 +46,20 @@ $(function () {
 
     $(".vote-up").mouseup(function(e){
         var postId = getVotedPostId($(this).attr('id'));
+        if (isVotedUp(postId)) {
+            return;
+        }
         $.ajax({
             url: baseUrl + "/posts/" + postId + "/voteup",
             type: "GET",
             success: function(data) {
                 console.log("success");
-                var rating = parseInt($("#" + postId + "-rating").text());
-                rating = rating + 1;
-                $("#" + postId + "-rating").text(rating);
+                if (isVotedDown(postId)) {
+                    changeRating($("#" + postId + "-rating"), 2);
+                } else {
+                    changeRating($("#" + postId + "-rating"), 1);
+                }
+                markVoteUpAsPressed(postId);
             },
             error: function() {
                 console.log("error");
@@ -63,13 +69,19 @@ $(function () {
 
     $(".vote-down").mouseup(function(e){
         var postId = getVotedPostId($(this).attr('id'));
+        if (isVotedDown(postId)) {
+            return;
+        }
         $.ajax({
             url: baseUrl + "/posts/" + postId + "/votedown",
             type: "GET",
             success: function() {
-                var rating = parseInt($("#" + postId + "-rating").text());
-                rating = rating - 1;
-                $("#" + postId + "-rating").text(rating);
+                if (isVotedUp(postId)) {
+                    changeRating($("#" + postId + "-rating"), -2);
+                } else {
+                    changeRating($("#" + postId + "-rating"), -1);
+                }
+                markVoteDownAsPressed(postId);
             },
             error: function() {
                 console.log("error");
@@ -86,6 +98,90 @@ $(function () {
         $('#postBody').focus();
     }
 });
+
+/**
+ * Increment post rating which displayed in specified span
+ *
+ * @param ratingSpan span with rating
+ * @param value value of rating changes
+ */
+function changeRating(ratingSpan, value) {
+    var rating = parseInt(ratingSpan.text());
+    rating = rating + value;
+    ratingSpan.text(rating);
+    // we need apply new style only if rating state changed
+    if ((rating > - 2) && (rating < 2)) {
+        applyRatingStyle(ratingSpan, rating);
+    }
+}
+
+/**
+ * Applies css classes such as positive, negative and neutral to rating span
+ *
+ * @param ratingSpan span to apply classes
+ * @param rating new rating value
+ */
+function applyRatingStyle(ratingSpan, rating) {
+    ratingSpan.removeClass("positive negative");
+    if (rating > 0) {
+        ratingSpan.addClass("positive");
+    }
+    if(rating < 0) {
+        ratingSpan.addClass("negative");
+    }
+}
+
+/**
+ * Marks vote up arrow as pressed for specified post id
+ *
+ * @param postId id  for post to mark arrow
+ */
+function markVoteUpAsPressed(postId) {
+    var voteDownArrow = $("#" + postId + "-down");
+    if (voteDownArrow.hasClass("vote-down-pressed")) {
+        voteDownArrow.removeClass("vote-down-pressed");
+        voteDownArrow.addClass("vote-down-unpressed");
+    }
+    var voteUpArrow = $("#" + postId + "-up");
+    voteUpArrow.removeClass("vote-up-unpressed");
+    voteUpArrow.addClass("vote-up-pressed");
+}
+
+/**
+ * Marks vote down arrow as pressed for specified post id
+ *
+ * @param postId id  for post to mark arrow
+ */
+function markVoteDownAsPressed(postId) {
+    var voteUpArrow = $("#" + postId + "-up");
+    if (voteUpArrow.hasClass("vote-up-pressed")) {
+        voteUpArrow.removeClass("vote-up-pressed");
+        voteUpArrow.addClass("vote-up-unpressed");
+    }
+    var voteDownArrow = $("#" + postId + "-down");
+    voteDownArrow.removeClass("vote-down-unpressed");
+    voteDownArrow.addClass("vote-down-pressed");
+}
+
+/**
+ * Determines whatever user voted down for post with specified id
+ *
+ * @param postId id of post to check
+ * @returns {boolean} true if user voted down for post otherwise false
+ */
+function isVotedDown(postId) {
+    return $("#" + postId + "-down").hasClass("vote-down-pressed");
+}
+
+/**
+ * Determines whatever user voted up for post with specified id
+ *
+ * @param postId id of post to check
+ * @returns {boolean} true if user voted up for post otherwise false
+ */
+function isVotedUp(postId) {
+    return $("#" + postId + "-up").hasClass("vote-up-pressed");
+}
 
 /**
  * Gets id of voted post based on arrow element id

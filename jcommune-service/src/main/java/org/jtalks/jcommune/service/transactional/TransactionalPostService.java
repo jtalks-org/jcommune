@@ -262,13 +262,10 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             throw new AccessDeniedException("User cant vote in same direction more than one time");
         }
         vote.setUser(currentUser);
+        int ratingChanges = post.calculateRatingChanges(vote);
         post.putVote(vote);
         getDao().saveOrUpdate(post);
-        if (vote.isVotedUp()) {
-            getDao().incrementRating(post.getId());
-        } else {
-            getDao().decrementRating(post.getId());
-        }
+        getDao().changeRating(post.getId(), ratingChanges);
         return post;
     }
 }

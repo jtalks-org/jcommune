@@ -270,8 +270,12 @@ public class Post extends Entity {
     public void putVote(PostVote vote) {
         vote.setPost(this);
         if (!votes.add(vote)) {
-            votes.remove(vote);
-            votes.add(vote);
+            for (PostVote storedVote : votes) {
+                if (storedVote.equals(vote)) {
+                    storedVote.setVotedUp(vote.isVotedUp());
+                    storedVote.setVoteDate(vote.getVoteDate());
+                }
+            }
         }
     }
 
@@ -323,6 +327,28 @@ public class Post extends Entity {
      */
     public boolean canBeVotedBy(JCUser user, boolean direction) {
         return direction ? !isVotedUpBy(user) : !isVotedDownBy(user);
+    }
+
+    /**
+     * Calculates changes in rating of the posh which will be made by specified vote
+     *
+     * @param vote vote for calculating changes;
+     *
+     * @return 0 if user can't vote in direction specified by vote
+     *         +/- 1 if user votes first time in up/down direction
+     *         +/- 2 if user changes his vote from negative to positive/from positive to negative
+     */
+    public int calculateRatingChanges(PostVote vote) {
+        if (canBeVotedBy(vote.getUser(), vote.isVotedUp())) {
+            if (isVotedDownBy(vote.getUser())) {
+                return 2;
+            } else if (isVotedUpBy(vote.getUser())) {
+                return -2;
+            } else {
+                return vote.isVotedUp() ? 1 : -1;
+            }
+        }
+        return 0;
     }
 
 }

@@ -66,20 +66,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <div>
     #set($answersCount = ${postPage.getContent().size()} - 1)
     #foreach(${post} in ${postPage.content})
-    ##dummy version. should be something like $votedUp = post.votersUp.contains(currentUser)
-      #set($votedUp = false)
-      #if($velocityCount == 2)
-        #set($votedUp = true)
-      #end
-    ##dummy version. should be something like $votedDown = post.votersDown.contains(currentUser)
-      #set($votedDown = false)
-    ##dummy version. should be something like post.rating in future
       #set($voteUpClass = "vote-up-unpressed")
       #set($votedDownClass = "vote-down-unpressed")
-      #if($votedUp)
+      #if(${post.isVotedUpBy(${currentUser})})
         #set($voteUpClass = "vote-up-pressed")
         #set($votedDownClass = "")
-      #elseif($votedDown)
+      #elseif(${post.isVotedDownBy(${currentUser})})
         #set($votedDownClass = "vote-down-pressed")
         #set($voteUpClass = "")
       #end

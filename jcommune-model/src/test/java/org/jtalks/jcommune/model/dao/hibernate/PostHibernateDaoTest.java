@@ -391,30 +391,16 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testIncrementRating() {
+    public void testChangeRating() {
         Post post = PersistedObjectsFactory.getDefaultPost();
         session.save(post);
         int oldRating = post.getRating();
 
-        dao.incrementRating(post.getId());
+        dao.changeRating(post.getId(), 2);
         flushAndClearSession();
         Post postFromDb = (Post)session.get(Post.class, post.getId());
 
-        assertEquals(postFromDb.getRating(), oldRating + 1);
-    }
-
-    @Test
-    public void testDecrementDating() {
-        Post post = PersistedObjectsFactory.getDefaultPost();
-        session.save(post);
-        int oldRating = post.getRating();
-
-        dao.decrementRating(post.getId());
-        flushAndClearSession();
-        Post postFromDb = (Post)session.get(Post.class, post.getId());
-
-        assertEquals(postFromDb.getRating(), oldRating - 1);
-
+        assertEquals(postFromDb.getRating(), oldRating + 2);
     }
 
     @Test

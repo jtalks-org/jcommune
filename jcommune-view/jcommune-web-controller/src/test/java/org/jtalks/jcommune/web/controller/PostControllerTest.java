@@ -14,10 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
@@ -26,6 +23,8 @@ import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -244,6 +243,61 @@ public class PostControllerTest {
         assertModelAttributeAvailable(mav, "signature");
         assertModelAttributeAvailable(mav, "content");
         assertModelAttributeAvailable(mav, "isInvalid");
+    }
+
+    @Test
+    public void testVoteUpSuccess() throws Exception {
+        JCUser user = new JCUser("username", "email@mail.com", "password");
+        Post post = new Post(user, "text");
+
+        when(postService.get(anyLong())).thenReturn(post);
+
+        JsonResponse response = controller.voteUp(1L);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+        verify(postService).vote(eq(post), argThat(new PostVoteMacher(true)));
+    }
+
+    @Test
+    public void testVoteDownSuccess() throws Exception{
+        JCUser user = new JCUser("username", "email@mail.com", "password");
+        Post post = new Post(user, "text");
+
+        when(postService.get(anyLong())).thenReturn(post);
+
+        JsonResponse response = controller.voteDown(1L);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+        verify(postService).vote(eq(post), argThat(new PostVoteMacher(false)));
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void voteUpShouldThrowExceptionIfPostNotFound() throws Exception {
+        when(postService.get(anyLong())).thenThrow(new NotFoundException());
+        controller.voteUp(1L);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void voteDownShouldThrowExceptionIfPostNotFound() throws Exception {
+        when(postService.get(anyLong())).thenThrow(new NotFoundException());
+        controller.voteDown(1L);
+    }
+
+    private class PostVoteMacher extends ArgumentMatcher<PostVote> {
+
+        private boolean isVotedUp;
+        public PostVoteMacher(boolean isVotedUp) {
+            this.isVotedUp = isVotedUp;
+        }
+
+        @Override
+        public boolean matches(Object o) {
+            if (o instanceof PostVote) {
+                //should be both true or both false
+                return !(isVotedUp ^ ((PostVote)o).isVotedUp());
+            }
+            return false;
+        }
     }
 /*    @Test
     public void testPreview() {

@@ -541,7 +541,27 @@ public class TransactionalPostServiceTest {
 
         assertTrue(result.getVotes().contains(vote));
         verify(postDao).saveOrUpdate(post);
-        verify(postDao).incrementRating(1L);
+        verify(postDao).changeRating(1L, 1);
+    }
+
+    @Test
+    public void testVoteUpForVotedDownPost() {
+        Post post = new Post(null, null);
+        post.setId(1L);
+        JCUser user = new JCUser("username", null, null);
+        PostVote vote1 = new PostVote(user);
+        vote1.setVotedUp(false);
+        post.putVote(vote1);
+        PostVote vote2 = new PostVote();
+        vote2.setVotedUp(true);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        Post result = postService.vote(post, vote2);
+
+        assertTrue(result.getVotes().contains(vote2));
+        verify(postDao).saveOrUpdate(post);
+        verify(postDao).changeRating(1L, 2);
     }
 
     @Test
@@ -558,7 +578,27 @@ public class TransactionalPostServiceTest {
 
         assertTrue(result.getVotes().contains(vote));
         verify(postDao).saveOrUpdate(post);
-        verify(postDao).decrementRating(1L);
+        verify(postDao).changeRating(1L, -1);
+    }
+
+    @Test
+    public void testVoteDownForVotedUpPost() {
+        Post post = new Post(null, null);
+        post.setId(1L);
+        JCUser user = new JCUser("username", null, null);
+        PostVote vote1 = new PostVote(user);
+        vote1.setVotedUp(true);
+        post.putVote(vote1);
+        PostVote vote2 = new PostVote();
+        vote2.setVotedUp(false);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        Post result = postService.vote(post, vote2);
+
+        assertTrue(result.getVotes().contains(vote2));
+        verify(postDao).saveOrUpdate(post);
+        verify(postDao).changeRating(1L, -2);
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)

@@ -121,24 +121,10 @@ public class PostHibernateDao extends GenericDao<Post> implements PostDao {
                 .setMaxResults(postCount).list();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void incrementRating(Long postId) {
+    public void changeRating(Long postId, int changes) {
         session().getNamedQuery("increaseRating")
-                .setInteger("valueToAdd", 1)
-                .setParameter("postId", postId)
-                .executeUpdate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void decrementRating(Long postId) {
-        session().getNamedQuery("increaseRating")
-                .setInteger("valueToAdd", -1)
+                .setInteger("valueToAdd", changes)
                 .setParameter("postId", postId)
                 .executeUpdate();
     }
