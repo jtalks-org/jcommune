@@ -47,6 +47,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -403,10 +404,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     public String deleteAnswer(@PathVariable Long answerId)
             throws NotFoundException {
         Post answer = getPluginPostService().get(answerId);
-        Post neighborAnswer = answer.getTopic().getNeighborPost(answer);
         getPluginPostService().deletePost(answer);
-        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId()
-                + "#" + neighborAnswer.getId();
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId();
     }
 
     /**
@@ -417,11 +416,11 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @throws NotFoundException when answer was not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}/question")
-    public String deleteQuestion(@PathVariable Long id)
+    public ModelAndView deleteQuestion(@PathVariable Long id)
             throws NotFoundException {
         Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
         getTypeAwarePluginTopicService().deleteTopic(topic);
-        return "redirect:/branches/" + topic.getBranch().getId();
+        return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
     }
 
     /**

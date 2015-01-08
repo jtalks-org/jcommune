@@ -22,6 +22,7 @@ import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.service.PluginPostService;
 import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
@@ -48,7 +49,8 @@ import java.util.Map;
  * @author Osadchuck Eugeny
  * @author Anuar Nurmakanov
  */
-public class TransactionalPostService extends AbstractTransactionalEntityService<Post, PostDao> implements PostService {
+public class TransactionalPostService extends AbstractTransactionalEntityService<Post, PostDao>
+        implements PostService, PluginPostService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
