@@ -1,0 +1,43 @@
+#*
+
+Copyright (C) 2011  JTalks.org Team
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+
+*#
+#parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/bbeditor.vm")
+<head>
+  <meta name="description" content="${esc.html(${questionTitle})}">
+  <title>
+    ${esc.html(${questionTitle})} - ${messages.getString("label.tips.edit.answer")}
+  </title>
+</head>
+<body>
+  <div class="container">
+    <h2><a class="heading" href="${pageContext.request.contextPath}/topics/question/${questionId}">
+      ${questionTitle}
+    </a></h2>
+
+    <form action="${request.contextPath}/topics/question/${postDto.id}/edit/answer"
+          method="POST" id="postDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
+      #bbeditor(${messages.getString("label.tips.edit.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.question.details")} ${result})
+    </form>
+
+    <a href="${request.contextPath}/topics/question/${questionId}" tabindex="1000" class='back-btn'>
+      <i class="icon-arrow-left"></i>
+      <jcommune:message>label.back</jcommune:message>
+    </a>
+</div>
+<script>
+    Utils.focusFirstEl('#bodyText');
+</script>
+</body>

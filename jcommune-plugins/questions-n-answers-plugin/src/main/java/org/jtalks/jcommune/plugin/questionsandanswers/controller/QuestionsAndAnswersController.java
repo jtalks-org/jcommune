@@ -71,6 +71,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     private static final String HTTP_HEADER_DATETIME_PATTERN = "E, dd MMM yyyy HH:mm:ss z";
     private static final String TEMPLATE_PATH = "org/jtalks/jcommune/plugin/questionsandanswers/template/";
     private static final String QUESTION_FORM_TEMPLATE_PATH = TEMPLATE_PATH + "questionForm.vm";
+    private static final String ANSWER_FORM_TEMPLATE_PATH = TEMPLATE_PATH + "answerForm.vm";
     private static final String QUESTION_TEMPLATE_PATH = TEMPLATE_PATH + "question.vm";
     private static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String TOPIC_DTO = "topicDto";
@@ -85,6 +86,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     public static final String PLUGIN_VIEW_NAME = "plugin/plugin";
     public static final String BRANCH_ID = "branchId";
     public static final String CONTENT = "content";
+    private static final String QEUSTION_TITLE = "questionTitle";
+    private static final String QEUSTION_ID = "questionId";
 
 
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
@@ -211,7 +214,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @return plugin view name
      * @throws NotFoundException if question with specified id not found
      */
-    @RequestMapping(value = "{id}/edit", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}/edit/question", method = RequestMethod.GET)
     public String editQuestionPage(HttpServletRequest request, Model model, @PathVariable("id") Long id)
             throws NotFoundException{
         Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
@@ -261,6 +264,66 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         topicDto.fillTopic(topic);
         getTypeAwarePluginTopicService().updateTopic(topic);
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + topic.getId();
+    }
+
+    /**
+     * Show edit answer page
+     *
+     * @param request HttpServletRequest
+     * @param model model for transferring to jsp
+     * @param id id of answer to edit
+     *
+     * @return plugin view name
+     * @throws NotFoundException if answer with specified id not found
+     */
+    @RequestMapping(value = "{id}/edit/answer", method = RequestMethod.GET)
+    public String editAnswerPage(HttpServletRequest request, Model model, @PathVariable("id") Long id)
+            throws NotFoundException{
+        Post answer = getPluginPostService().get(id);
+        PostDto answerDto = PostDto.getDtoFor(answer);
+        VelocityEngine engine = new VelocityEngine(getProperties());
+        engine.init();
+        Map<String, Object> data = getDefaultModel(request);
+        data.put(QEUSTION_TITLE, answer.getTopic().getTitle());
+        data.put(QEUSTION_ID, answer.getTopic().getId());
+        data.put(POST_DTO, answerDto);
+        model.addAttribute(CONTENT, getMergedTemplate(engine, ANSWER_FORM_TEMPLATE_PATH, "UTF-8", data));
+        return PLUGIN_VIEW_NAME;
+    }
+
+    /**
+     * updates answer
+     *
+     * @param postDto Dto populated in form
+     * @param result validation result
+     * @param model model for transferring to template
+     * @param id id of answer to edit
+     * @param request HttpServletRequest
+     *
+     * @return redirect to updated answer if no validation errors
+     *         plugin view name if validation errors occurred
+     * @throws NotFoundException if answer with specified id not found
+     */
+    @RequestMapping(value = "{id}/edit/answer", method = RequestMethod.POST)
+    public String updateAnswer(@Valid @ModelAttribute PostDto postDto, BindingResult result, Model model,
+                                 @PathVariable("id") Long id, HttpServletRequest request)
+            throws NotFoundException {
+        Post answer = getPluginPostService().get(id);
+        Map<String, Object> data = getDefaultModel(request);
+        if (result.hasErrors()) {
+            VelocityEngine engine = new VelocityEngine(getProperties());
+            engine.init();
+            data.put(QEUSTION_TITLE, answer.getTopic().getTitle());
+            data.put(QEUSTION_ID, answer.getTopic().getId());
+            data.put(POST_DTO, postDto);
+            data.put(RESULT, result);
+            model.addAttribute(CONTENT, getMergedTemplate(engine, ANSWER_FORM_TEMPLATE_PATH, "UTF-8", data));
+            return PLUGIN_VIEW_NAME;
+
+        }
+        postDto.setTopicId(answer.getTopic().getId());
+        getPluginPostService().updatePost(answer, postDto.getBodyText());
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId();
     }
 
     /**

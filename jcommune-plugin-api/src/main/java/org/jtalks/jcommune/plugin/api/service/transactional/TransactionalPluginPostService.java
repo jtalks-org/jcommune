@@ -50,6 +50,11 @@ public class TransactionalPluginPostService implements PluginPostService {
         postService.deletePost(post);
     }
 
+    @Override
+    public void updatePost(Post post, String postContent) throws NotFoundException {
+        postService.updatePost(post, postContent);
+    }
+
     /**
      * Sets post service. Should be used once, during initialization
      *

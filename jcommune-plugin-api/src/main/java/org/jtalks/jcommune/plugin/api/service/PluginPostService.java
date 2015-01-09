@@ -38,4 +38,14 @@ public interface PluginPostService {
      * @param post post to be deleted
      */
     void deletePost(Post post);
+
+    /**
+     * Update current post with given content, add the modification date.
+     *
+     * @param post        post to be updated
+     * @param postContent content of post
+     * @throws org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
+     *          when post not found
+     */
+    void updatePost(Post post, String postContent) throws NotFoundException;
 }
