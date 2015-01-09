@@ -23,21 +23,22 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 </head>
 <body>
   <div class="container">
-    <h2><a class="heading" href="${pageContext.request.contextPath}/topics/question/${questionId}">
+    <h2><a class="heading" href="${pageContext.request.contextPath}/topics/question/${postDto.topicId}">
       ${questionTitle}
     </a></h2>
 
     <form action="${request.contextPath}/topics/question/${postDto.id}/edit/answer"
           method="POST" id="postDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
-      #bbeditor(${messages.getString("label.tips.edit.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.question.details")} ${result})
+        <input type="hidden" name="topicId" value="${postDto.topicId}"/>
+      #bbeditor(${messages.getString("label.tips.edit.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")} ${result})
     </form>
 
-    <a href="${request.contextPath}/topics/question/${questionId}" tabindex="1000" class='back-btn'>
+    <a href="${request.contextPath}/topics/question/${postDto.topicId}" tabindex="1000" class='back-btn'>
       <i class="icon-arrow-left"></i>
       <jcommune:message>label.back</jcommune:message>
     </a>
 </div>
 <script>
-    Utils.focusFirstEl('#bodyText');
+    Utils.focusFirstEl('#postBody');
 </script>
 </body>
