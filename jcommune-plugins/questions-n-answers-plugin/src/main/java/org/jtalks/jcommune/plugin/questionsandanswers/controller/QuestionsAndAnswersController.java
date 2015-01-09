@@ -87,7 +87,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     public static final String BRANCH_ID = "branchId";
     public static final String CONTENT = "content";
     private static final String QEUSTION_TITLE = "questionTitle";
-    private static final String QEUSTION_ID = "questionId";
 
 
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
@@ -285,7 +284,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         engine.init();
         Map<String, Object> data = getDefaultModel(request);
         data.put(QEUSTION_TITLE, answer.getTopic().getTitle());
-        data.put(QEUSTION_ID, answer.getTopic().getId());
         data.put(POST_DTO, answerDto);
         model.addAttribute(CONTENT, getMergedTemplate(engine, ANSWER_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
@@ -314,7 +312,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             VelocityEngine engine = new VelocityEngine(getProperties());
             engine.init();
             data.put(QEUSTION_TITLE, answer.getTopic().getTitle());
-            data.put(QEUSTION_ID, answer.getTopic().getId());
             data.put(POST_DTO, postDto);
             data.put(RESULT, result);
             model.addAttribute(CONTENT, getMergedTemplate(engine, ANSWER_FORM_TEMPLATE_PATH, "UTF-8", data));
@@ -323,7 +320,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         }
         postDto.setTopicId(answer.getTopic().getId());
         getPluginPostService().updatePost(answer, postDto.getBodyText());
-        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId();
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId() + "#" + id;
     }
 
     /**
@@ -360,7 +357,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
         Post newbie = getTypeAwarePluginTopicService().replyToTopic(questionId, postDto.getBodyText(), topic.getBranch().getId());
         getPluginLastReadPostService().markTopicPageAsRead(newbie.getTopic(), Integer.valueOf(page));
-        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + questionId;
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + questionId + "#" + newbie.getId();
     }
 
     /**
@@ -404,8 +401,10 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     public String deleteAnswer(@PathVariable Long answerId)
             throws NotFoundException {
         Post answer = getPluginPostService().get(answerId);
+        Post neighborAnswer = answer.getTopic().getNeighborPost(answer);
         getPluginPostService().deletePost(answer);
-        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId();
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId()
+                + "#" + neighborAnswer.getId();
     }
 
     /**
