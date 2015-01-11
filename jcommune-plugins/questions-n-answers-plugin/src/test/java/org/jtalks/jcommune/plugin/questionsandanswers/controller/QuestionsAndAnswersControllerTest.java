@@ -21,11 +21,8 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
-import org.jtalks.jcommune.plugin.api.service.PluginBranchService;
-import org.jtalks.jcommune.plugin.api.service.PluginLastReadPostService;
-import org.jtalks.jcommune.plugin.api.service.PluginLocationService;
-import org.jtalks.jcommune.plugin.api.service.TypeAwarePluginTopicService;
-import org.jtalks.jcommune.plugin.api.service.UserReader;
+import org.jtalks.jcommune.plugin.api.service.*;
+import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin;
@@ -42,12 +39,15 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.Properties;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
@@ -63,6 +63,8 @@ public class QuestionsAndAnswersControllerTest {
     @Mock
     private TypeAwarePluginTopicService topicService;
     @Mock
+    private PluginPostService postService;
+    @Mock
     private HttpServletRequest request;
     @Mock
     private UserReader userReader;
@@ -77,6 +79,7 @@ public class QuestionsAndAnswersControllerTest {
     @Spy
     private QuestionsAndAnswersController controller = new QuestionsAndAnswersController();
     private String content = "some html";
+    private String answerContent = "some answer";
 
     @BeforeMethod
     public void init() {
@@ -84,6 +87,7 @@ public class QuestionsAndAnswersControllerTest {
         when(controller.getPluginBranchService()).thenReturn(branchService);
         when(controller.getPluginLastReadPostService()).thenReturn(lastReadPostService);
         when(controller.getTypeAwarePluginTopicService()).thenReturn(topicService);
+        when(controller.getPluginPostService()).thenReturn(postService);
         when(controller.getProperties()).thenReturn(new Properties());
         when(controller.getUserReader()).thenReturn(userReader);
         when(controller.getLocationService()).thenReturn(locationService);
@@ -326,5 +330,163 @@ public class QuestionsAndAnswersControllerTest {
         controller.closeQuestion(1L);
     }
 
+    @Test(expectedExceptions = NotFoundException.class)
+    public void editAnswerPageShouldThrowExceptionWhenAnswerNotFound() throws Exception {
+        when(postService.get(anyLong())).thenThrow(new NotFoundException());
+
+        Model model = new ExtendedModelMap();
+        controller.editAnswerPage(request, model, 42L);
+    }
+
+    @Test()
+    public void editAnswerPageShouldRenderThePageIfAnswerIdIsCorrect() throws Exception {
+        when(postService.get(42L)).thenReturn(createAnswer());
+
+        Model model = new ExtendedModelMap();
+        String result = controller.editAnswerPage(request, model, 42L);
+
+        assertEquals(result, QuestionsAndAnswersController.PLUGIN_VIEW_NAME);
+        assertEquals(model.asMap().get(QuestionsAndAnswersController.CONTENT), content);
+    }
+
+    private Post createAnswer() {
+        JCUser userCreated = new JCUser("name", "mail@.ex.com", "pwd");
+        Post post = new Post(userCreated, answerContent);
+        post.setId(50L);
+        Topic topic = new Topic(userCreated, content);
+        topic.setId(43L);
+        post.setTopic(topic);
+        return post;
+    }
+
+    @Test()
+    public void updateAnswerShouldRedirectBackIfValidationFails() throws Exception {
+        when(postService.get(anyLong())).thenReturn(createAnswer());
+        when(result.hasErrors()).thenReturn(true);
+
+        Model model = new ExtendedModelMap();
+        PostDto postDto = new PostDto();
+        String methodResult = controller.updateAnswer(postDto, result, model, 42L, request);
+
+        assertEquals(methodResult, QuestionsAndAnswersController.PLUGIN_VIEW_NAME);
+        assertEquals(model.asMap().get(QuestionsAndAnswersController.CONTENT), content);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void updateAnswerPageShouldThrowExceptionWhenAnswerNotFound() throws Exception {
+        when(postService.get(anyLong())).thenThrow(new NotFoundException());
+        Model model = new ExtendedModelMap();
+        PostDto postDto = new PostDto();
+
+        controller.updateAnswer(postDto, result, model, 42L, request);
+    }
+
+    @Test()
+    public void updateAnswerShouldUpdateAnswerIfValidationSuccess() throws Exception {
+        Post answer = createAnswer();
+        when(postService.get(anyLong())).thenReturn(answer);
+        when(result.hasErrors()).thenReturn(false);
+
+        Model model = new ExtendedModelMap();
+        PostDto postDto = new PostDto();
+        postDto.setBodyText(answerContent);
+        String methodResult = controller.updateAnswer(postDto, result, model, answer.getId(), request);
+
+        String redirectedResult = "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/"
+                + answer.getTopic().getId() + "#" + answer.getId();
+        assertEquals(methodResult, redirectedResult);
+        verify(postService).updatePost(answer, answerContent);
+    }
+
+    @Test()
+    public void createAnswerShouldRedirectBackIfValidationFails() throws Exception {
+        when(topicService.get(anyLong(), anyString())).thenReturn(createTopic());
+        when(result.hasErrors()).thenReturn(true);
+
+        Model model = new ExtendedModelMap();
+        PostDto postDto = new PostDto();
+        String methodResult = controller.create(42L, postDto, result, model, request);
+
+        assertEquals(methodResult, QuestionsAndAnswersController.PLUGIN_VIEW_NAME);
+        assertEquals(model.asMap().get(QuestionsAndAnswersController.CONTENT), content);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void createAnswerPageShouldThrowExceptionWhenTopicNotFound() throws Exception {
+        when(topicService.get(anyLong(), anyString())).thenThrow(new NotFoundException());
+        Model model = new ExtendedModelMap();
+        PostDto postDto = new PostDto();
+
+        controller.create(42L, postDto, result, model, request);
+    }
+
+    @Test()
+    public void createAnswerShouldUpdateAnswerIfValidationSuccess() throws Exception {
+        Topic topic = createTopic();
+        Post answer = createAnswer();
+
+        when(topicService.get(anyLong(), anyString())).thenReturn(topic);
+        when(topicService.replyToTopic(anyLong(), anyString(), anyLong())).thenReturn(answer);
+
+        Model model = new ExtendedModelMap();
+        PostDto postDto = new PostDto();
+        postDto.setBodyText(answerContent);
+        String methodResult = controller.create(42L, postDto, result, model, request);
+
+        String redirectedResult = "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/"
+                + 42L + "#" + answer.getId();
+        assertEquals(methodResult, redirectedResult);
+        verify(topicService).replyToTopic(42L, answerContent, topic.getBranch().getId());
+    }
+
+    private Topic createTopic() {
+        Branch branch = new Branch("name", "description");
+        branch.setId(1);
+        Topic topic = new Topic();
+        topic.setId(42L);
+        topic.setBranch(branch);
+        return topic;
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void deleteQuestionPageShouldThrowExceptionWhenTopicNotFound() throws Exception {
+        when(topicService.get(anyLong(), anyString())).thenThrow(new NotFoundException());
+
+        controller.deleteQuestion(42L);
+    }
+
+    @Test
+    public void deleteQuestionPageShouldRedirectToBranchPage() throws Exception {
+        Topic topic = createTopic();
+        when(topicService.get(topic.getId(), QuestionsAndAnswersPlugin.TOPIC_TYPE)).thenReturn(topic);
+
+        String result = controller.deleteQuestion(topic.getId());
+        assertEquals(result, "redirect:/branches/" + topic.getBranch().getId());
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void deleteAnswerPageShouldThrowExceptionWhenTopicNotFound() throws Exception {
+        when(postService.get(anyLong())).thenThrow(new NotFoundException());
+        controller.deleteAnswer(42L);
+    }
+
+    @Test
+    public void deleteAnswerPageShouldRedirectToNeighborAnswer() throws Exception {
+        Post answer = createAnswer();
+        Post neighborAnswer = createAnswer();
+        final long neighborPostId = 24L;
+        neighborAnswer.setId(neighborPostId);
+
+        Topic topic = mock(Topic.class);
+        when(topic.getId()).thenReturn(42L);
+        when(topic.getNeighborPost(answer)).thenReturn(neighborAnswer);
+        answer.setTopic(topic);
+
+        when(postService.get(answer.getId())).thenReturn(answer);
+
+        String result = controller.deleteAnswer(answer.getId());
+        assertEquals(result, "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId()
+                + "#" + neighborPostId);
+    }
 }
 

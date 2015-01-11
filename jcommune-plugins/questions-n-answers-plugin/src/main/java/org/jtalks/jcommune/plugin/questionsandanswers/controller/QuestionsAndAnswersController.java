@@ -47,7 +47,6 @@ import org.springframework.ui.Model;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -318,7 +317,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             return PLUGIN_VIEW_NAME;
 
         }
-        postDto.setTopicId(answer.getTopic().getId());
         getPluginPostService().updatePost(answer, postDto.getBodyText());
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId() + "#" + id;
     }
@@ -333,9 +331,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @throws NotFoundException when question or branch not found
      */
     @RequestMapping(value = "{id}", method = RequestMethod.POST)
-    public String create(@RequestParam(value = "page", defaultValue = "1", required = false) String page,
-                               @PathVariable("id") Long questionId,
-                               @Valid @ModelAttribute PostDto postDto,
+    public String create(@PathVariable("id") Long questionId, @Valid @ModelAttribute PostDto postDto,
                                BindingResult result, Model model, HttpServletRequest request) throws NotFoundException {
         postDto.setTopicId(questionId);
         Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
@@ -356,7 +352,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         }
 
         Post newbie = getTypeAwarePluginTopicService().replyToTopic(questionId, postDto.getBodyText(), topic.getBranch().getId());
-        getPluginLastReadPostService().markTopicPageAsRead(newbie.getTopic(), Integer.valueOf(page));
+        getPluginLastReadPostService().markTopicPageAsRead(newbie.getTopic(), 1);
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + questionId + "#" + newbie.getId();
     }
 
@@ -415,11 +411,11 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @throws NotFoundException when answer was not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "{id}/question")
-    public ModelAndView deleteQuestion(@PathVariable Long id)
+    public String deleteQuestion(@PathVariable Long id)
             throws NotFoundException {
         Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
         getTypeAwarePluginTopicService().deleteTopic(topic);
-        return new ModelAndView("redirect:/branches/" + topic.getBranch().getId());
+        return "redirect:/branches/" + topic.getBranch().getId();
     }
 
     /**
