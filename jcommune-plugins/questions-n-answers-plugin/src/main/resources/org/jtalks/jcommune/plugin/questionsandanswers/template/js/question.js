@@ -50,7 +50,7 @@ $(function () {
         }
         var postId = getVotedPostId($(this).attr('id'));
         if (isOwnPost(postId)) {
-            showErrorPopUp(postId, "You can't vote for own posts");
+            showErrorPopUp(postId, labelVoteErrorOwnPost);
             return;
         }
         if (isVotedUp(postId)) {
@@ -69,7 +69,7 @@ $(function () {
                 markVoteUpAsPressed(postId);
             },
             error: function() {
-                showErrorPopUp(postId, "You have no permissions to vote");
+                showErrorPopUp(postId, labelVoteErrorNoPermissions);
             }
         });
     });
@@ -80,7 +80,7 @@ $(function () {
         }
         var postId = getVotedPostId($(this).attr('id'));
         if (isOwnPost(postId)) {
-            showErrorPopUp(postId, "You can't vote for own posts");
+            showErrorPopUp(postId, labelVoteErrorOwnPost);
             return;
         }
         if (isVotedDown(postId)) {
@@ -98,7 +98,7 @@ $(function () {
                 markVoteDownAsPressed(postId);
             },
             error: function() {
-                showErrorPopUp(postId, "You have no permissions to vote");
+                showErrorPopUp(postId, labelVoteErrorNoPermissions);
             }
         });
     });
