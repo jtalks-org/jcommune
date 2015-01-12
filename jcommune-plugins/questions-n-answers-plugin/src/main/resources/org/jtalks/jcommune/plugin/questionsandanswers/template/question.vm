@@ -20,6 +20,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/bbeditor.vm")
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/userStats.vm")
 <head>
+  <script>
+      var labelVoteError="${messages.getString("label.vote.error")}";
+  </script>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
   <title>${esc.html(${question.title})}</title>
@@ -70,10 +73,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #set($votedDownClass = "vote-down-unpressed")
       #if(${post.isVotedUpBy(${currentUser})})
         #set($voteUpClass = "vote-up-pressed")
-        #set($votedDownClass = "")
       #elseif(${post.isVotedDownBy(${currentUser})})
         #set($votedDownClass = "vote-down-pressed")
-        #set($voteUpClass = "")
       #end
       #set($rating = ${post.rating})
       #set($voteResultClass = "")
@@ -81,6 +82,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         #set($voteResultClass = "positive")
       #elseif($rating < 0)
         #set($voteResultClass = "negative")
+      #end
+      #if(!${currentUser.anonymous} && ${post.userCreated.id} == ${currentUser.id})
+        #set($voteResultClass = $voteResultClass + " own" )
+        #set($voteResultClass = $voteResultClass + " own")
       #end
       #set($isFirstPost = false)
       #if($velocityCount == 1)

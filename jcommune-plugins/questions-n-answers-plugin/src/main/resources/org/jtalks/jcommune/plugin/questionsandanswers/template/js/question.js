@@ -45,7 +45,14 @@ $(function () {
     });
 
     $(".vote-up").mouseup(function(e){
+        if (e.which != 1) {
+            return;
+        }
         var postId = getVotedPostId($(this).attr('id'));
+        if (isOwnPost(postId)) {
+            showErrorPopUp(postId, "You can't vote for own posts");
+            return;
+        }
         if (isVotedUp(postId)) {
             return;
         }
@@ -62,13 +69,20 @@ $(function () {
                 markVoteUpAsPressed(postId);
             },
             error: function() {
-                console.log("error");
+                showErrorPopUp(postId, "You have no permissions to vote");
             }
         });
     });
 
     $(".vote-down").mouseup(function(e){
+        if (e.which != 1) {
+            return;
+        }
         var postId = getVotedPostId($(this).attr('id'));
+        if (isOwnPost(postId)) {
+            showErrorPopUp(postId, "You can't vote for own posts");
+            return;
+        }
         if (isVotedDown(postId)) {
             return;
         }
@@ -84,7 +98,7 @@ $(function () {
                 markVoteDownAsPressed(postId);
             },
             error: function() {
-                console.log("error");
+                showErrorPopUp(postId, "You have no permissions to vote");
             }
         });
     });
@@ -98,6 +112,30 @@ $(function () {
         $('#postBody').focus();
     }
 });
+
+/**
+ * Shows pop-up with vote error message
+ *
+ * @param postId id of post where vote error occurred
+ * @param message error message to be displayed
+ */
+function showErrorPopUp(postId, message) {
+    $("#" + postId + "-down").after("<div id=\"error-message\" class=\"alert vote-error-popup alert-error\" " +
+    "style=\"display: block;\"><span>" + message + "</span></div>");
+    setTimeout(function() {
+        $("#error-message").remove();
+    }, 2000);
+}
+
+/**
+ * Determines whatever current post is created by current user
+ *
+ * @param postId id of post to check
+ * @return {boolean} true if post with specified id was created by current user, false otherwise
+ */
+function isOwnPost(postId) {
+    return $("#" + postId + "-rating").hasClass("own");
+}
 
 /**
  * Increment post rating which displayed in specified span

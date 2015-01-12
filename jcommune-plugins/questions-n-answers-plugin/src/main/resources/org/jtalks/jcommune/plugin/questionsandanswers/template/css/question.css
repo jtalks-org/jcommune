@@ -95,10 +95,12 @@
 }
 
 .vote-up-unpressed:hover {
+    cursor: pointer;
     border-bottom-color: #0d7d1f;
 }
 
 .vote-down-unpressed:hover {
+    cursor: pointer;
     border-top-color: #b01513;
 }
 
@@ -215,4 +217,10 @@
 
 .comment-date {
     margin-left: 12px;
+}
+
+.vote-error-popup {
+    position: absolute;
+    padding: 0.7em 1em;
+    font-size: 15px;
 }
