@@ -114,6 +114,7 @@ public class EntityToDtoConverter {
      */
     private TopicDto populatePlugableTopicDto(TopicDto plugableTopicDto, TopicPlugin plugin) {
         plugableTopicDto.setTopicUrl(PREFIX + plugin.getTopicType().toLowerCase() + "/" + plugableTopicDto.getTopic().getId());
+        plugableTopicDto.setPostUrlPrefix(PREFIX + plugin.getTopicType().toLowerCase() + "/" + plugableTopicDto.getTopic().getId() + "/post/");
         if (plugableTopicDto.getTopic().isClosed()) {
             plugableTopicDto.setReadIconUrl(PREFIX + plugin.getTopicType().toLowerCase() + PLUGABLE_CLOSED_READ);
             plugableTopicDto.setUnreadIconUrl(PREFIX + plugin.getTopicType().toLowerCase() + PLUGABLE_CLOSED_UNREAD);
@@ -133,6 +134,7 @@ public class EntityToDtoConverter {
      */
     private TopicDto populateCoreTopicDto(TopicDto dto) {
         dto.setTopicUrl(PREFIX + dto.getTopic().getId());
+        dto.setPostUrlPrefix("/posts/");
         if (dto.getTopic().isCodeReview()) {
             dto.setUnreadIconUrl(CODE_REVIEW_NEW_POSTS);
             dto.setReadIconUrl(CODE_REVIEW_NO_NEW_POSTS);

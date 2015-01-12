@@ -17,7 +17,6 @@ package org.jtalks.jcommune.plugin.api.web.dto;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.TopicTypeName;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
 
@@ -43,6 +42,7 @@ public class TopicDto {
     private String topicUrl;
     private String unreadIconUrl;
     private String readIconUrl;
+    private String postUrlPrefix;
 
     /**
      * Plain object for topic creation
@@ -134,6 +134,22 @@ public class TopicDto {
 
     public void setReadIconUrl(String readIconUrl) {
         this.readIconUrl = readIconUrl;
+    }
+
+    /**
+     * Get the prefix for url for one of posts of the topic
+     * @return the prefix for url for one of posts of the topic
+     */
+    public String getPostUrlPrefix() {
+        return postUrlPrefix;
+    }
+
+    /**
+     * Sets the prefix for url for one of posts of the topic
+     * @param postUrlPrefix new prefix for url for one of posts of the topic
+     */
+    public void setPostUrlPrefix(String postUrlPrefix) {
+        this.postUrlPrefix = postUrlPrefix;
     }
 
     /**

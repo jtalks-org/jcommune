@@ -203,6 +203,19 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     }
 
     /**
+     * Shows answer
+     *
+     * @param questionId id of question
+     * @param answerId id of the answer
+     *
+     * @return redirect to the answer url
+     */
+    @RequestMapping(value = "{questionId}/post/{answerId}", method = RequestMethod.GET)
+    public String showAnswer(@PathVariable Long questionId, @PathVariable Long answerId) {
+        return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + questionId + "#" + answerId;
+    }
+
+    /**
      * Show edit question page
      *
      * @param request HttpServletRequest

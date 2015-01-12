@@ -10,11 +10,11 @@
 <c:choose>
   <c:when test="${topicDto.topic.hasUpdates}">
     <%-- if there are new posts this icon should be a link to the first unread post --%>
-    <c:set var="linkUrl" value="${pageContext.request.contextPath}/posts/${topicDto.topic.firstUnreadPostId}"/>
+    <c:set var="linkUrl" value="${pageContext.request.contextPath}${topicDto.postUrlPrefix}${topicDto.topic.firstUnreadPostId}"/>
   </c:when>
   <c:otherwise>
     <%-- if all posts have been read this icon should be a link to the last post in topic --%>
-    <c:set var="linkUrl" value="${pageContext.request.contextPath}/posts/${topicDto.topic.lastPost.id}"/>
+    <c:set var="linkUrl" value="${pageContext.request.contextPath}${topicDto.postUrlPrefix}${topicDto.topic.lastPost.id}"/>
   </c:otherwise>
 </c:choose>
 
