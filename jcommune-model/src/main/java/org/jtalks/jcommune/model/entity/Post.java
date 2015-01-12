@@ -269,14 +269,14 @@ public class Post extends Entity {
      */
     public void putVote(PostVote vote) {
         vote.setPost(this);
-        if (!votes.add(vote)) {
-            for (PostVote storedVote : votes) {
-                if (storedVote.equals(vote)) {
-                    storedVote.setVotedUp(vote.isVotedUp());
-                    storedVote.setVoteDate(vote.getVoteDate());
-                }
+        for (PostVote storedVote : votes) {
+            if (storedVote.getUser().equals(vote.getUser()) && storedVote.getPost().equals(vote.getPost())) {
+                storedVote.setVotedUp(vote.isVotedUp());
+                storedVote.setVoteDate(vote.getVoteDate());
+                return;
             }
         }
+        votes.add(vote);
     }
 
     /**

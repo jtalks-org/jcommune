@@ -114,33 +114,4 @@ public class PostVote extends Entity {
     public void setVotedUp(boolean votedUp) {
         this.votedUp = votedUp;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        PostVote postVote = (PostVote) o;
-
-        return post.equals(postVote.post) && user.equals(postVote.user);
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        int result = 17;
-        result = 31 * result + user.hashCode();
-        result = 31 * result + post.hashCode();
-        return result;
-    }
 }
