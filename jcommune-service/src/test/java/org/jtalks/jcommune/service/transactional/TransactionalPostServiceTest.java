@@ -557,9 +557,8 @@ public class TransactionalPostServiceTest {
 
         when(userService.getCurrentUser()).thenReturn(user);
 
-        Post result = postService.vote(post, vote2);
+        postService.vote(post, vote2);
 
-        assertTrue(result.getVotes().contains(vote2));
         verify(postDao).saveOrUpdate(post);
         verify(postDao).changeRating(1L, 2);
     }
@@ -594,9 +593,8 @@ public class TransactionalPostServiceTest {
 
         when(userService.getCurrentUser()).thenReturn(user);
 
-        Post result = postService.vote(post, vote2);
+        postService.vote(post, vote2);
 
-        assertTrue(result.getVotes().contains(vote2));
         verify(postDao).saveOrUpdate(post);
         verify(postDao).changeRating(1L, -2);
     }
