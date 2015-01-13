@@ -40,7 +40,10 @@
         <label for="userName" class="control-label"><spring:message code="label.username"/> </label>
 
         <div class="controls">
-          <form:input class="reg_input" type="text" path="userName" id="userName"/>
+            <c:if test="${not empty param.login_error}">
+                <c:set var="username" scope="request" value="${param.username}"/>
+            </c:if>
+            <form:input class="reg_input" type="text" path="userName" id="userName" value="${username}"/>
         </div>
       </div>
 
