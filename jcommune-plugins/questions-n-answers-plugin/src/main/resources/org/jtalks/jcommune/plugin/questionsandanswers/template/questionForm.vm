@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <div class="container">
     #breadcrumb(${breadcrumbList})
     #if(${edit})
-    <form action="${request.contextPath}/topics/question/${topicDto.topic.id}/edit/question"
+    <form action="${request.contextPath}/topics/question/${topicDto.topic.id}/edit"
           method="POST" id="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
     #else
       <form action="${request.contextPath}/topics/question/new?branchId=${topicDto.topic.branch.id}"

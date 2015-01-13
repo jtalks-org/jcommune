@@ -98,11 +98,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         #set($isFirstPost = true)
       #end
       #set($postClass = "")
+      #set($postEditUrl = "")
+      #set($postDeleteUrl = "")
       #if($isFirstPost)
-        #set($targetId = ${question.id})
         #set($postClass = "question")
+        #set($postEditUrl = "${request.contextPath}/topics/question/${question.id.longValue()}/edit")
+        #set($postDeleteUrl = "${request.contextPath}/topics/${question.id.longValue()}");
       #else
-        #set($targetId = ${post.id})
+        #set($postEditUrl = "${request.contextPath}/topics/question/post/${post.id.longValue()}/edit")
+        #set($postDeleteUrl = "${request.contextPath}/topics/question/post/${post.id.longValue()}");
         #set($postClass = "answer")
       #end
       #if($velocityCount == 2)
@@ -165,14 +169,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                         </a>
                       #end
                         #if($canEdit)
-                          <a href="${request.contextPath}/topics/question/${targetId.longValue()}/edit/$postClass" data-rel=""
+                          <a href="$postEditUrl" data-rel=""
                              class="edit_button btn btn-mini" title="${esc.html(${messages.getString("label.tips.edit.$postClass")})}">
                             <i class="icon-edit"></i>
                             ${esc.html(${messages.getString("label.edit")})}
                           </a>
                         #end
                         #if($canDelete)
-                          <a href="${request.contextPath}/topics/question/${targetId.longValue()}/$postClass" class="btn btn-mini btn-danger delete"
+                          <a href="$postDeleteUrl" class="btn btn-mini btn-danger delete"
                              title="${esc.html(${messages.getString("label.tips.remove.$postClass")})}"
                              data-confirmationMessage="${esc.html(${messages.getString("label.confirm.delete.$postClass")})}">
                             <i class="icon-remove icon-white"></i>

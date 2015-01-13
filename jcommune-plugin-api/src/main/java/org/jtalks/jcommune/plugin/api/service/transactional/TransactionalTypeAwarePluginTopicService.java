@@ -140,14 +140,12 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
         topicModificationService.openTopic(topic);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException {
         return topicModificationService.replyToTopic(topicId, answerBody, branchId);
-    }
-
-    @Override
-    public void deleteTopic(Topic topic) throws NotFoundException {
-        topicModificationService.deleteTopic(topic);
     }
 
 }

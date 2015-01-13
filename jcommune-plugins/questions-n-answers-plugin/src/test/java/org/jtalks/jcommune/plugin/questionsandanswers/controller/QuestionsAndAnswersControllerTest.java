@@ -449,22 +449,6 @@ public class QuestionsAndAnswersControllerTest {
     }
 
     @Test(expectedExceptions = NotFoundException.class)
-    public void deleteQuestionPageShouldThrowExceptionWhenTopicNotFound() throws Exception {
-        when(topicService.get(anyLong(), anyString())).thenThrow(new NotFoundException());
-
-        controller.deleteQuestion(42L);
-    }
-
-    @Test
-    public void deleteQuestionPageShouldRedirectToBranchPage() throws Exception {
-        Topic topic = createTopic();
-        when(topicService.get(topic.getId(), QuestionsAndAnswersPlugin.TOPIC_TYPE)).thenReturn(topic);
-
-        String result = controller.deleteQuestion(topic.getId());
-        assertEquals(result, "redirect:/branches/" + topic.getBranch().getId());
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
     public void deleteAnswerPageShouldThrowExceptionWhenTopicNotFound() throws Exception {
         when(postService.get(anyLong())).thenThrow(new NotFoundException());
         controller.deleteAnswer(42L);

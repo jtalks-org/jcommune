@@ -97,12 +97,4 @@ public interface TypeAwarePluginTopicService {
      */
     Post replyToTopic(long topicId, String answerBody, long branchId) throws NotFoundException;
 
-    /**
-     * Delete topic by id. Sends notifications to subscribers and performs logging.
-     *
-     * @param topic topic to be deleted
-     * @throws NotFoundException when topic not found
-     */
-    void deleteTopic(Topic topic) throws NotFoundException;
-
 }

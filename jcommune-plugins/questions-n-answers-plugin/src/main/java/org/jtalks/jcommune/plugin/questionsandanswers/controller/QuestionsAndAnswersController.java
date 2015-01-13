@@ -225,7 +225,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @return plugin view name
      * @throws NotFoundException if question with specified id not found
      */
-    @RequestMapping(value = "{id}/edit/question", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}/edit", method = RequestMethod.GET)
     public String editQuestionPage(HttpServletRequest request, Model model, @PathVariable("id") Long id)
             throws NotFoundException{
         Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
@@ -253,7 +253,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      *         plugin view name if validation errors occurred
      * @throws NotFoundException if question with specified id not found
      */
-    @RequestMapping(value = "{id}/edit/question", method = RequestMethod.POST)
+    @RequestMapping(value = "{id}/edit", method = RequestMethod.POST)
     public String updateQuestion(@Valid @ModelAttribute TopicDto topicDto, BindingResult result, Model model,
                                  @PathVariable("id") Long id, HttpServletRequest request)
             throws NotFoundException {
@@ -287,7 +287,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @return plugin view name
      * @throws NotFoundException if answer with specified id not found
      */
-    @RequestMapping(value = "{id}/edit/answer", method = RequestMethod.GET)
+    @RequestMapping(value = "post/{id}/edit", method = RequestMethod.GET)
     public String editAnswerPage(HttpServletRequest request, Model model, @PathVariable("id") Long id)
             throws NotFoundException{
         Post answer = getPluginPostService().get(id);
@@ -314,7 +314,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      *         plugin view name if validation errors occurred
      * @throws NotFoundException if answer with specified id not found
      */
-    @RequestMapping(value = "{id}/edit/answer", method = RequestMethod.POST)
+    @RequestMapping(value = "post/{id}/edit", method = RequestMethod.POST)
     public String updateAnswer(@Valid @ModelAttribute PostDto postDto, BindingResult result, Model model,
                                  @PathVariable("id") Long id, HttpServletRequest request)
             throws NotFoundException {
@@ -406,7 +406,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @return redirect to question page
      * @throws NotFoundException when answer was not found
      */
-    @RequestMapping(method = RequestMethod.DELETE, value = "{answerId}/answer")
+    @RequestMapping(method = RequestMethod.DELETE, value = "post/{answerId}")
     public String deleteAnswer(@PathVariable Long answerId)
             throws NotFoundException {
         Post answer = getPluginPostService().get(answerId);
@@ -414,21 +414,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         getPluginPostService().deletePost(answer);
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId()
                 + "#" + neighborAnswer.getId();
-    }
-
-    /**
-     * Deletes question by given id
-     *
-     * @param id id of the question
-     * @return redirect to question page
-     * @throws NotFoundException when answer was not found
-     */
-    @RequestMapping(method = RequestMethod.DELETE, value = "{id}/question")
-    public String deleteQuestion(@PathVariable Long id)
-            throws NotFoundException {
-        Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
-        getTypeAwarePluginTopicService().deleteTopic(topic);
-        return "redirect:/branches/" + topic.getBranch().getId();
     }
 
     /**

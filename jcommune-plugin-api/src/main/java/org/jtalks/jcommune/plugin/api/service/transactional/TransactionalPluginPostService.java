@@ -37,20 +37,29 @@ public class TransactionalPluginPostService implements PluginPostService {
      *
      * @return instance of {@link TransactionalPluginPostService}
      */
-    public static TransactionalPluginPostService getInstance() {
+    public static PluginPostService getInstance() {
         return INSTANCE;
     }
 
+    /**
+     *  {@inheritDoc}
+     */
     @Override
     public Post get(Long id) throws NotFoundException {
         return postService.get(id);
     }
 
+    /**
+     *  {@inheritDoc}
+     */
     @Override
     public void deletePost(Post post) {
         postService.deletePost(post);
     }
 
+    /**
+     *  {@inheritDoc}
+     */
     @Override
     public void updatePost(Post post, String postContent) throws NotFoundException {
         postService.updatePost(post, postContent);

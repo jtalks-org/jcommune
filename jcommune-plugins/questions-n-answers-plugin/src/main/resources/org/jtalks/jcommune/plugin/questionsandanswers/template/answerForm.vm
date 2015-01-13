@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       ${questionTitle}
     </a></h2>
 
-    <form action="${request.contextPath}/topics/question/${postDto.id}/edit/answer"
+    <form action="${request.contextPath}/topics/question/post/${postDto.id}/edit"
           method="POST" id="postDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
         <input type="hidden" name="topicId" value="${postDto.topicId}"/>
       #bbeditor(${messages.getString("label.tips.edit.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")} ${result})
