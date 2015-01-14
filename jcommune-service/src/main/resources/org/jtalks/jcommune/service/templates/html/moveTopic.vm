@@ -14,7 +14,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-<p>${messageSource.getMessage("greeting", $noArgs, $locale)} ${name}!</p>
+<p>${messageSource.getMessage("greeting", $noArgs, $locale)} ${escape.html($name)}!</p>
 <br/>
 <p>${messageSource.getMessage("moveTopic.content", $noArgs, $locale)} ${messageSource.getMessage("moveTopic.by", $noArgs, $locale)} ${cur_user}</p>
 <p>${messageSource.getMessage("moveTopic.checkLink", $noArgs, $locale)} <a href="${link}">${linkLabel}</a></p>

@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.tools.generic.EscapeTool;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -65,11 +66,13 @@ public class MailService {
     private static final String MESSAGE_SOURCE = "messageSource";
     private static final String RECIPIENT_LOCALE = "locale";
     private static final String NO_ARGS = "noArgs";
+    private static final String ESCAPE_TOOL = "escape";
     private final JavaMailSender mailSender;
     private final String from;
     private final VelocityEngine velocityEngine;
     private final MessageSource messageSource;
     private final JCommuneProperty notificationsEnabledProperty;
+    private final EscapeTool escapeTool;
 
     /**
      * Creates a mailing service with a default template message autowired.
@@ -82,17 +85,20 @@ public class MailService {
      * @param engine                       engine for templating email notifications
      * @param source                       for resolving internationalization messages
      * @param notificationsEnabledProperty to check whether email notifications are enabled
+     * @param escapeTool                   velocity tool to perform html-escape
      */
     public MailService(JavaMailSender sender,
                        String from,
                        VelocityEngine engine,
                        MessageSource source,
-                       JCommuneProperty notificationsEnabledProperty) {
+                       JCommuneProperty notificationsEnabledProperty,
+                       EscapeTool escapeTool) {
         this.mailSender = sender;
         this.from = from;
         this.velocityEngine = engine;
         this.messageSource = source;
         this.notificationsEnabledProperty = notificationsEnabledProperty;
+        this.escapeTool = escapeTool;
     }
 
     /**
@@ -308,6 +314,7 @@ public class MailService {
         LOGGER.debug("Sending email to [{}] with subject [{}]", to, subject);
         try {
             model.put(MESSAGE_SOURCE, messageSource);
+            model.put(ESCAPE_TOOL, escapeTool);
             model.put(NO_ARGS, new Object[]{});
             String plainText = this.mergePlainTextTemplate(templateName, model);
             String htmlText = this.mergeHtmlTemplate(templateName, model);
