@@ -67,50 +67,50 @@ public class BBCodeListPreprocessorTest {
     @DataProvider
     public Object[][] badLists() {
         return new Object[][]{
-                {"[list=a:bcb294daef][*][/list]","[list=a:bcb294daef][*][/*][/list]"},
-                {"[list][/list]","[list][/list]"},
+                {"[lIsT=a:bcb294daef][*][/list]","[lIsT=a:bcb294daef][*][/*][/list]"},
+                {"[lisT][/lisT]","[lisT][/lisT]"},
                 {"some long text", "some long text"},
-                {"[list][list][list]", "[list][list][list]"},
+                {"[lIst][liSt][List]", "[lIst][liSt][List]"},
                 {"[*]Duplicate", "[*]Duplicate"},
-                {"before list[list][*]listitem[list]after list", "before list[list][*]listitem[list]after list"},
-                {"zzz[/list]", "zzz[/list]"},
-                {"[list][*]text[/list][*]text[/list]","[list][*]text[/*][/list][*]text[/list]"},
-                {"[/list][list][*]text[/list][*]text","[/list][list][*]text[/*][/list][*]text"},
-                {"[list][*]text[/list][*]text[list]","[list][*]text[/*][/list][*]text[list]"}
+                {"before list[lisT][*]listitem[List]after list", "before list[lisT][*]listitem[List]after list"},
+                {"zzz[/liSt]", "zzz[/liSt]"},
+                {"[LIST][*]text[/list][*]text[/list]","[LIST][*]text[/*][/list][*]text[/list]"},
+                {"[/liSt][List][*]text[/list][*]text","[/liSt][List][*]text[/*][/list][*]text"},
+                {"[lisT][*]text[/lisT][*]text[lisT]","[lisT][*]text[/*][/lisT][*]text[lisT]"}
         };
     }
     
     @DataProvider
     public Object[][] nestedLists(){
         return new Object[][] {
-            {"[list][*]111[list][*]222[/list][/list]", "[list][*]111[list][*]222[/*][/list][/*][/list]"},
-            {"before[list=1][*]111[*][list=2][*]222[list=3][*]333[*]444[/list][*]555[list=4][*]666[*]777[/list][*]888[/list][*]999[/list]after",
-                "before[list=1][*]111[/*][*][list=2][*]222[list=3][*]333[/*][*]444[/*][/list][/*][*]555[list=4][*]666[/*][*]777[/*][/list][/*][*]888[/*][/list][/*][*]999[/*][/list]after"},
-            {"[list][list][*]text[/list][*]text[/list]","[list][list][*]text[/*][/list][*]text[/*][/list]"}
+            {"[list][*]111[LIST][*]222[/LIST][/list]", "[list][*]111[LIST][*]222[/*][/LIST][/*][/list]"},
+            {"before[LIST=1][*]111[*][list=2][*]222[list=3][*]333[*]444[/list][*]555[LIST=4][*]666[*]777[/list][*]888[/list][*]999[/list]after",
+                "before[LIST=1][*]111[/*][*][list=2][*]222[list=3][*]333[/*][*]444[/*][/list][/*][*]555[LIST=4][*]666[/*][*]777[/*][/list][/*][*]888[/*][/list][/*][*]999[/*][/list]after"},
+            {"[list][LIST][*]text[/LIST][*]text[/list]","[list][LIST][*]text[/*][/LIST][*]text[/*][/list]"}
         };
     }
 
     @DataProvider
     public Object[][] validLists() {
         return new Object[][]{  // {"bb code before", "bb code after"}
-                {"aaa[list][*]bbb[*]ccc[/list]ddd", "aaa[list][*]bbb[/*][*]ccc[/*][/list]ddd"},
-                {"aaa[list][*][b]bbb[/b][*][padding=10]ccc[/padding][/list]ddd", "aaa[list][*][b]bbb[/b][/*][*][padding=10]ccc[/padding][/*][/list]ddd"},
-                {"[list][*]aaa[*]bbb[/list]", "[list][*]aaa[/*][*]bbb[/*][/list]"},
-                {"aaa[list][*]bbb[*]ccc[/list]dddaaa[list][*]bbb[*]ccc[/list]ddd", "aaa[list][*]bbb[/*][*]ccc[/*][/list]dddaaa[list][*]bbb[/*][*]ccc[/*][/list]ddd"},
-                {"aaa[list=1][*]bbb[*]ccc[/list]dddaaa[list=1][*]bbb[*]ccc[/list]ddd", "aaa[list=1][*]bbb[/*][*]ccc[/*][/list]dddaaa[list=1][*]bbb[/*][*]ccc[/*][/list]ddd"},
-                {"aaa[list=1][*][b]bbb[/b][*][padding=10]ccc[/padding][/list]ddd", "aaa[list=1][*][b]bbb[/b][/*][*][padding=10]ccc[/padding][/*][/list]ddd"},
-                {"[list=1][*]aaa[*]bbb[/list]", "[list=1][*]aaa[/*][*]bbb[/*][/list]"},
-                {"aaa[list=a][*]bbb[*]ccc[/list]ddd", "aaa[list=a][*]bbb[/*][*]ccc[/*][/list]ddd"},
-                {"aaa[list=a][*][b]bbb[/b][*][padding=10]ccc[/padding][/list]ddd", "aaa[list=a][*][b]bbb[/b][/*][*][padding=10]ccc[/padding][/*][/list]ddd"},
-                {"[list=a][*]aaa[*]bbb[/list]", "[list=a][*]aaa[/*][*]bbb[/*][/list]"},
-                {"aaa[list=1][*]bbb[*]ccc[/list]d[b]dda[/b]aa[list][*]bbb[*]ccc[/list]ddd", "aaa[list=1][*]bbb[/*][*]ccc[/*][/list]d[b]dda[/b]aa[list][*]bbb[/*][*]ccc[/*][/list]ddd"},
-                {"aaa[list]\n[*]bbb\n[*]ccc\n[/list]", "aaa[list]\n[*]bbb\n[/*][*]ccc\n[/*][/list]"},
-                {"a\nb\nc[list]a\nb\nc[*]a\nb\nc[/list]a\nb\nc", "a\nb\nc[list]a\nb\nc[*]a\nb\nc[/*][/list]a\nb\nc"},
+                {"aaa[LIST][*]bbb[*]ccc[/list]ddd", "aaa[LIST][*]bbb[/*][*]ccc[/*][/list]ddd"},
+                {"aaa[List][*][b]bbb[/b][*][padding=10]ccc[/padding][/list]ddd", "aaa[List][*][b]bbb[/b][/*][*][padding=10]ccc[/padding][/*][/list]ddd"},
+                {"[list][*]aaa[*]bbb[/LIST]", "[list][*]aaa[/*][*]bbb[/*][/LIST]"},
+                {"aaa[LIST][*]bbb[*]ccc[/list]dddaaa[list][*]bbb[*]ccc[/LIST]ddd", "aaa[LIST][*]bbb[/*][*]ccc[/*][/list]dddaaa[list][*]bbb[/*][*]ccc[/*][/LIST]ddd"},
+                {"aaa[list=1][*]bbb[*]ccc[/LIST]dddaaa[LIST=1][*]bbb[*]ccc[/list]ddd", "aaa[list=1][*]bbb[/*][*]ccc[/*][/LIST]dddaaa[LIST=1][*]bbb[/*][*]ccc[/*][/list]ddd"},
+                {"aaa[list=1][*][b]bbb[/b][*][padding=10]ccc[/padding][/LIST]ddd", "aaa[list=1][*][b]bbb[/b][/*][*][padding=10]ccc[/padding][/*][/LIST]ddd"},
+                {"[LiST=1][*]aaa[*]bbb[/list]", "[LiST=1][*]aaa[/*][*]bbb[/*][/list]"},
+                {"aaa[lIst=a][*]bbb[*]ccc[/list]ddd", "aaa[lIst=a][*]bbb[/*][*]ccc[/*][/list]ddd"},
+                {"aaa[LIST=a][*][b]bbb[/b][*][padding=10]ccc[/padding][/LIST]ddd", "aaa[LIST=a][*][b]bbb[/b][/*][*][padding=10]ccc[/padding][/*][/LIST]ddd"},
+                {"[list=a][*]aaa[*]bbb[/lisT]", "[list=a][*]aaa[/*][*]bbb[/*][/lisT]"},
+                {"aaa[LIST=1][*]bbb[*]ccc[/list]d[b]dda[/b]aa[list][*]bbb[*]ccc[/list]ddd", "aaa[LIST=1][*]bbb[/*][*]ccc[/*][/list]d[b]dda[/b]aa[list][*]bbb[/*][*]ccc[/*][/list]ddd"},
+                {"aaa[lISt]\n[*]bbb\n[*]ccc\n[/list]", "aaa[lISt]\n[*]bbb\n[/*][*]ccc\n[/*][/list]"},
+                {"a\nb\nc[LIST]a\nb\nc[*]a\nb\nc[/list]a\nb\nc", "a\nb\nc[LIST]a\nb\nc[*]a\nb\nc[/*][/list]a\nb\nc"},
                 {"", ""},
-                {"[*]text[list][*]text[/list]","[*]text[list][*]text[/*][/list]"},
-                {"[*][list][*]text[/list]","[*][list][*]text[/*][/list]"},
-                {"[list][*]text[/list][*]","[list][*]text[/*][/list][*]"},
-                {"[list][*]text[/list]text[*]text", "[list][*]text[/*][/list]text[*]text"}
+                {"[*]text[lIst][*]text[/list]","[*]text[lIst][*]text[/*][/list]"},
+                {"[*][liSt][*]text[/list]","[*][liSt][*]text[/*][/list]"},
+                {"[lisT][*]text[/list][*]","[lisT][*]text[/*][/list][*]"},
+                {"[lIst][*]text[/lIst]text[*]text", "[lIst][*]text[/*][/lIst]text[*]text"}
         };
     }
 }

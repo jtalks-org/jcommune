@@ -161,82 +161,82 @@ get XSS attacks.</p>-->
 
     <!-- Simple formatting -->
     <code name="bold">
-        <pattern>[b]<var inherit="true"/>[/b]</pattern>
+        <pattern ignoreCase="true">[b]<var inherit="true"/>[/b]</pattern>
         <template>&lt;span style=&quot;font-weight:bold;&quot;&gt;<var/>&lt;/span&gt;</template>
     </code>
     <code name="u">
-        <pattern>[u]<var inherit="true"/>[/u]</pattern>
+        <pattern ignoreCase="true">[u]<var inherit="true"/>[/u]</pattern>
         <template>&lt;span style=&quot;text-decoration:underline;&quot;&gt;<var/>&lt;/span&gt;</template>
     </code>
     <code name="s">
-        <pattern>[s]<var inherit="true"/>[/s]</pattern>
+        <pattern ignoreCase="true">[s]<var inherit="true"/>[/s]</pattern>
         <template>&lt;span style=&quot;text-decoration:line-through;&quot;&gt;<var/>&lt;/span&gt;</template>
     </code>
     <code name="i">
-        <pattern>[i]<var inherit="true"/>[/i]</pattern>
+        <pattern ignoreCase="true">[i]<var inherit="true"/>[/i]</pattern>
         <template>&lt;span style=&quot;font-style:italic;&quot;&gt;<var/>&lt;/span&gt;</template>
     </code>
 
     <!-- Font color -->
     <code name="color_name">
-        <pattern>[color=<var name="color"  regex="\D*"  scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/color]</pattern>
+        <pattern ignoreCase="true">[color=<var name="color"  regex="\D*"  scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/color]</pattern>
         <template>&lt;span style=&quot;color:<var name="color"/>;&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
     </code>
 
     <code name="color_code">
-        <pattern>[color=<var name="color" regex="[A-F0-9]{6}" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/color]</pattern>
+        <pattern ignoreCase="true">[color=<var name="color" regex="[A-F0-9]{6}" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/color]</pattern>
         <template>&lt;span style=&quot;color:#<var name="color"/>;&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
     </code>
 
     <!-- Font size -->
     <code name="size">
-        <pattern>[size=<var name="size" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/size]</pattern>
+        <pattern ignoreCase="true">[size=<var name="size" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/size]</pattern>
         <template>&lt;span class=&quot;textSize<var name="size"/>&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
     </code>
 
     <!-- Font family -->
     <code name="font">
-        <pattern>[font=<var name="family" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/font]</pattern>
+        <pattern ignoreCase="true">[font=<var name="family" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/font]</pattern>
         <template>&lt;span style=&quot;font-style:<var name="family"/>;&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
     </code>
 
     <!-- Text highlight -->
     <code name="highlight">
-        <pattern>[highlight]<var name="text" inherit="true"/>[/highlight]</pattern>
+        <pattern ignoreCase="true">[highlight]<var name="text" inherit="true"/>[/highlight]</pattern>
         <template>&lt;span class=&quot;highlight&quot;&gt;<var name="text"/>&lt;/span&gt;</template>
     </code>
 
     <!-- Text, align to left -->
     <code name="left">
-        <pattern>[left]<var name="text" inherit="true"/>[/left]</pattern>
+        <pattern ignoreCase="true">[left]<var name="text" inherit="true"/>[/left]</pattern>
         <template>&lt;div class=&quot;leftText&quot;&gt;<var name="text"/>&lt;/div&gt;</template>
     </code>
 
     <!-- Text, align to right -->
     <code name="right">
-        <pattern>[right]<var name="text" inherit="true"/>[/right]</pattern>
+        <pattern ignoreCase="true">[right]<var name="text" inherit="true"/>[/right]</pattern>
         <template>&lt;div class=&quot;rightText&quot;&gt;<var name="text"/>&lt;/div&gt;</template>
     </code>
 
     <!-- Text, align to center -->
     <code name="center">
-        <pattern>[center]<var name="text" inherit="true"/>[/center]</pattern>
+        <pattern ignoreCase="true">[center]<var name="text" inherit="true"/>[/center]</pattern>
         <template>&lt;div class=&quot;centerText&quot;&gt;<var name="text"/>&lt;/div&gt;</template>
     </code>
 
     <!-- Text indent -->
     <code name="indent">
-        <pattern>[indent=<var name="size" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/indent]</pattern>
+        <pattern ignoreCase="true">[indent=<var name="size" scope="escapeXmlAndBr"/>]<var name="text" inherit="true"/>[/indent]</pattern>
         <template>&lt;div class=&quot;marginLeft<var name="size"/>&quot;&gt;<var name="text"/>&lt;/div&gt;</template>
     </code>
 
     <!-- List -->
     <code name="list">
-        <pattern>[list]<var scope="listScope"/>[/list]</pattern>
+        <pattern ignoreCase="true">[list]<var scope="listScope"/>[/list]</pattern>
         <template>&lt;ul class=&quot;list unordered-list&quot;&gt;<var/>&lt;/ul&gt;</template>
     </code>
     <code name="orderedList">
-        <pattern>[list=<var name="listType"/>]<var name="listItems" scope="listScope"/>[/list]</pattern>
+        <pattern ignoreCase="true">[list=<var name="listType"/>]<var name="listItems" scope="listScope"/>[/list]</pattern>
         <template>&lt;ol type=&quot;<var name="listType"/>&quot; class=&quot;list&quot;&gt;<var name="listItems"/>&lt;/ol&gt;</template>
     </code>
     <scope name="listScope" ignoreText="false">
@@ -250,7 +250,7 @@ get XSS attacks.</p>-->
 
     <!-- Insert image -->
     <code name="img1" priority="2">
-        <pattern>[img]<var name="addr" regex=".*"/>[/img]</pattern>
+        <pattern ignoreCase="true">[img]<var name="addr" regex=".*"/>[/img]</pattern>
         <template><![CDATA[<a title="" href="]]><var name="addr"/><![CDATA[" class="pretty-photo"><img class="thumbnail" alt="" src="]]><var name="addr"/><![CDATA[" onError="imgError(this)" /></a>]]></template>
     </code>
 
@@ -274,81 +274,81 @@ get XSS attacks.</p>-->
 
     <!-- HTTP -->
     <code name="url1" priority="2">
-        <pattern>[url=<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="url" scope="escapeXmlAndBr"/>]<var name="text" scope="url"/>[/url]</pattern>
+        <pattern ignoreCase="true">[url=<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="url" scope="escapeXmlAndBr"/>]<var name="text" scope="url"/>[/url]</pattern>
         <template>&lt;a href=&quot;<var name="protocol"/>/<var name="url"/>&quot;&gt;<var name="text"/>&lt;/a&gt;</template>
     </code>
     <code name="url2" priority="2">
-        <pattern>[url]<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="url" scope="escapeXmlAndBr"/>[/url]</pattern>
+        <pattern ignoreCase="true">[url]<var name="protocol" regex="((ht|f)tps?:|\.{1,2})?"/>/<var name="url" scope="escapeXmlAndBr"/>[/url]</pattern>
         <template>&lt;a href=&quot;<var name="protocol"/>/<var name="url"/>&quot;&gt;<var name="protocol"/>/<var name="url"/>&lt;/a&gt;</template>
     </code>
     <code name="url3" priority="1">
-        <pattern>[url=<var name="url" scope="escapeXmlAndBr"/>]<var name="text" scope="url"/>[/url]</pattern>
+        <pattern ignoreCase="true">[url=<var name="url" scope="escapeXmlAndBr"/>]<var name="text" scope="url"/>[/url]</pattern>
         <template>&lt;a href=&quot;http://<var name="url"/>&quot;&gt;<var name="text"/>&lt;/a&gt;</template>
     </code>
     <code name="url4" priority="1">
-        <pattern>[url]<var name="url" scope="escapeXmlAndBr"/>[/url]</pattern>
+        <pattern ignoreCase="true">[url]<var name="url" scope="escapeXmlAndBr"/>[/url]</pattern>
         <template>&lt;a href=&quot;http://<var name="url"/>&quot;&gt;<var name="url"/>&lt;/a&gt;</template>
     </code>
 
 
     <!-- MAILTO -->
     <code name="url6" priority="2">
-        <pattern>[url=mailto:<var name="url" scope="escapeXmlAndBr"/>]<var name="text" scope="url"/>[/url]</pattern>
+        <pattern ignoreCase="true">[url=mailto:<var name="url" scope="escapeXmlAndBr"/>]<var name="text" scope="url"/>[/url]</pattern>
         <template>&lt;a href=&quot;mailto:<var name="url"/>&quot;&gt;<var name="text"/>&lt;/a&gt;</template>
     </code>
     <code name="url7" priority="2">
-        <pattern>[url]mailto:<var name="url" scope="escapeXmlAndBr"/>[/url]</pattern>
+        <pattern ignoreCase="true">[url]mailto:<var name="url" scope="escapeXmlAndBr"/>[/url]</pattern>
         <template>&lt;a href=&quot;mailto:<var name="url"/>&quot;&gt;mailto:<var name="url"/>&lt;/a&gt;</template>
     </code>
 
     <!-- Quote block -->
     <code name="quote">
-        <pattern>[quote]<var inherit="true"/>[/quote]</pattern>
+        <pattern ignoreCase="true">[quote]<var inherit="true"/>[/quote]</pattern>
         <template><![CDATA[<div class="quote bb_quote_container"><span class="bb_quote_title">Quote:</span><div class='bb_quote_content'>]]><var/><![CDATA[</div></div>]]></template>
     </code>
 
     <code name="quote_named">
-        <pattern>[quote="<var name="author" inherit="true"/>"]<var name="content" inherit="true"/>[/quote]</pattern>
+        <pattern ignoreCase="true">[quote="<var name="author" inherit="true"/>"]<var name="content" inherit="true"/>[/quote]</pattern>
         <template><![CDATA[<div class="quote bb_quote_container"><span class="bb_quote_title">]]><var name="author"/><![CDATA[:</span><div class='bb_quote_content'>]]><var name="content"/><![CDATA[</div></div>]]></template>
     </code>
 
     <!-- Code block -->
     <code name="code">
-        <pattern>[code=<var name="lang"/>]<var name="code" scope="escapeXml"/>[/code]</pattern>
+        <pattern ignoreCase="true">[code=<var name="lang"/>]<var name="code" scope="escapeXml"/>[/code]</pattern>
         <template>&lt;pre class=&quot;prettyprint linenums <var name="lang"/>&quot;&gt;<var name="code"/>&lt;/pre&gt;</template>
     </code>
 
     <!-- Offtopic block -->
     <code name="offtop">
-        <pattern>[offtop]<var scope="basic"/>[/offtop]</pattern>
+        <pattern ignoreCase="true">[offtop]<var scope="basic"/>[/offtop]</pattern>
         <template><![CDATA[<div class="offtop"><p>]]><var/><![CDATA[</p></div>]]></template>
     </code>
 
     <!-- Simple table -->
     <code name="table">
-        <pattern>[table]<var scope="tableScope"/>[/table]</pattern>
+        <pattern ignoreCase="true">[table]<var scope="tableScope"/>[/table]</pattern>
         <template>&lt;table&gt;<var/>&lt;/table&gt;</template>
     </code>
     <scope name="tableScope" ignoreText="true">
         <code name="tr">
-            <pattern>[tr]<var scope="trScope"/>[/tr]</pattern>
+            <pattern ignoreCase="true">[tr]<var scope="trScope"/>[/tr]</pattern>
             <template>&lt;tr&gt;<var/>&lt;/tr&gt;</template>
         </code>
     </scope>
     <scope name="trScope" ignoreText="true">
         <code name="th">
-            <pattern>[th]<var/>[/th]</pattern>
+            <pattern ignoreCase="true">[th]<var/>[/th]</pattern>
             <template>&lt;th&gt;<var/>&lt;/th&gt;</template>
         </code>
         <code name="td">
-            <pattern>[td]<var/>[/td]</pattern>
+            <pattern ignoreCase="true">[td]<var/>[/td]</pattern>
             <template>&lt;td&gt;<var/>&lt;/td&gt;</template>
         </code>
     </scope>
     
     <!-- User mentioning -->
     <code name="user">
-        <pattern>[user=<var name="mentionedUserProfileLink"/>]<var name="mentionedUser" inherit="true"/>[/user]</pattern>
+        <pattern ignoreCase="true">[user=<var name="mentionedUserProfileLink"/>]<var name="mentionedUser" inherit="true"/>[/user]</pattern>
         <template>&lt;a  href=&quot;<var name="mentionedUserProfileLink"/>&quot; class=&quot;mentioned-user&quot; &gt;<var name="mentionedUser"/>&lt;/a&gt;</template>
     </code>
 </configuration>

@@ -39,7 +39,7 @@ class ListItemsProcessor {
 
     private ListElement lastElement;
 
-    private final Pattern listPattern = Pattern.compile(LIST_REGEX, Pattern.DOTALL);
+    private final Pattern listPattern = Pattern.compile(LIST_REGEX, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
     private final Stack<ListElement> listStack = new Stack<>();
 
@@ -74,7 +74,7 @@ class ListItemsProcessor {
      */
     private RootElement createRootElement(String str) {
         RootElement newRoot = new RootElement();
-        int firstListPos = str.indexOf(LIST_TAG_OPEN);
+        int firstListPos = str.toLowerCase().indexOf(LIST_TAG_OPEN);
         if (firstListPos < 0) {
             newRoot.text = str;
         } else {
@@ -95,7 +95,7 @@ class ListItemsProcessor {
         if (tagString.equalsIgnoreCase(LIST_TAG_CLOSE)) {
             return new ClosingList();
         }
-        if (tagString.startsWith(LIST_TAG_OPEN)) {
+        if (tagString.toLowerCase().startsWith(LIST_TAG_OPEN)) {
             return new ListElement();
         } else {
             throw new IllegalArgumentException("Unknown tag type " + tagString);
@@ -203,7 +203,7 @@ class ListItemsProcessor {
 
         @Override
         protected String getCloseTag() {
-            if (parent.closed) {
+            if (parent.getClosingList() != null) {
                 return LIST_ITEM_CLOSE;
             } else {
                 return "";
@@ -231,6 +231,10 @@ class ListItemsProcessor {
     private class ListElement extends Tag {
 
         /**
+         * Case-sensitive value of tag
+         */
+        String value;
+        /**
          * list params
          */
         String params;
@@ -238,20 +242,21 @@ class ListItemsProcessor {
          * text after list close tag
          */
         String endText;
+
         /**
-         * true if closed tag was found
+         * Closing tag for this elemetn
          */
-        private boolean closed = false;
+        private ClosingList closingList;
 
         @Override
         protected String getOpenTag() {
-            return LIST_TAG_OPEN + getParams() + "]";
+            return value + getParams() + "]";
         }
 
         @Override
         protected String getCloseTag() {
-            if (closed) {
-                return LIST_TAG_CLOSE + getEndText();
+            if (closingList != null) {
+                return closingList.getValue() + getEndText();
             } else {
                 return "";
             }
@@ -265,11 +270,12 @@ class ListItemsProcessor {
             return endText != null ? endText : "";
         }
 
-        /**
-         * Mark the list as closed (valid).
-         */
-        public void close() {
-            closed = true;
+        public void setClosingList(ClosingList closingList) {
+            this.closingList = closingList;
+        }
+
+        public ClosingList getClosingList() {
+            return closingList;
         }
 
         /**
@@ -279,6 +285,8 @@ class ListItemsProcessor {
         public void processMatch(Matcher matcher) {
             this.params = matcher.group(2);
             this.text = matcher.group(3);
+            // We should extract something like "[list"
+            this.value = matcher.group(1).substring(0, 5);
             getCurrentElement().addChild(this);
             listStack.push(this);
             lastElement = this;
@@ -290,21 +298,31 @@ class ListItemsProcessor {
      */
     private class ClosingList extends Tag {
 
+        /**
+         * Case-sensitive value of the tag
+         */
+        String value;
+
        /**
         * {@inheritDoc}
         */
         @Override
         public void processMatch(Matcher matcher) {
+            value = matcher.group(1);
             if (listStack.isEmpty()) {
                 if (lastElement != null) {
-                    lastElement.endText += matcher.group(3) + LIST_TAG_CLOSE;
+                    lastElement.endText += matcher.group(3) + value;
                 }
                 return;
             }
-            ListElement closingList = listStack.pop();
-            closingList.endText = matcher.group(3);
-            closingList.close();
-            lastElement = closingList;
+            ListElement listToClose = listStack.pop();
+            listToClose.endText = matcher.group(3);
+            listToClose.setClosingList(this);
+            lastElement = listToClose;
+        }
+
+        public String getValue() {
+            return value;
         }
     }
 }
