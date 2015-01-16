@@ -89,9 +89,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #elseif($rating < 0)
         #set($voteResultClass = "negative")
       #end
+      #set($own = false)
       #if(!${currentUser.anonymous} && ${post.userCreated.id} == ${currentUser.id})
-        #set($voteResultClass = $voteResultClass + " own" )
-        #set($voteResultClass = $voteResultClass + " own")
+        #set($own = true)
       #end
       #set($isFirstPost = false)
       #if($velocityCount == 1)
@@ -103,10 +103,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #if($isFirstPost)
         #set($postClass = "question")
         #set($postEditUrl = "${request.contextPath}/topics/question/${question.id.longValue()}/edit")
-        #set($postDeleteUrl = "${request.contextPath}/topics/${question.id.longValue()}");
+        #set($postDeleteUrl = "${request.contextPath}/topics/${question.id.longValue()}")
       #else
         #set($postEditUrl = "${request.contextPath}/topics/question/post/${post.id.longValue()}/edit")
-        #set($postDeleteUrl = "${request.contextPath}/topics/question/post/${post.id.longValue()}");
+        #set($postDeleteUrl = "${request.contextPath}/topics/question/post/${post.id.longValue()}")
         #set($postClass = "answer")
       #end
       #if($velocityCount == 2)
@@ -125,8 +125,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             </div>
             <div class="question-votes">
               <div id="${post.id}-up" class="vote-up $voteUpClass"></div>
-              <span id="${post.id}-rating" class="vote-result $voteResultClass">$rating</span>
+              <span id="${post.id}-rating" class="vote-result $voteResultClass" own="$own">$rating</span>
               <div id="${post.id}-down" class="vote-down $votedDownClass"></div>
+              <div id="error-message-${post.id}" class="alert vote-error-popup alert-error"
+                style="display: none;"></div>
             </div>
           </div>
 

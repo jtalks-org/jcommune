@@ -120,10 +120,11 @@ $(function () {
  * @param message error message to be displayed
  */
 function showErrorPopUp(postId, message) {
-    $("#" + postId + "-down").after("<div id=\"error-message\" class=\"alert vote-error-popup alert-error\" " +
-    "style=\"display: block;\"><span>" + message + "</span></div>");
+    var errorDiv = $("#error-message-" + postId);
+    errorDiv.html("<span>" + message +"</span>");
+    errorDiv.show();
     setTimeout(function() {
-        $("#error-message").remove();
+        errorDiv.hide();
     }, 2000);
 }
 
@@ -134,7 +135,7 @@ function showErrorPopUp(postId, message) {
  * @return {boolean} true if post with specified id was created by current user, false otherwise
  */
 function isOwnPost(postId) {
-    return $("#" + postId + "-rating").hasClass("own");
+    return $("#" + postId + "-rating").attr("own") == "true";
 }
 
 /**
