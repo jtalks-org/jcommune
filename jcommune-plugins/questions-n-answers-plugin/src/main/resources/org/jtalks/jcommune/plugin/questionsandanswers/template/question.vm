@@ -125,10 +125,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             </div>
             <div class="question-votes">
               <div id="${post.id}-up" class="vote-up $voteUpClass"></div>
-              <span id="${post.id}-rating" class="vote-result $voteResultClass" own="$own">$rating</span>
+              <span id="${post.id}-rating" class="vote-result $voteResultClass"
+                    viewer-is-post-owner="$own">$rating</span>
               <div id="${post.id}-down" class="vote-down $votedDownClass"></div>
               <div id="error-message-${post.id}" class="alert vote-error-popup alert-error"
-                style="display: none;"></div>
+                style="display: none;"><span></span></div>
             </div>
           </div>
 

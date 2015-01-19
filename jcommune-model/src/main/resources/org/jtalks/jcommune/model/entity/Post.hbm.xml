@@ -43,7 +43,7 @@
             <one-to-many class="org.jtalks.jcommune.model.entity.PostComment"/>
         </bag>
 
-        <set name="votes" cascade="all-delete-orphan" inverse="true" fetch="join">
+        <set name="votes" cascade="all-delete-orphan" inverse="true">
             <cache usage="read-write"/>
             <key column="POST_ID" foreign-key="FK_VOTE_POST"/>
             <one-to-many class="org.jtalks.jcommune.model.entity.PostVote"/>
