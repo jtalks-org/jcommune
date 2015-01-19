@@ -19,6 +19,9 @@
 *.war
 *.jar
 
+#log files
+*.log
+
 # Netbeans project files
 nbproject
 
