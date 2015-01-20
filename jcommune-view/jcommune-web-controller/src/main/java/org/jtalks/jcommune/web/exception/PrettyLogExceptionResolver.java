@@ -17,17 +17,21 @@ package org.jtalks.jcommune.web.exception;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.Principal;
+import java.util.Enumeration;
+import java.util.Properties;
 
 /**
  * Catches all the exceptions thrown in controllers, logs them and directs to the error pages. The standard
- * {@link SimpleMappingExceptionResolver} wasn't sufficient because it was logging all exceptions as warnings while
+ * {@link org.springframework.web.servlet.handler.SimpleMappingExceptionResolver} wasn't sufficient because it was logging all exceptions as warnings while
  * some of them are expected and should be logged as INFO (such as 404 topic not found).
  *
  * @author Vitaliy Kravchenko
@@ -44,9 +48,9 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
     @Override
     protected void logException(Exception ex, HttpServletRequest request) {
         if (ex instanceof NotFoundException) {
-            logger.info(ex.getMessage());
+            logger.info(getLogMessage(request, ex));
         } else if (ex instanceof TypeMismatchException) {
-            logger.info(ex.getMessage());
+            logger.info(getLogMessage(request, ex));
         } else if (ex instanceof AccessDeniedException) {
             String url = request.getRequestURL().toString();
             Principal principal = request.getUserPrincipal();
@@ -56,16 +60,17 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
         } else {
             super.logException(ex, request);
         }
-        logger.info(getLogMessage(request));
     }
 
     /**
      * Get info about occured exception: request method, url, cookies and data.
      * @param request request
+     * @param ex exception
      * @return log message
      */
-    private String getLogMessage(HttpServletRequest request) {
+    private String getLogMessage(HttpServletRequest request, Exception ex) {
         String data = "";
+        String exceptionMessage = ex.getMessage();
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String line;
@@ -73,7 +78,7 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
             while ((line=reader.readLine()) != null ) {
                 stringBuilder.append(line).append("\n");
             }
-            data = stringBuilder.toString();
+            data = stringBuilder.append(exceptionMessage).toString();
         } catch (IOException e) {
             logger.warn("Could not parse data from request");
         }
@@ -83,5 +88,50 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
             url += "?" + queryString;
         }
         return String.format("[%s][%s][%s][%s]", request.getMethod(), url, request.getHeader("Cookie"), data);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response,
+                                         Object handler, Exception ex) {
+        if (shouldApplyTo(request, handler)) {
+            logException(ex, request);
+            prepareResponse(ex, response);
+            return doResolveException(request, response, handler, ex);
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected ModelAndView getModelAndView(String viewName, Exception ex) {
+        return new ModelAndView(viewName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String findMatchingViewName(Properties exceptionMappings, Exception ex) {
+        String viewName = null;
+        String dominantMapping = null;
+        int deepest = Integer.MAX_VALUE;
+        for (Enumeration<?> names = exceptionMappings.propertyNames(); names.hasMoreElements();) {
+            String exceptionMapping = (String) names.nextElement();
+            int depth = getDepth(exceptionMapping, ex);
+            if (depth >= 0 && (depth < deepest || (depth == deepest &&
+                    dominantMapping != null && exceptionMapping.length() > dominantMapping.length()))) {
+                deepest = depth;
+                dominantMapping = exceptionMapping;
+                viewName = exceptionMappings.getProperty(exceptionMapping);
+            }
+        }
+        return viewName;
     }
 }
