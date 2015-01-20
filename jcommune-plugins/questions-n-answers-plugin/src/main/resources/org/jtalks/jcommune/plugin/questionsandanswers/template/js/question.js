@@ -44,64 +44,9 @@ $(function () {
         }
     });
 
-    $(".vote-up").mouseup(function(e){
-        if (e.which != 1) {
-            return;
-        }
-        var postId = getVotedPostId($(this).attr('id'));
-        if (isOwnPost(postId)) {
-            showErrorPopUp(postId, labelVoteErrorOwnPost);
-            return;
-        }
-        if (isVotedUp(postId)) {
-            return;
-        }
-        $.ajax({
-            url: baseUrl + "/posts/" + postId + "/voteup",
-            type: "GET",
-            success: function(data) {
-                console.log("success");
-                if (isVotedDown(postId)) {
-                    changeRating($("#" + postId + "-rating"), 2);
-                } else {
-                    changeRating($("#" + postId + "-rating"), 1);
-                }
-                markVoteUpAsPressed(postId);
-            },
-            error: function() {
-                showErrorPopUp(postId, labelVoteErrorNoPermissions);
-            }
-        });
-    });
+    $(".vote-up").mouseup(voteUpHandler);
 
-    $(".vote-down").mouseup(function(e){
-        if (e.which != 1) {
-            return;
-        }
-        var postId = getVotedPostId($(this).attr('id'));
-        if (isOwnPost(postId)) {
-            showErrorPopUp(postId, labelVoteErrorOwnPost);
-            return;
-        }
-        if (isVotedDown(postId)) {
-            return;
-        }
-        $.ajax({
-            url: baseUrl + "/posts/" + postId + "/votedown",
-            type: "GET",
-            success: function() {
-                if (isVotedUp(postId)) {
-                    changeRating($("#" + postId + "-rating"), -2);
-                } else {
-                    changeRating($("#" + postId + "-rating"), -1);
-                }
-                markVoteDownAsPressed(postId);
-            },
-            error: function() {
-                showErrorPopUp(postId, labelVoteErrorNoPermissions);
-            }
-        });
-    });
+    $(".vote-down").mouseup(voteDownHandler);
 
     $('#answer').click(function(e){
         e.preventDefault();
@@ -112,6 +57,73 @@ $(function () {
         $('#postBody').focus();
     }
 });
+
+var voteUpHandler = function voteUp(e) {
+    if (e.which != 1) {
+        return;
+    }
+    var postId = getVotedPostId($(this).attr('id'));
+    if (isOwnPost(postId)) {
+        showErrorPopUp(postId, labelVoteErrorOwnPost);
+        return;
+    }
+    if (isVotedUp(postId)) {
+        return;
+    }
+    $(".vote-up").unbind("mouseup");
+    $.ajax({
+        url: baseUrl + "/posts/" + postId + "/voteup",
+        type: "GET",
+        success: function(data) {
+            console.log("success");
+            if (isVotedDown(postId)) {
+                changeRating($("#" + postId + "-rating"), 2);
+            } else {
+                changeRating($("#" + postId + "-rating"), 1);
+            }
+            markVoteUpAsPressed(postId);
+        },
+        error: function() {
+            showErrorPopUp(postId, labelVoteErrorNoPermissions);
+        }
+    });
+    setTimeout(function() {
+        $(".vote-up").mouseup(voteUpHandler);
+    }, 1000);
+}
+
+var voteDownHandler = function voteDown(e) {
+    if (e.which != 1) {
+        return;
+    }
+    var postId = getVotedPostId($(this).attr('id'));
+    if (isOwnPost(postId)) {
+        showErrorPopUp(postId, labelVoteErrorOwnPost);
+        return;
+    }
+    if (isVotedDown(postId)) {
+        return;
+    }
+    $(".vote-down").unbind("mouseup");
+    $.ajax({
+        url: baseUrl + "/posts/" + postId + "/votedown",
+        type: "GET",
+        success: function() {
+            if (isVotedUp(postId)) {
+                changeRating($("#" + postId + "-rating"), -2);
+            } else {
+                changeRating($("#" + postId + "-rating"), -1);
+            }
+            markVoteDownAsPressed(postId);
+        },
+        error: function() {
+            showErrorPopUp(postId, labelVoteErrorNoPermissions);
+        }
+    });
+    setTimeout(function() {
+        $(".vote-down").mouseup(voteDownHandler);
+    }, 1000);
+}
 
 /**
  * Shows pop-up with vote error message

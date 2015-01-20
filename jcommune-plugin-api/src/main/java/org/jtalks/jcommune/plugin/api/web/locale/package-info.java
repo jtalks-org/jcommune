@@ -15,4 +15,4 @@
 /**
  * Provides package with custom locale resolvers
  */
-package org.jtalks.jcommune.web.locale;
+package org.jtalks.jcommune.plugin.api.web.locale;

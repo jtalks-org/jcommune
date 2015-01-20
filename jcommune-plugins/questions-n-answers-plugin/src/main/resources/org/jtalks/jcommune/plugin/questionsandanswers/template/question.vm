@@ -21,11 +21,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/userStats.vm")
 <head>
   <script>
-    var labelVoteErrorNoPermissions="";
-    #if(${currentUser.anonymous})
-      labelVoteErrorNoPermissions = "${messages.getString("label.vote.error.not.registered")}";
+    #if(!${currentUser.anonymous})
+      var labelVoteErrorNoPermissions = "${messages.getString("label.vote.error.no.permissions")}";
     #else
-      labelVoteErrorNoPermissions = "${messages.getString("label.vote.error.no.permissions")}";
+      var labelVoteErrorNoPermissions = "${messages.getString("label.vote.error.not.registered")}";
     #end
     var labelVoteErrorOwnPost = "${messages.getString("label.vote.error.own.post")}";
   </script>

@@ -34,6 +34,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.LocaleResolver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -41,6 +42,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 
 import static org.mockito.Matchers.any;
@@ -76,6 +78,9 @@ public class QuestionsAndAnswersControllerTest {
     private BindingResult result;
     @Mock
     private PluginLocationService locationService;
+    @Mock
+    private LocaleResolver localeResolver;
+
     @Spy
     private QuestionsAndAnswersController controller = new QuestionsAndAnswersController();
     private String content = "some html";
@@ -91,6 +96,8 @@ public class QuestionsAndAnswersControllerTest {
         when(controller.getProperties()).thenReturn(new Properties());
         when(controller.getUserReader()).thenReturn(userReader);
         when(controller.getLocationService()).thenReturn(locationService);
+        when(controller.getLocaleResolver()).thenReturn(localeResolver);
+        when(localeResolver.resolveLocale(any(HttpServletRequest.class))).thenReturn(Locale.ENGLISH);
         when(userReader.getCurrentUser()).thenReturn(new JCUser("name", "example@mail.ru", "pwd"));
         controller.setApplicationContext(context);
         controller.setBreadcrumbBuilder(breadcrumbBuilder);
@@ -164,7 +171,7 @@ public class QuestionsAndAnswersControllerTest {
     @Test
     public void showQuestionSuccessTest() throws Exception {
         Branch branch = new Branch("name", "description");
-        Topic topic = new Topic();
+        Topic topic = createTopic();
         topic.setBranch(branch);
         Model model = new ExtendedModelMap();
 
@@ -445,6 +452,7 @@ public class QuestionsAndAnswersControllerTest {
         Topic topic = new Topic();
         topic.setId(42L);
         topic.setBranch(branch);
+        topic.addPost(new Post(null, null));
         return topic;
     }
 

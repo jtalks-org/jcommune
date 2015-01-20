@@ -34,6 +34,7 @@ import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwa
 import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
+import org.jtalks.jcommune.plugin.api.web.locale.JcLocaleResolver;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.PermissionTool;
@@ -47,6 +48,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -189,7 +191,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         getTypeAwarePluginTopicService().checkViewTopicPermission(topic.getBranch().getId());
         Map<String, Object> data = getDefaultModel(request);
         data.put(QUESTION, topic);
-        data.put(POST_PAGE, new PageImpl<>(topic.getPosts()));
+        data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getPosts())));
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(SUBSCRIBED, false);
         data.put(CONVERTER, BbToHtmlConverter.getInstance());
@@ -417,6 +419,21 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     }
 
     /**
+     * Gets copy of specified collection of posts sorted by rating and creation date
+     *
+     * @param posts collection of posts to sort
+     *
+     * @return collection of posts sorted by rating and creation date
+     */
+    private List<Post> getSortedPosts(List<Post> posts) {
+        List<Post> result = new ArrayList<>(posts);
+        Post question = result.remove(0);
+        Collections.sort(result, new PostComparator());
+        result.add(0, question);
+        return result;
+    }
+
+    /**
      * Writes icon to response and set apropriate response geaders
      *
      * @param request HttpServletRequest
@@ -451,12 +468,12 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     /**
      * Gets resource bundle with locale of current user
      *
-     * @param currentUser current user
+     * @param request http servlet request
      *
      * @return resource bundle with locale of current user
      */
-    private ResourceBundle getLocalizedMessagesBundle(JCUser currentUser) {
-        return ResourceBundle.getBundle(MESSAGE_PATH, currentUser.getLanguage().getLocale());
+    private ResourceBundle getLocalizedMessagesBundle(HttpServletRequest request) {
+        return ResourceBundle.getBundle(MESSAGE_PATH, getLocaleResolver().resolveLocale(request));
     }
 
     /**
@@ -499,7 +516,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         JCUser currentUser = getUserReader().getCurrentUser();
         PermissionTool tool = new PermissionTool(applicationContext);
         model.put("currentUser", currentUser);
-        model.put("messages", getLocalizedMessagesBundle(currentUser));
+        model.put("messages", getLocalizedMessagesBundle(request));
         model.put("permissionTool", tool);
         return model;
     }
@@ -509,6 +526,13 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      */
     public void setApiPath(String apiPath) {
         this.apiPath = apiPath;
+    }
+
+    /**
+     * Needed for mocking
+     */
+    LocaleResolver getLocaleResolver() {
+        return  JcLocaleResolver.getInstance();
     }
 
     /**
@@ -565,5 +589,13 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      */
     void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
         this.breadcrumbBuilder = breadcrumbBuilder;
+    }
+
+    private static class PostComparator implements Comparator<Post> {
+        @Override
+        public int compare(Post o1, Post o2) {
+            return o1.getRating() == o2.getRating() ? o2.getCreationDate().compareTo(o1.getCreationDate()) :
+                    o2.getRating() - o1.getRating();
+        }
     }
 }
