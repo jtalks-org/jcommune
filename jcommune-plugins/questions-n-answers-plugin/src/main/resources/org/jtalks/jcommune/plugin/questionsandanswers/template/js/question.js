@@ -120,11 +120,10 @@ $(function () {
  * @param message error message to be displayed
  */
 function showErrorPopUp(postId, message) {
-    var errorDiv = $("#error-message-" + postId);
-    errorDiv.html("<span>" + message +"</span>");
-    errorDiv.show();
+    $('#error-message-' + postId + " > span").text(message)
+    $("#error-message-" + postId).show();
     setTimeout(function() {
-        errorDiv.hide();
+        $("#error-message-" + postId).hide();
     }, 2000);
 }
 
@@ -135,7 +134,7 @@ function showErrorPopUp(postId, message) {
  * @return {boolean} true if post with specified id was created by current user, false otherwise
  */
 function isOwnPost(postId) {
-    return $("#" + postId + "-rating").attr("own") == "true";
+    return $("#" + postId + "-rating").attr("viewer-is-post-owner") == "true";
 }
 
 /**
