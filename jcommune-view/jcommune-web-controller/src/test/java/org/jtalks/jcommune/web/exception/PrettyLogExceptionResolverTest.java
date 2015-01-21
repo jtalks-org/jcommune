@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.exception;
 
 import org.apache.commons.logging.Log;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,12 +44,27 @@ public class PrettyLogExceptionResolverTest {
     @Test
     public void testLogExceptionWithIncomingNotFoundException() throws Exception {
         Log mockLog = replaceLoggerWithMock(prettyLogExceptionResolver);
-        NotFoundException notFoundException = new NotFoundException("Entity not found");
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        NotFoundException notFoundException = new NotFoundException("Entity not found");
+        String logMessage = String.format("[%s][%s][%s][%s]", request.getMethod(), request.getRequestURL().toString(),
+                request.getHeader("Cookie"), "Entity not found");
         request.setContent("".getBytes());
         prettyLogExceptionResolver.logException(notFoundException, request);
 
-        verify(mockLog).info("Entity not found");
+        verify(mockLog).info(logMessage);
+    }
+
+    @Test
+    public void testLogExceptionWithIncomingTypeMismatchException() throws Exception {
+        Log mockLog = replaceLoggerWithMock(prettyLogExceptionResolver);
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        TypeMismatchException typeMismatchException = new TypeMismatchException("Not a number", Number.class);
+        String logMessage = String.format("[%s][%s][%s][%s]", request.getMethod(), request.getRequestURL().toString(),
+                request.getHeader("Cookie"), typeMismatchException.getMessage());
+        request.setContent("".getBytes());
+        prettyLogExceptionResolver.logException(typeMismatchException, request);
+
+        verify(mockLog).info(logMessage);
     }
 
     @Test
@@ -82,6 +98,7 @@ public class PrettyLogExceptionResolverTest {
     private Log replaceLoggerWithMock(PrettyLogExceptionResolver resolver) throws Exception {
         Log mockLog = mock(Log.class);
         Field loggerField = ReflectionUtils.findField(PrettyLogExceptionResolver.class, "logger");
+        assert loggerField != null;
         loggerField.setAccessible(true);
         loggerField.set(resolver, mockLog);
         return mockLog;
