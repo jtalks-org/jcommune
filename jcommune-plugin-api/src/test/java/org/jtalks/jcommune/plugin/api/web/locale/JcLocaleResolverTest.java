@@ -12,12 +12,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.locale;
+package org.jtalks.jcommune.plugin.api.web.locale;
 
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.plugin.api.service.UserReader;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -38,23 +38,24 @@ import static org.testng.Assert.*;
  */
 public class JcLocaleResolverTest {
     @Mock
-    private UserService userService;
+    private UserReader userReader;
     @Mock
     private HttpServletRequest request;
 
     @BeforeMethod
     public void init() {
         initMocks(this);
+        JcLocaleResolver resolver = (JcLocaleResolver) JcLocaleResolver.getInstance();
+        resolver.setUserReader(userReader);
     }
 
     @Test
     public void resolveLocaleShouldReturnUserLocaleIfUserLoggedIn() {
-        JcLocaleResolver localeResolver = new JcLocaleResolver(userService);
         JCUser currentUser = new JCUser("username", "email@mail.ru", "password");
         currentUser.setLanguage(Language.ENGLISH);
-        when(userService.getCurrentUser()).thenReturn(currentUser);
+        when(userReader.getCurrentUser()).thenReturn(currentUser);
 
-        Locale result = localeResolver.resolveLocale(request);
+        Locale result = JcLocaleResolver.getInstance().resolveLocale(request);
 
         assertEquals(result, currentUser.getLanguage().getLocale());
         verify(request).setAttribute(CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME, Locale.ENGLISH);
@@ -62,14 +63,13 @@ public class JcLocaleResolverTest {
 
     @Test
     public void resolveLocaleShouldReturnRequestLocaleIfUserAnonymous() {
-        JcLocaleResolver localeResolver = new JcLocaleResolver(userService);
         AnonymousUser user = new AnonymousUser();
         user.setLanguage(Language.SPANISH);
         Locale defaultLocale = Language.ENGLISH.getLocale();
-        when(userService.getCurrentUser()).thenReturn(user);
+        when(userReader.getCurrentUser()).thenReturn(user);
         when(request.getLocale()).thenReturn(defaultLocale);
 
-        Locale result = localeResolver.resolveLocale(request);
+        Locale result = JcLocaleResolver.getInstance().resolveLocale(request);
 
         assertEquals(result, defaultLocale);
     }
@@ -80,13 +80,12 @@ public class JcLocaleResolverTest {
      */
     @Test
     public void resolveLocaleShouldNotRetrieveCurrentUserIfRequestLocaleAttributeNotNull() {
-        JcLocaleResolver localeResolver = new JcLocaleResolver(userService);
         Locale locale = Locale.ENGLISH;
         when(request.getAttribute(CookieLocaleResolver.LOCALE_REQUEST_ATTRIBUTE_NAME)).thenReturn(locale);
 
-        Locale result = localeResolver.resolveLocale(request);
+        Locale result = JcLocaleResolver.getInstance().resolveLocale(request);
 
         assertEquals(result, locale);
-        verify(userService, never()).getCurrentUser();
+        verify(userReader, never()).getCurrentUser();
     }
 }

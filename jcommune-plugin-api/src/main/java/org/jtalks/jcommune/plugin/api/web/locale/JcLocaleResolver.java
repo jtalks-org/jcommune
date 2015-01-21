@@ -12,11 +12,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.locale;
+package org.jtalks.jcommune.plugin.api.web.locale;
 
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.plugin.api.service.UserReader;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +30,19 @@ import java.util.Locale;
  */
 public class JcLocaleResolver extends CookieLocaleResolver {
 
-    private UserService userService;
+    private static final LocaleResolver INSTANCE = new JcLocaleResolver();
 
-    public JcLocaleResolver(UserService userService) {
-        this.userService = userService;
+    private UserReader userReader;
+
+    private JcLocaleResolver() {
+    }
+
+    public static LocaleResolver getInstance() {
+        return INSTANCE;
+    }
+
+    public void setUserReader(UserReader userReader) {
+        this.userReader = userReader;
     }
 
     /**
@@ -49,7 +59,7 @@ public class JcLocaleResolver extends CookieLocaleResolver {
             return locale;
         }
 
-        JCUser currentUser = userService.getCurrentUser();
+        JCUser currentUser = userReader.getCurrentUser();
         if (currentUser.isAnonymous()) {
             locale = super.resolveLocale(request);
         } else {
