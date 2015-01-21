@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 </head>
 <body>
   <div class="container">
-    <h2><a class="heading" href="${pageContext.request.contextPath}/topics/question/${postDto.topicId}">
+    <h2><a class="heading" href="${request.contextPath}/topics/question/${postDto.topicId}">
       ${questionTitle}
     </a></h2>
 

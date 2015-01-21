@@ -75,7 +75,6 @@ var voteUpHandler = function voteUp(e) {
         url: baseUrl + "/posts/" + postId + "/voteup",
         type: "GET",
         success: function(data) {
-            console.log("success");
             if (isVotedDown(postId)) {
                 changeRating($("#" + postId + "-rating"), 2);
             } else {
