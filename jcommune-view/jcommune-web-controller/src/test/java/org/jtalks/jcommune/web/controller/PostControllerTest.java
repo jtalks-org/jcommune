@@ -15,12 +15,14 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
+import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
@@ -73,6 +75,8 @@ public class PostControllerTest {
     private LocationService locationService;
     @Mock
     private SessionRegistry sessionRegistry;
+    @Mock
+    private EntityToDtoConverter converter;
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
@@ -105,7 +109,7 @@ public class PostControllerTest {
 
         controller = new PostController(
                 postService, breadcrumbBuilder, topicFetchService, topicModificationService,
-                bbCodeService, lastReadPostService, userService, locationService, sessionRegistry);
+                bbCodeService, lastReadPostService, userService, locationService, sessionRegistry, converter);
     }
 
     @Test
@@ -188,6 +192,10 @@ public class PostControllerTest {
     @Test
     public void testSubmitAnswerValidationPass() throws NotFoundException {
         BeanPropertyBindingResult resultWithoutErrors = mock(BeanPropertyBindingResult.class);
+        TopicDto dto = new TopicDto(post.getTopic());
+        dto.setTopicUrl("/topics/" + TOPIC_ID);
+
+        when(converter.convertTopicToDto(any(Topic.class))).thenReturn(dto);
         when(resultWithoutErrors.hasErrors()).thenReturn(false);
         when(topicModificationService.replyToTopic(anyLong(), Matchers.<String>any(), eq(BRANCH_ID))).thenReturn(post);
         when(postService.calculatePageForPost(post)).thenReturn(1);
@@ -198,7 +206,7 @@ public class PostControllerTest {
         verify(topicModificationService).replyToTopic(TOPIC_ID, POST_CONTENT, BRANCH_ID);
 
         //check result
-        assertViewName(mav, "redirect:/topics/" + TOPIC_ID + "?page=1#" + POST_ID);
+        assertViewName(mav, "redirect:" + dto.getTopicUrl() + "?page=1#" + POST_ID);
 
     }
 
@@ -218,11 +226,15 @@ public class PostControllerTest {
 
     @Test
     public void testRedirectToPageWithPost() throws NotFoundException {
+        TopicDto dto = new TopicDto(post.getTopic());
+        dto.setTopicUrl("/topics/" + TOPIC_ID);
+
+        when(converter.convertTopicToDto(any(Topic.class))).thenReturn(dto);
         when(postService.calculatePageForPost(post)).thenReturn(5);
 
         String result = controller.redirectToPageWithPost(POST_ID);
 
-        assertEquals(result, "redirect:/topics/" + TOPIC_ID + "?page=5#" + POST_ID);
+        assertEquals(result, "redirect:" + dto.getTopicUrl() + "?page=5#" + POST_ID);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
@@ -292,11 +304,8 @@ public class PostControllerTest {
 
         @Override
         public boolean matches(Object o) {
-            if (o instanceof PostVote) {
-                //should be both true or both false
-                return !(isVotedUp ^ ((PostVote)o).isVotedUp());
-            }
-            return false;
+            //should be both true or both false
+            return o instanceof PostVote && !(isVotedUp ^ ((PostVote) o).isVotedUp());
         }
     }
 /*    @Test
