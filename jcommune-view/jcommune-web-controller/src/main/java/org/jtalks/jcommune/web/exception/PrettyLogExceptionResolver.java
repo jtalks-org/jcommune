@@ -22,9 +22,7 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.Properties;
@@ -97,6 +95,9 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response,
                                          Object handler, Exception ex) {
         if (shouldApplyTo(request, handler)) {
+            if(logger.isDebugEnabled()) {
+                logger.debug(request,ex);
+            }
             logException(ex, request);
             prepareResponse(ex, response);
             return doResolveException(request, response, handler, ex);
