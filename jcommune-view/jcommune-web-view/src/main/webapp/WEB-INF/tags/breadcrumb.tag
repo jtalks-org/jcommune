@@ -31,7 +31,7 @@
       <c:choose>
             <%--create root breadcrumb--%>
         <c:when test="${breadcrumb.value == 'Forum'}">
-          <a href="${pageContext.request.contextPath}/${breadcrumb.breadcrumbLocation.name}">
+          <a href="${pageContext.request.contextPath}/">
             <fmt:message key="label.forum"/>
           </a>
         </c:when>
