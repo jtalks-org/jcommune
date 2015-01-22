@@ -25,6 +25,7 @@ import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
+import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
@@ -74,7 +75,7 @@ public class PostController {
     private UserService userService;
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
-
+    private EntityToDtoConverter converter;
 
     @Autowired(required = true)
     private ViewResolver viewResolver;
@@ -100,12 +101,15 @@ public class PostController {
      * @param bbCodeService            to create valid quotes
      * @param lastReadPostService      not to track user posts as updates for himself
      * @param userService              to get the current user information
+     * @param converter                instance of {@link org.jtalks.jcommune.web.dto.EntityToDtoConverter} needed to
+     *                                 obtain link to the topic
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
                           TopicFetchService topicFetchService, TopicModificationService topicModificationService,
                           BBCodeService bbCodeService, LastReadPostService lastReadPostService,
-                          UserService userService, LocationService locationService, SessionRegistry sessionRegistry) {
+                          UserService userService, LocationService locationService, SessionRegistry sessionRegistry,
+                          EntityToDtoConverter converter) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicFetchService = topicFetchService;
@@ -115,6 +119,7 @@ public class PostController {
         this.userService = userService;
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
+        this.converter = converter;
     }
 
     /**
@@ -274,6 +279,9 @@ public class PostController {
      * Method clients should not wary about paging at all, post id
      * is enough to be transferred to the proper page.
      *
+     * If post belongs to plugable topic and  appropriated plugin is enabled redirects
+     * to plugable topic view.
+     *
      * @param postId unique post identifier
      * @return redirect view to the certain topic page
      * @throws NotFoundException is the is no post for the identifier given
@@ -282,13 +290,8 @@ public class PostController {
     public String redirectToPageWithPost(@PathVariable Long postId) throws NotFoundException {
         Post post = postService.get(postId);
         int page = postService.calculatePageForPost(post);
-        return new StringBuilder("redirect:/topics/")
-                .append(post.getTopic().getId())
-                .append("?page=")
-                .append(page)
-                .append("#")
-                .append(postId)
-                .toString();
+        String topicUrl = converter.convertTopicToDto(post.getTopic()).getTopicUrl();
+        return "redirect:" + topicUrl + "?page=" + page + "#" + postId;
     }
 
     /**
