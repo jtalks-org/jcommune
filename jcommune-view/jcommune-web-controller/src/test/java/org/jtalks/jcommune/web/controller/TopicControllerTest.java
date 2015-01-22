@@ -22,7 +22,7 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
+import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.mockito.Matchers;

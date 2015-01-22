@@ -26,7 +26,7 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
+import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.web.util.ForumStatisticsProvider;
 import org.mockito.Mock;
 import org.springframework.data.domain.Page;

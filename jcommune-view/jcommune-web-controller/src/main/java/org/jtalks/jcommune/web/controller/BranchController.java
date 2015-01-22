@@ -32,7 +32,7 @@ import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
-import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
+import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.PermissionEvaluator;

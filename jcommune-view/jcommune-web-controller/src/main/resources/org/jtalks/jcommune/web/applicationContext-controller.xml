@@ -84,8 +84,5 @@
     </property>
   </bean>
 
-  <bean id="entityToDtoConverter" class="org.jtalks.jcommune.web.dto.EntityToDtoConverter">
-      <constructor-arg ref="pluginLoader"/>
-  </bean>
 </beans>
 

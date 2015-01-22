@@ -18,6 +18,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.tools.generic.EscapeTool;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,7 @@ public class MailService {
     private final MessageSource messageSource;
     private final JCommuneProperty notificationsEnabledProperty;
     private final EscapeTool escapeTool;
+    private final EntityToDtoConverter converter;
 
     /**
      * Creates a mailing service with a default template message autowired.
@@ -92,13 +94,15 @@ public class MailService {
                        VelocityEngine engine,
                        MessageSource source,
                        JCommuneProperty notificationsEnabledProperty,
-                       EscapeTool escapeTool) {
+                       EscapeTool escapeTool,
+                       EntityToDtoConverter converter) {
         this.mailSender = sender;
         this.from = from;
         this.velocityEngine = engine;
         this.messageSource = source;
         this.notificationsEnabledProperty = notificationsEnabledProperty;
         this.escapeTool = escapeTool;
+        this.converter = converter;
     }
 
     /**
@@ -225,7 +229,7 @@ public class MailService {
      * @param topic     relocated topic
      */
     public void sendTopicMovedMail(JCUser recipient, Topic topic) {
-        String urlSuffix = "/topics/" + topic.getId();
+        String urlSuffix = getTopicUrlSuffix(topic);
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
         Map<String, Object> model = new HashMap<>();
@@ -250,7 +254,7 @@ public class MailService {
      * @param curUser   User that moved topic
      */
     public void sendTopicMovedMail(JCUser recipient, Topic topic, String curUser) {
-        String urlSuffix = "/topics/" + topic.getId();
+        String urlSuffix = getTopicUrlSuffix(topic);
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
         Map<String, Object> model = new HashMap<>();
@@ -480,7 +484,7 @@ public class MailService {
      */
     void sendTopicCreationMail(JCUser subscriber, Topic topic) {
         try {
-            String urlSuffix = "/topics/" + topic.getId();
+            String urlSuffix = getTopicUrlSuffix(topic);
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = subscriber.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<>();
@@ -507,5 +511,16 @@ public class MailService {
             return result.replace("{0}", "" + ((Post) entity).getTopic().getBranch().getId());
         }
         return null;
+    }
+
+    /**
+     * Gets url suffix of specified topic. Urls of topics provided by plugins can differ
+     *
+     * @param topic topic to get url
+     *
+     * @return url of specified topic
+     */
+    private String getTopicUrlSuffix(Topic topic) {
+        return converter.convertTopicToDto(topic).getTopicUrl();
     }
 }
