@@ -243,7 +243,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
     public String saveDraft(@Valid @ModelAttribute PrivateMessageDto pmDto, BindingResult result) {
         String targetView = "redirect:/drafts";
-        if (result.hasErrors()) {
+        if (result.hasFieldErrors("body")) {
             return PM_FORM;
         }
 
