@@ -24,6 +24,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.*;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
+import org.jtalks.jcommune.plugin.api.web.locale.JcLocaleResolver;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin;
 import org.mockito.Mock;
@@ -105,6 +106,8 @@ public class QuestionsAndAnswersControllerTest {
         when(locationService.getUsersViewing(any(Entity.class))).thenReturn(Collections.EMPTY_LIST);
         doReturn(content).when(controller).getMergedTemplate(any(VelocityEngine.class), anyString(),
                 anyString(), anyMap());
+        when(userReader.getCurrentUser()).thenReturn(new JCUser("name", "example@mail.ru", "pwd"));
+        ((JcLocaleResolver)JcLocaleResolver.getInstance()).setUserReader(userReader);
     }
 
     @Test

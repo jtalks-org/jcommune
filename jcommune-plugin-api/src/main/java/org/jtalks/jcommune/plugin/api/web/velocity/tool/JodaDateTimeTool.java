@@ -18,6 +18,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.jtalks.jcommune.plugin.api.web.locale.JcLocaleResolver;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -38,9 +39,11 @@ public class JodaDateTimeTool {
 
     private DateTimeFormatter formatter = DateTimeFormat.forPattern(DATE_FORMAT_PATTERN);
     private long offset = DEFAULT_OFFSET;
+    private Locale locale = Locale.ENGLISH;
 
     public JodaDateTimeTool(HttpServletRequest request) {
         if (request != null) {
+            locale = JcLocaleResolver.getInstance().resolveLocale(request);
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
@@ -58,10 +61,9 @@ public class JodaDateTimeTool {
      * Example: 01 Jan 2011 05:13
      *
      * @param dateTime Date and time to be converted to string
-     * @param locale locale to be used
      * @return dateTime string representation
      */
-    public String format(DateTime dateTime, Locale locale) {
+    public String format(DateTime dateTime) {
         if (dateTime == null) {
             return "";
         }
