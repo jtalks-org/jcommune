@@ -70,6 +70,7 @@
     <constructor-arg ref="messageSource"/>
     <constructor-arg ref="sendingNotificationsProperty"/>
     <constructor-arg ref="velocityEscapeTool"/>
+    <constructor-arg ref="entityToDtoConverter"/>
   </bean>
 
   <bean id="notificationService" class="org.jtalks.jcommune.service.nontransactional.NotificationService">

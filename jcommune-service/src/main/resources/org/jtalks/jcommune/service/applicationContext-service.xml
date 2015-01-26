@@ -449,6 +449,10 @@
     <property name="locationService" ref="locationService"/>
   </bean>
 
+  <bean id="entityToDtoConverter" class="org.jtalks.jcommune.service.dto.EntityToDtoConverter">
+      <constructor-arg ref="pluginLoader"/>
+  </bean>
+
   <beans profile="performance">
     <!-- JETM implementation using bean -->
     <bean id="etmMonitor" class="etm.core.monitor.NestedMonitor" init-method="start" destroy-method="stop"/>

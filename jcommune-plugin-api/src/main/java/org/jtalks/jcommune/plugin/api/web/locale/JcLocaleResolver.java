@@ -68,4 +68,14 @@ public class JcLocaleResolver extends CookieLocaleResolver {
         request.setAttribute(LOCALE_REQUEST_ATTRIBUTE_NAME, locale);
         return locale;
     }
+
+    /**
+     * Method delegated following DRY principle. Default locale should be determined in single place. In our case -
+     * in xml configuration.
+     * {@inheritDoc}
+     */
+    @Override
+    public Locale getDefaultLocale() {
+        return super.getDefaultLocale();
+    }
 }

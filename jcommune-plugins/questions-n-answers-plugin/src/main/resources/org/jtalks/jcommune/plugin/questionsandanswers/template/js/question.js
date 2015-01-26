@@ -145,7 +145,7 @@ function showErrorPopUp(postId, message) {
  * @return {boolean} true if post with specified id was created by current user, false otherwise
  */
 function isOwnPost(postId) {
-    return $("#" + postId + "-rating").attr("viewer-is-post-owner") == "true";
+    return $("#" + postId + "-rating").attr("data-viewer-is-post-owner") == "true";
 }
 
 /**

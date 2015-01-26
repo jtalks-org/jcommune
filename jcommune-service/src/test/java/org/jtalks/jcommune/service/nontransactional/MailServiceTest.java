@@ -19,6 +19,8 @@ import org.apache.velocity.tools.generic.EscapeTool;
 import org.jtalks.common.model.entity.Property;
 import org.jtalks.jcommune.model.dao.PropertyDao;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
+import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.mockito.ArgumentCaptor;
@@ -64,6 +66,8 @@ public class MailServiceTest {
     private PropertyDao propertyDao;
     @Mock
     private MailSender sender;
+    @Mock
+    private EntityToDtoConverter converter;
     private JCommuneProperty notificationsEnabledProperty = SENDING_NOTIFICATIONS_ENABLED;
     //
     private MailService service;
@@ -73,6 +77,7 @@ public class MailServiceTest {
     private Branch branch = new Branch("title Branch", "description");
     private ArgumentCaptor<MimeMessage> captor;
     private ReloadableResourceBundleMessageSource messageSource;
+    private TopicDto topicDto = new TopicDto(topic);
     private long topicId = 777;
     private long branchId = 7;
 
@@ -91,9 +96,11 @@ public class MailServiceTest {
         messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages");
         service = new MailService(sender, FROM, velocityEngine, messageSource, notificationsEnabledProperty,
-                new EscapeTool());
+                new EscapeTool(), converter);
         MimeMessage message = new MimeMessage((Session) null);
         when(sender.createMimeMessage()).thenReturn(message);
+        topicDto.setTopicUrl("/topics/" + topicId);
+        when(converter.convertTopicToDto(any(Topic.class))).thenReturn(topicDto);
         captor = ArgumentCaptor.forClass(MimeMessage.class);
         topic.setId(topicId);
         branch.setId(branchId);

@@ -125,7 +125,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <div class="question-votes">
               <div id="${post.id}-up" class="vote-up $voteUpClass"></div>
               <span id="${post.id}-rating" class="vote-result $voteResultClass"
-                    viewer-is-post-owner="$own">$rating</span>
+                    data-viewer-is-post-owner="$own">$rating</span>
               <div id="${post.id}-down" class="vote-down $votedDownClass"></div>
               <div id="error-message-${post.id}" class="alert vote-error-popup alert-error"
                 style="display: none;"><span></span></div>
@@ -190,7 +190,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 </div>
               <div class="question-date pull-right">
                 <i class="icon-calendar"></i>
-                  ${dateTool.format(${post.creationDate}, ${currentUser.language.locale})}
+                  ${dateTool.format(${post.creationDate})}
               </div>
 
             </div>

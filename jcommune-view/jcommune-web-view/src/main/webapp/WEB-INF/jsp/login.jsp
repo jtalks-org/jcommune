@@ -40,10 +40,7 @@
         <label for="userName" class="control-label"><spring:message code="label.username"/> </label>
 
         <div class="controls">
-            <c:if test="${not empty param.login_error}">
-                <c:set var="username" scope="request" value="${param.username}"/>
-            </c:if>
-            <form:input class="reg_input" type="text" path="userName" id="userName" value="${username}"/>
+            <form:input class="reg_input" type="text" path="userName" id="dialog-userName" value="${param.username}"/>
         </div>
       </div>
 
@@ -51,7 +48,7 @@
         <label for="password" class="control-label"><spring:message code="label.password"/> </label>
 
         <div class="controls">
-            <form:input type="password" path="password" id="password"/>
+            <form:input type="password" path="password" id="dialog-password"/>
           <c:if test="${not empty param.login_error}">
             <span class="help-inline">
               <c:choose>

@@ -18,7 +18,7 @@ import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.TopicFetchService;
-import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
+import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
