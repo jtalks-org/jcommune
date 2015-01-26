@@ -155,6 +155,9 @@
               <c:set var="edit_url"
                      value="${pageContext.request.contextPath}/topics/${topic.id}/edit"/>
               <c:set var="confirm_message" value="label.deleteTopicConfirmation"/>
+              <c:if test="${topic.codeReview}">
+                <c:set var="confirm_message" value="label.deleteCodeReviewConfirmation"/>
+              </c:if>
             </c:when>
             <c:otherwise>
               <%-- url to delete & edit post --%>
