@@ -95,10 +95,8 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response,
                                          Object handler, Exception ex) {
         if (shouldApplyTo(request, handler)) {
-            if(logger.isDebugEnabled()) {
-                logger.debug(request,ex);
-            }
             logException(ex, request);
+            logger.debug(request,ex);
             prepareResponse(ex, response);
             return doResolveException(request, response, handler, ex);
         }
