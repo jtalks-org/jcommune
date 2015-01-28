@@ -41,6 +41,10 @@
 
         <div class="controls">
             <form:input class="reg_input" type="text" path="userName" id="dialog-userName" value="${param.username}"/>
+            <%-- Needed to highlight username input when login error occured--%>
+            <c:if test="${not empty param.login_error}">
+                <span class="help-inline"/>
+            </c:if>
         </div>
       </div>
 
@@ -50,7 +54,7 @@
         <div class="controls">
             <form:input type="password" path="password" id="dialog-password"/>
           <c:if test="${not empty param.login_error}">
-            <span class="help-inline">
+            <span class="help-inline show">
               <c:choose>
                 <c:when test="${param.login_error == 1}">
                   <spring:message code="label.login_error"/>
