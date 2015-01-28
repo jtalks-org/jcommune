@@ -17,8 +17,10 @@ package org.jtalks.jcommune.web.exception;
 
 import org.apache.commons.logging.Log;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.mockito.InOrder;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.util.ReflectionUtils;
@@ -93,6 +95,21 @@ public class PrettyLogExceptionResolverTest {
         prettyLogExceptionResolver.logException(exception, request);
 
         verify(mockLog, times(1)).info(anyString());
+    }
+
+    @Test
+    public void testResolveExceptionFirstlyLogExceptionThenDebug() throws Exception {
+        Log mockLog = replaceLoggerWithMock(prettyLogExceptionResolver);
+        Exception exception = new Exception();
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        Object handler = new Object();
+        request.setContent("".getBytes());
+        prettyLogExceptionResolver.resolveException(request, response, handler, exception);
+
+        InOrder inOrder = inOrder(mockLog);
+        inOrder.verify(mockLog, times(1)).info(anyString());
+        inOrder.verify(mockLog, times(1)).debug(request,exception);
     }
 
     private Log replaceLoggerWithMock(PrettyLogExceptionResolver resolver) throws Exception {
