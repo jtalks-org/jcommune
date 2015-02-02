@@ -21,6 +21,9 @@
 <%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 
 <form:hidden path="userProfileDto.userId"/>
+<form:hidden path="userProfileDto.registrationDate"/>
+<form:hidden path="userProfileDto.lastLogin"/>
+<form:hidden path="userProfileDto.postCount"/>
 
 <div class="user-profile-top-buttons">
   <c:if test="${param.isCanEditProfile}">
