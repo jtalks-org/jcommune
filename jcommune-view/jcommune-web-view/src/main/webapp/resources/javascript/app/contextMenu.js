@@ -21,6 +21,46 @@
  */
 
 jQuery(document).ready(function () {
+    var validOptions = [];
+    var recipientField = $('#recipient');
+    recipientField.autocomplete({
+        source : function(request, response) {
+            $.ajax({
+                type: 'POST',
+                url: baseUrl + '/usernames',
+                data: {pattern: recipientField.val()},
+                success: function (data) {
+                    if (data.result && data.result.length > 0) {
+                        validOptions = data.result;
+                        response(data.result);
+                    }
+                }
+            });
+        },
+        focus: function(e, ui) {
+            $(".ui-menu-item").removeClass("custom-selected-item");
+            $("#ui-active-menuitem").parent().addClass("custom-selected-item");
+            $("#ui-active-menuitem").removeClass("ui-corner-all");
+        }
+    });
+
+    recipientField.blur(function() {
+        clearRecipientIfIncorrect();
+    });
+
+    recipientField.keydown(function(e) {
+        if (e.ctrlKey && e.keyCode == enterCode) {
+            clearRecipientIfIncorrect();
+        }
+    });
+
+    function clearRecipientIfIncorrect() {
+        if (validOptions.indexOf(recipientField.val()) == -1) {
+            recipientField.val("");
+            toggleSaveButtonEnabled();
+        }
+    }
+
     var baseUrl = $root;
     //saved position of '@' character, -1 mean not exist
     var atPosition = -1;
