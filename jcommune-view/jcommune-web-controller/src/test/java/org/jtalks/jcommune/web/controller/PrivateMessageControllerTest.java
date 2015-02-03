@@ -14,6 +14,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.model.entity.PrivateMessageStatus;
@@ -21,14 +23,19 @@ import org.jtalks.jcommune.service.PrivateMessageService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
+import org.jtalks.jcommune.web.dto.PrivateMessageDraftDto;
 import org.jtalks.jcommune.web.dto.PrivateMessageDto;
+import org.jtalks.jcommune.web.validation.validators.ValidatorStub;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -43,6 +50,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -63,8 +73,12 @@ public class PrivateMessageControllerTest {
     @Mock
     private UserService userService;
 
+    private MockMvc mockMvc;
+
     private static final String USERNAME = "username";
     private static final JCUser JC_USER = new JCUser(USERNAME, "123@123.ru", "123");
+    private static final String TITLE = "test title";
+    private static final String BODY = "test body";
 
     @BeforeMethod
     public void init() {
@@ -318,31 +332,71 @@ public class PrivateMessageControllerTest {
     }
 
     @Test
-    public void saveDraft() throws NotFoundException {
+    public void saveDraftPost() throws Exception {
+        Validator validator = new ValidatorStub();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).setValidator(validator).build();
+
         when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
         when(userService.getCurrentUser()).thenReturn(JC_USER);
-        PrivateMessageDto dto = getPrivateMessageDto();
-        dto.setRecipient(USERNAME);
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
 
-        String view = controller.saveDraft(dto, bindingResult);
-
-        assertEquals(view, "redirect:/drafts");
-        verify(pmService).saveDraft(dto.getId(), USERNAME, dto.getTitle(), dto.getBody(), JC_USER);
+        mockMvc.perform(post("/pm/save")
+                .param("title", TITLE)
+                .param("body", BODY)
+                .param("recipient", USERNAME))
+                .andExpect(status().isMovedTemporarily())
+                .andExpect(redirectedUrl("/drafts"));
+        verify(pmService).saveDraft(0, USERNAME, "test title", "test body", JC_USER);
     }
 
     @Test
-    public void saveDraftWithWrongUser() throws NotFoundException {
-        PrivateMessageDto dto = getPrivateMessageDto();
-        doThrow(new NotFoundException()).when(pmService)
-                .saveDraft(anyLong(), anyString(), anyString(), anyString(), any(JCUser.class));
-        BindingResult bindingResult = new BeanPropertyBindingResult(dto, "privateMessageDto");
+    public void testSaveDraftGet() throws Exception {
+        Validator validator = new ValidatorStub();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).setValidator(validator).build();
 
-        String view = controller.saveDraft(dto, bindingResult);
+        when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
 
-        assertEquals(view, "pm/pmForm");
-        assertEquals(bindingResult.getErrorCount(), 1);
-        verify(pmService).saveDraft(anyLong(), anyString(), anyString(), anyString(), any(JCUser.class));
+        mockMvc.perform(get("/pm/save")
+                .param("title", TITLE)
+                .param("body", BODY)
+                .param("recipient", USERNAME))
+                .andExpect(status().isMovedTemporarily())
+                .andExpect(redirectedUrl("/drafts"));
+        verify(pmService).saveDraft(0, USERNAME, "test title", "test body", JC_USER);
+    }
+
+    @Test
+    public void saveDraftShouldReturnPmFormIfExceptionWasThrown() throws Exception {
+        Validator validator = new ValidatorStub();
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).setValidator(validator).build();
+
+        when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
+        when(userService.getCurrentUser()).thenReturn(JC_USER);
+        doThrow(new NotFoundException()).when(pmService).saveDraft(anyLong(), anyString(), anyString(), anyString(),
+                any(JCUser.class));
+
+        mockMvc.perform(post("/pm/save")
+                .param("title", TITLE)
+                .param("body", BODY)
+                .param("recipient", USERNAME))
+                .andExpect(status().isOk())
+                .andExpect(forwardedUrl("pm/pmForm"));
+    }
+
+    @Test
+    public void saveDraftShouldReturnPmFormIfValidationErrorsOccurs() throws Exception {
+        String[] errorFields = new String[] {"title", "body", "recipient"};
+        Validator validator = new ValidatorStub(errorFields);
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).setValidator(validator).build();
+
+        mockMvc.perform(post("/pm/save")
+                .param("title", TITLE)
+                .param("body", BODY)
+                .param("recipient", USERNAME))
+                .andExpect(status().isOk())
+                .andExpect(forwardedUrl("pm/pmForm"))
+                .andExpect(model().attribute("privateMessageDto", new PrivateMessageDraftDtoMatcher()))
+                .andExpect(model().attributeHasFieldErrors("privateMessageDto", errorFields));
     }
 
     @Test
@@ -367,5 +421,21 @@ public class PrivateMessageControllerTest {
     private PrivateMessage getPrivateMessage() {
         return new PrivateMessage(new JCUser("username", "email", "password"),
                 new JCUser("username2", "email2", "password2"), "title", "body");
+    }
+
+    private static class PrivateMessageDraftDtoMatcher extends BaseMatcher<PrivateMessageDraftDto> {
+        @Override
+        public boolean matches(Object o) {
+            if (o != null && o instanceof PrivateMessageDraftDto) {
+                PrivateMessageDraftDto dto = (PrivateMessageDraftDto)o;
+                return TITLE.equals(dto.getTitle()) && BODY.equals(dto.getBody()) && USERNAME.equals(dto.getRecipient());
+            }
+            return false;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+
+        }
     }
 }

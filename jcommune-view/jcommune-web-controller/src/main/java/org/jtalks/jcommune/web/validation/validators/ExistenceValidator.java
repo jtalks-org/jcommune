@@ -33,6 +33,7 @@ public class ExistenceValidator implements ConstraintValidator<Exists, String> {
     private Class<? extends Entity> entity;
     private String field;
     private boolean ignoreCase;
+    private boolean nullableAllowed;
 
     private ValidatorDao<String> dao;
 
@@ -52,6 +53,7 @@ public class ExistenceValidator implements ConstraintValidator<Exists, String> {
         this.entity = annotation.entity();
         this.field = annotation.field();
         this.ignoreCase = annotation.ignoreCase();
+        this.nullableAllowed = annotation.isNullableAllowed();
     }
 
     /**
@@ -59,6 +61,10 @@ public class ExistenceValidator implements ConstraintValidator<Exists, String> {
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return (value != null) && dao.isExists(entity, field, value, ignoreCase);
+        if (nullableAllowed) {
+            return (value == null) || dao.isExists(entity, field, value, ignoreCase);
+        } else {
+            return (value != null) && dao.isExists(entity, field, value, ignoreCase);
+        }
     }
 }

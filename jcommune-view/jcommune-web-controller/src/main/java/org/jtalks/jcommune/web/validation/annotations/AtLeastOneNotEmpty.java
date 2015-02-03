@@ -14,8 +14,7 @@
  */
 package org.jtalks.jcommune.web.validation.annotations;
 
-import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.web.validation.validators.ExistenceValidator;
+import org.jtalks.jcommune.web.validation.validators.AtLeastOneNotEmptyValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -26,51 +25,35 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks the field to check it's value for existence in a database.
- * You should specify an Entity and a field to search for value in.
+ * Validates that at lest of specified string fields in class is not empty
  *
- * <p>Works only for sting variables as for now.
- *
- * @author Evgeniy Naumenko
+ * @author Mikhail Stryzhonok
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = AtLeastOneNotEmptyValidator.class)
 @Documented
-@Constraint(validatedBy = ExistenceValidator.class)
-public @interface Exists {
+public @interface AtLeastOneNotEmpty {
 
     /**
-     * If set to <b>true</b> checking field can be null
+     * Array with names of fields to check
      */
-    boolean isNullableAllowed() default false;
+    String[] fieldNames();
 
     /**
-     * Resource bundle code for error message
+     * Message for display when validation fails.
      */
-    String message();
+    String message() default "";
 
     /**
-     * Groups settings for this validation constraint
+     * Groups element that specifies the processing groups with which the
+     * constraint declaration is associated.
      */
     Class<?>[] groups() default {};
 
     /**
-     * Payload, not used here
+     * Payload element that specifies the payload with which the the
+     * constraint declaration is associated.
      */
     Class<? extends Payload>[] payload() default {};
-
-    /**
-     * Entity to be verified
-     */
-    Class<? extends Entity> entity();
-
-    /**
-     * Field to be checked
-     */
-    String field();
-    
-    /**
-     * Ignore case or not when checking for existence
-     */
-    boolean ignoreCase() default false;
 }

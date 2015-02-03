@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.validation;
 
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.dao.ValidatorDao;
+import org.jtalks.jcommune.web.validation.annotations.Exists;
 import org.jtalks.jcommune.web.validation.validators.ExistenceValidator;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -38,6 +39,8 @@ public class ExistsValidatorTest {
     private ExistenceValidator validator;
     @Mock
     private ValidatorDao<String> dao;
+    @Mock
+    private Exists existsAnnotation;
 
     @BeforeMethod
     public void init() {
@@ -62,5 +65,13 @@ public class ExistsValidatorTest {
     @Test
     public void testNullValue() {
         assertFalse(validator.isValid(null, null));
+    }
+
+    @Test
+    public void testNullValueIfWhenNullableAllowed() {
+        when(existsAnnotation.isNullableAllowed()).thenReturn(true);
+        validator.initialize(existsAnnotation);
+
+        assertTrue(validator.isValid(null, null));
     }
 }
