@@ -148,11 +148,7 @@
     </filter>
     <filter-mapping>
         <filter-name>headRequest</filter-name>
-        <url-pattern>/topics/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>headRequest</filter-name>
-        <url-pattern>/posts/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
     <listener>
