@@ -159,7 +159,8 @@ function changeRating(ratingSpan, value) {
     rating = rating + value;
     ratingSpan.text(rating);
     // we need apply new style only if rating state changed
-    if ((rating > - 2) && (rating < 2)) {
+    // but rating value may changed by 2 if user revotes for post
+    if ((rating > - 3) && (rating < 3)) {
         applyRatingStyle(ratingSpan, rating);
     }
 }
