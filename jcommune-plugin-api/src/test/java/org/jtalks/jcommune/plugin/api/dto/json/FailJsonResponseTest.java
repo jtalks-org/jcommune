@@ -12,10 +12,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto.json;
+package org.jtalks.jcommune.plugin.api.dto.json;
 
 import static org.testng.AssertJUnit.assertNull;
 import static org.testng.AssertJUnit.assertEquals;
+
+import org.jtalks.jcommune.plugin.api.web.dto.json.FailJsonResponse;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseReason;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.testng.annotations.Test;
 
 public class FailJsonResponseTest {

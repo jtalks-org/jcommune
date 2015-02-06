@@ -20,8 +20,8 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.jtalks.jcommune.service.exceptions.ImageFormatException;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.exceptions.ImageSizeException;
-import org.jtalks.jcommune.web.dto.json.FailJsonResponse;
-import org.jtalks.jcommune.web.dto.json.JsonResponseReason;
+import org.jtalks.jcommune.plugin.api.web.dto.json.FailJsonResponse;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseReason;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -177,7 +177,7 @@ public class ImageUploadController {
             throws IOException, ImageProcessException {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.TEXT_HTML);
-        Map<String, String> responseContent = new HashMap<String, String>();
+        Map<String, String> responseContent = new HashMap<>();
         return imageControllerUtils.prepareResponse(file, responseHeaders, responseContent);
     }
 
@@ -193,7 +193,7 @@ public class ImageUploadController {
     protected Map<String, String> createPreviewOfImage(byte[] imageBytes, HttpServletResponse response,
                                                        ImageControllerUtils imageControllerUtils)
             throws ImageProcessException {
-        Map<String, String> responseContent = new HashMap<String, String>();
+        Map<String, String> responseContent = new HashMap<>();
         imageControllerUtils.prepareResponse(imageBytes, response, responseContent);
         return responseContent;
     }

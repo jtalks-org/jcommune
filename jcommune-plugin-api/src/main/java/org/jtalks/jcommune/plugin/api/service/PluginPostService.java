@@ -15,7 +15,10 @@
 package org.jtalks.jcommune.plugin.api.service;
 
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+
+import java.util.Map;
 
 /**
  * @author Andrei Alikov
@@ -48,4 +51,18 @@ public interface PluginPostService {
      *          when post not found
      */
     void updatePost(Post post, String postContent) throws NotFoundException;
+
+    /**
+     * Adds comment to post with specified id
+     *
+     * @param postId id of post to which comment will be added
+     * @param attributes list of comment attributes
+     * @param body text of the comment
+
+     * @return newly created comment
+     *
+     * @throws NotFoundException if post with specified id not found
+     */
+    PostComment addComment(Long postId, Map<String, String> attributes, String body) throws NotFoundException;
+
 }

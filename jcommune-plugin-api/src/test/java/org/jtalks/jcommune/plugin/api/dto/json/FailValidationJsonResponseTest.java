@@ -12,12 +12,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto.json;
+package org.jtalks.jcommune.plugin.api.dto.json;
 
 import static org.testng.AssertJUnit.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jtalks.jcommune.plugin.api.web.dto.json.FailValidationJsonResponse;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseReason;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.plugin.api.web.dto.json.ValidationError;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.testng.annotations.Test;
@@ -32,7 +36,7 @@ public class FailValidationJsonResponseTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testConstructorWithBindingResult() {
-        List<ObjectError> allErrors = new ArrayList<ObjectError>();
+        List<ObjectError> allErrors = new ArrayList<>();
         allErrors.add(new ObjectError(OBJECT_NAME, OBJECT_MESSAGE));
         allErrors.add(new FieldError(OBJECT_NAME, FIELD, FIELD_MESSAGE));
         

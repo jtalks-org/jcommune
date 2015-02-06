@@ -12,18 +12,42 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto.json;
+package org.jtalks.jcommune.plugin.api.web.dto.json;
 
 /**
- * Allowed response statuses for AJAX requests.
+ * AJAX response class to send fail JSON response
  * 
  * @author Vyacheslav Mishcheryakov
  *
  */
-public enum JsonResponseStatus {
-    /** When requests performed successfully */
-    SUCCESS,
+public class FailJsonResponse extends JsonResponse {
     
-    /** When some error occurred during request */
-    FAIL;
+    private JsonResponseReason reason;
+
+    public FailJsonResponse(JsonResponseReason reason, Object result) {
+        this(reason);
+        setResult(result);
+    }
+    
+    public FailJsonResponse(JsonResponseReason reason) {
+        super(JsonResponseStatus.FAIL);
+        this.reason = reason;
+    }
+
+
+
+    /**
+     * @return the reason
+     */
+    public JsonResponseReason getReason() {
+        return reason;
+    }
+
+    /**
+     * @param reason the reason to set
+     */
+    public void setReason(JsonResponseReason reason) {
+        this.reason = reason;
+    }
+    
 }

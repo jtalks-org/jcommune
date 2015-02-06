@@ -12,7 +12,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto.json;
+package org.jtalks.jcommune.plugin.api.web.dto.json;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class FailValidationJsonResponse extends FailJsonResponse {
     public FailValidationJsonResponse(List<ObjectError> validationErrors) {
         super(JsonResponseReason.VALIDATION);
         
-        List<ValidationError> errors = new ArrayList<ValidationError>();
+        List<ValidationError> errors = new ArrayList<>();
         for (ObjectError error : validationErrors) {
             String field = null;
             if (error instanceof FieldError) {

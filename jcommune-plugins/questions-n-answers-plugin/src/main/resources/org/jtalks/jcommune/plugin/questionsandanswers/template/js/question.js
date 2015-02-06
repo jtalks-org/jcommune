@@ -18,6 +18,8 @@ $(function () {
 
     $('.comment-prompt').click(function (e) {
         e.preventDefault();
+        var postId = $(this).attr("id").split("-")[1];
+        toggleCommentsFor(postId);
         $(this).hide();
         $(this).next(".comment-container").show();
         $(this).next(".comment-container").children(".comment-textarea").focus();
@@ -32,16 +34,8 @@ $(function () {
 
     $('.expand').click(function(e){
         e.preventDefault();
-        $(this).parent().prev(".comment-list").children(".togglable").toggle();
-        var buttons = $(this).parent().children(".togglable");
-        buttons.toggle();
-        buttons.focus();
-        var thirdComment = $(this).parent().prev(".comment-list").children(".hiddenBorder");
-        if (thirdComment.hasClass("bordered")) {
-            thirdComment.removeClass("bordered");
-        } else {
-            thirdComment.addClass("bordered");
-        }
+        var postId = $(this).attr("data-postId");
+        toggleCommentsFor(postId);
     });
 
     $(".vote-up").mouseup(voteUpHandler);
@@ -56,6 +50,29 @@ $(function () {
     if ($('#answerForm .error:visible').length > 0) {
         $('#postBody').focus();
     }
+
+    $('.comment-submit').click(function (e){
+        var commentDto = {};
+        var postId = $(this).attr('data-post-id');
+        commentDto.postId = postId;
+        commentDto.body = $("#commentBody-" + postId).val();
+        console.log(commentDto);
+        $.ajax({
+            url: baseUrl + "/topics/question/newcomment",
+            type: "POST",
+            contentType: "application/json",
+            async: false,
+            data: JSON.stringify(commentDto),
+            success: function(data) {
+                console.log(data);
+                hideCommentForm(postId);
+                addCommentToPost(postId, data.result);
+            },
+            error: function() {
+                console.log("error");
+            }
+        });
+    });
 });
 
 var voteUpHandler = function voteUp(e) {
@@ -262,5 +279,85 @@ function hideEmptyCommentTextArea() {
             $(this).hide();
             $(this).parent().children(".comment-prompt").show();
         }
+    });
+}
+
+/**
+ * Hides comment form for post with specified id
+ *
+ * @param postId id of the post to hide comment form
+ */
+function hideCommentForm(postId) {
+    $("#commentForm-" + postId).hide();
+    $("#commentBody-" + postId).val("");
+    $("#prompt-" + postId).show();
+}
+
+function addCommentToPost(postId, comment) {
+    var commentList = $("#comments-" + postId).children();
+    if (commentList.length != 0) {
+        $(commentList[commentList.length - 1]).addClass("bordered");
+    }
+    if(commentList.length == 3) {
+        $("#btns-" + postId).show();
+        $($("#btns-" + postId).children()[0]).hide();
+    }
+    $("#comments-" + postId).append(getCommentHtml(comment));
+    if (commentList.length > 2) {
+        applyCommentsCssClasses(postId);
+    }
+}
+
+function getCommentHtml(comment) {
+    return "<div>"
+        + "<div class='comment-header'>"
+        + "<div class='comment-author pull-left'>"
+        + "<a class='no-right-space' href='/jcommune/users/" + comment.authorId
+        + " data-original-title='Нажмите для просмотра профиля'>" + comment.authorUsername + "</a>,</div>"
+        + "<div class='comment-buttons pull-left'>"
+        + "<a class='comment-button' data-original-title='Редактировать комментарий'><i class='icon-pencil'></i></a>&nbsp;"
+        + "<a class='comment-button' data-original-title='Удалить комментарий'><i class='icon-trash'></i></a></div>"
+        + "<div class='comment-date pull-left'>" + comment.formattedCreationDate + "</div><div class='cleared'></div>"
+        + "</div><div class='comment-body'>" + comment.body + "</div></div>";
+}
+
+function toggleCommentsFor(postId) {
+    console.log($("#comments-" + postId).children().not(":visible").length);
+    var commentList = $("#comments-" + postId);
+    commentList.children(".togglable").toggle();
+    var buttons = $("#btns-" + postId);
+    buttons.children(".togglable").toggle();
+    buttons.focus();
+    var thirdComment = commentList.children(".hiddenBorder");
+    if (thirdComment.hasClass("bordered")) {
+        thirdComment.removeClass("bordered");
+    } else {
+        thirdComment.addClass("bordered");
+    }
+}
+
+function isCommentsHidden(postId) {
+    return $("#comments-" + postId).children().not(":visible").length == 0;
+}
+
+function applyCommentsCssClasses(postId) {
+    var i = 0;
+    $("#comments-" + postId).children().each(function() {
+        $(this).removeClass("bordered");
+        $(this).removeClass("togglable");
+        $(this).removeClass("hiddenBorder");
+        if (i != $("#comments-" + postId).children().length - 1) {
+            $(this).addClass("bordered");
+            console.log(i + " bordered");
+        }
+        if (i == 2) {
+            $(this).addClass("hiddenBorder");
+            console.log(i + " hiddenBorder");
+        }
+        if (i > 2) {
+            $(this).addClass("togglable");
+            console.log(i + " togglable");
+        }
+        i ++;
     });
 }

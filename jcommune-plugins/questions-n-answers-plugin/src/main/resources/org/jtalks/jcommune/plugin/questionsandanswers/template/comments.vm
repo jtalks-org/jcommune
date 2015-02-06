@@ -16,8 +16,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *#
 #macro(comments $post $canLeavePosts $permissionTool $targedId $currentUser)
   #set($shownComments = 3)
-  #if($post.comments.size() > 0)
-    <div class="comment-list">
+    <div id="comments-$post.id" class="comment-list">
       #foreach($comment in $post.comments)
         #set($commentClass = "")
         #if($velocityCount != $post.comments.size() && $post.comments.size() != 0)
@@ -51,7 +50,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
               </div>
             #end
             <div class="comment-date pull-left">
-              ${dateTool.format($comment.creationDate, ${currentUser.language.locale})}
+              ${dateTool.format($comment.creationDate)}
             </div>
             <div class="cleared"></div>
           </div>
@@ -62,23 +61,26 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #end
     </div>
     #if($post.comments.size() > $shownComments)
-      <div class="btn-container">
-        <button type="button" class="expand togglable" style="display: block"><span>${messages.getString("label.expand.comments")}</span></button>
-        <button type="button" class="expand togglable" style="display: none"><span>${messages.getString("label.hide.comments")}</span></button>
-      </div>
+      <div id="btns-$post.id" class="btn-container" style="display: block">
+    #else
+      <div id="btns-$post.id" class="btn-container" style="display: none">
     #end
-  #end
+        <button data-postId="$post.id" type="button" class="expand togglable" style="display: block"><span>${messages.getString("label.expand.comments")}</span></button>
+        <button data-postId="$post.id" type="button" class="expand togglable" style="display: none"><span>${messages.getString("label.hide.comments")}</span></button>
+      </div>
+
+
   #if($canLeavePosts)
-    <div class="comment-prompt">
+    <div id="prompt-$post.id" class="comment-prompt">
       <i class="icon-comment"></i>
       <span class="comment-prompt-label">${messages.getString("label.add.comment")}</span>
     </div>
   #end
-  <div class="comment-container">
-    <textarea name="commentBody" class="comment-textarea" placeholder="${messages.getString("label.add.comment")}" rows="3"></textarea>
+  <div id="commentForm-$post.id" class="comment-container">
+    <textarea id="commentBody-$post.id" name="commentBody" class="comment-textarea" placeholder="${messages.getString("label.add.comment")}" rows="3"></textarea>
     <div class="comment-buttons-container">
       <div class="pull-right">
-        <a class="btn btn-primary comment-submit">${messages.getString("label.comment")}</a>
+        <a class="btn btn-primary comment-submit" data-post-id="$post.id">${messages.getString("label.comment")}</a>
         <a class="btn comment-cancel">${messages.getString("label.cancel")}</a>
       </div>
     </div>
