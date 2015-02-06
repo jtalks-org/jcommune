@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.util;
 
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
-import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,7 +74,7 @@ public class ImageControllerUtils {
         imageService.validateImageSize(bytes);
         prepareNormalResponse(bytes, responseContent);
         String body = getResponceJSONString(responseContent);
-        return new ResponseEntity<String>(body, responseHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(body, responseHeaders, HttpStatus.OK);
     }
 
     public String getResponceJSONString(Map<String, String> responseContent) throws IOException {

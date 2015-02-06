@@ -12,25 +12,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto.json;
-
 /**
- * Reason of request failure 
- * 
- * @author Vyacheslav Mishcheryakov
+ *
+ * Package for view layer DTOs (which use JSON).
+ *
  */
-public enum JsonResponseReason {
-    
-    /** Request was failed due to validation errors */
-    VALIDATION,
-    
-    /** Request was failed due to security errors */
-    SECURITY,
-    
-    /** Request was failed since entity was not found */
-    ENTITY_NOT_FOUND,
-    
-    /** Request was failed due to some server-side error */
-    INTERNAL_SERVER_ERROR;
-
-}
+package org.jtalks.jcommune.plugin.api.web.dto.json;

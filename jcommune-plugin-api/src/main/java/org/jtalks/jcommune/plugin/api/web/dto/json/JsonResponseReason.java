@@ -12,42 +12,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.dto.json;
+package org.jtalks.jcommune.plugin.api.web.dto.json;
 
 /**
- * AJAX response class to send fail JSON response
+ * Reason of request failure 
  * 
  * @author Vyacheslav Mishcheryakov
- *
  */
-public class FailJsonResponse extends JsonResponse {
+public enum JsonResponseReason {
     
-    private JsonResponseReason reason;
-
-    public FailJsonResponse(JsonResponseReason reason, Object result) {
-        this(reason);
-        setResult(result);
-    }
+    /** Request was failed due to validation errors */
+    VALIDATION,
     
-    public FailJsonResponse(JsonResponseReason reason) {
-        super(JsonResponseStatus.FAIL);
-        this.reason = reason;
-    }
-
-
-
-    /**
-     * @return the reason
-     */
-    public JsonResponseReason getReason() {
-        return reason;
-    }
-
-    /**
-     * @param reason the reason to set
-     */
-    public void setReason(JsonResponseReason reason) {
-        this.reason = reason;
-    }
+    /** Request was failed due to security errors */
+    SECURITY,
     
+    /** Request was failed since entity was not found */
+    ENTITY_NOT_FOUND,
+    
+    /** Request was failed due to some server-side error */
+    INTERNAL_SERVER_ERROR
+
 }

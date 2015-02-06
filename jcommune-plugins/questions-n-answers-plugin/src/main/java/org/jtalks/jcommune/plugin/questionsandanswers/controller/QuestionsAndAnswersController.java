@@ -19,10 +19,7 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
 import org.apache.velocity.tools.generic.EscapeTool;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.*;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.BbToHtmlConverter;
@@ -34,11 +31,14 @@ import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwa
 import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.plugin.api.web.locale.JcLocaleResolver;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.PermissionTool;
 import org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin;
+import org.jtalks.jcommune.plugin.questionsandanswers.dto.CommentDto;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -417,6 +417,25 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId()
                 + "#" + neighborAnswer.getId();
     }
+
+    /**
+     * Adds new comment to post
+     *
+     * @param dto dto populated in form
+     * @param request http servlet request
+     *
+     * @return result in JSON format
+     *
+     * @throws NotFoundException if post not found
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "newcomment")
+    @ResponseBody
+    JsonResponse addComment(@Valid @RequestBody CommentDto dto, HttpServletRequest request) throws NotFoundException {
+        PostComment comment = getPluginPostService().addComment(dto.getPostId(), Collections.EMPTY_MAP, dto.getBody());
+        JodaDateTimeTool dateTimeTool = new JodaDateTimeTool(request);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, new CommentDto(comment, dateTimeTool));
+    }
+
 
     /**
      * Gets copy of specified collection of posts sorted by rating and creation date

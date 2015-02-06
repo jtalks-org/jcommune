@@ -16,8 +16,11 @@
 package org.jtalks.jcommune.plugin.api.service.transactional;
 
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.PluginPostService;
+
+import java.util.Map;
 
 /**
  * @author Andrei Alikov
@@ -63,6 +66,14 @@ public class TransactionalPluginPostService implements PluginPostService {
     @Override
     public void updatePost(Post post, String postContent) throws NotFoundException {
         postService.updatePost(post, postContent);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PostComment addComment(Long postId, Map<String, String> attributes, String body) throws NotFoundException {
+        return postService.addComment(postId, attributes, body);
     }
 
     /**
