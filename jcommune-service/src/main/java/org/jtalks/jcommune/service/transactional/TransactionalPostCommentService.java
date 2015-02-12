@@ -18,6 +18,7 @@ import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.plugin.api.service.PluginCommentService;
 import org.jtalks.jcommune.service.PostCommentService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -31,7 +32,7 @@ import org.springframework.security.access.AccessDeniedException;
  */
 public class TransactionalPostCommentService extends
         AbstractTransactionalEntityService<PostComment, Crud<PostComment>> implements
-        PostCommentService {
+        PostCommentService, PluginCommentService {
 
     private PermissionService permissionService;
     private UserService userService;

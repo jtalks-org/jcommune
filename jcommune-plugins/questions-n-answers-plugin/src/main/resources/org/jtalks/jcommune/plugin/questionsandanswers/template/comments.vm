@@ -41,7 +41,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
               <div class="comment-buttons pull-left">
                 #if(($currentUser.id == $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.EDIT_OWN_POSTS"))
                 || ($currentUser.id != $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.EDIT_OTHERS_POSTS")))
-                  <a class="comment-button" data-original-title="${messages.getString("label.edit.comment")}"><i class="icon-pencil"></i></a>&nbsp;
+                  <a class="comment-button" data-original-title="${messages.getString("label.edit.comment")}">
+                      <i class="icon-pencil" data-comment-id="$comment.id"></i>
+                  </a>&nbsp;
                 #end
                 #if(($currentUser.id == $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.DELETE_OWN_POSTS"))
                 || ($currentUser.id != $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.DELETE_OTHERS_POSTS")))
@@ -55,7 +57,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <div class="cleared"></div>
           </div>
           <div class="comment-body">
-            ${esc.html($comment.body)}
+            <span id="body-$comment.id">${esc.html($comment.body)}</span>
+            <div id="edit-$comment.id" class="control-group comment-container edit" style="display: none">
+                  <textarea id="editable-$comment.id" name="commentBody" class="comment-textarea"
+                             rows="3">${esc.html($comment.body)}</textarea>
+                  <div class="comment-buttons-container">
+                      <div class="pull-right">
+                          <a class="btn btn-primary edit-submit" data-comment-id="$comment.id">${messages.getString("label.comment")}</a>
+                          <a class="btn edit-cancel" data-comment-id="$comment.id">${messages.getString("label.cancel")}</a>
+                      </div>
+                  </div>
+            </div>
           </div>
         </div>
       #end
@@ -76,7 +88,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       <span class="comment-prompt-label">${messages.getString("label.add.comment")}</span>
     </div>
   #end
-  <div id="commentForm-$post.id" class="comment-container">
+  <div id="commentForm-$post.id" class="control-group comment-container">
     <textarea id="commentBody-$post.id" name="commentBody" class="comment-textarea" placeholder="${messages.getString("label.add.comment")}" rows="3"></textarea>
     <div class="comment-buttons-container">
       <div class="pull-right">

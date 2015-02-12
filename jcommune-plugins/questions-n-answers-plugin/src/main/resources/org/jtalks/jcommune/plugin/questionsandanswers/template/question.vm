@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       var labelVoteErrorNoPermissions = "${messages.getString("label.vote.error.not.registered")}";
     #end
     var labelVoteErrorOwnPost = "${messages.getString("label.vote.error.own.post")}";
+    var branchId = ${question.branch.id};
   </script>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>

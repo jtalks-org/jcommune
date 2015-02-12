@@ -19,7 +19,9 @@ $(function () {
     $('.comment-prompt').click(function (e) {
         e.preventDefault();
         var postId = $(this).attr("id").split("-")[1];
-        toggleCommentsFor(postId);
+        if (isCommentsHidden(postId)) {
+            toggleCommentsFor(postId);
+        }
         $(this).hide();
         $(this).next(".comment-container").show();
         $(this).next(".comment-container").children(".comment-textarea").focus();
@@ -73,7 +75,56 @@ $(function () {
             }
         });
     });
+    updateCommentHandlers()
 });
+
+var editHandler = function(e) {
+    if (e.which != 1) {
+        return;
+    }
+
+    var commentId = $(this).attr("data-comment-id");
+    enableEditMode(commentId);
+}
+
+var editSubmitHandler = function(e) {
+    if (e.which != 1) {
+        return;
+    }
+    var commentDto = {};
+    commentId = $(this).attr("data-comment-id");
+    commentDto.id = commentId;
+    commentDto.body = $("#editable-" + commentId).val();
+    console.log(commentDto);
+    $.ajax({
+        url: baseUrl + "/topics/question/editcomment?branchId=" + branchId,
+        type: "POST",
+        contentType: "application/json",
+        async: false,
+        data: JSON.stringify(commentDto),
+        success: function(data) {
+            console.log(data.status);
+            if(data.status == 'SUCCESS') {
+                $("#body-" + commentId).text(data.result);
+                enableViewMode(commentId);
+            } else {
+                displayValidationErrors(data.result, "editable-" + commentId);
+            }
+        },
+        error: function() {
+            console.log("error");
+        }
+    });
+}
+
+var editCancelHandler = function(e) {
+    if (e.which != 1) {
+        return;
+    }
+
+    var commentId = $(this).attr("data-comment-id");
+    enableViewMode(commentId);
+}
 
 var voteUpHandler = function voteUp(e) {
     if (e.which != 1) {
@@ -303,9 +354,16 @@ function addCommentToPost(postId, comment) {
         $($("#btns-" + postId).children()[0]).hide();
     }
     $("#comments-" + postId).append(getCommentHtml(comment));
+    updateCommentHandlers();
     if (commentList.length > 2) {
         applyCommentsCssClasses(postId);
     }
+}
+
+function updateCommentHandlers() {
+    $('.icon-pencil').click(editHandler);
+    $('.edit-cancel').click(editCancelHandler);
+    $('.edit-submit').click(editSubmitHandler);
 }
 
 function getCommentHtml(comment) {
@@ -315,10 +373,16 @@ function getCommentHtml(comment) {
         + "<a class='no-right-space' href='/jcommune/users/" + comment.authorId
         + " data-original-title='Нажмите для просмотра профиля'>" + comment.authorUsername + "</a>,</div>"
         + "<div class='comment-buttons pull-left'>"
-        + "<a class='comment-button' data-original-title='Редактировать комментарий'><i class='icon-pencil'></i></a>&nbsp;"
+        + "<a class='comment-button' data-original-title='Редактировать комментарий'><i class='icon-pencil' data-comment-id='"
+        + comment.id + "'></i></a>&nbsp;"
         + "<a class='comment-button' data-original-title='Удалить комментарий'><i class='icon-trash'></i></a></div>"
         + "<div class='comment-date pull-left'>" + comment.formattedCreationDate + "</div><div class='cleared'></div>"
-        + "</div><div class='comment-body'>" + comment.body + "</div></div>";
+        + "</div><div class='comment-body'><span id='body-" + comment.id + "'>" + comment.body + "</span>"
+        + "<div id='edit-" + comment.id + "' class='control-group comment-container edit' style='display: none'>"
+        + "<textarea id='editable-" + comment.id + "' name='commentBody' class='comment-textarea' rows='3'>"
+        + comment.body + "</textarea> <div class='comment-buttons-container'><div class='pull-right'>"
+        + "<a class='btn btn-primary edit-submit' data-comment-id='" + comment.id + "'>Comment</a>"
+        + "<a class='btn edit-cancel' data-comment-id='" + comment.id + "'>Cancel</a></div></div></div></div></div>";
 }
 
 function toggleCommentsFor(postId) {
@@ -360,4 +424,33 @@ function applyCommentsCssClasses(postId) {
         }
         i ++;
     });
+}
+
+function enableEditMode(commentId) {
+    $("#body-" + commentId).hide();
+    $("#edit-" + commentId).show();
+}
+
+function enableViewMode(commentId) {
+    $("#body-" + commentId).show();
+    $("#edit-" + commentId).hide();
+}
+
+function displayValidationErrors(errors, elementId) {
+    console.log("displayValidationErrors");
+    var element = $("#" + elementId);
+    element.parent().addClass("error");
+    $(getValidationErrorView(errors)).insertAfter("#" + elementId);
+}
+
+function getValidationErrorView(errors) {
+    if(errors.length > 0) {
+        var errorsView = "<span class='help-inline'>";
+        for (var i = 0; i < errors.length; i ++) {
+            errorsView += errors[i].message + '<br/>';
+        }
+        errorsView += "</span>";
+        return errorsView;
+    }
+    return "";
 }

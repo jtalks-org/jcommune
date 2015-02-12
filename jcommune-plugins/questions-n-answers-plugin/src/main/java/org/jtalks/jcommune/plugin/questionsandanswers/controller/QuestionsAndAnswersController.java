@@ -25,12 +25,14 @@ import org.jtalks.jcommune.plugin.api.service.*;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.BbToHtmlConverter;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.PluginLocationServiceImpl;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
+import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginCommentService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginPostService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
 import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
+import org.jtalks.jcommune.plugin.api.web.dto.json.FailValidationJsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.plugin.api.web.locale.JcLocaleResolver;
@@ -430,10 +432,25 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      */
     @RequestMapping(method = RequestMethod.POST, value = "newcomment")
     @ResponseBody
-    JsonResponse addComment(@Valid @RequestBody CommentDto dto, HttpServletRequest request) throws NotFoundException {
+    JsonResponse addComment(@Valid @RequestBody CommentDto dto, BindingResult result,
+                            HttpServletRequest request) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new FailValidationJsonResponse(result.getAllErrors());
+        }
         PostComment comment = getPluginPostService().addComment(dto.getPostId(), Collections.EMPTY_MAP, dto.getBody());
         JodaDateTimeTool dateTimeTool = new JodaDateTimeTool(request);
         return new JsonResponse(JsonResponseStatus.SUCCESS, new CommentDto(comment, dateTimeTool));
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "editcomment")
+    @ResponseBody
+    JsonResponse editComment(@Valid @RequestBody CommentDto dto, BindingResult result,
+                             @RequestParam("branchId") long branchId) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new FailValidationJsonResponse(result.getAllErrors());
+        }
+        PostComment updatedComment = getCommentService().updateComment(dto.getId(), dto.getBody(), branchId);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, updatedComment.getBody());
     }
 
 
@@ -596,11 +613,19 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
                              Map<String, Object> model) throws VelocityException {
         return VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, templateLocation, encoding, model);
     }
+
     /**
      * Needed for mocking
      */
     PluginLocationService getLocationService() {
         return PluginLocationServiceImpl.getInstance();
+    }
+
+    /**
+     * Needed for mocking
+     */
+    PluginCommentService getCommentService() {
+        return TransactionalPluginCommentService.getInstance();
     }
 
     /**
