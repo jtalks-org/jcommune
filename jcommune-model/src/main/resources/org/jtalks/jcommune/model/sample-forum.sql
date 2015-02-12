@@ -14,7 +14,11 @@ insert ignore into SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, CO
   (10,(SELECT UUID() FROM dual),'Leisure', 'Have free time?', 9, @forum_component_id);
   
 -- GROUPS BEGIN
-insert ignore into GROUPS (UUID, `NAME`, DESCRIPTION) VALUES ((SELECT UUID() FROM dual), 'Moderators', 'General group for all moderators');
+insert ignore into GROUPS (UUID, `NAME`, DESCRIPTION)
+  select UUID(), 'Moderators', 'General group for all moderators'
+  from dual
+  where not exists (select GROUP_ID from GROUPS where `NAME` = 'Moderators');
+
 SET @admin_group_id := (select GROUP_ID from GROUPS where `NAME`='Administrators');
 SET @registered_group_id := (select GROUP_ID from GROUPS where `NAME`='Registered Users');
 SET @banned_group_id := (select GROUP_ID from GROUPS where `NAME`='Banned Users');
