@@ -339,7 +339,7 @@
     </property>
   </bean>
 
-  <bean id="postReviewCommentService"
+  <bean id="postCommentService"
         class="org.jtalks.jcommune.service.transactional.TransactionalPostCommentService">
     <constructor-arg ref="postCommentDao"/>
     <constructor-arg ref="permissionService"/>
@@ -447,6 +447,11 @@
   <bean class="org.jtalks.jcommune.plugin.api.service.nontransactional.PluginLocationServiceImpl" 
         factory-method="getInstance">
     <property name="locationService" ref="locationService"/>
+  </bean>
+
+  <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginCommentService"
+        factory-method="getInstance">
+    <property name="commentService" ref="postCommentService"/>
   </bean>
 
   <bean id="entityToDtoConverter" class="org.jtalks.jcommune.service.dto.EntityToDtoConverter">
