@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.plugin.api.service.PluginCommentService;
@@ -64,6 +65,26 @@ public class TransactionalPostCommentService extends
         getDao().saveOrUpdate(comment);
 
         return comment;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteComment(Post post, PostComment comment) {
+        checkHasDeletePermission(comment, post.getId());
+        comment.setDeleted(true);
+        getDao().saveOrUpdate(comment);
+    }
+
+    private void checkHasDeletePermission(PostComment comment, long branchId){
+        JCUser currentUser = userService.getCurrentUser();
+        boolean canDeleteOwnPost = permissionService.hasBranchPermission(branchId, BranchPermission.DELETE_OWN_POSTS);
+        boolean canDeleteOtherPost = permissionService.hasBranchPermission(branchId, BranchPermission.DELETE_OTHERS_POSTS);
+        if (!(canDeleteOtherPost && !comment.isCreatedBy(currentUser))
+                && !(canDeleteOwnPost && comment.isCreatedBy(currentUser))){
+            throw new AccessDeniedException("No permission to delete review comment");
+        }
     }
 
     /**

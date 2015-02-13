@@ -65,4 +65,10 @@ public interface PluginPostService {
      */
     PostComment addComment(Long postId, Map<String, String> attributes, String body) throws NotFoundException;
 
+    /**
+     * Delete comment from post
+     * @param post post which comment will be delete
+     * @param comment comment which will be delete
+     */
+    public void deleteComment(Post post, PostComment comment);
 }

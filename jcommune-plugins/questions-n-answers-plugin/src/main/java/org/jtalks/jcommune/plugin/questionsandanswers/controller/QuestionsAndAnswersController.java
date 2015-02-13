@@ -90,6 +90,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     public static final String BRANCH_ID = "branchId";
     public static final String CONTENT = "content";
     private static final String QEUSTION_TITLE = "questionTitle";
+    public static final String POST_ID = "postId";
+    public static final String COMMENT_ID = "commentId";
 
 
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
@@ -454,6 +456,13 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     }
 
 
+    @RequestMapping(method = RequestMethod.GET, value = "deletecomment")
+    JsonResponse deleteComment(@RequestParam(COMMENT_ID) Long commentId,
+                               @RequestParam(POST_ID) Long postId) throws NotFoundException {
+        Post post = getPluginPostService().get(postId);
+
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
     /**
      * Gets copy of specified collection of posts sorted by rating and creation date
      *

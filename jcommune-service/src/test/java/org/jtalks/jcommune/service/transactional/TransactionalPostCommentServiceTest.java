@@ -139,6 +139,14 @@ public class TransactionalPostCommentServiceTest {
         doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.EDIT_OTHERS_POSTS);
     }
 
+    private void givenUserHasPermissionToDeleteOwnPosts(boolean isGranted){
+        doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.DELETE_OWN_POSTS);
+    }
+
+    private void givenUserHasPermissionToDeleteOthersPosts(boolean isGranted) {
+        doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.DELETE_OTHERS_POSTS);
+    }
+
     private JCUser givenCurrentUser(String username) {
         JCUser currentUser = new JCUser(username, null, null);
         when(userService.getCurrentUser()).thenReturn(currentUser);

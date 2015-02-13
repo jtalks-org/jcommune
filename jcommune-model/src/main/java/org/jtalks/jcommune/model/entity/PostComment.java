@@ -42,6 +42,7 @@ public class PostComment extends Entity {
     private String body;
     private Post post;
     private Map<String, String> attributes = new HashMap<>();
+    private Boolean deleted;
 
     /**
      * @return the author
@@ -151,5 +152,23 @@ public class PostComment extends Entity {
      */
     public void putAllAttributes(Map<String, String> attributes) {
         this.attributes.putAll(attributes);
+    }
+
+    /**
+     * Get a sign of delete
+     *
+     * @return true if the comment has been deleted
+     */
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    /**
+     * Set a sign of delete to the comment
+     *
+     * @param deleted
+     */
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

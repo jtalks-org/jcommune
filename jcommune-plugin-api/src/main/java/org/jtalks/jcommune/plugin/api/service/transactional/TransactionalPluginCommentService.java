@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.api.service.transactional;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.PluginCommentService;
@@ -52,6 +53,14 @@ public class TransactionalPluginCommentService implements PluginCommentService{
     @Override
     public PostComment updateComment(long id, String body, long branchId) throws NotFoundException {
         return commentService.updateComment(id, body, branchId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteComment(Post post, PostComment comment) {
+        commentService.deleteComment(post, comment);
     }
 
     /**
