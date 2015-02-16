@@ -19,7 +19,9 @@ $(function () {
     $('.comment-prompt').click(function (e) {
         e.preventDefault();
         var postId = $(this).attr("id").split("-")[1];
+        console.log(postId);
         if (isCommentsHidden(postId)) {
+            console.log("comments hidden");
             toggleCommentsFor(postId);
         }
         $(this).hide();
@@ -85,6 +87,14 @@ var editHandler = function(e) {
 
     var commentId = $(this).attr("data-comment-id");
     enableEditMode(commentId);
+}
+
+var deleteCommentHandler = function(e) {
+    if (e.which != 1) {
+        return;
+    }
+    var commentId = $(this).attr("data-comment-id");
+    removeCommentHtml(commentId);
 }
 
 var editSubmitHandler = function(e) {
@@ -364,10 +374,11 @@ function updateCommentHandlers() {
     $('.icon-pencil').click(editHandler);
     $('.edit-cancel').click(editCancelHandler);
     $('.edit-submit').click(editSubmitHandler);
+    $('.icon-trash').click(deleteCommentHandler);
 }
 
 function getCommentHtml(comment) {
-    return "<div>"
+    return "<div id='comment-" + comment.id + "'>"
         + "<div class='comment-header'>"
         + "<div class='comment-author pull-left'>"
         + "<a class='no-right-space' href='/jcommune/users/" + comment.authorId
@@ -375,7 +386,8 @@ function getCommentHtml(comment) {
         + "<div class='comment-buttons pull-left'>"
         + "<a class='comment-button' data-original-title='Редактировать комментарий'><i class='icon-pencil' data-comment-id='"
         + comment.id + "'></i></a>&nbsp;"
-        + "<a class='comment-button' data-original-title='Удалить комментарий'><i class='icon-trash'></i></a></div>"
+        + "<a class='comment-button' data-original-title='Удалить комментарий'><i class='icon-trash' data-comment-id='"
+        + comment.id + "'></i></a></div>"
         + "<div class='comment-date pull-left'>" + comment.formattedCreationDate + "</div><div class='cleared'></div>"
         + "</div><div class='comment-body'><span id='body-" + comment.id + "'>" + comment.body + "</span>"
         + "<div id='edit-" + comment.id + "' class='control-group comment-container edit' style='display: none'>"
@@ -401,22 +413,30 @@ function toggleCommentsFor(postId) {
 }
 
 function isCommentsHidden(postId) {
-    return $("#comments-" + postId).children().not(":visible").length == 0;
+    console.log($("#comments-" + postId).children().not(":visible").length > 0);
+    return $("#comments-" + postId).children().not(":visible").length > 0;
 }
 
 function applyCommentsCssClasses(postId) {
     var i = 0;
+    var commentCount = $("#comments-" + postId).children().length;
     $("#comments-" + postId).children().each(function() {
         $(this).removeClass("bordered");
         $(this).removeClass("togglable");
         $(this).removeClass("hiddenBorder");
-        if (i != $("#comments-" + postId).children().length - 1) {
+        if (i != commentCount - 1 && i != 2) {
             $(this).addClass("bordered");
             console.log(i + " bordered");
         }
         if (i == 2) {
-            $(this).addClass("hiddenBorder");
-            console.log(i + " hiddenBorder");
+            $(this).show(); //for case of removing comment
+            if (i != commentCount - 1) {
+                $(this).addClass("hiddenBorder");
+                console.log(i + " hiddenBorder");
+                if (isCommentsHidden(postId)) {
+                    $(this).addClass("bordered");
+                }
+            }
         }
         if (i > 2) {
             $(this).addClass("togglable");
@@ -453,4 +473,15 @@ function getValidationErrorView(errors) {
         return errorsView;
     }
     return "";
+}
+
+function removeCommentHtml(commentId) {
+    var commentElement = $("#comment-" + commentId);
+    var postId = commentElement.parent().attr("id").split("-")[1];
+    console.log(postId);
+    $("#comment-" + commentId).remove();
+    applyCommentsCssClasses(postId);
+    if ($("#comments-" + postId).children().length == 3) {
+        $("#btns-" + postId).remove();
+    }
 }

@@ -26,9 +26,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           #set($commentClass = "hiddenBorder")
         #end
         #if($velocityCount > $shownComments)
-          <div class="togglable $commentClass" style="display: none">
+          <div id="comment-$comment.id" class="togglable $commentClass" style="display: none">
         #else
-          <div class="$commentClass">
+          <div id="comment-$comment.id" class="$commentClass">
         #end
           <div class="comment-header">
             <div class="comment-author pull-left">
@@ -47,7 +47,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 #end
                 #if(($currentUser.id == $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.DELETE_OWN_POSTS"))
                 || ($currentUser.id != $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.DELETE_OTHERS_POSTS")))
-                  <a class="comment-button" data-original-title="${messages.getString("label.delete.comment")}"><i class="icon-trash"></i></a>
+                  <a class="comment-button" data-original-title="${messages.getString("label.delete.comment")}">
+                      <i class="icon-trash" data-comment-id="$comment.id"></i>
+                  </a>
                 #end
               </div>
             #end
