@@ -21,7 +21,12 @@ import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.filters.StateFilter;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.service.PluginPostService;
 import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
@@ -61,6 +66,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private UserService userService;
     private BranchLastPostService branchLastPostService;
     private PermissionService permissionService;
+    private PluginLoader pluginLoader;
 
     /**
      * Create an instance of Post entity based service
@@ -81,7 +87,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             LastReadPostService lastReadPostService,
             UserService userService,
             BranchLastPostService branchLastPostService,
-            PermissionService permissionService) {
+            PermissionService permissionService,
+            PluginLoader pluginLoader) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
@@ -90,6 +97,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         this.userService = userService;
         this.branchLastPostService = branchLastPostService;
         this.permissionService = permissionService;
+        this.pluginLoader = pluginLoader;
     }
 
     /**
@@ -219,10 +227,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     public PostComment addComment(Long postId, Map<String, String> attributes, String body) throws NotFoundException {
         Post targetPost = get(postId);
         JCUser currentUser = userService.getCurrentUser();
-        permissionService.checkPermission(
-                targetPost.getTopic().getBranch().getId(),
-                AclClassName.BRANCH,
-                BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
+        assertCommentAllowed(targetPost.getTopic());
         PostComment comment = new PostComment();
         comment.putAllAttributes(attributes);
         comment.setBody(body);
@@ -269,5 +274,48 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         getDao().saveOrUpdate(post);
         getDao().changeRating(post.getId(), ratingChanges);
         return post;
+    }
+
+    /**
+     * Checks if current user can create comments in specified topic
+     *
+     * @param topic topic to check permission
+     * @throws org.springframework.security.access.AccessDeniedException if user can't create comments in specified
+     *                                                                   topic
+     */
+    private void assertCommentAllowed(Topic topic) {
+        if (topic.isCodeReview()) {
+            permissionService.checkPermission(topic.getBranch().getId(), AclClassName.BRANCH,
+                    BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
+        } else if (topic.isPlugable()) {
+            assertCommentsAllowedForPlugableTopic(topic);
+        } else {
+            throw new AccessDeniedException("Adding comments not allowed for core topic types");
+        }
+    }
+
+    /**
+     * Checks if current user can create comments in specified plugable topic
+     *
+     * @param topic plugable topic to check permission
+     * @throws org.springframework.security.access.AccessDeniedException  if user not granted to create comments in
+     *                                                                    specified topic type or if type of current
+     *                                                                    topic is unknown
+     */
+    private void assertCommentsAllowedForPlugableTopic(Topic topic) {
+        List<Plugin> topicPlugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class),
+                new StateFilter(Plugin.State.ENABLED));
+        boolean pluginFound = false;
+        for (Plugin plugin : topicPlugins) {
+            TopicPlugin topicPlugin = (TopicPlugin)plugin;
+            if (topicPlugin.getTopicType().equals(topic.getType())) {
+                pluginFound = true;
+                permissionService.checkPermission(topic.getBranch().getId(), AclClassName.BRANCH,
+                        topicPlugin.getCommentPermission());
+            }
+        }
+        if (!pluginFound) {
+            throw new AccessDeniedException("Creation of comments not allowed for unknown topic type");
+        }
     }
 }

@@ -97,8 +97,42 @@ var deleteCommentHandler = function(e) {
     if (e.which != 1) {
         return;
     }
+
     var commentId = $(this).attr("data-comment-id");
-    removeCommentHtml(commentId);
+
+    var submitFunc = function(e) {
+        e.preventDefault();
+        console.log(baseUrl + "/topics/question/deletecomment?commentId=" + commentId + "&postId=" + getPostIdForComment(commentId));
+        $.ajax({
+            url: baseUrl + "/topics/question/deletecomment?commentId=" + commentId + "&postId=" + getPostIdForComment(commentId),
+            type: "GET",
+            success: function(data) {
+                removeCommentHtml(commentId);
+                jDialog.closeDialog();
+            },
+            error: function() {
+                console.log("error");
+            }
+        });
+    };
+
+    var footerContent = ' \
+	            <button id="remove-review-cancel" class="btn cancel">' + $labelCancel + '</button> \
+	            <button id="remove-review-ok" class="btn btn-primary">' + $labelOk + '</button>';
+    var message = "Delete this comment?";
+    jDialog.createDialog({
+        type: jDialog.confirmType,
+        bodyMessage : message,
+        firstFocus : false,
+        footerContent: footerContent,
+        maxWidth: 300,
+        tabNavigation: ['#remove-review-ok','#remove-review-cancel'],
+        handlers: {
+            '#remove-review-ok': {'click': submitFunc, 'keydown' : Keymaps.reviewConfirmRemoveButton},
+            '#remove-review-cancel': {'keydown': Keymaps.reviewCancelRemoveButton, 'static':'close'}
+        }
+    });
+    $('#remove-review-ok').focus();
 }
 
 var editSubmitHandler = function(e) {
@@ -406,7 +440,6 @@ function getCommentHtml(comment) {
 }
 
 function toggleCommentsFor(postId) {
-    console.log($("#comments-" + postId).children().not(":visible").length);
     var commentList = $("#comments-" + postId);
     commentList.children(".togglable").toggle();
     var buttons = $("#btns-" + postId);
@@ -440,10 +473,7 @@ function applyCommentsCssClasses(postId) {
             $(this).show(); //for case of removing comment
             if (i != commentCount - 1) {
                 $(this).addClass("hiddenBorder");
-                console.log(i + " hiddenBorder");
-                if (isCommentsHidden(postId)) {
-                    $(this).addClass("bordered");
-                }
+                $(this).addClass("bordered");
             }
         }
         if (i > 2) {
@@ -497,4 +527,8 @@ function removeCommentHtml(commentId) {
     if ($("#comments-" + postId).children().length == 3) {
         $("#btns-" + postId).remove();
     }
+}
+
+function getPostIdForComment(commentId) {
+    return $("#comment-" + commentId).parent().attr("id").split("-")[1];
 }

@@ -75,9 +75,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #end
     </div>
     #if($post.comments.size() > $shownComments)
-      <div id="btns-$post.id" class="btn-container" style="display: block">
+      <div id="btns-$post.id" tabindex="-1" class="btn-container" style="display: block">
     #else
-      <div id="btns-$post.id" class="btn-container" style="display: none">
+      <div id="btns-$post.id" tabindex="-1" class="btn-container" style="display: none">
     #end
         <button data-postId="$post.id" type="button" class="expand togglable" style="display: block"><span>${messages.getString("label.expand.comments")}</span></button>
         <button data-postId="$post.id" type="button" class="expand togglable" style="display: none"><span>${messages.getString("label.hide.comments")}</span></button>

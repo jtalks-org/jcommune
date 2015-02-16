@@ -42,6 +42,7 @@ public class PostComment extends Entity {
     private String body;
     private Post post;
     private Map<String, String> attributes = new HashMap<>();
+    private DateTime deletionDate;
 
     /**
      * @return the author
@@ -151,5 +152,23 @@ public class PostComment extends Entity {
      */
     public void putAllAttributes(Map<String, String> attributes) {
         this.attributes.putAll(attributes);
+    }
+
+    /**
+     * Get a deletion date of the comment
+     *
+     * @return true if the comment has been deleted
+     */
+    public DateTime getDeletionDate() {
+        return deletionDate;
+    }
+
+    /**
+     * Set a deletion date of the comment
+     *
+     * @param deletionDate
+     */
+    public void setDeletionDate(DateTime deletionDate) {
+        this.deletionDate = deletionDate;
     }
 }

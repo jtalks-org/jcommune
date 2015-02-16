@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.api.service;
 
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 
@@ -33,4 +34,18 @@ public interface PluginCommentService {
      * @throws NotFoundException when entity not found
      */
     PostComment updateComment(long id, String body, long branchId) throws NotFoundException;
+
+    /**
+     * Get comment by id
+     * @param id ID of comment
+     * @return comment from DB
+     * @throws NotFoundException
+     */
+    PostComment getComment(long id) throws NotFoundException;
+    /**
+     * Delete comment from post
+     * @param post post which contains comment
+     * @param comment comment to be delete
+     */
+    public void markCommentAsDeleted(Post post, PostComment comment);
 }

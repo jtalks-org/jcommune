@@ -14,16 +14,16 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.Crud;
-import org.jtalks.common.model.permissions.BranchPermission;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.plugin.api.service.PluginCommentService;
 import org.jtalks.jcommune.service.PostCommentService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.PermissionService;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * The implementation of {@link org.jtalks.jcommune.service.PostCommentService}
@@ -55,11 +55,13 @@ public class TransactionalPostCommentService extends
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OWN_POSTS') and " +
+            "#comment.author.username == principal.username) or " +
+            "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.EDIT_OTHERS_POSTS') and " +
+            "#comment.author.username != principal.username)")
     public PostComment updateComment(long id, String body, long branchId) throws NotFoundException {
 
         PostComment comment = get(id);
-        checkHasUpdatePermission(comment, branchId);
-
         comment.setBody(body);
         getDao().saveOrUpdate(comment);
 
@@ -67,22 +69,25 @@ public class TransactionalPostCommentService extends
     }
 
     /**
-     * Checks if current user can edit review comments
-     * 
-     * @param comment
-     *            - comment to check permissions on
-     * @param branchId
-     *            - ID of branch where review with comment located
+     * Another implementation needed to be accessed from plugin-api
+     *
+     * {@inheritDoc}
      */
-    private void checkHasUpdatePermission(PostComment comment, long branchId) {
-        JCUser currentUser = userService.getCurrentUser();
-        boolean canEditOwnPosts = permissionService.hasBranchPermission(branchId, BranchPermission.EDIT_OWN_POSTS);
-        boolean canEditOthersPosts = permissionService
-                .hasBranchPermission(branchId, BranchPermission.EDIT_OTHERS_POSTS);
+    @Override
+    public PostComment getComment(long id) throws NotFoundException {
+        return getDao().get(id);
+    }
 
-        if (!(canEditOthersPosts && !comment.isCreatedBy(currentUser))
-                && !(canEditOwnPosts && comment.isCreatedBy(currentUser))) {
-            throw new AccessDeniedException("No permission to edit review comment");
-        }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @PreAuthorize("(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
+            "#comment.author.username == principal.username) or " +
+            "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
+            "#comment.author.username != principal.username)")
+    public void markCommentAsDeleted(Post post, PostComment comment) {
+        comment.setDeletionDate(new DateTime(System.currentTimeMillis()));
+        getDao().saveOrUpdate(comment);
     }
 }

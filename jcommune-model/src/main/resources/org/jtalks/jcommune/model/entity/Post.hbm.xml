@@ -36,8 +36,9 @@
                      fetch="join"
                      foreign-key="FK_USER" lazy="false" not-null="true" cascade="save-update"/>
         <many-to-one name="topic" column="TOPIC_ID" not-null="false"/>
-
-        <bag name="comments" cascade="all-delete-orphan" inverse="true" order-by="CREATION_DATE">
+        <!-- Where clause is used temporary. In future we may need load comments marked as deleted-->
+        <bag name="comments" cascade="all-delete-orphan" inverse="true" order-by="CREATION_DATE"
+             where="DELETION_DATE is null">
             <cache usage="nonstrict-read-write"/>
             <key column="POST_ID" foreign-key="FK_COMMENT_POST"/>
             <one-to-many class="org.jtalks.jcommune.model.entity.PostComment"/>

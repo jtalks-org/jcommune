@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.questionsandanswers;
 
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
@@ -169,8 +170,19 @@ public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements To
         return new QuestionsAndAnswersController();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getTopicType() {
         return TOPIC_TYPE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JtalksPermission getCommentPermission() {
+        return BranchPermission.CREATE_POSTS;
     }
 }

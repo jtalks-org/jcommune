@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
@@ -87,6 +88,8 @@ public class TransactionalPostServiceTest {
     private PermissionService permissionService;
     @Mock
     private Crud<PostComment> postCommentDao;
+    @Mock
+    private PluginLoader pluginLoader;
 
     private PostService postService;
 
@@ -110,7 +113,8 @@ public class TransactionalPostServiceTest {
                 lastReadPostService,
                 userService,
                 branchLastPostService,
-                permissionService);
+                permissionService,
+                pluginLoader);
     }
 
     @Test
@@ -439,6 +443,7 @@ public class TransactionalPostServiceTest {
     @Test
     public void testAddComment() throws Exception {
         Post post = getPostWithTopicInBranch();
+        post.getTopic().setType(TopicTypeName.CODE_REVIEW.getName());
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(post);
 
@@ -453,6 +458,7 @@ public class TransactionalPostServiceTest {
     @Test
     public void testAddCommentWithProperties() throws Exception {
         Post post = getPostWithTopicInBranch();
+        post.getTopic().setType(TopicTypeName.CODE_REVIEW.getName());
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(post);
         Map<String, String> attributes = new HashMap<>();
@@ -487,6 +493,7 @@ public class TransactionalPostServiceTest {
     public void testAddUserToSubscriptedByComment() throws Exception {
         JCUser user = new JCUser("username", null, null);
         Post post = getPostWithTopicInBranch();
+        post.getTopic().setType(TopicTypeName.CODE_REVIEW.getName());
         user.setAutosubscribe(true);
 
         when(userService.getCurrentUser()).thenReturn(user);
@@ -503,6 +510,7 @@ public class TransactionalPostServiceTest {
     public void testNotAddUserToSubscriptedByComment() throws Exception {
         JCUser user = new JCUser("username", null, null);
         Post post = getPostWithTopicInBranch();
+        post.getTopic().setType(TopicTypeName.CODE_REVIEW.getName());
         user.setAutosubscribe(false);
 
         when(userService.getCurrentUser()).thenReturn(user);

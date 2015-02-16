@@ -211,6 +211,7 @@
     <constructor-arg ref="userService"/>
     <constructor-arg ref="branchLastPostService"/>
     <constructor-arg ref="permissionService"/>
+    <constructor-arg ref="pluginLoader"/>
   </bean>
 
   <bean id="topicModificationService"
