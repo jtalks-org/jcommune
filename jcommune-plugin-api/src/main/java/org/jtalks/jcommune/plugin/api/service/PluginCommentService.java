@@ -36,9 +36,16 @@ public interface PluginCommentService {
     PostComment updateComment(long id, String body, long branchId) throws NotFoundException;
 
     /**
+     * Get comment by id
+     * @param id ID of comment
+     * @return comment from DB
+     * @throws NotFoundException
+     */
+    PostComment getComment(long id) throws NotFoundException;
+    /**
      * Delete comment from post
      * @param post post which contains comment
      * @param comment comment to be delete
      */
-    public void deleteComment(Post post, PostComment comment);
+    public void markCommentAsDeleted(Post post, PostComment comment);
 }

@@ -247,7 +247,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             "#comment.author.username == principal.username) or " +
             "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
             "#comment.author.username != principal.username)")
-    public void deleteComment(Post post, PostComment comment) {
+    public void markCommentAsDeleted(Post post, PostComment comment) {
         post.getComments().remove(comment);
         getDao().saveOrUpdate(post);
     }

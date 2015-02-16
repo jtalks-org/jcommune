@@ -113,7 +113,7 @@ public interface PostService extends EntityService<Post> {
      * @param post post form which comment will be removed
      * @param comment comment to remove
      */
-    void deleteComment(Post post, PostComment comment);
+    void markCommentAsDeleted(Post post, PostComment comment);
 
     /**
      * Votes for specified post in direction specified by vote

@@ -70,5 +70,5 @@ public interface PluginPostService {
      * @param post post which comment will be delete
      * @param comment comment which will be delete
      */
-    public void deleteComment(Post post, PostComment comment);
+    public void markCommentAsDeleted(Post post, PostComment comment);
 }

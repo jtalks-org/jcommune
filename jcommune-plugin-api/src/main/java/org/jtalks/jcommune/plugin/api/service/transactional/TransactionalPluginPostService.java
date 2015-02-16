@@ -82,8 +82,8 @@ public class TransactionalPluginPostService implements PluginPostService {
      * @param comment comment which will be delete
      */
     @Override
-    public void deleteComment(Post post, PostComment comment) {
-        postService.deleteComment(post, comment);
+    public void markCommentAsDeleted(Post post, PostComment comment) {
+        postService.markCommentAsDeleted(post, comment);
     }
 
     /**

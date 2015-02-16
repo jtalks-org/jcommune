@@ -460,7 +460,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     JsonResponse deleteComment(@RequestParam(COMMENT_ID) Long commentId,
                                @RequestParam(POST_ID) Long postId) throws NotFoundException {
         Post post = getPluginPostService().get(postId);
-
+        PostComment postComment = getCommentService().getComment(commentId);
+        getPluginPostService().markCommentAsDeleted(post, postComment);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
     /**
@@ -636,6 +637,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     PluginCommentService getCommentService() {
         return TransactionalPluginCommentService.getInstance();
     }
+
 
     /**
      * Needed for tests

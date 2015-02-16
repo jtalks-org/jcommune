@@ -521,7 +521,7 @@ public class TransactionalPostServiceTest {
         PostComment comment = new PostComment();
         post.addComment(comment);
 
-        postService.deleteComment(post, comment);
+        postService.markCommentAsDeleted(post, comment);
 
         assertEquals(post.getComments().size(), 0);
         verify(postDao).saveOrUpdate(post);

@@ -225,7 +225,7 @@ public class CodeReviewCommentControllerTest {
         when(postCommentService.get(COMMENT_ID)).thenReturn(crc);
         JsonResponse jsonResponse = controller.deleteComment(COMMENT_ID, POST_ID);
 
-        verify(postService).deleteComment(post, crc);
+        verify(postService).markCommentAsDeleted(post, crc);
         assertEquals(jsonResponse.getStatus(), JsonResponseStatus.SUCCESS);
     }
 

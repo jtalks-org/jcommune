@@ -58,9 +58,18 @@ public class TransactionalPluginCommentService implements PluginCommentService{
     /**
      * {@inheritDoc}
      */
+
     @Override
-    public void deleteComment(Post post, PostComment comment) {
-        commentService.deleteComment(post, comment);
+    public PostComment getComment(long id) throws NotFoundException {
+        return commentService.getComment(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void markCommentAsDeleted(Post post, PostComment comment) {
+        commentService.markCommentAsDeleted(post, comment);
     }
 
     /**
