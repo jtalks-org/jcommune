@@ -60,7 +60,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           </div>
           <div class="comment-body">
             <span id="body-$comment.id">${esc.html($comment.body)}</span>
-            <div id="edit-$comment.id" class="control-group comment-container edit" style="display: none">
+            <div id="edit-$comment.id" class="control-group edit" style="display: none">
                   <textarea id="editable-$comment.id" name="commentBody" class="comment-textarea"
                              rows="3">${esc.html($comment.body)}</textarea>
                   <div class="comment-buttons-container">

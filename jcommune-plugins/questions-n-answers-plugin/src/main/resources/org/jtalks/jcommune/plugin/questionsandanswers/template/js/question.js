@@ -68,9 +68,13 @@ $(function () {
             async: false,
             data: JSON.stringify(commentDto),
             success: function(data) {
-                console.log(data);
-                hideCommentForm(postId);
-                addCommentToPost(postId, data.result);
+                if (data.status == 'SUCCESS') {
+                    hideCommentForm(postId);
+                    addCommentToPost(postId, data.result);
+                    clearValidationErrors($("#commentForm-" + postId));
+                } else {
+                    displayValidationErrors(data.result, "commentBody-" + postId);
+                }
             },
             error: function() {
                 console.log("error");
@@ -115,9 +119,13 @@ var editSubmitHandler = function(e) {
         success: function(data) {
             console.log(data.status);
             if(data.status == 'SUCCESS') {
+                console.log('SUCCESS');
                 $("#body-" + commentId).text(data.result);
                 enableViewMode(commentId);
+                clearValidationErrors($("#edit-" + commentId));
             } else {
+                console.log('FAIL');
+                enableEditMode(commentId);
                 displayValidationErrors(data.result, "editable-" + commentId);
             }
         },
@@ -475,6 +483,11 @@ function getValidationErrorView(errors) {
     return "";
 }
 
+function clearValidationErrors(element) {
+    element.removeClass("error");
+    element.children().remove(".help-inline");
+
+}
 function removeCommentHtml(commentId) {
     var commentElement = $("#comment-" + commentId);
     var postId = commentElement.parent().attr("id").split("-")[1];
