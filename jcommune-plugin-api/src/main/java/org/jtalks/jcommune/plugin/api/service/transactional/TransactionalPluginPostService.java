@@ -77,16 +77,6 @@ public class TransactionalPluginPostService implements PluginPostService {
     }
 
     /**
-     * {@inheritDoc}
-     * @param post post which comment will be delete
-     * @param comment comment which will be delete
-     */
-    @Override
-    public void markCommentAsDeleted(Post post, PostComment comment) {
-        postService.markCommentAsDeleted(post, comment);
-    }
-
-    /**
      * Sets post service. Should be used once, during initialization
      *
      * @param postService

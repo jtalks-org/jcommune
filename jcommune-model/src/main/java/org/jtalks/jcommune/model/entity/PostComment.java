@@ -169,6 +169,6 @@ public class PostComment extends Entity {
      * @param deletionDate
      */
     public void setDeletionDate(DateTime deletionDate) {
-        this.deletionDate= deletionDate;
+        this.deletionDate = deletionDate;
     }
 }
