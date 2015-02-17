@@ -29,7 +29,7 @@
                   type="org.joda.time.contrib.hibernate.PersistentDateTime"
                   not-null="true"/>
         <property column="BODY" name="body" type="text"/>
-        <property column="DELETED" name="deleted" type="java.lang.Boolean" not-null="true" />
+        <property column="DELETION_DATE" name="deletionDate" type="org.joda.time.contrib.hibernate.PersistentDateTime" />
         
         <many-to-one name="author" column="AUTHOR_ID" class="org.jtalks.jcommune.model.entity.JCUser"
                      lazy="false"

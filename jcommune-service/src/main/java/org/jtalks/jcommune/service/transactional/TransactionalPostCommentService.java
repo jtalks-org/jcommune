@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.PostComment;
@@ -84,7 +85,7 @@ public class TransactionalPostCommentService extends
             "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
             "#comment.author.username != principal.username)")
     public void markCommentAsDeleted(Post post, PostComment comment) {
-        comment.setDeleted(true);
+        comment.setDeletionDate(new DateTime(System.currentTimeMillis()));
         getDao().saveOrUpdate(comment);
     }
 }
