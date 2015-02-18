@@ -20,7 +20,7 @@
 *.jar
 
 #log files
-*.log
+*.log*
 
 # Netbeans project files
 nbproject
@@ -29,12 +29,8 @@ nbproject
 target
 logs
 
-/jcommune-view/jcommune-web-controller/test-output
-/jcommune-model/test-output
-/jcommune-service/test-output
-/jcommune-view/jcommune-web-view/test-output
-/jcommune-view/jcommune-web-controller/bin
-/jcommune-view/jcommune-web-view/bin
+test-output
+bin
 /jcommune-view/jcommune-web-view/src/main/webapp/resources/wro
-/jcommune-service/bin
-/jcommune-model/bin
+dependency-reduced-pom.xml
+pom.xml.versionsBackup

@@ -170,19 +170,18 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.4</version>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.3</version>
           <configuration>
-            <descriptorRefs>
-              <descriptorRef>jar-with-dependencies</descriptorRef>
-            </descriptorRefs>
+            <minimizeJar>true</minimizeJar>
           </configuration>
           <executions>
             <execution>
               <id>jar-with-dependencies</id>
               <phase>package</phase>
               <goals>
-                <goal>single</goal>
+                <goal>shade</goal>
               </goals>
             </execution>
           </executions>
