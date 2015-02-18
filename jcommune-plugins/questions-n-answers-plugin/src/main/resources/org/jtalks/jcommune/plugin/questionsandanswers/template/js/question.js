@@ -12,16 +12,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
+var numberOfCommentsToShow = 3;
 $(function () {
     var baseUrl = $root;
 
     $('.comment-prompt').click(function (e) {
         e.preventDefault();
         var postId = $(this).attr("id").split("-")[1];
-        console.log(postId);
         if (isCommentsHidden(postId)) {
-            console.log("comments hidden");
             toggleCommentsFor(postId);
         }
         $(this).hide();
@@ -60,7 +58,6 @@ $(function () {
         var postId = $(this).attr('data-post-id');
         commentDto.postId = postId;
         commentDto.body = $("#commentBody-" + postId).val();
-        console.log(commentDto);
         $.ajax({
             url: baseUrl + "/topics/question/newcomment",
             type: "POST",
@@ -72,12 +69,21 @@ $(function () {
                     hideCommentForm(postId);
                     addCommentToPost(postId, data.result);
                     clearValidationErrors($("#commentForm-" + postId));
-                } else {
+                } else if (data.reason == 'VALIDATION') {
                     displayValidationErrors(data.result, "commentBody-" + postId);
+                } else if (data.reason == 'ENTITY_NOT_FOUND') {
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: "Post which you try to comment was removed"
+                    });
                 }
             },
             error: function() {
-                console.log("error");
+                // Should not occur
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: "Unexpected error occurred"
+                });
             }
         });
     });
@@ -102,16 +108,26 @@ var deleteCommentHandler = function(e) {
 
     var submitFunc = function(e) {
         e.preventDefault();
-        console.log(baseUrl + "/topics/question/deletecomment?commentId=" + commentId + "&postId=" + getPostIdForComment(commentId));
         $.ajax({
             url: baseUrl + "/topics/question/deletecomment?commentId=" + commentId + "&postId=" + getPostIdForComment(commentId),
             type: "GET",
             success: function(data) {
-                removeCommentHtml(commentId);
-                jDialog.closeDialog();
+                if (data.status == 'SUCCESS') {
+                    removeCommentHtml(commentId);
+                    jDialog.closeDialog();
+                } else if (data.reason == 'ENTITY_NOT_FOUND') {
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: "Entity already removed"
+                    });
+                }
             },
             error: function() {
-                console.log("error");
+                // Should not occur
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: "Unexpected error occurred"
+                });
             }
         });
     };
@@ -143,7 +159,6 @@ var editSubmitHandler = function(e) {
     commentId = $(this).attr("data-comment-id");
     commentDto.id = commentId;
     commentDto.body = $("#editable-" + commentId).val();
-    console.log(commentDto);
     $.ajax({
         url: baseUrl + "/topics/question/editcomment?branchId=" + branchId,
         type: "POST",
@@ -151,20 +166,26 @@ var editSubmitHandler = function(e) {
         async: false,
         data: JSON.stringify(commentDto),
         success: function(data) {
-            console.log(data.status);
             if(data.status == 'SUCCESS') {
-                console.log('SUCCESS');
                 $("#body-" + commentId).text(data.result);
                 enableViewMode(commentId);
                 clearValidationErrors($("#edit-" + commentId));
-            } else {
-                console.log('FAIL');
+            } else if (data.reason == 'VALIDATION') {
                 enableEditMode(commentId);
                 displayValidationErrors(data.result, "editable-" + commentId);
+            } else if (data.reason == 'ENTITY_NOT_FOUND') {
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: "Comment was removed"
+                });
             }
         },
         error: function() {
-            console.log("error");
+            // Should not occur
+            jDialog.createDialog({
+                type: jDialog.alertType,
+                bodyMessage: "Unexpected error occurred"
+            });
         }
     });
 }
@@ -396,22 +417,31 @@ function hideCommentForm(postId) {
     $("#prompt-" + postId).show();
 }
 
+/**
+ * Adds new comment to post with specified if
+ *
+ * @param postId post to add comment
+ * @param comment comment to be added
+ */
 function addCommentToPost(postId, comment) {
     var commentList = $("#comments-" + postId).children();
     if (commentList.length != 0) {
         $(commentList[commentList.length - 1]).addClass("bordered");
     }
-    if(commentList.length == 3) {
+    if(commentList.length == numberOfCommentsToShow) {
         $("#btns-" + postId).show();
         $($("#btns-" + postId).children()[0]).hide();
     }
     $("#comments-" + postId).append(getCommentHtml(comment));
     updateCommentHandlers();
-    if (commentList.length > 2) {
+    if (commentList.length > numberOfCommentsToShow - 1) {
         applyCommentsCssClasses(postId);
     }
 }
 
+/**
+ *  Rebinds edit and delete comment's handlers. Should be called after addition of new comment
+ */
 function updateCommentHandlers() {
     $('.icon-pencil').click(editHandler);
     $('.edit-cancel').click(editCancelHandler);
@@ -419,6 +449,12 @@ function updateCommentHandlers() {
     $('.icon-trash').click(deleteCommentHandler);
 }
 
+/**
+ * Gets HTML view of comment. This view should be appended to other comments
+ *
+ * @param comment comment for which HTML view will be generated
+ * @returns {string} HTML view of specified comment
+ */
 function getCommentHtml(comment) {
     return "<div id='comment-" + comment.id + "'>"
         + "<div class='comment-header'>"
@@ -439,6 +475,11 @@ function getCommentHtml(comment) {
         + "<a class='btn edit-cancel' data-comment-id='" + comment.id + "'>Cancel</a></div></div></div></div></div>";
 }
 
+/**
+ * Toggles visibility of comments of specified post
+ *
+ * @param postId post id for which visibility of comments will be toggled
+ */
 function toggleCommentsFor(postId) {
     var commentList = $("#comments-" + postId);
     commentList.children(".togglable").toggle();
@@ -453,11 +494,22 @@ function toggleCommentsFor(postId) {
     }
 }
 
+/**
+ * Checks if post with specified id has hidden comments
+ *
+ * @param postId id of post to check presents of hidden comments
+ * @returns {boolean} true if post have hidden comments, false otherwise
+ */
 function isCommentsHidden(postId) {
-    console.log($("#comments-" + postId).children().not(":visible").length > 0);
     return $("#comments-" + postId).children().not(":visible").length > 0;
 }
 
+/**
+ * Applies new CSS classes for comments of post with specified id. Should be called after addition or deletion
+ * of comments. Also can be called after toggling visibility of comments
+ *
+ * @param postId id of the post to apply new CSS classes for comments
+ */
 function applyCommentsCssClasses(postId) {
     var i = 0;
     var commentCount = $("#comments-" + postId).children().length;
@@ -465,42 +517,61 @@ function applyCommentsCssClasses(postId) {
         $(this).removeClass("bordered");
         $(this).removeClass("togglable");
         $(this).removeClass("hiddenBorder");
-        if (i != commentCount - 1 && i != 2) {
+        if (i != commentCount - 1 && i != numberOfCommentsToShow - 1) {
             $(this).addClass("bordered");
-            console.log(i + " bordered");
         }
-        if (i == 2) {
+        if (i == numberOfCommentsToShow - 1) {
             $(this).show(); //for case of removing comment
             if (i != commentCount - 1) {
                 $(this).addClass("hiddenBorder");
                 $(this).addClass("bordered");
             }
         }
-        if (i > 2) {
+        if (i > numberOfCommentsToShow - 1) {
             $(this).addClass("togglable");
-            console.log(i + " togglable");
         }
         i ++;
     });
 }
 
+/**
+ * Shows edit form for comment with specified id
+ *
+ * @param commentId id of comment to enable edit mode
+ */
 function enableEditMode(commentId) {
     $("#body-" + commentId).hide();
     $("#edit-" + commentId).show();
 }
 
+/**
+ * Hides edit form and shows comment itself
+ *
+ * @param commentId id of comment to enable view mode
+ */
 function enableViewMode(commentId) {
     $("#body-" + commentId).show();
     $("#edit-" + commentId).hide();
 }
 
+/**
+ * Shows validation error on element with specified id (typically textarea)
+ *
+ * @param errors errors to be displayed
+ * @param elementId id of element to show errors
+ */
 function displayValidationErrors(errors, elementId) {
-    console.log("displayValidationErrors");
     var element = $("#" + elementId);
     element.parent().addClass("error");
     $(getValidationErrorView(errors)).insertAfter("#" + elementId);
 }
 
+/**
+ * Gets HTML error view for specified validation errors
+ *
+ * @param errors validation errors to generate HTML view
+ * @returns {string} HTML view for specified errors
+ */
 function getValidationErrorView(errors) {
     if(errors.length > 0) {
         var errorsView = "<span class='help-inline'>";
@@ -513,22 +584,38 @@ function getValidationErrorView(errors) {
     return "";
 }
 
+/**
+ * Clears validation errors for specified element (typically div)
+ *
+ * @param element element to clear validation errors
+ */
 function clearValidationErrors(element) {
     element.removeClass("error");
     element.children().remove(".help-inline");
 
 }
+
+/**
+ * Removes HTML view of comment with specified id
+ *
+ * @param commentId id of comment to remove HTML view
+ */
 function removeCommentHtml(commentId) {
     var commentElement = $("#comment-" + commentId);
     var postId = commentElement.parent().attr("id").split("-")[1];
-    console.log(postId);
     $("#comment-" + commentId).remove();
     applyCommentsCssClasses(postId);
-    if ($("#comments-" + postId).children().length == 3) {
+    if ($("#comments-" + postId).children().length == numberOfCommentsToShow) {
         $("#btns-" + postId).remove();
     }
 }
 
+/**
+ * Gets id of the post to which comment with specified id belong
+ *
+ * @param commentId id of the comment
+ * @returns {*} id of the post
+ */
 function getPostIdForComment(commentId) {
     return $("#comment-" + commentId).parent().attr("id").split("-")[1];
 }

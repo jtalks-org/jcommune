@@ -16,17 +16,16 @@ package org.jtalks.jcommune.plugin.questionsandanswers.controller;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.*;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
+import org.jtalks.jcommune.plugin.api.web.dto.json.*;
 import org.jtalks.jcommune.plugin.api.web.locale.JcLocaleResolver;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin;
+import org.jtalks.jcommune.plugin.questionsandanswers.dto.CommentDto;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.springframework.context.ApplicationContext;
@@ -41,10 +40,7 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Properties;
+import java.util.*;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
@@ -54,6 +50,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Mikhail Stryzhonok
@@ -81,6 +78,8 @@ public class QuestionsAndAnswersControllerTest {
     private PluginLocationService locationService;
     @Mock
     private LocaleResolver localeResolver;
+    @Mock
+    private PluginCommentService commentService;
 
     @Spy
     private QuestionsAndAnswersController controller = new QuestionsAndAnswersController();
@@ -98,6 +97,7 @@ public class QuestionsAndAnswersControllerTest {
         when(controller.getUserReader()).thenReturn(userReader);
         when(controller.getLocationService()).thenReturn(locationService);
         when(controller.getLocaleResolver()).thenReturn(localeResolver);
+        when(controller.getCommentService()).thenReturn(commentService);
         when(localeResolver.resolveLocale(any(HttpServletRequest.class))).thenReturn(Locale.ENGLISH);
         when(userReader.getCurrentUser()).thenReturn(new JCUser("name", "example@mail.ru", "pwd"));
         controller.setApplicationContext(context);
@@ -482,6 +482,134 @@ public class QuestionsAndAnswersControllerTest {
         String result = controller.deleteAnswer(answer.getId());
         assertEquals(result, "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId()
                 + "#" + neighborPostId);
+    }
+
+    @Test
+    public void testAddCommentSuccess() throws Exception {
+        PostComment comment = getComment();
+        CommentDto dto = new CommentDto();
+        dto.setPostId(1);
+        dto.setBody(comment.getBody());
+
+        when(postService.addComment(eq(dto.getPostId()), anyMap(), eq(dto.getBody()))).thenReturn(comment);
+
+        JsonResponse response = controller.addComment(dto, result, request);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+        assertTrue(response.getResult() instanceof CommentDto);
+        assertEquals(((CommentDto)response.getResult()).getBody(), dto.getBody());
+    }
+
+    @Test
+    public void addCommentShouldReturnFailResponseIfValidationErrorOccurred() {
+        CommentDto dto = new CommentDto();
+
+        when(result.hasErrors()).thenReturn(true);
+
+        JsonResponse response = controller.addComment(dto, result, request);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        assertTrue(response instanceof FailJsonResponse);
+        assertEquals(((FailJsonResponse)response).getReason(), JsonResponseReason.VALIDATION);
+
+    }
+
+    @Test
+    public void addCommentShouldReturnFailResponseIfPostNotFound() throws Exception {
+        CommentDto dto = new CommentDto();
+
+        when(postService.addComment(anyLong(), anyMap(), anyString())).thenThrow(new NotFoundException());
+
+        JsonResponse response = controller.addComment(dto, result, request);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        assertTrue(response instanceof FailJsonResponse);
+        assertEquals(((FailJsonResponse)response).getReason(), JsonResponseReason.ENTITY_NOT_FOUND);
+    }
+
+    @Test
+    public void testEditCommentSuccess() throws Exception {
+        PostComment comment = getComment();
+        CommentDto dto = new CommentDto();
+        dto.setBody(comment.getBody());
+
+        when(commentService.updateComment(eq(dto.getId()), eq(dto.getBody()), anyLong())).thenReturn(comment);
+
+        JsonResponse response = controller.editComment(dto, result, 1);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+        assertTrue(response.getResult() instanceof String);
+        assertEquals(response.getResult(), dto.getBody());
+    }
+
+    @Test
+    public void editCommentShouldReturnFailResponseIfValidationErrorOccurred() {
+        CommentDto dto = new CommentDto();
+
+        when(result.hasErrors()).thenReturn(true);
+
+        JsonResponse response = controller.editComment(dto, result, 1);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        assertTrue(response instanceof FailJsonResponse);
+        assertEquals(((FailJsonResponse)response).getReason(), JsonResponseReason.VALIDATION);
+    }
+
+    @Test
+    public void editCommentShouldReturnFailResponseIfPostNotFound() throws Exception {
+        CommentDto dto = new CommentDto();
+
+        when(commentService.updateComment(anyLong(), anyString(), anyLong())).thenThrow(new NotFoundException());
+
+        JsonResponse response = controller.editComment(dto, result, 1);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        assertTrue(response instanceof FailJsonResponse);
+        assertEquals(((FailJsonResponse)response).getReason(), JsonResponseReason.ENTITY_NOT_FOUND);
+    }
+
+    @Test
+    public void testDeleteCommentSuccess() throws Exception {
+        Post post = new Post(null, null);
+        PostComment comment = new PostComment();
+
+        when(postService.get(1L)).thenReturn(post);
+        when(commentService.getComment(1)).thenReturn(comment);
+
+        JsonResponse response = controller.deleteComment(1L, 1L);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+        verify(commentService).markCommentAsDeleted(post, comment);
+    }
+
+    @Test
+    public void testDeleteCommentShouldReturnFailResponseIfPostNotFound() throws Exception {
+        when(postService.get(anyLong())).thenThrow(new NotFoundException());
+
+        JsonResponse response = controller.deleteComment(1L, 1L);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        assertTrue(response instanceof FailJsonResponse);
+        assertEquals(((FailJsonResponse)response).getReason(), JsonResponseReason.ENTITY_NOT_FOUND);
+    }
+
+    @Test
+    public void testDeleteCommentShouldReturnFailResponseIfCommentNotFound() throws Exception {
+        when(commentService.getComment(anyLong())).thenThrow(new NotFoundException());
+
+        JsonResponse response = controller.deleteComment(1L, 1L);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        assertTrue(response instanceof FailJsonResponse);
+        assertEquals(((FailJsonResponse)response).getReason(), JsonResponseReason.ENTITY_NOT_FOUND);
+    }
+
+    private PostComment getComment() {
+        PostComment comment = new PostComment();
+        comment.setAuthor(new JCUser("test", "example@test.com", "pwd"));
+        comment.setBody("test");
+        comment.setId(1);
+        return comment;
     }
 }
 

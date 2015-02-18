@@ -32,9 +32,7 @@ import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwa
 import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
-import org.jtalks.jcommune.plugin.api.web.dto.json.FailValidationJsonResponse;
-import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.plugin.api.web.dto.json.*;
 import org.jtalks.jcommune.plugin.api.web.locale.JcLocaleResolver;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
@@ -429,42 +427,71 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @param request http servlet request
      *
      * @return result in JSON format
-     *
-     * @throws NotFoundException if post not found
      */
     @RequestMapping(method = RequestMethod.POST, value = "newcomment")
     @ResponseBody
-    JsonResponse addComment(@Valid @RequestBody CommentDto dto, BindingResult result,
-                            HttpServletRequest request) throws NotFoundException {
+    JsonResponse addComment(@Valid @RequestBody CommentDto dto, BindingResult result, HttpServletRequest request) {
         if (result.hasErrors()) {
             return new FailValidationJsonResponse(result.getAllErrors());
         }
-        PostComment comment = getPluginPostService().addComment(dto.getPostId(), Collections.EMPTY_MAP, dto.getBody());
+        PostComment comment;
+        try {
+            comment = getPluginPostService().addComment(dto.getPostId(), Collections.EMPTY_MAP, dto.getBody());
+        } catch (NotFoundException ex) {
+            return new FailJsonResponse(JsonResponseReason.ENTITY_NOT_FOUND);
+        }
         JodaDateTimeTool dateTimeTool = new JodaDateTimeTool(request);
         return new JsonResponse(JsonResponseStatus.SUCCESS, new CommentDto(comment, dateTimeTool));
     }
 
+    /**
+     * Edits existence comment
+     *
+     * @param dto dto populated in form
+     * @param result validation result
+     * @param branchId id of a branch to check permission
+     *
+     * @return result in JSON format
+     */
     @RequestMapping(method = RequestMethod.POST, value = "editcomment")
     @ResponseBody
     JsonResponse editComment(@Valid @RequestBody CommentDto dto, BindingResult result,
-                             @RequestParam("branchId") long branchId) throws NotFoundException {
+                             @RequestParam("branchId") long branchId) {
         if (result.hasErrors()) {
             return new FailValidationJsonResponse(result.getAllErrors());
         }
-        PostComment updatedComment = getCommentService().updateComment(dto.getId(), dto.getBody(), branchId);
+        PostComment updatedComment;
+        try {
+            updatedComment = getCommentService().updateComment(dto.getId(), dto.getBody(), branchId);
+        } catch (NotFoundException ex) {
+            return new FailJsonResponse(JsonResponseReason.ENTITY_NOT_FOUND);
+        }
         return new JsonResponse(JsonResponseStatus.SUCCESS, updatedComment.getBody());
     }
 
-
+    /**
+     * Deletes comment
+     *
+     * @param commentId id of comment to delete
+     * @param postId id of a post to which this comment belong
+     *
+     * @return result in JSON format
+     */
     @RequestMapping(method = RequestMethod.GET, value = "deletecomment")
     @ResponseBody
-    JsonResponse deleteComment(@RequestParam(COMMENT_ID) Long commentId,
-                               @RequestParam(POST_ID) Long postId) throws NotFoundException {
-        Post post = getPluginPostService().get(postId);
-        PostComment postComment = getCommentService().getComment(commentId);
+    JsonResponse deleteComment(@RequestParam(COMMENT_ID) Long commentId, @RequestParam(POST_ID) Long postId) {
+        Post post;
+        PostComment postComment;
+        try {
+            post = getPluginPostService().get(postId);
+            postComment = getCommentService().getComment(commentId);
+        } catch (NotFoundException ex) {
+            return new FailJsonResponse(JsonResponseReason.ENTITY_NOT_FOUND);
+        }
         getCommentService().markCommentAsDeleted(post, postComment);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
+
     /**
      * Gets copy of specified collection of posts sorted by rating and creation date
      *
