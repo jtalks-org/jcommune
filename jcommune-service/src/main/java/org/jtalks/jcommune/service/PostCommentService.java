@@ -37,8 +37,11 @@ public interface PostCommentService extends EntityService<PostComment> {
 
     /**
      * Delete comment from post
+     *
      * @param post post which contains comment
      * @param comment comment to be delete
+     *
+     * @return comment marked as deleted
      */
-    public void markCommentAsDeleted(Post post, PostComment comment);
+    public PostComment markCommentAsDeleted(Post post, PostComment comment);
 }

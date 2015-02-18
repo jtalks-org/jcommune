@@ -86,8 +86,9 @@ public class TransactionalPostCommentService extends
             "#comment.author.username == principal.username) or " +
             "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
             "#comment.author.username != principal.username)")
-    public void markCommentAsDeleted(Post post, PostComment comment) {
+    public PostComment markCommentAsDeleted(Post post, PostComment comment) {
         comment.setDeletionDate(new DateTime(System.currentTimeMillis()));
         getDao().saveOrUpdate(comment);
+        return comment;
     }
 }

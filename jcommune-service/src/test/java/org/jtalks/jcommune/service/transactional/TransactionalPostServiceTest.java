@@ -15,13 +15,17 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.Crud;
-import org.jtalks.common.model.permissions.JtalksPermission;
+import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.filters.StateFilter;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
@@ -90,6 +94,8 @@ public class TransactionalPostServiceTest {
     private Crud<PostComment> postCommentDao;
     @Mock
     private PluginLoader pluginLoader;
+    @Mock
+    private TopicPlugin topicPlugin;
 
     private PostService postService;
 
@@ -478,11 +484,77 @@ public class TransactionalPostServiceTest {
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
-    public void testAddCommentUserHasNoPermission() throws Exception {
+    public void addingCommentToDiscussionShouldThrowException() throws Exception {
         Post post = getPostWithTopicInBranch();
+        post.getTopic().setType(TopicTypeName.DISCUSSION.getName());
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+
+        postService.addComment(POST_ID, Collections.EMPTY_MAP, "text");
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void addingCommentsToCodeReviewShouldThrowExceptionIfUserHasNoPermissions() throws Exception {
+        Post post = getPostWithTopicInBranch();
+        post.getTopic().setType(TopicTypeName.CODE_REVIEW.getName());
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+
         doThrow(new AccessDeniedException(""))
-                .when(permissionService).checkPermission(anyLong(), any(AclClassName.class),
-                any(JtalksPermission.class));
+                .when(permissionService).checkPermission(post.getTopic().getBranch().getId(), AclClassName.BRANCH,
+                BranchPermission.LEAVE_COMMENTS_IN_CODE_REVIEW);
+
+        postService.addComment(POST_ID, Collections.EMPTY_MAP, "text");
+    }
+
+    @Test
+    public void addingCommentToPlugablePostShouldBeSucceedIfAppropriatePluginIsEnabledAndUserHasPermissions()
+        throws Exception {
+        String topicType = "Plugable";
+        Post post = getPostWithTopicInBranch();
+        post.getTopic().setType(topicType);
+
+        when(pluginLoader.getPlugins(any(TypeFilter.class), any(StateFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn(topicType);
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+
+        PostComment comment = postService.addComment(POST_ID, Collections.EMPTY_MAP, "text");
+
+        assertEquals(post.getComments().size(), 1);
+        assertEquals(comment.getBody(), "text");
+        assertEquals(comment.getAuthor(), currentUser);
+        verify(postDao).saveOrUpdate(post);
+
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void addingCommentToPostFromPlugableTopicShouldThrowExceptionIfUserHaveNoPermissions() throws Exception {
+        String topicType = "Plugable";
+        Post post = getPostWithTopicInBranch();
+        post.getTopic().setType(topicType);
+
+        when(pluginLoader.getPlugins(any(TypeFilter.class), any(StateFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn(topicType);
+        when(topicPlugin.getCommentPermission()).thenReturn(BranchPermission.CREATE_POSTS);
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+        doThrow(new AccessDeniedException(""))
+                .when(permissionService).checkPermission(post.getTopic().getBranch().getId(), AclClassName.BRANCH,
+                BranchPermission.CREATE_POSTS);
+
+        postService.addComment(POST_ID, Collections.EMPTY_MAP, "text");
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void addingCommentsToPostFromPluggableTopicShouldThrowExceptionIfAppropriatePluginNotFound() throws Exception {
+        String topicType = "Plugable";
+        Post post = getPostWithTopicInBranch();
+        post.getTopic().setType(topicType);
+
+        when(pluginLoader.getPlugins(any(TypeFilter.class), any(StateFilter.class))).thenReturn(Collections.EMPTY_LIST);
         when(postDao.isExist(POST_ID)).thenReturn(true);
         when(postDao.get(POST_ID)).thenReturn(post);
 
@@ -624,6 +696,7 @@ public class TransactionalPostServiceTest {
 
     private Post getPostWithTopicInBranch() {
         Branch branch = new Branch(null, null);
+        branch.setId(1);
         Topic topic = new Topic();
         Post firstPost = new Post(null, null);
         firstPost.setId(1l);

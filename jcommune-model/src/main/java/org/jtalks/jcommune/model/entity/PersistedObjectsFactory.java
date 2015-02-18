@@ -252,7 +252,7 @@ public final class PersistedObjectsFactory {
      */
     public static PostComment getDefaultPostComment() {
         PostComment comment2 = new PostComment();
-        comment2.setAuthor(getUser("user2", "mail2@mail.ru"));
+        comment2.setAuthor(persist(ObjectsFactory.getRandomUser()));
         comment2.setBody("Comment2 body");
         comment2.setCreationDate(new DateTime(2));
         comment2.setPost(getDefaultPost());

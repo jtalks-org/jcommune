@@ -280,8 +280,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * Checks if current user can create comments in specified topic
      *
      * @param topic topic to check permission
-     * @throws org.springframework.security.access.AccessDeniedException if user can't create comments in specified
-     *                                                                   topic
+     * @throws AccessDeniedException if user can't create comments in specified topic
      */
     private void assertCommentAllowed(Topic topic) {
         if (topic.isCodeReview()) {
@@ -298,9 +297,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * Checks if current user can create comments in specified plugable topic
      *
      * @param topic plugable topic to check permission
-     * @throws org.springframework.security.access.AccessDeniedException  if user not granted to create comments in
-     *                                                                    specified topic type or if type of current
-     *                                                                    topic is unknown
+     * @throws AccessDeniedException  if user not granted to create comments in specified topic type or if type of
+     * current topic is unknown
      */
     private void assertCommentsAllowedForPlugableTopic(Topic topic) {
         List<Plugin> topicPlugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class),

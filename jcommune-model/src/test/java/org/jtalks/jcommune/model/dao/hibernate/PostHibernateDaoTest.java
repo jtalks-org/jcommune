@@ -391,6 +391,38 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
+    public void commentsWhichMarkedAsDeletedShouldNotBeRetrieved() {
+        Post post = PersistedObjectsFactory.getDefaultPost();
+        PostComment comment1 = PersistedObjectsFactory.getDefaultPostComment();
+        PostComment comment2 = PersistedObjectsFactory.getDefaultPostComment();
+        comment2.setDeletionDate(new DateTime());
+        post.addComment(comment1);
+        post.addComment(comment2);
+        session.save(post);
+        flushAndClearSession();
+
+        Post postFromDb = dao.get(post.getId());
+
+        assertEquals(1, postFromDb.getComments().size());
+        assertFalse(postFromDb.getComments().contains(comment2));
+        assertTrue(postFromDb.getComments().contains(comment1));
+    }
+
+    @Test
+    public void commentMarkedAsDeletedShouldExistInDatabase() {
+        Post post = PersistedObjectsFactory.getDefaultPost();
+        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        comment.setDeletionDate(new DateTime());
+        post.addComment(comment);
+        session.save(post);
+        flushAndClearSession();
+
+        PostComment commentFromDb = (PostComment)session.get(PostComment.class, comment.getId());
+
+        assertNotNull(commentFromDb);
+    }
+
+    @Test
     public void testChangeRating() {
         Post post = PersistedObjectsFactory.getDefaultPost();
         int oldRating = post.getRating();

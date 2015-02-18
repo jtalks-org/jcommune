@@ -28,6 +28,7 @@ import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * @author Vyacheslav Mishcheryakov
@@ -47,7 +48,7 @@ public class TransactionalPostCommentServiceTest {
     @Mock
     NotificationService notificationService;
 
-    private TransactionalPostCommentService codeReviewCommentService;
+    private TransactionalPostCommentService postCommentService;
 
     private PostComment comment;
     private JCUser currentUser;
@@ -55,7 +56,7 @@ public class TransactionalPostCommentServiceTest {
     @BeforeMethod
     public void initEnvironmental() {
         initMocks(this);
-        codeReviewCommentService = new TransactionalPostCommentService(
+        postCommentService = new TransactionalPostCommentService(
                 dao, permissionService, userService);
     }
 
@@ -82,52 +83,40 @@ public class TransactionalPostCommentServiceTest {
     @Test
     public void testUpdateCommentSuccess() throws Exception {
         givenUserHasPermissionToEditOwnPosts(true);
-        PostComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
+        PostComment comment = postCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
 
         assertEquals(comment.getBody(), COMMENT_BODY);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void testUpdateCommentNotFound() throws Exception {
-        codeReviewCommentService.updateComment(123L, null, BRANCH_ID);
+        postCommentService.updateComment(123L, null, BRANCH_ID);
     }
-
-//    @Test(expectedExceptions = AccessDeniedException.class)
-//    public void testUpdateCommentNoBothPermission() throws NotFoundException {
-//        givenUserHasPermissionToEditOwnPosts(false);
-//        givenUserHasPermissionToEditOthersPosts(false);
-//        codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
-//    }
-//
-//    @Test(expectedExceptions = AccessDeniedException.class)
-//    public void testUpdateCommentNoEditOwnPermission() throws NotFoundException {
-//        givenUserHasPermissionToEditOwnPosts(false);
-//        givenUserHasPermissionToEditOthersPosts(true);
-//        codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
-//    }
-//
-//    @Test(expectedExceptions = AccessDeniedException.class)
-//    public void testUpdateCommentNotOwnerNoEditOthersPermission() throws NotFoundException {
-//        givenCurrentUser("not-the-author-of-comment");
-//        givenUserHasPermissionToEditOthersPosts(false);
-//        givenUserHasPermissionToEditOwnPosts(true);
-//        codeReviewCommentService.updateComment(CR_ID, null, BRANCH_ID);
-//    }
 
     @Test
     public void testUpdateCommentNotOwnerButHasEditOthersPermission() throws NotFoundException {
         givenCurrentUser("not-the-author-of-comment");
         givenUserHasPermissionToEditOwnPosts(false);
         givenUserHasPermissionToEditOthersPosts(true);
-        PostComment comment = codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
+        PostComment comment = postCommentService.updateComment(CR_ID, COMMENT_BODY, BRANCH_ID);
 
         assertEquals(comment.getBody(), COMMENT_BODY);
     }
 
     @Test
     public void testSubscriberNotGetNotificationAboutEditingComment() throws Exception {
-        codeReviewCommentService.updateComment(CR_ID, COMMENT_BODY + "updated", BRANCH_ID);
+        postCommentService.updateComment(CR_ID, COMMENT_BODY + "updated", BRANCH_ID);
         verifyZeroInteractions(notificationService);
+    }
+
+    @Test
+    public void testMarkCommentAsDeleted() {
+        PostComment postComment = new PostComment();
+
+        PostComment result = postCommentService.markCommentAsDeleted(null, postComment);
+
+        assertNotNull(result.getDeletionDate());
+        verify(dao).saveOrUpdate(postComment);
     }
 
     private void givenUserHasPermissionToEditOwnPosts(boolean isGranted) {
@@ -136,14 +125,6 @@ public class TransactionalPostCommentServiceTest {
 
     private void givenUserHasPermissionToEditOthersPosts(boolean isGranted) {
         doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.EDIT_OTHERS_POSTS);
-    }
-
-    private void givenUserHasPermissionToDeleteOwnPosts(boolean isGranted){
-        doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.DELETE_OWN_POSTS);
-    }
-
-    private void givenUserHasPermissionToDeleteOthersPosts(boolean isGranted) {
-        doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.DELETE_OTHERS_POSTS);
     }
 
     private JCUser givenCurrentUser(String username) {

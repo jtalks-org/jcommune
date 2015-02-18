@@ -68,8 +68,8 @@ public class TransactionalPluginCommentService implements PluginCommentService{
      * {@inheritDoc}
      */
     @Override
-    public void markCommentAsDeleted(Post post, PostComment comment) {
-        commentService.markCommentAsDeleted(post, comment);
+    public PostComment markCommentAsDeleted(Post post, PostComment comment) {
+        return commentService.markCommentAsDeleted(post, comment);
     }
 
     /**
