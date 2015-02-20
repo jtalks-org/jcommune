@@ -22,6 +22,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.mockito.Mock;
+import org.springframework.security.access.AccessDeniedException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -118,6 +119,29 @@ public class TransactionalPostCommentServiceTest {
         assertNotNull(result.getDeletionDate());
         verify(dao).saveOrUpdate(postComment);
     }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void testUpdateCommentNoBothPermission() throws NotFoundException {
+        givenUserHasPermissionToEditOwnPosts(false);
+        givenUserHasPermissionToEditOthersPosts(false);
+        postCommentService.updateComment(CR_ID, null, BRANCH_ID);
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void testUpdateCommentNoEditOwnPermission() throws NotFoundException {
+        givenUserHasPermissionToEditOwnPosts(false);
+        givenUserHasPermissionToEditOthersPosts(true);
+        postCommentService.updateComment(CR_ID, null, BRANCH_ID);
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void testUpdateCommentNotOwnerNoEditOthersPermission() throws NotFoundException {
+        givenCurrentUser("not-the-author-of-comment");
+        givenUserHasPermissionToEditOthersPosts(false);
+        givenUserHasPermissionToEditOwnPosts(true);
+        postCommentService.updateComment(CR_ID, null, BRANCH_ID);
+    }
+
 
     private void givenUserHasPermissionToEditOwnPosts(boolean isGranted) {
         doReturn(isGranted).when(permissionService).hasBranchPermission(BRANCH_ID, BranchPermission.EDIT_OWN_POSTS);

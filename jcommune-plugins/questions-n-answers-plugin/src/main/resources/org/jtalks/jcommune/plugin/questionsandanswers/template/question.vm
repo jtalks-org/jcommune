@@ -27,6 +27,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       var labelVoteErrorNoPermissions = "${messages.getString("label.vote.error.not.registered")}";
     #end
     var labelVoteErrorOwnPost = "${messages.getString("label.vote.error.own.post")}";
+    var labelAddCommentPostNotFound = "${messages.getString("label.comment.add.error.not.found")}";
+    var labelEditCommentNotFound = "${messages.getString("label.comment.edit.error.not.found")}";
+    var labelDeleteCommentNotFound = "${messages.getString("label.comment.remove.error.not.found")}";
+    var labelUnexpectedError = "<jcommune:message>label.unexpected.error</jcommune:message>";
+    var labelSave = "<jcommune:message>label.save</jcommune:message>";
+    var labelProfileTip = "${messages.getString("label.tips.view_profile")}";
+    var labelEditCommentTip = "${messages.getString("label.edit.comment")}";
+    var labelDeleteCommentTip = "${messages.getString("label.delete.comment")}";
+    var labelSave = "<jcommune:message>label.save</jcommune:message>";
+    var labelCancel = "${messages.getString("label.cancel")}";
     var branchId = ${question.branch.id};
   </script>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>

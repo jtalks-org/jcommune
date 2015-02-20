@@ -74,7 +74,7 @@ $(function () {
                 } else if (data.reason == 'ENTITY_NOT_FOUND') {
                     jDialog.createDialog({
                         type: jDialog.alertType,
-                        bodyMessage: "Post which you try to comment was removed"
+                        bodyMessage: labelAddCommentPostNotFound
                     });
                 }
             },
@@ -82,7 +82,7 @@ $(function () {
                 // Should not occur
                 jDialog.createDialog({
                     type: jDialog.alertType,
-                    bodyMessage: "Unexpected error occurred"
+                    bodyMessage: labelUnexpectedError
                 });
             }
         });
@@ -118,7 +118,7 @@ var deleteCommentHandler = function(e) {
                 } else if (data.reason == 'ENTITY_NOT_FOUND') {
                     jDialog.createDialog({
                         type: jDialog.alertType,
-                        bodyMessage: "Entity already removed"
+                        bodyMessage: labelDeleteCommentNotFound
                     });
                 }
             },
@@ -126,7 +126,7 @@ var deleteCommentHandler = function(e) {
                 // Should not occur
                 jDialog.createDialog({
                     type: jDialog.alertType,
-                    bodyMessage: "Unexpected error occurred"
+                    bodyMessage: labelUnexpectedError
                 });
             }
         });
@@ -176,7 +176,7 @@ var editSubmitHandler = function(e) {
             } else if (data.reason == 'ENTITY_NOT_FOUND') {
                 jDialog.createDialog({
                     type: jDialog.alertType,
-                    bodyMessage: "Comment was removed"
+                    bodyMessage: labelEditCommentNotFound
                 });
             }
         },
@@ -184,7 +184,7 @@ var editSubmitHandler = function(e) {
             // Should not occur
             jDialog.createDialog({
                 type: jDialog.alertType,
-                bodyMessage: "Unexpected error occurred"
+                bodyMessage: labelUnexpectedError
             });
         }
     });
@@ -447,6 +447,7 @@ function updateCommentHandlers() {
     $('.edit-cancel').click(editCancelHandler);
     $('.edit-submit').click(editSubmitHandler);
     $('.icon-trash').click(deleteCommentHandler);
+    $("a").tooltip();
 }
 
 /**
@@ -460,19 +461,20 @@ function getCommentHtml(comment) {
         + "<div class='comment-header'>"
         + "<div class='comment-author pull-left'>"
         + "<a class='no-right-space' href='/jcommune/users/" + comment.authorId
-        + " data-original-title='Нажмите для просмотра профиля'>" + comment.authorUsername + "</a>,</div>"
+        + "' data-original-title='" + labelProfileTip + "'>" + comment.authorUsername + "</a> , </div>"
         + "<div class='comment-buttons pull-left'>"
-        + "<a class='comment-button' data-original-title='Редактировать комментарий'><i class='icon-pencil' data-comment-id='"
-        + comment.id + "'></i></a>&nbsp;"
-        + "<a class='comment-button' data-original-title='Удалить комментарий'><i class='icon-trash' data-comment-id='"
-        + comment.id + "'></i></a></div>"
+        + "<a class='comment-button' data-original-title='" + labelEditCommentTip + "'><i class='icon-pencil' "
+        + "data-comment-id='" + comment.id + "'></i></a>"
+        + "<a class='comment-button delete-comment' style='margin-left: 10px' data-original-title='" + labelDeleteCommentTip + "'><i class='icon-trash' "
+        + "data-comment-id='" + comment.id + "'></i></a></div>"
         + "<div class='comment-date pull-left'>" + comment.formattedCreationDate + "</div><div class='cleared'></div>"
         + "</div><div class='comment-body'><span id='body-" + comment.id + "'>" + comment.body + "</span>"
         + "<div id='edit-" + comment.id + "' class='control-group comment-container edit' style='display: none'>"
         + "<textarea id='editable-" + comment.id + "' name='commentBody' class='comment-textarea' rows='3'>"
         + comment.body + "</textarea> <div class='comment-buttons-container'><div class='pull-right'>"
-        + "<a class='btn btn-primary edit-submit' data-comment-id='" + comment.id + "'>Comment</a>"
-        + "<a class='btn edit-cancel' data-comment-id='" + comment.id + "'>Cancel</a></div></div></div></div></div>";
+        + "<a class='btn btn-primary edit-submit' data-comment-id='" + comment.id + "'>" + labelSave + "</a>"
+        + "<a class='btn edit-cancel' data-comment-id='" + comment.id + "'>" + labelCancel + "</a></div></div></div>"
+        + "</div></div>";
 }
 
 /**

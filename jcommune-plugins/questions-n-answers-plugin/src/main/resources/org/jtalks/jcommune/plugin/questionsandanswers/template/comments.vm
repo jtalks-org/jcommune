@@ -43,11 +43,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 || ($currentUser.id != $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.EDIT_OTHERS_POSTS")))
                   <a class="comment-button" data-original-title="${messages.getString("label.edit.comment")}">
                       <i class="icon-pencil" data-comment-id="$comment.id"></i>
-                  </a>&nbsp;
+                  </a>
                 #end
                 #if(($currentUser.id == $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.DELETE_OWN_POSTS"))
                 || ($currentUser.id != $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.DELETE_OTHERS_POSTS")))
-                  <a class="comment-button" data-original-title="${messages.getString("label.delete.comment")}">
+                  <a class="comment-button delete-comment" data-original-title="${messages.getString("label.delete.comment")}">
                       <i class="icon-trash" data-comment-id="$comment.id"></i>
                   </a>
                 #end
@@ -65,7 +65,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                              rows="3">${esc.html($comment.body)}</textarea>
                   <div class="comment-buttons-container">
                       <div class="pull-right">
-                          <a class="btn btn-primary edit-submit" data-comment-id="$comment.id">${messages.getString("label.comment")}</a>
+                          <a class="btn btn-primary edit-submit" data-comment-id="$comment.id"><jcommune:message>label.save</jcommune:message></a>
                           <a class="btn edit-cancel" data-comment-id="$comment.id">${messages.getString("label.cancel")}</a>
                       </div>
                   </div>
