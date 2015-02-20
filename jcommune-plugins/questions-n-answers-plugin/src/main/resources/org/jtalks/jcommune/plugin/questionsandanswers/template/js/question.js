@@ -56,6 +56,7 @@ $(function () {
     $('.comment-submit').click(function (e){
         var commentDto = {};
         var postId = $(this).attr('data-post-id');
+        clearValidationErrors($("#commentForm-" + postId));
         commentDto.postId = postId;
         commentDto.body = $("#commentBody-" + postId).val();
         $.ajax({
@@ -68,7 +69,6 @@ $(function () {
                 if (data.status == 'SUCCESS') {
                     hideCommentForm(postId);
                     addCommentToPost(postId, data.result);
-                    clearValidationErrors($("#commentForm-" + postId));
                 } else if (data.reason == 'VALIDATION') {
                     displayValidationErrors(data.result, "commentBody-" + postId);
                 } else if (data.reason == 'ENTITY_NOT_FOUND') {
@@ -157,6 +157,7 @@ var editSubmitHandler = function(e) {
     }
     var commentDto = {};
     commentId = $(this).attr("data-comment-id");
+    clearValidationErrors($("#edit-" + commentId));
     commentDto.id = commentId;
     commentDto.body = $("#editable-" + commentId).val();
     $.ajax({
@@ -169,7 +170,6 @@ var editSubmitHandler = function(e) {
             if(data.status == 'SUCCESS') {
                 $("#body-" + commentId).text(data.result);
                 enableViewMode(commentId);
-                clearValidationErrors($("#edit-" + commentId));
             } else if (data.reason == 'VALIDATION') {
                 enableEditMode(commentId);
                 displayValidationErrors(data.result, "editable-" + commentId);
