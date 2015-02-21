@@ -14,26 +14,31 @@
  */
 package org.jtalks.jcommune.plugin.api.web.dto;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.Poll;
+import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
+import org.springframework.util.AutoPopulatingList;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DTO for {@link Topic} objects. Used for validation and binding to form.
- *
+ *-
  * @author Vitaliy Kravchenko
  * @author Max Malakhov
  * @author Eugeny Batov
  */
 public class TopicDto {
 
-    @Valid
     private Topic topic;
-
 
     @BbCodeAwareSize(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
     @BbCodeNesting
@@ -43,6 +48,14 @@ public class TopicDto {
     private String unreadIconUrl;
     private String readIconUrl;
     private String postUrlPrefix;
+    /**
+     * Used for UI only
+     */
+    private List<PollItem> pollItemsValue = new AutoPopulatingList(PollItem.class);
+    /**
+     * Contains not empty PollItem
+     */
+    private List<PollItem> pollItems = new ArrayList<>();
 
     /**
      * Plain object for topic creation
@@ -65,8 +78,23 @@ public class TopicDto {
     /**
      * @return topic that used as dto between controllers and services
      */
+    @Valid
     public Topic getTopic() {
+        copyPollItem();
         return topic;
+    }
+
+    /**
+     * Copy PollItem from UI collection to Poll. Need that for correct Poll validation.
+     */
+    private void copyPollItem() {
+        CollectionUtils.select(pollItemsValue, new Predicate() {
+            @Override
+            public boolean evaluate(Object object) {
+                PollItem pollItem = (PollItem) object;
+                return StringUtils.isNotEmpty(pollItem.getName()) && !pollItems.contains(pollItem);
+            }
+        }, pollItems);
     }
 
     /**
@@ -164,5 +192,13 @@ public class TopicDto {
         persistentTopic.setAnnouncement(topic.isAnnouncement());
         persistentTopic.setSticked(topic.isSticked());
         return topic;
+    }
+
+    /**
+     * @return poll options in string representation.
+     */
+    public List<PollItem> getPollItemsValue() {
+        topic.getPoll().setPollItems(pollItems);
+        return pollItemsValue;
     }
 }

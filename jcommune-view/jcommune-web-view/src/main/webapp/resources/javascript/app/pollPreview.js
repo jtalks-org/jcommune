@@ -55,7 +55,7 @@ function enterPollPreviewMode() {
 }
 
 function isPollSet() {
-    return $("#pollTitle").val() || $("#pollItems").val();
+    return $("#pollTitle").val() || getPollItemsValue().length > 0;
 }
 
 /**
@@ -81,12 +81,22 @@ function prepareTitle() {
  * @return processed poll items without leading spaces and empty strings.
  */
 function prepareItems() {
-    var result;
-    //"normalize" line endings
-    result = $("#pollItems")[0].value.replace(/(?:\r\n|\r)+/g, "\n");
-    result = trim(result);
-    result = result.split("\n");
-    return stringItemsArrayToHtmlItems(result);
+    return stringItemsArrayToHtmlItems(getPollItemsValue());
+}
+
+/**
+ * Collect all value for poll items
+ * @returns {Array}
+ */
+function getPollItemsValue(){
+    var result = [];
+    $(".pollItemsValue input[type=text]").each(function(index){
+        value = $(this).val();
+        if(value != "") {
+            result.push(value);
+        }
+    });
+    return result;
 }
 
 /**

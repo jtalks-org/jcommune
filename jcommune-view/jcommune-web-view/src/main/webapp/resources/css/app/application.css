@@ -1148,3 +1148,8 @@ pre.prettyprint {
     overflow: hidden;
     white-space: nowrap;
 }
+
+.poll-icon-pull {
+    margin-left: 4px;
+    margin-top: 7px;
+}

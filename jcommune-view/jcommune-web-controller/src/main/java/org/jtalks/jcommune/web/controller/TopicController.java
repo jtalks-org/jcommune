@@ -17,8 +17,6 @@ package org.jtalks.jcommune.web.controller;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
@@ -28,6 +26,7 @@ import org.jtalks.jcommune.web.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.validation.editors.DateTimeEditor;
+import org.jtalks.jcommune.web.view.DynamicPollItemsConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +69,7 @@ public class TopicController {
     public static final String POST_DTO = "postDto";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     public static final String POLL = "poll";
+    public static final String POLL_CONFIG = "pollConfig";
 
     private TopicModificationService topicModificationService;
     private TopicFetchService topicFetchService;
@@ -81,6 +81,7 @@ public class TopicController {
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
     private EntityToDtoConverter converter;
+    private DynamicPollItemsConfig dynamicPollItemsConfig = new DynamicPollItemsConfig();
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -150,6 +151,7 @@ public class TopicController {
         return new ModelAndView(TOPIC_VIEW)
                 .addObject(TOPIC_DTO, dto)
                 .addObject(BRANCH_ID, branchId)
+                .addObject(POLL_CONFIG, dynamicPollItemsConfig)
                 .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
     }
@@ -172,6 +174,7 @@ public class TopicController {
             return new ModelAndView(TOPIC_VIEW)
                     .addObject(BRANCH_ID, branchId)
                     .addObject(TOPIC_DTO, topicDto)
+                    .addObject(POLL_CONFIG, dynamicPollItemsConfig)
                     .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
         }

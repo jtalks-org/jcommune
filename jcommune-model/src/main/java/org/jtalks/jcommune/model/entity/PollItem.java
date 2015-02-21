@@ -34,7 +34,7 @@ public class PollItem extends Entity {
     /**
      * Used only by Hibernate.
      */
-    protected PollItem() {
+    public PollItem() {
     }
 
 

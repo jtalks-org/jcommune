@@ -256,6 +256,7 @@ in the future.
       <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/permissionService.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/pollNewTopic.js"></script>
     </c:if>
 
   </c:otherwise>
