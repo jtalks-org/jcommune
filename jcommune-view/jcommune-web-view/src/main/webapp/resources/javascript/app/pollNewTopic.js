@@ -4,7 +4,7 @@ $(document).ready(function() {
         $("a#add").hide();
     }
 
-    $( "#sortable" ).sortable({update: function(event, ui) {reIndex()}});
+    $("#sortable").sortable({update: function(event, ui) {reIndex()}});
 
     var name = $("#sortable").attr("rel");
 
@@ -27,9 +27,7 @@ $(document).ready(function() {
         if($("div.pollItemsValue").length > minPollItems) {
             $(this).closest('div.pollItemsValue').remove();
             reIndex();
-            if ($("div.pollItemsValue").length < maxPollItems) {
-                $("a#add").show();
-            }
+            $("a#add").show();
         }
     });
 
