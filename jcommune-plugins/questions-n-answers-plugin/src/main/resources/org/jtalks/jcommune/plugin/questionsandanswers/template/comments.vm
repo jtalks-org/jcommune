@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #macro(comments $post $canLeavePosts $permissionTool $targedId $currentUser)
   #set($shownComments = 3)
     <div id="comments-$post.id" class="comment-list">
-      #foreach($comment in $post.comments)
+      #foreach($comment in $post.notRemovedComments)
         #set($commentClass = "")
         #if($velocityCount != $post.comments.size() && $post.comments.size() != 0)
           #set($commentClass = "bordered")

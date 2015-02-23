@@ -351,4 +351,22 @@ public class Post extends Entity {
         return 0;
     }
 
+    /**
+     * Creates and returns new list of comments of the current post which is not marked as removed. We cant use
+     * hibernate "WHERE" clause due caching issue. Additionally we may need to retrieve comments which is marked as
+     * removed in future. To manipulate with list of comments use {@link #getComments()} and
+     * {@link #setComments(java.util.List)} methods.
+     *
+     * @return newly created list of comments which not marked as deleted
+     */
+    public List<PostComment> getNotRemovedComments() {
+        List<PostComment> notRemovedComments = new ArrayList<>();
+        for (PostComment comment : comments) {
+            if (comment.getDeletionDate() == null) {
+                notRemovedComments.add(comment);
+            }
+        }
+        return notRemovedComments;
+    }
+
 }

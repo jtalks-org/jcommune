@@ -19,6 +19,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.joda.time.DateTime;
@@ -296,5 +297,36 @@ public class PostTest {
         vote2.setVotedUp(true);
 
         assertEquals(post.calculateRatingChanges(vote2), 2);
+    }
+
+    @Test
+    public void testGetNotRemovedComments() {
+        Post post = new Post();
+        PostComment comment1 = new PostComment();
+        PostComment comment2 = new PostComment();
+        comment2.setDeletionDate(new DateTime());
+        post.addComment(comment1);
+        post.addComment(comment2);
+
+        List<PostComment> notRemovedComments = post.getNotRemovedComments();
+
+        assertEquals(1, notRemovedComments.size());
+        assertTrue(notRemovedComments.contains(comment1));
+    }
+
+    @Test
+    public void getCommentsShouldReturnAllCommentsIncludingMarkedAsDeleted() {
+        Post post = new Post();
+        PostComment comment1 = new PostComment();
+        PostComment comment2 = new PostComment();
+        comment2.setDeletionDate(new DateTime());
+        post.addComment(comment1);
+        post.addComment(comment2);
+
+        List<PostComment> result = post.getComments();
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(comment1));
+        assertTrue(result.contains(comment2));
     }
 }
