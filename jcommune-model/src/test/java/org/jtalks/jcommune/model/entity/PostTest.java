@@ -14,10 +14,6 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +21,8 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 /**
  * @author Evgeniy Naumenko
@@ -301,32 +299,26 @@ public class PostTest {
 
     @Test
     public void testGetNotRemovedComments() {
-        Post post = new Post();
-        PostComment comment1 = new PostComment();
-        PostComment comment2 = new PostComment();
-        comment2.setDeletionDate(new DateTime());
-        post.addComment(comment1);
-        post.addComment(comment2);
+        Post post = ObjectsFactory.getPostWithComments();
+        int size = post.getComments().size();
+        post.getComments().get(0).setDeletionDate(new DateTime());
 
         List<PostComment> notRemovedComments = post.getNotRemovedComments();
 
-        assertEquals(1, notRemovedComments.size());
-        assertTrue(notRemovedComments.contains(comment1));
+        assertEquals(size - 1, notRemovedComments.size());
+        for (PostComment comment : notRemovedComments) {
+            assertNull(comment.getDeletionDate());
+        }
     }
 
     @Test
     public void getCommentsShouldReturnAllCommentsIncludingMarkedAsDeleted() {
-        Post post = new Post();
-        PostComment comment1 = new PostComment();
-        PostComment comment2 = new PostComment();
-        comment2.setDeletionDate(new DateTime());
-        post.addComment(comment1);
-        post.addComment(comment2);
+        Post post = ObjectsFactory.getPostWithComments();
+        int size = post.getComments().size();
+        post.getComments().get(0).setDeletionDate(new DateTime());
 
         List<PostComment> result = post.getComments();
 
-        assertEquals(2, result.size());
-        assertTrue(result.contains(comment1));
-        assertTrue(result.contains(comment2));
+        assertEquals(size, result.size());
     }
 }

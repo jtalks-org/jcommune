@@ -215,4 +215,11 @@ public final class ObjectsFactory {
         return new PostVote(getDefaultUser());
     }
 
+    public static Post getPostWithComments() {
+        Post post = new Post(getDefaultUser(), "test");
+        post.addComment(new PostComment());
+        post.addComment(new PostComment());
+        return post;
+    }
+
 }

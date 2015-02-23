@@ -361,7 +361,7 @@ public class Post extends Entity {
      */
     public List<PostComment> getNotRemovedComments() {
         List<PostComment> notRemovedComments = new ArrayList<>();
-        for (PostComment comment : comments) {
+        for (PostComment comment : getComments()) {
             if (comment.getDeletionDate() == null) {
                 notRemovedComments.add(comment);
             }
