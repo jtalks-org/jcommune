@@ -29,7 +29,7 @@
   <meta name="description" content="<c:out value="${topicDto.topic.branch.name}"/>">
   <title>
     <c:out value="${cmpTitlePrefix}"/>
-    <c:out value="${topicDto.topic.branch.name}"/><c:if test="${topicDto.topic.branch != null}"> - </c:if><spring:message code="h.new_topic"/>
+    <c:out value="${topicDto.topic.branch.name}"/><c:if test="${topicDto.topic.branch.name != null}"> - </c:if><spring:message code="h.new_topic"/>
   </title>
 </head>
 <body>
