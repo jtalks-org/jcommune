@@ -1090,7 +1090,11 @@ pre.prettyprint {
 
 #lang-selector-toggle-li .tooltip {
     white-space: pre-wrap;
-    max-width: 61px;
+    max-width: 71px;
+}
+
+#lang-selector-toggle-li .tooltip .tooltip-inner {
+    word-wrap: normal;
 }
 
 .full-width {
