@@ -4,6 +4,20 @@ $(document).ready(function() {
         $("a#add").hide();
     }
 
+    $("#addPollButton").click(function(){
+        if($(this).attr("rel") == "add") {
+            $(this).attr("value", $labelRemovePoll);
+            $(this).attr("rel", "delete");
+            $("div#editPollHolder").removeClass("hide");
+        } else {
+            $(this).attr("value", $labelAddPoll);
+            $(this).attr("rel", "add");
+            $("div#editPollHolder").addClass("hide");
+            $("div#editPollHolder input[type=text]").val("");
+            $("div#editPollHolder input[type=checkbox]").prop("checked", false);
+        }
+    });
+
     $("#sortable").sortable({update: function(event, ui) {reIndex()}});
 
     var name = $("#sortable").attr("rel");

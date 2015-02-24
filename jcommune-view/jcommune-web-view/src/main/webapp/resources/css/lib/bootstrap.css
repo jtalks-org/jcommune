@@ -641,6 +641,14 @@ fieldset {
     border: 0;
 }
 
+fieldset#editPoll legend {
+    margin-bottom: 0;
+}
+
+fieldset#editPoll legend + .control-group {
+    margin-top: 0;
+}
+
 legend {
     display: block;
     width: 100%;

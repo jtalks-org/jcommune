@@ -82,6 +82,7 @@ function initEditor(textAreaId, htmlAreaId, baseDivId) {
  * preview mode.
  */
 function togglePreviewMode(allowedUrls) {
+    addPollItemButton = $("input#addPollButton");
     if (editorVisible) { // exit preview
         textboxelement.style.display = "";
         htmlcontentelement.style.display = "none";
@@ -91,6 +92,9 @@ function togglePreviewMode(allowedUrls) {
         $('#preview')[0].value = $labelPreview;
         $('.keymaps-caption').show();
         $('#postBody').focus();
+        if(addPollItemButton.length) {
+            addPollItemButton.removeClass("hide");
+        }
     }
     else { // enter preview
         content = textboxelement.value;
@@ -138,7 +142,6 @@ function bbcode2html(allowedUrls) {
         success:function (data) {
             var result = data.html;
             if(data.is_invalid) {
-
                 ErrorUtils.removeErrorMessage(elId);
                 for(var a=0; a<data.errors.length; a++) {
                     ErrorUtils.addErrorMessage(elId, data.errors[a].defaultMessage);
@@ -169,6 +172,10 @@ function bbcode2html(allowedUrls) {
                 ErrorUtils.removeErrorMessage(elId);
                 //do code highlight
                 prettyPrint(null, '#htmlContent');
+                addPollItemButton = $("input#addPollButton");
+                if(addPollItemButton.length) {
+                    addPollItemButton.addClass("hide");
+                }
             }
         }
     });

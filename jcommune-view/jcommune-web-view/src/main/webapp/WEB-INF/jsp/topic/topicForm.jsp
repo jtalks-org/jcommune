@@ -78,10 +78,15 @@
                      postText="${topicDto.bodyText}"
                      bodyParameterName="bodyText"
                      back="${pageContext.request.contextPath}/branches/${branchId}"/>
-    <br/>
-    <br/>
+    <c:if test="${topicId eq null}">
+      <input id="addPollButton" type="button" rel="add" class="btn btn-success space-left-medium-nf" name="addPollButton"
+             tabindex="300" value="<spring:message code="label.addPoll"/>"/>
+    </c:if>
     <c:if test="${topicId eq null || topicDto.poll != null}">
-    <div class='well hide-on-preview'>
+    <div class="hide-on-preview">
+    <br/>
+    <br/>
+    <div id="editPollHolder" class='well <c:if test="${topicId eq null}">hide</c:if>'>
       <fieldset id="editPoll">
         <legend>
           <c:choose>
@@ -104,16 +109,20 @@
         <div class='control-group'>
           <spring:message code='label.poll.options.title' var='optionsPlaceholder'/>
           <spring:message code='label.poll.options.addPollItem' var='addPollItemLabel'/>
+          <div class="left-aligned">
             <c:choose>
               <c:when test="${pollEditing}">
                 <c:forEach items="${topicDto.poll.pollItems}" varStatus="i">
-                  <div>
-                    <form:input path="poll.pollItems[${i.index}]" placeholder="${optionsPlaceholder}"
-                                class="input-medium" disabled="${pollEditing}"/>
-                  </div>
+                    <div class="pollItemsValue">
+                        <form:input path="poll.pollItems[${i.index}]" placeholder="${optionsPlaceholder}"
+                                class="input-medium" disabled="${pollEditing}"/></div>
                 </c:forEach>
               </c:when>
               <c:otherwise>
+                <script type="text/javascript">
+                   var minPollItems = ${pollConfig.minPollItems};
+                   var maxPollItems = ${pollConfig.maxPollItems};
+                </script>
                 <div id="sortable" rel="pollItemsValue[__index__]">
                   <c:choose>
                     <c:when test="${not empty topicDto.pollItemsValue}">
@@ -138,9 +147,23 @@
                 <form:errors path="topic.poll.pollItems" cssClass="help-inline focusToError"/>
               </c:otherwise>
             </c:choose>
+          </div>
+          <div class="right-aligned">
+            <spring:message code="label.poll.date"/>
+            <spring:message code='label.poll.date.set' var='datePlaceholder'/>
+            <form:input path="poll.endingDate" tabindex="900" id="datepicker" type="text"
+                        readonly="true" placeholder="${datePlaceholder}"
+                        class="cursor-pointer script-confirm-unsaved space-left-small"/>
+            <c:if test="${topicId eq null}">
+                &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
+            </c:if>
+            <br>
+            <form:errors path="poll.endingDate" cssClass="help-inline"/>
+          </div>
         </div>
-
+        <div class="cleared"></div>
         <div class='control-group'>
+          <br/>
           <form:checkbox path="poll.multipleAnswer" id="multipleChecker"
                          class="form-check-radio-box script-confirm-unsaved"
                          tabindex="800" value="${poll.multipleAnswer}" disabled="${pollEditing}"/>
@@ -148,22 +171,10 @@
             <spring:message code="label.poll.multiple.title"/>
           </label>
         </div>
-
-        <div class="control-group right-aligned">
-          <spring:message code="label.poll.date"/>
-          <spring:message code='label.poll.date.set' var='datePlaceholder'/>
-          <form:input path="poll.endingDate" tabindex="900" id="datepicker" type="text"
-                      readonly="true" placeholder="${datePlaceholder}"
-                      class="cursor-pointer script-confirm-unsaved space-left-small"/>
-          <c:if test="${topicId eq null}">
-            &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
-          </c:if>
-          <br>
-          <form:errors path="poll.endingDate" cssClass="help-inline"/>
-        </div>
-          <%--Make parent div include floated divs explicitly, or they'll be shown out of parent container--%>
+        <%--Make parent div include floated divs explicitly, or they'll be shown out of parent container--%>
         <div class="cleared"></div>
       </fieldset>
+    </div>
     </div>
     </c:if>
   </form:form>
@@ -173,8 +184,4 @@
     <spring:message code="label.back"/>
   </a>
 </div>
-<script type="text/javascript">
-    var minPollItems = ${pollConfig.minPollItems};
-    var maxPollItems = ${pollConfig.maxPollItems};
-</script>
 </body>

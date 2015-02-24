@@ -161,13 +161,14 @@
 </div>
 
 <c:if test="${showSubmitButton}">
-  <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
-         value="<spring:message code="${labelForAction}"/>"/>
+    <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
+           value="<spring:message code="${labelForAction}"/>"/>
 </c:if>
 
 <input id="preview" type="button" class="btn btn-success space-left-medium-nf" name="preview" tabindex="400"
        value="<spring:message code="label.answer.preview"/>"
        onclick="togglePreviewMode(new Array('posts', 'topics'));return null;"/>
+
 <script type="text/javascript">
   initEditor("postBody", "editorBBCODEdiv", "htmlContent");
 </script>

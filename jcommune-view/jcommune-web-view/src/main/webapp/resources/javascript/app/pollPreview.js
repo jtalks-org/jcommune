@@ -51,6 +51,7 @@ function enterPollPreviewMode() {
         previewFormElement.show();
     } else {
         exitPollPreviewMode();
+        previewFormElement.show();
     }
 }
 
