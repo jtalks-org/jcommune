@@ -1,0 +1,36 @@
+/**
+ * Copyright (C) 2011  JTalks.org Team
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+package org.jtalks.jcommune.plugin.api.core;
+
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
+
+import java.util.Collection;
+
+/**
+ * Provides possibility to have different recipients for same type of notifications in different plugins
+ *
+ * @author Mikhail Stryzhonok
+ */
+public interface SubscribersFilter {
+
+    /**
+     * Filters collection of subscribers if specified entity belongs to plugin, otherwise ignores collection silently
+     *
+     * @param users collections of subscribers to filter
+     * @param entity entity to perform filtering
+     */
+    void filter(Collection<JCUser> users, SubscriptionAwareEntity entity);
+}

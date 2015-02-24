@@ -269,7 +269,7 @@ public class MentionedUsers {
      * @return true if we need to send notification and false otherwise
      */
     private boolean shouldNotificationBeSent(JCUser mentionedUser) {
-        boolean isOtherNotificationAlreadySent = post.getTopicSubscribers().contains(mentionedUser);
+        boolean isOtherNotificationAlreadySent = post.getSubscribers().contains(mentionedUser);
         return !isOtherNotificationAlreadySent && mentionedUser.isMentioningNotificationsEnabled();
     }
 

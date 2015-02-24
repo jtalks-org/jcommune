@@ -403,6 +403,9 @@ public class MailService {
         } else if (entity instanceof Branch) {
             Branch branch = (Branch) entity;
             return ": " + branch.getName();
+        } else if (entity instanceof Post) {
+            Post post = (Post) entity;
+            return ": " + post.getTopic().getTitle();
         } else {
             return "";
         }

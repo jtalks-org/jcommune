@@ -37,8 +37,8 @@ import java.util.Set;
  * @author Anuar Nurmakanov
  */
 
-public class Post extends Entity {
-
+public class Post extends Entity implements SubscriptionAwareEntity {
+    public static final String URL_SUFFIX = "/posts/";
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser userCreated;
@@ -186,13 +186,6 @@ public class Post extends Entity {
      */
     public void setTopic(Topic topic) {
         this.topic = topic;
-    }
-
-    /**
-     * @return subscribers of topic of this post
-     */
-    public Set<JCUser> getTopicSubscribers() {
-        return getTopic().getSubscribers();
     }
 
     /**
@@ -369,4 +362,19 @@ public class Post extends Entity {
         return notRemovedComments;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Set<JCUser> getSubscribers() {
+        return getTopic().getSubscribers();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String prepareUrlSuffix() {
+        return URL_SUFFIX + getId();
+    }
 }

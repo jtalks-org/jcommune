@@ -38,8 +38,8 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     public static final int BRANCH_DESCRIPTION_MAX_LENGTH = 255;
 
     public static final String URL_SUFFIX = "/branches/";
-    private List<Topic> topics = new ArrayList<Topic>();
-    private Set<JCUser> subscribers = new HashSet<JCUser>();
+    private List<Topic> topics = new ArrayList<>();
+    private Set<JCUser> subscribers = new HashSet<>();
 
     private Integer topicsCount;
     private Integer postsCount;
@@ -172,6 +172,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     /**
      * {@inheritDoc}
      */
+    @Override
     public Set<JCUser> getSubscribers() {
         return subscribers;
     }
@@ -242,8 +243,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
 
     /**
      * Set last post in this branch.
-     * 
-     * @return last post in this branch
+     *
      */
     public void setLastPost(Post lastPost) {
         this.lastPost = lastPost;

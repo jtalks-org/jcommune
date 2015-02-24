@@ -18,6 +18,7 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
@@ -42,6 +43,8 @@ public class NotificationServiceTest {
     private UserService userService;
     @Mock
     private SubscriptionService subscriptionService;
+    @Mock
+    private PluginLoader pluginLoader;
     private NotificationService service;
     private final long TOPIC_ID = 1;
 
@@ -59,7 +62,8 @@ public class NotificationServiceTest {
         service = new NotificationService(
                 userService,
                 mailService,
-                subscriptionService);
+                subscriptionService,
+                pluginLoader);
         topic = new Topic(user1, "title");
         topic.setId(TOPIC_ID);
         branch = new Branch("name", "description");

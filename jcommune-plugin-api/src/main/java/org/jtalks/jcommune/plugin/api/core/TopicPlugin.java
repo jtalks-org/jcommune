@@ -55,4 +55,11 @@ public interface TopicPlugin extends PluginWithBranchPermissions {
      * @return he permission which allows to add comments
      */
     JtalksPermission getCommentPermission();
+
+    /**
+     * Gets subscribers filter of current plugin
+     *
+     * @return subscribers filter of current plugin
+     */
+    SubscribersFilter getSubscribersFilter();
 }

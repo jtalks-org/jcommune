@@ -30,13 +30,6 @@ public interface SubscriptionAwareEntity {
     Set<JCUser> getSubscribers();
 
     /**
-     * Sets subscribers list for this branch. For Hibernate use only.
-     *
-     * @param subscribers users to send notifications on update to
-     */
-    void setSubscribers(Set<JCUser> subscribers);
-
-    /**
      * If user wants to see subscription updates she will get a notification with a link to particular forum location.
      * This method prepares a URL suffix to this location. Example: http://javatalks.ru/{url_suffix}/12. Url suffix is
      * different for branches, topics, code reviews, etc.
@@ -44,5 +37,4 @@ public interface SubscriptionAwareEntity {
      * @return URL suffix
      */
     String prepareUrlSuffix();
-
 }

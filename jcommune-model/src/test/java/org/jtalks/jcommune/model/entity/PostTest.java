@@ -79,7 +79,7 @@ public class PostTest {
         expectedSubscribers.add(new JCUser());
         post.getTopic().setSubscribers(expectedSubscribers);
         
-        Set<JCUser> actualSubscribers = post.getTopicSubscribers();
+        Set<JCUser> actualSubscribers = post.getSubscribers();
         
         assertEquals(actualSubscribers, expectedSubscribers,
                 "Post should have the same subscribers as parent topic.");

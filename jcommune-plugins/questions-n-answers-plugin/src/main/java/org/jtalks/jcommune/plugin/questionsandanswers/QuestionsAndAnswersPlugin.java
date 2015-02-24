@@ -17,6 +17,7 @@ package org.jtalks.jcommune.plugin.questionsandanswers;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.entity.PluginProperty;
+import org.jtalks.jcommune.plugin.api.core.SubscribersFilter;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.core.WebControllerPlugin;
 import org.jtalks.jcommune.plugin.api.web.dto.CreateTopicBtnDto;
@@ -184,5 +185,13 @@ public class QuestionsAndAnswersPlugin extends WebControllerPlugin implements To
     @Override
     public JtalksPermission getCommentPermission() {
         return BranchPermission.CREATE_POSTS;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SubscribersFilter getSubscribersFilter() {
+        return new QuestionSubscribersFilter();
     }
 }

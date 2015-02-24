@@ -559,7 +559,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     /**
      * {@inheritDoc}
      */
-    @Override
 	public void setSubscribers(Set<JCUser> subscribers) {
         this.subscribers = subscribers;
     }

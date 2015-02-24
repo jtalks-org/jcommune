@@ -110,6 +110,8 @@ public class TransactionalSubscriptionService implements SubscriptionService {
     public Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity){
         if (entity instanceof Topic) {
             return this.topicDao.getAllowedSubscribers(entity);
+        } else if (entity instanceof Post) {
+            return this.topicDao.getAllowedSubscribers(((Post)entity).getTopic());
         } else{
             return this.branchDao.getAllowedSubscribers(entity);
         }

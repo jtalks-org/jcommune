@@ -238,7 +238,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         }
         targetPost.addComment(comment);
         getDao().saveOrUpdate(targetPost);
-        notificationService.subscribedEntityChanged(targetPost.getTopic());
+        notificationService.subscribedEntityChanged(targetPost);
 
         return comment;
     }

@@ -17,11 +17,17 @@ package org.jtalks.jcommune.service.nontransactional;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
+import org.jtalks.jcommune.plugin.api.filters.StateFilter;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,19 +47,23 @@ public class NotificationService {
     SubscriptionService subscriptionService;
     private UserService userService;
     private MailService mailService;
+    private PluginLoader pluginLoader;
 
     /**
      * @param userService                  to determine the update author
      * @param mailService                  to perform actual email notifications
      * @param subscriptionService          to get the subscribers of the entity
+     * @param pluginLoader                 to get different subscribers for plugable topics
      */
     public NotificationService(
             UserService userService,
             MailService mailService,
-            SubscriptionService subscriptionService) {
+            SubscriptionService subscriptionService,
+            PluginLoader pluginLoader) {
         this.userService = userService;
         this.mailService = mailService;
         this.subscriptionService = subscriptionService;
+        this.pluginLoader = pluginLoader;
     }
 
     /**
@@ -65,7 +75,7 @@ public class NotificationService {
      */
     public void subscribedEntityChanged(SubscriptionAwareEntity entity) {
         Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
-        subscribers.remove(userService.getCurrentUser());
+        filterSubscribers(subscribers, entity);
 
         for (JCUser user : subscribers) {
             mailService.sendUpdatesOnSubscription(user, entity);
@@ -80,7 +90,7 @@ public class NotificationService {
      */
     public void subscribedEntityChanged(SubscriptionAwareEntity entity, Collection<JCUser> topicSubscribers) {
         Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
-        subscribers.remove(userService.getCurrentUser());
+        filterSubscribers(subscribers, entity);
 
         for (JCUser user : subscribers) {
             if (!topicSubscribers.contains(user)) {
@@ -101,7 +111,7 @@ public class NotificationService {
 
         //send notification to topic subscribers
         Collection<JCUser> topicSubscribers = subscriptionService.getAllowedSubscribers(topic);
-        this.filterSubscribers(topicSubscribers);
+        this.filterSubscribers(topicSubscribers, topic);
 
         for (JCUser subscriber : topicSubscribers) {
             mailService.sendTopicMovedMail(subscriber, topic, curUser);
@@ -110,7 +120,7 @@ public class NotificationService {
         //send notification to branch subscribers
         Set<JCUser> branchSubscribers = new HashSet<>(topic.getBranch().getSubscribers());
 
-        this.filterSubscribers(branchSubscribers);
+        this.filterSubscribers(branchSubscribers, topic.getBranch());
         for (JCUser subscriber : branchSubscribers) {
             if (!topicSubscribers.contains(subscriber)) {
                 mailService.sendTopicMovedMail(subscriber, topic, curUser);
@@ -119,12 +129,19 @@ public class NotificationService {
     }
 
     /**
-     * Filter collection - remove current user from subscribers
+     * Filter collection - remove current user from subscribers and performs plugin filtering
      *
      * @param subscribers collection of subscribers
+     * @see org.jtalks.jcommune.plugin.api.core.SubscribersFilter
      */
-    private void filterSubscribers(Collection<JCUser> subscribers) {
+    private void filterSubscribers(Collection<JCUser> subscribers, SubscriptionAwareEntity entity) {
         subscribers.remove(userService.getCurrentUser());
+        List<Plugin> plugins = pluginLoader.getPlugins(new StateFilter(Plugin.State.ENABLED),
+                new TypeFilter(TopicPlugin.class));
+        for (Plugin plugin : plugins) {
+            TopicPlugin topicPlugin = (TopicPlugin)plugin;
+            topicPlugin.getSubscribersFilter().filter(subscribers, entity);
+        }
     }
 
     /**
@@ -135,7 +152,7 @@ public class NotificationService {
      */
     public void sendNotificationAboutRemovingTopic(Topic topic, Collection<JCUser> subscribers) {
         String curUser = userService.getCurrentUser().getUsername();
-        this.filterSubscribers(subscribers);
+        this.filterSubscribers(subscribers, topic);
         for (JCUser subscriber : subscribers) {
             mailService.sendRemovingTopicMail(subscriber, topic, curUser);
         }
@@ -148,7 +165,7 @@ public class NotificationService {
      */
     public void sendNotificationAboutTopicCreated(Topic topic) {
         Collection<JCUser> branchSubscribers = subscriptionService.getAllowedSubscribers(topic.getBranch());
-        this.filterSubscribers(branchSubscribers);
+        this.filterSubscribers(branchSubscribers, topic);
         for (JCUser subscriber : branchSubscribers) {
             mailService.sendTopicCreationMail(subscriber, topic);
         }
