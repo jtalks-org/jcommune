@@ -44,8 +44,8 @@
       <artifactId>spring-webmvc</artifactId>
     </dependency>
     <dependency>
-       <groupId>velocity-tools</groupId>
-        <artifactId>velocity-tools-generic</artifactId>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity-tools</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kefirsf</groupId>

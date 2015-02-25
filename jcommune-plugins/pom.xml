@@ -64,9 +64,9 @@
         <version>1.7</version>
       </dependency>
       <dependency>
-        <groupId>velocity-tools</groupId>
-        <artifactId>velocity-tools-generic</artifactId>
-        <version>1.4</version>
+        <groupId>org.apache.velocity</groupId>
+        <artifactId>velocity-tools</artifactId>
+        <version>2.0</version>
       </dependency>
 
       <!-- TestNG & Mockito -->
