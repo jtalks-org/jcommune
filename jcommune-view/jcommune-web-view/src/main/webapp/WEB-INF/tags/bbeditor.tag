@@ -145,7 +145,7 @@
 
 <div class='control-group controls'>
   <%-- <div id="helpline"><spring:message code="label.answer.tooltip"/></div>--%>
-  <div id="editorBBCODEdiv">
+  <div id="editorBbCodeDiv">
     <pre id="htmlContent"></pre>
     <spring:message code="placeholder.editor.content" var="placeholderEditorContent"/>
     <textarea id="postBody" name="${bodyParameterName}" tabindex="200" style="width:100%;height: 350px"
@@ -169,5 +169,5 @@
        value="<spring:message code="label.answer.preview"/>"
        onclick="togglePreviewMode(new Array('posts', 'topics'));return null;"/>
 <script type="text/javascript">
-  initEditor("postBody", "editorBBCODEdiv", "htmlContent");
+  initEditor("postBody", "editorBbCodeDiv", "htmlContent");
 </script>
