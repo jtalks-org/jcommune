@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.plugin.api.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
@@ -30,6 +31,9 @@ public class PostDto {
     private String bodyText;
     private long id;
     private long topicId;
+    private TopicDto topicDto;
+    private DateTime creationDate;
+    private DateTime modificationDate;
 
     /**
      * Get topic id.
@@ -86,6 +90,60 @@ public class PostDto {
     }
 
     /**
+     * Gets topic dto of the post
+     *
+     * @return topic dto
+     */
+    public TopicDto getTopicDto() {
+        return topicDto;
+    }
+
+    /**
+     * Sets specified topic dto to the post
+     *
+     * @param topicDto topic dto to set
+     */
+    public void setTopicDto(TopicDto topicDto) {
+        this.topicDto = topicDto;
+    }
+
+    /**
+     * Gets time of post creation represented by this dto
+     *
+     * @return time of post creation
+     */
+    public DateTime getCreationDate() {
+        return creationDate;
+    }
+
+    /**
+     * Sets specified time of post  creation
+     *
+     * @param creationDate time of post  creation
+     */
+    public void setCreationDate(DateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    /**
+     * Gets time of post modificatiom represented by this dto
+     *
+     * @return
+     */
+    public DateTime getModificationDate() {
+        return modificationDate;
+    }
+
+    /**
+     * Sets specified time of post modification
+     *
+     * @param modificationDate time of post modification
+     */
+    public void setModificationDate(DateTime modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+
+    /**
      * Create dto
      *
      * @param post post for conversion
@@ -96,6 +154,8 @@ public class PostDto {
         dto.setBodyText(post.getPostContent());
         dto.setId(post.getId());
         dto.setTopicId(post.getTopic().getId());
+        dto.setCreationDate(post.getCreationDate());
+        dto.setModificationDate(post.getModificationDate());
         return dto;
     }
 }

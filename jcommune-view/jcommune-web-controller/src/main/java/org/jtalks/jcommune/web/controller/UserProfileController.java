@@ -21,6 +21,7 @@ import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.service.nontransactional.ImageConverter;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.web.dto.*;
@@ -86,6 +87,7 @@ public class UserProfileController {
     private ImageConverter imageConverter;
     private PostService postService;
     private UserContactsService contactsService;
+    private EntityToDtoConverter converter;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -123,13 +125,15 @@ public class UserProfileController {
                                  ImageConverter imageConverter,
                                  PostService postService,
                                  UserContactsService contactsService,
-                                 @Qualifier("avatarService") ImageService imageService) {
+                                 @Qualifier("avatarService") ImageService imageService,
+                                 EntityToDtoConverter converter) {
         this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.imageConverter = imageConverter;
         this.postService = postService;
         this.contactsService = contactsService;
         this.imageService = imageService;
+        this.converter = converter;
     }
 
     /**
@@ -391,7 +395,7 @@ public class UserProfileController {
         Page<Post> postsPage = postService.getPostsOfUser(user, page);
         return new ModelAndView("userPostList")
                 .addObject("user", user)
-                .addObject("postsPage", postsPage)
+                .addObject("postsPage", converter.convertPostPageToPostDtoPage(postsPage))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb());
     }
 

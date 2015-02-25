@@ -93,7 +93,7 @@ public class TopicSearchController {
         HashMap<String, Object> urlParams = new HashMap<>();
         urlParams.put("text", searchText);
         return new ModelAndView(SEARCH_RESULT_VIEW_NAME).
-                addObject(SEARCH_RESULT_ATTRIBUTE_NAME, converter.convertToDtoPage(searchResultPage)).
+                addObject(SEARCH_RESULT_ATTRIBUTE_NAME, converter.convertTopicPageToTopicDtoPage(searchResultPage)).
                 addObject(SEARCH_TEXT_ATTRIBUTE_NAME, searchText).
                 addObject("urlParams", urlParams);
     }

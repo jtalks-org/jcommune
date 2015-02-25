@@ -15,12 +15,14 @@
 package org.jtalks.jcommune.service.dto;
 
 import org.jtalks.jcommune.model.dto.PageRequest;
+import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.filters.StateFilter;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
+import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -60,12 +62,31 @@ public class EntityToDtoConverter {
      * @param source page of {@link Topic}
      * @return page of {@link TopicDto}
      */
-    public Page<TopicDto> convertToDtoPage(Page<Topic> source) {
+    public Page<TopicDto> convertTopicPageToTopicDtoPage(Page<Topic> source) {
         List<Plugin> plugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class),
                 new StateFilter(Plugin.State.ENABLED));
         List<TopicDto> dtos = new ArrayList<>();
         for (Topic topic : source) {
             dtos.add(createTopicDto(topic, plugins));
+        }
+        return new PageImpl<>(dtos, PageRequest.fetchFromPage(source), source.getTotalElements());
+    }
+
+    /**
+     * Converts page of {@link Post} to page of {@link PostDto}
+     *
+     * @param source page of {@link Post}
+     *
+     * @return page of {@link PostDto}
+     */
+    public Page<PostDto> convertPostPageToPostDtoPage(Page<Post> source) {
+        List<Plugin> plugins = pluginLoader.getPlugins(new TypeFilter(TopicPlugin.class),
+                new StateFilter(Plugin.State.ENABLED));
+        List<PostDto> dtos = new ArrayList<>();
+        for (Post post : source) {
+            PostDto dto = PostDto.getDtoFor(post);
+            dto.setTopicDto(createTopicDto(post.getTopic(), plugins));
+            dtos.add(dto);
         }
         return new PageImpl<>(dtos, PageRequest.fetchFromPage(source), source.getTotalElements());
     }

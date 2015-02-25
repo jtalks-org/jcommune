@@ -59,7 +59,7 @@ public class EntityToDtoConverterTest {
 
         when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class))).thenReturn(Collections.EMPTY_LIST);
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -91,7 +91,7 @@ public class EntityToDtoConverterTest {
                 .thenReturn(Arrays.<Plugin>asList(topicPlugin));
         when(topicPlugin.getTopicType()).thenReturn("Type 1");
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -125,7 +125,7 @@ public class EntityToDtoConverterTest {
                 .thenReturn(Arrays.<Plugin>asList(topicPlugin));
         when(topicPlugin.getTopicType()).thenReturn(TopicTypeName.DISCUSSION.getName());
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -158,7 +158,7 @@ public class EntityToDtoConverterTest {
 
         when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class))).thenReturn(Collections.EMPTY_LIST);
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -192,7 +192,7 @@ public class EntityToDtoConverterTest {
                 .thenReturn(Arrays.<Plugin>asList(topicPlugin));
         when(topicPlugin.getTopicType()).thenReturn("Type 1");
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -228,7 +228,7 @@ public class EntityToDtoConverterTest {
                 .thenReturn(Arrays.<Plugin>asList(topicPlugin));
         when(topicPlugin.getTopicType()).thenReturn(TopicTypeName.DISCUSSION.getName());
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -261,7 +261,7 @@ public class EntityToDtoConverterTest {
 
         when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class))).thenReturn(Collections.EMPTY_LIST);
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -293,7 +293,7 @@ public class EntityToDtoConverterTest {
                 .thenReturn(Arrays.<Plugin>asList(topicPlugin));
         when(topicPlugin.getTopicType()).thenReturn("Type 1");
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -327,7 +327,7 @@ public class EntityToDtoConverterTest {
                 .thenReturn(Arrays.<Plugin>asList(topicPlugin));
         when(topicPlugin.getTopicType()).thenReturn(TopicTypeName.CODE_REVIEW.getName());
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -362,7 +362,7 @@ public class EntityToDtoConverterTest {
                 .thenReturn(Arrays.<Plugin>asList(topicPlugin));
         when(topicPlugin.getTopicType()).thenReturn(topicType);
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -403,7 +403,7 @@ public class EntityToDtoConverterTest {
                 .thenReturn(Arrays.<Plugin>asList(topicPlugin));
         when(topicPlugin.getTopicType()).thenReturn(topicType);
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -442,7 +442,7 @@ public class EntityToDtoConverterTest {
 
         when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class))).thenReturn(Collections.EMPTY_LIST);
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);
@@ -475,7 +475,7 @@ public class EntityToDtoConverterTest {
 
         when(pluginLoader.getPlugins(any(PluginFilter.class), any(PluginFilter.class))).thenReturn(Collections.EMPTY_LIST);
 
-        Page<TopicDto> result = converter.convertToDtoPage(new PageImpl<>(Arrays.asList(topic)));
+        Page<TopicDto> result = converter.convertTopicPageToTopicDtoPage(new PageImpl<>(Arrays.asList(topic)));
 
         assertEquals(result.getNumberOfElements(), 1);
         TopicDto dto = result.getContent().get(0);

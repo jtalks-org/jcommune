@@ -70,7 +70,7 @@ public class TopicSearchControllerTest {
 
         when(topicFetchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, START_PAGE))
 				.thenReturn(searchResultPage);
-        when(converter.convertToDtoPage(searchResultPage)).thenReturn(searchDtoResultPage);
+        when(converter.convertTopicPageToTopicDtoPage(searchResultPage)).thenReturn(searchDtoResultPage);
 
 		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT, "1");
 		Map<String, Object> model = modelAndView.getModel();
@@ -89,7 +89,7 @@ public class TopicSearchControllerTest {
 
         when(topicFetchService.searchByTitleAndContent(DEFAULT_SEARCH_TEXT, page))
 				.thenReturn(searchResultPage);
-        when(converter.convertToDtoPage(searchResultPage)).thenReturn(searchDtoResultPage);
+        when(converter.convertTopicPageToTopicDtoPage(searchResultPage)).thenReturn(searchDtoResultPage);
 
 		ModelAndView modelAndView = topicSearchController.initSearch(DEFAULT_SEARCH_TEXT, page);
 		Map<String, Object> model = modelAndView.getModel();

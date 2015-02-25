@@ -60,13 +60,13 @@
               <td class='userinfo'>
                 <spring:message code='label.branch.header.branches'/>:
                 <a class="forum_message_cell_text space-left-small-m"
-                   href="${pageContext.request.contextPath}/branches/${post.topic.branch.id}">
-                  <c:out value="${post.topic.branch.name}"/></a>
+                   href="${pageContext.request.contextPath}/branches/${post.topicDto.topic.branch.id}">
+                  <c:out value="${post.topicDto.topic.branch.name}"/></a>
                 <br/>
                 <spring:message code='label.branch.header.topics'/>:
                 <a class="forum_message_cell_text space-left-small-m"
-                   href="${pageContext.request.contextPath}/topics/${post.topic.id}">
-                  <c:out value="${post.topic.title}"/></a>
+                   href="${pageContext.request.contextPath}${post.topicDto.topicUrl}">
+                  <c:out value="${post.topicDto.topic.title}"/></a>
                 <br/>
                 <spring:message code="label.added"/>&nbsp;
                 <jtalks:format value="${post.creationDate}" pattern="dd.MM.yy"/>
@@ -87,7 +87,7 @@
                 <br/>
               </td>
               <td class='post-content-td'>
-                <jtalks:postContent text="${post.postContent}"/>
+                <jtalks:postContent text="${post.bodyText}"/>
                 <br/>
             </td>
             </tr>

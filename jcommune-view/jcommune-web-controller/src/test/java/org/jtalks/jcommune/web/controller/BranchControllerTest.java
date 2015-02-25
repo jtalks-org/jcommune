@@ -116,7 +116,7 @@ public class BranchControllerTest {
         when(breadcrumbBuilder.getForumBreadcrumb(branchService.get(branchId)))
                 .thenReturn(new ArrayList<Breadcrumb>());
         when(forumStatisticsProvider.getOnlineRegisteredUsers()).thenReturn(new ArrayList<>());
-        when(converter.convertToDtoPage(topicsPage)).thenReturn(dtoPage);
+        when(converter.convertTopicPageToTopicDtoPage(topicsPage)).thenReturn(dtoPage);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
         Authentication authentication = mock(Authentication.class);
@@ -148,7 +148,7 @@ public class BranchControllerTest {
         Page<TopicDto> dtoPage = new PageImpl<>(new ArrayList<TopicDto>());
         //set expectations
         when(topicFetchService.getRecentTopics(page)).thenReturn(topicsPage);
-        when(converter.convertToDtoPage(topicsPage)).thenReturn(dtoPage);
+        when(converter.convertTopicPageToTopicDtoPage(topicsPage)).thenReturn(dtoPage);
 
         //invoke the object under test
         ModelAndView mav = controller.recentTopicsPage(page);
@@ -169,7 +169,7 @@ public class BranchControllerTest {
         Page<TopicDto> dtoPage = new PageImpl<>(new ArrayList<TopicDto>());
         //set expectations
         when(topicFetchService.getUnansweredTopics(page)).thenReturn(topicsPage);
-        when(converter.convertToDtoPage(topicsPage)).thenReturn(dtoPage);
+        when(converter.convertTopicPageToTopicDtoPage(topicsPage)).thenReturn(dtoPage);
 
         //invoke the object under test
         ModelAndView mav = controller.unansweredTopicsPage(page);

@@ -147,7 +147,7 @@ public class BranchController {
         return new ModelAndView("topic/topicList")
                 .addObject("viewList", locationService.getUsersViewing(branch))
                 .addObject("branch", branch)
-                .addObject("topicsPage", converter.convertToDtoPage(topicsPage))
+                .addObject("topicsPage", converter.convertTopicPageToTopicDtoPage(topicsPage))
                 .addObject("breadcrumbList", breadcrumbs)
                 .addObject("topicTypes", getTopicTypes(branchId))
                 .addObject("subscribed", branch.getSubscribers().contains(currentUser));
@@ -224,7 +224,7 @@ public class BranchController {
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
 
         return new ModelAndView("topic/recent")
-                .addObject("topicsPage", converter.convertToDtoPage(topicsPage))
+                .addObject("topicsPage", converter.convertTopicPageToTopicDtoPage(topicsPage))
                 .addObject("topics", topicsPage.getContent());  // for rssViewer
     }
 
@@ -240,7 +240,7 @@ public class BranchController {
         Page<Topic> topicsPage = topicFetchService.getUnansweredTopics(page);
         lastReadPostService.fillLastReadPostForTopics(topicsPage.getContent());
         return new ModelAndView("topic/unansweredTopics")
-                .addObject("topicsPage", converter.convertToDtoPage(topicsPage));
+                .addObject("topicsPage", converter.convertTopicPageToTopicDtoPage(topicsPage));
     }
 
     /**

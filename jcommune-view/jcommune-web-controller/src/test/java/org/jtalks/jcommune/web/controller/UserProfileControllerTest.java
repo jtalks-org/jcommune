@@ -20,6 +20,7 @@ import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserContactsService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
@@ -97,6 +98,8 @@ public class UserProfileControllerTest {
     private ImageService imageService;
     @Mock
     private RedirectAttributes redirectAttributes;
+    @Mock
+    private EntityToDtoConverter converter;
 
     @BeforeClass
     public void mockAvatar() {
@@ -112,7 +115,8 @@ public class UserProfileControllerTest {
                 imageConverter,
                 postService,
                 userContactsService,
-                imageService);
+                imageService,
+                converter);
     }
 
     @Test
@@ -534,6 +538,7 @@ public class UserProfileControllerTest {
         ModelAndView mav = profileController.showUserPostList(user.getId(), "1");
 
         verify(userService).get(user.getId());
+        verify(converter).convertPostPageToPostDtoPage(any(Page.class));
         assertViewName(mav, "userPostList");
         assertModelAttributeAvailable(mav, "user");
         assertModelAttributeAvailable(mav, "breadcrumbList");
