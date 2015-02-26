@@ -211,6 +211,7 @@ in the future.
     <c:if test="${fn:contains(uriString, 'pm') or fn:contains(uriString, 'reply') or fn:contains(uriString, 'quote')}">
       <script src="${pageContext.request.contextPath}/resources/javascript/app/pollPreview.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"></script>
     </c:if>
 
     <c:if test="${fn:contains(uriString, 'posts')}">
