@@ -167,7 +167,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @param response HttpServletResponse
      * @param name name of icon
      */
-    @RequestMapping(value = "icon/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/resources/icon/{name}", method = RequestMethod.GET)
     public void getIcon(HttpServletRequest request, HttpServletResponse response, @PathVariable("name") String name) {
         try {
             processIconRequest(request, response, PATH_TO_IMAGES + name);

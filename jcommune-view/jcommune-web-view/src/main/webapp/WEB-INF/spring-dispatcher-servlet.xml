@@ -133,6 +133,7 @@
       <mvc:mapping path="/pm/**"/>
       <mvc:mapping path="/"/>
       <mvc:exclude-mapping path="/users/*/avatar"/>
+      <mvc:exclude-mapping path="/**/resources/**"/>
       <bean id="clearInterceptor" class="org.jtalks.jcommune.web.interceptors.ClearInterceptor"/>
     </mvc:interceptor>
     <mvc:interceptor>
@@ -143,6 +144,7 @@
       <mvc:mapping path="/branches/**"/>
       <mvc:mapping path="/sections/**"/>
       <mvc:mapping path="/pm/**"/>
+      <mvc:exclude-mapping path="/**/resources/**"/>
       <bean id="javaSapeInterceptor" class="org.jtalks.jcommune.web.interceptors.SapeInterceptor">
         <property name="componentSapeAccountProperty" ref="componentSapeAccountProperty"/>
         <property name="componentSapeOnMainPageEnableProperty" ref="componentSapeOnMainPageEnableProperty"/>
@@ -163,6 +165,7 @@
           <mvc:mapping path="/"/>
           <mvc:exclude-mapping path="/users/*/avatar"/>
           <mvc:exclude-mapping path="/login"/>
+          <mvc:exclude-mapping path="/**/resources/**"/>
           <bean id="redirectInterceptor" class="org.jtalks.jcommune.web.interceptors.RefererKeepInterceptor"/>
       </mvc:interceptor>
   </mvc:interceptors>
