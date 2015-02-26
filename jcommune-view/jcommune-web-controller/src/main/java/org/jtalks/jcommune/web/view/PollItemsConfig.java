@@ -20,7 +20,7 @@ import org.jtalks.jcommune.model.entity.Poll;
  * Contains configuration for Dynamic Poll Items
  * @author Andrey Ivanov
  */
-public class DynamicPollItemsConfig {
+public class PollItemsConfig {
 
     public Integer getMaxPollItems(){
         return Poll.MAX_ITEMS_NUMBER;

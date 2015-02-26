@@ -4,7 +4,7 @@ $(document).ready(function() {
         $("a#add").hide();
     }
 
-    $("#addPollButton").click(function(){
+    $("#pollButton").click(function(){
         if($(this).attr("rel") == "add") {
             $(this).attr("value", $labelRemovePoll);
             $(this).attr("rel", "delete");

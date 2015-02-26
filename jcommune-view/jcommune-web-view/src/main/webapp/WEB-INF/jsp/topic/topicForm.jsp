@@ -79,7 +79,7 @@
                      bodyParameterName="bodyText"
                      back="${pageContext.request.contextPath}/branches/${branchId}"/>
     <c:if test="${topicId eq null}">
-      <input id="addPollButton" type="button" rel="add" class="btn btn-success space-left-medium-nf" name="addPollButton"
+      <input id="pollButton" type="button" rel="add" class="btn btn-success space-left-medium-nf" name="pollButton"
              tabindex="300" value="<spring:message code="label.addPoll"/>"/>
     </c:if>
     <c:if test="${topicId eq null || topicDto.poll != null}">
