@@ -62,6 +62,8 @@
         <entry key="jcommune:name=hibernateStatistics" value-ref="hibernateStatisticsMBean"/>
       </map>
     </property>
+    <!-- Ignores newly created configuration -->
+    <property name="registrationPolicy" value="IGNORE_EXISTING"/>
   </bean>
 
   <bean id="managementService" class="net.sf.ehcache.management.ManagementService"
