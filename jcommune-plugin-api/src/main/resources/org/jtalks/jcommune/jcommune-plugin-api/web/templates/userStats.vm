@@ -47,7 +47,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           #set($class = "label label-important")
         #end
       #end
-      <a href="$$request.contextPath/users/${user.id}"
+      <a href="$request.contextPath/users/${user.id}"
        class="$class space-left-small"
        title="<jcommune:message>label.tips.view_profile</jcommune:message>">$user.username</a>&thinsp;
     #end
