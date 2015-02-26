@@ -289,7 +289,16 @@
         </dependencies>
       </plugin>
     </plugins>
-
+    <testResources>
+      <testResource>
+        <!-- WEB-INF folder marked as test resource directory to provide possibility to access to
+        spring-dispatcher-servlet.xml and security-context.xml from component tests-->
+        <directory>${project.basedir}/src/main/webapp/WEB-INF</directory>
+      </testResource>
+      <testResource>
+        <directory>${project.basedir}/src/test/resources</directory>
+      </testResource>
+    </testResources>
     <finalName>jcommune</finalName>
   </build>
 
