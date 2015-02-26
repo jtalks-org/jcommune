@@ -25,15 +25,12 @@ jQuery(document).ready(function () {
     var recipientField = $('#recipient');
     recipientField.autocomplete({
         source : function(request, response) {
-            $.ajax({
-                type: 'POST',
-                url: baseUrl + '/usernames',
-                data: {pattern: recipientField.val()},
-                success: function (data) {
-                    if (data.result && data.result.length > 0) {
-                        validOptions = data.result;
-                        response(data.result);
-                    }
+            sendUserRequest(function(data) {
+                if (data.result && data.result.length > 0) {
+                    validOptions = data.result;
+                    response(data.result);
+                } else {
+                    validOptions = [];
                 }
             });
         },
@@ -45,14 +42,37 @@ jQuery(document).ready(function () {
     });
 
     recipientField.blur(function() {
-        clearRecipientIfIncorrect();
+        validateRecipient();
     });
 
     recipientField.keydown(function(e) {
-        if (e.ctrlKey && e.keyCode == enterCode) {
-            clearRecipientIfIncorrect();
+        if ((e.ctrlKey && e.keyCode == enterCode) || e.keyCode == tabCode) {
+           validateRecipient();
         }
     });
+
+    function validateRecipient() {
+        sendUserRequest(function(data) {
+            if (data.result && data.result.length > 0) {
+                validOptions = data.result;
+            } else {
+                validOptions = [];
+            }
+            clearRecipientIfIncorrect();
+        });
+    }
+
+    function sendUserRequest(successHandler) {
+        $.ajax({
+            type: 'POST',
+            url: baseUrl + '/usernames',
+            data: {pattern: recipientField.val()},
+            success: successHandler,
+            error: function() {
+                validOptions = [];
+            }
+        });
+    }
 
     function clearRecipientIfIncorrect() {
         if (validOptions.indexOf(recipientField.val()) == -1) {
