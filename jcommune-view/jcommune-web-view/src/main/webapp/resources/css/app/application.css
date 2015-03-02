@@ -1161,3 +1161,8 @@ pre.prettyprint {
     font-weight: normal !important;
 }
 
+.suggestion-list {
+    font-size: 13px !important;
+    line-height: 1.2em !important;
+}
+

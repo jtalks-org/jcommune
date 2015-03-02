@@ -39,7 +39,7 @@ jQuery(document).ready(function () {
             $("#ui-active-menuitem").parent().addClass("custom-selected-item");
             $("#ui-active-menuitem").removeClass("ui-corner-all");
         }
-    });
+    }).autocomplete("widget").addClass("suggestion-list");
 
     recipientField.blur(function() {
         validateRecipient();
