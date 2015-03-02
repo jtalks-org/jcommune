@@ -1,5 +1,7 @@
 ﻿SET @forum_component_id := 2;
-insert ignore into COMPONENTS (CMP_ID, COMPONENT_TYPE, UUID, `NAME`, DESCRIPTION) VALUES (2, 'FORUM', (SELECT UUID() FROM dual), 'JTalks Sample Forum', 'Available users: admin/admin registered/registered moderator/moderator banned/banned');
+-- Update description of FORUM component for new users baing created
+update COMPONENTS set DESCRIPTION = 'Available users: admin/admin registered/registered moderator/moderator banned/banned'
+  where CMP_ID = @forum_component_id;
 
 insert ignore into SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, COMPONENT_ID) VALUES
   (1,(SELECT UUID() FROM dual),'Sport', 'All about sport', 1, @forum_component_id),
@@ -11,7 +13,7 @@ insert ignore into SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, CO
   (7,(SELECT UUID() FROM dual),'TV', 'Has this zombobox something interesting?', 7, @forum_component_id),
   (8,(SELECT UUID() FROM dual),'Hi-tech', 'Technologies', 8, @forum_component_id),
   (9,(SELECT UUID() FROM dual),'People', 'All about mankind', 9, @forum_component_id),
-  (10,(SELECT UUID() FROM dual),'Leisure', 'Have free time?', 9, @forum_component_id);
+  (10,(SELECT UUID() FROM dual),'Leisure', 'Have free time?', 10, @forum_component_id);
   
 -- GROUPS BEGIN
 insert ignore into GROUPS (UUID, `NAME`, DESCRIPTION)
@@ -91,14 +93,13 @@ insert ignore into BRANCHES (BRANCH_ID, UUID, `NAME`, DESCRIPTION, POSITION, SEC
   (49, UUID(), 'Competitions', 'Some sport', 3, 10 ,1);
 
 -- ****USERS CREATION BEGIN****
--- Creates a default users with admin/admin, registered/registered, moderator/moderator, banned/banned credentials to be able to log in without manual registration
+-- Creates a default users with registered/registered, moderator/moderator, banned/banned credentials to be able to log in without manual registration
+-- admin/admin has been already created by JC script.
 insert ignore into USERS (UUID, USERNAME, ENCODED_USERNAME, EMAIL, PASSWORD, ROLE, SALT, ENABLED) VALUES
-  ((SELECT UUID() FROM dual), 'admin', 'admin', 'admin@jtalks.org', MD5('admin'), 'USER_ROLE', '',true),
   ((SELECT UUID() FROM dual), 'registered', 'registered', 'registered@jtalks.org', MD5('registered'), 'USER_ROLE', '',true),
   ((SELECT UUID() FROM dual), 'moderator', 'moderator', 'moderator@jtalks.org', MD5('moderator'), 'USER_ROLE', '', true),
   ((SELECT UUID() FROM dual), 'banned', 'banned', 'banned@jtalks.org', MD5('banned'), 'USER_ROLE', '', true);
 insert ignore into JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT) values
-  ((select ID from USERS where USERNAME = 'admin'), NOW(), 0),
   ((select ID from USERS where USERNAME = 'registered'), NOW(), 0),
   ((select ID from USERS where USERNAME = 'moderator'), NOW(), 0),
   ((select ID from USERS where USERNAME = 'banned'), NOW(), 0) ;
@@ -107,7 +108,6 @@ insert ignore into JC_USER_DETAILS (USER_ID, REGISTRATION_DATE, POST_COUNT) valu
 -- Add users to appropriate groups
 insert ignore into GROUP_USER_REF select @registered_group_id, ID from USERS;
 insert ignore into GROUP_USER_REF select @moderator_group_id, ID from USERS where USERNAME in ('moderator', 'admin');
-insert ignore into GROUP_USER_REF select @admin_group_id, ID from USERS where USERNAME = 'admin';
 insert ignore into GROUP_USER_REF select @banned_group_id, ID from USERS where USERNAME = 'banned';
 
 set @component_acl_class=1;
@@ -145,65 +145,68 @@ SET @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK := 22;
 SET @ADMIN_MASK := 16;
 -- PERMISSIONS END
 
-insert ignore into acl_object_identity
- SELECT BranchTable.BRANCH_ID, @branch_acl_class, BranchTable.BRANCH_ID, NULL, 1, 1
+--  Records for branches will start from this ID+1 in acl_object_identity table
+SET @branches_acl_object_identity_id_start = (SELECT MAX(ID) FROM acl_object_identity);
+
+insert into acl_object_identity
+ SELECT @branches_acl_object_identity_id_start + BranchTable.BRANCH_ID, @branch_acl_class, BranchTable.BRANCH_ID, NULL, 1, 1
  FROM (SELECT BRANCH_ID FROM BRANCHES) BranchTable;
+-- owner получается anonymous user - is it right?
 
 set @branches_count = (SELECT COUNT(*) FROM BRANCHES);
-set @registered_group_object_identity=@branches_count + 1;
-set @admin_group_object_identity=@branches_count + 2;
-set @banned_group_object_identity=@branches_count + 3;
+set @registered_group_object_identity=@branches_acl_object_identity_id_start + @branches_count + 1;
+set @admin_group_object_identity=@branches_acl_object_identity_id_start + @branches_count + 2;
+set @banned_group_object_identity=@branches_acl_object_identity_id_start + @branches_count + 3;
 
-insert ignore into acl_object_identity values
+insert into acl_object_identity values
   (@registered_group_object_identity, @group_acl_class, @registered_group_id, NULL, 1, 1),
   (@admin_group_object_identity, @group_acl_class, @admin_group_id, NULL, 1, 1),
-  (@banned_group_object_identity, @group_acl_class, @banned_group_id, NULL, 1, 1),
-  (53, @component_acl_class, @forum_component_id, NULL, 1, 1);
+  (@banned_group_object_identity, @group_acl_class, @banned_group_id, NULL, 1, 1);
 
 -- VIEW_TOPICS for anonymous users
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1000, @anonymous_sid_id, @VIEW_TOPICS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1000, @anonymous_sid_id, @VIEW_TOPICS_MASK, 1, 0, 0 from BRANCHES;
 -- permissions for registered users on all branches
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1001, @registered_group_sid_id, @VIEW_TOPICS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1001, @registered_group_sid_id, @VIEW_TOPICS_MASK, 1, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1002, @registered_group_sid_id, @CREATE_POSTS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1002, @registered_group_sid_id, @CREATE_POSTS_MASK, 1, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1003, @registered_group_sid_id, @EDIT_OWN_POSTS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1003, @registered_group_sid_id, @EDIT_OWN_POSTS_MASK, 1, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1004, @registered_group_sid_id, @DELETE_OWN_POSTS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1004, @registered_group_sid_id, @DELETE_OWN_POSTS_MASK, 1, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1006, @registered_group_sid_id, @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1006, @registered_group_sid_id, @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK, 1, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1007, @registered_group_sid_id, @CREATE_CODE_REVIEW_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1007, @registered_group_sid_id, @CREATE_CODE_REVIEW_MASK, 1, 0, 0 from BRANCHES;
   
 -- permissions for moderator users on all branches
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1008, @moderator_group_sid_id, @MOVE_TOPICS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1008, @moderator_group_sid_id, @MOVE_TOPICS_MASK, 1, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1009, @moderator_group_sid_id, @CLOSE_TOPICS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1009, @moderator_group_sid_id, @CLOSE_TOPICS_MASK, 1, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1010, @moderator_group_sid_id, @DELETE_OTHERS_POSTS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1010, @moderator_group_sid_id, @DELETE_OTHERS_POSTS_MASK, 1, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1011, @moderator_group_sid_id, @EDIT_OTHERS_POSTS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1011, @moderator_group_sid_id, @EDIT_OTHERS_POSTS_MASK, 1, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1012, @moderator_group_sid_id, @CREATE_STICKED_TOPICS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1012, @moderator_group_sid_id, @CREATE_STICKED_TOPICS_MASK, 1, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1013, @moderator_group_sid_id, @CREATE_ANNOUNCEMENTS_MASK, 1, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1013, @moderator_group_sid_id, @CREATE_ANNOUNCEMENTS_MASK, 1, 0, 0 from BRANCHES;
   
 -- setting permissions for banned users
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1015, @banned_group_sid_id, @CREATE_POSTS_MASK, 0, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1015, @banned_group_sid_id, @CREATE_POSTS_MASK, 0, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1016, @banned_group_sid_id, @EDIT_OWN_POSTS_MASK, 0, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1016, @banned_group_sid_id, @EDIT_OWN_POSTS_MASK, 0, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1017, @banned_group_sid_id, @DELETE_OWN_POSTS_MASK, 0, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1017, @banned_group_sid_id, @DELETE_OWN_POSTS_MASK, 0, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1018, @banned_group_sid_id, @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK, 0, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1018, @banned_group_sid_id, @LEAVE_COMMENTS_IN_CODE_REVIEW_MASK, 0, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1019, @banned_group_sid_id, @CREATE_CODE_REVIEW_MASK, 0, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1019, @banned_group_sid_id, @CREATE_CODE_REVIEW_MASK, 0, 0, 0 from BRANCHES;
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  select BRANCH_ID, 1020, @banned_group_sid_id, @VIEW_TOPICS_MASK, 0, 0, 0 from BRANCHES;
+  select @branches_acl_object_identity_id_start + BRANCH_ID, 1020, @banned_group_sid_id, @VIEW_TOPICS_MASK, 0, 0, 0 from BRANCHES;
   
 -- personal permissions
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
