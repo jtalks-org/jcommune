@@ -41,7 +41,7 @@ public class EntityToDtoConverter {
     public static final String PLUGABLE_UNREAD = "/resources/icon/unread.png";
     public static final String PLUGABLE_READ = "/resources/icon/read.png";
     public static final String PLUGABLE_CLOSED_UNREAD = "/resources/icon/closed_unread.png";
-    public static final String PLUGABLE_CLOSED_READ = "/resources/icon/closed_unread.png";
+    public static final String PLUGABLE_CLOSED_READ = "/resources/icon/closed_read.png";
     public static final String CODE_REVIEW_NEW_POSTS = "/resources/images/code-review-new-posts.png";
     public static final String CODE_REVIEW_NO_NEW_POSTS = "/resources/images/code-review-no-new-posts.png";
     public static final String DISCUSSION_CLOSED_NEW_POSTS = "/resources/images/closed-new-posts.png";
