@@ -38,6 +38,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     var labelSave = "<jcommune:message>label.save</jcommune:message>";
     var labelCancel = "${messages.getString("label.cancel")}";
     var branchId = ${question.branch.id};
+    var deleteCommentConfirmation = "<jcommune:message>label.deleteCommentConfirmation</jcommune:message>";
   </script>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>

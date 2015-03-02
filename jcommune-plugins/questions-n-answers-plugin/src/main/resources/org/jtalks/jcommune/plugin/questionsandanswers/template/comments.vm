@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <div id="comments-$post.id" class="comment-list">
       #foreach($comment in $post.notRemovedComments)
         #set($commentClass = "")
-        #if($velocityCount != $post.comments.size() && $post.comments.size() != 0)
+        #if($velocityCount != $post.notRemovedComments.size() && $post.notRemovedComments.size() != 0)
           #set($commentClass = "bordered")
         #end
         #if($velocityCount == $shownComments)
@@ -59,9 +59,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <div class="cleared"></div>
           </div>
           <div class="comment-body">
-            <span id="body-$comment.id">${esc.html($comment.body)}</span>
+            <span id="body-$comment.id" class="comment-content">${esc.html($comment.body)}</span>
             <div id="edit-$comment.id" class="control-group edit" style="display: none">
-                  <textarea id="editable-$comment.id" name="commentBody" class="comment-textarea"
+                  <textarea id="editable-$comment.id" name="commentBody" class="comment-textarea edit-comment"
                              rows="3">${esc.html($comment.body)}</textarea>
                   <div class="comment-buttons-container">
                       <div class="pull-right">
@@ -74,7 +74,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         </div>
       #end
     </div>
-    #if($post.comments.size() > $shownComments)
+    #if($post.notRemovedComments.size() > $shownComments)
       <div id="btns-$post.id" tabindex="-1" class="btn-container" style="display: block">
     #else
       <div id="btns-$post.id" tabindex="-1" class="btn-container" style="display: none">
@@ -91,7 +91,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     </div>
   #end
   <div id="commentForm-$post.id" class="control-group comment-container">
-    <textarea id="commentBody-$post.id" name="commentBody" class="comment-textarea" placeholder="${messages.getString("label.add.comment")}" rows="3"></textarea>
+    <textarea id="commentBody-$post.id" name="commentBody" class="comment-textarea new-comment" placeholder="${messages.getString("label.add.comment")}" rows="3"></textarea>
     <div class="comment-buttons-container">
       <div class="pull-right">
         <a class="btn btn-primary comment-submit" data-post-id="$post.id">${messages.getString("label.comment")}</a>

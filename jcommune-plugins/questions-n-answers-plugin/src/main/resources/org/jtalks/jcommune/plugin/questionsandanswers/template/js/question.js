@@ -23,6 +23,7 @@ $(function () {
             toggleCommentsFor(postId);
         }
         $(this).hide();
+        hideVisibleEditPrompts();
         $(this).next(".comment-container").show();
         $(this).next(".comment-container").children(".comment-textarea").focus();
     });
@@ -43,6 +44,14 @@ $(function () {
     $(".vote-up").mouseup(voteUpHandler);
 
     $(".vote-down").mouseup(voteDownHandler);
+
+    $(".new-comment").keydown(function (e) {
+        if (e.ctrlKey && e.keyCode == enterCode) {
+            e.preventDefault();
+            var postId = $(this).attr("id").split("-")[1];
+            $(".comment-submit[data-post-id='" + postId +"']")[0].click();
+        }
+    });
 
     $('#answer').click(function(e){
         e.preventDefault();
@@ -135,10 +144,9 @@ var deleteCommentHandler = function(e) {
     var footerContent = ' \
 	            <button id="remove-review-cancel" class="btn cancel">' + $labelCancel + '</button> \
 	            <button id="remove-review-ok" class="btn btn-primary">' + $labelOk + '</button>';
-    var message = "Delete this comment?";
     jDialog.createDialog({
         type: jDialog.confirmType,
-        bodyMessage : message,
+        bodyMessage : deleteCommentConfirmation,
         firstFocus : false,
         footerContent: footerContent,
         maxWidth: 300,
@@ -195,6 +203,7 @@ var editCancelHandler = function(e) {
         return;
     }
 
+    hideVisibleEditPrompts();
     var commentId = $(this).attr("data-comment-id");
     enableViewMode(commentId);
 }
@@ -394,8 +403,16 @@ $(document).keyup(function(e){
     //esc button
     if (e.keyCode == 27) {
         hideEmptyCommentTextArea();
+        hideVisibleEditPrompts();
     }
 });
+
+function hideVisibleEditPrompts() {
+    $(".edit:visible").each(function() {
+        $(this).hide();
+        $(this).prev().show();
+    });
+}
 
 function hideEmptyCommentTextArea() {
     $(".comment-container").each(function() {
@@ -448,6 +465,14 @@ function updateCommentHandlers() {
     $('.edit-submit').click(editSubmitHandler);
     $('.icon-trash').click(deleteCommentHandler);
     $("a").tooltip();
+    $(".edit-comment").keydown(function (e){
+        if (e.ctrlKey && e.keyCode == enterCode) {
+            e.preventDefault();
+
+            var commentId = $(this).attr("id").split("-")[1];
+            $(".edit-submit[data-comment-id='" + commentId +"']")[0].click();
+        }
+    });
 }
 
 /**
@@ -468,9 +493,9 @@ function getCommentHtml(comment) {
         + "<a class='comment-button delete-comment' style='margin-left: 10px' data-original-title='" + labelDeleteCommentTip + "'><i class='icon-trash' "
         + "data-comment-id='" + comment.id + "'></i></a></div>"
         + "<div class='comment-date pull-left'>" + comment.formattedCreationDate + "</div><div class='cleared'></div>"
-        + "</div><div class='comment-body'><span id='body-" + comment.id + "'>" + comment.body + "</span>"
-        + "<div id='edit-" + comment.id + "' class='control-group comment-container edit' style='display: none'>"
-        + "<textarea id='editable-" + comment.id + "' name='commentBody' class='comment-textarea' rows='3'>"
+        + "</div><div class='comment-body'><span id='body-" + comment.id + "' class='comment-content'>" + comment.body
+        + "</span><div id='edit-" + comment.id + "' class='control-group comment-container edit' style='display: none'>"
+        + "<textarea id='editable-" + comment.id + "' name='commentBody' class='comment-textarea edit-comment' rows='3'>"
         + comment.body + "</textarea> <div class='comment-buttons-container'><div class='pull-right'>"
         + "<a class='btn btn-primary edit-submit' data-comment-id='" + comment.id + "'>" + labelSave + "</a>"
         + "<a class='btn edit-cancel' data-comment-id='" + comment.id + "'>" + labelCancel + "</a></div></div></div>"
