@@ -29,6 +29,9 @@ import java.util.Collection;
  */
 public class QuestionSubscribersFilter implements SubscribersFilter {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void filter(Collection<JCUser> users, SubscriptionAwareEntity entity) {
         if (entity instanceof Post

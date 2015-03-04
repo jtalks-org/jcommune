@@ -570,7 +570,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * The target URL has the next format http://{forum root}/posts/{id}
      */
     @Override
-    public String prepareUrlSuffix() {
+    public String getUrlSuffix() {
         return URL_SUFFIX + getLastPost().getId();
     }
 

@@ -47,7 +47,7 @@ public class NotificationService {
     SubscriptionService subscriptionService;
     private UserService userService;
     private MailService mailService;
-    private PluginLoader pluginLoader;
+    private final PluginLoader pluginLoader;
 
     /**
      * @param userService                  to determine the update author
@@ -135,13 +135,15 @@ public class NotificationService {
      * @see org.jtalks.jcommune.plugin.api.core.SubscribersFilter
      */
     private void filterSubscribers(Collection<JCUser> subscribers, SubscriptionAwareEntity entity) {
-        subscribers.remove(userService.getCurrentUser());
         List<Plugin> plugins = pluginLoader.getPlugins(new StateFilter(Plugin.State.ENABLED),
                 new TypeFilter(TopicPlugin.class));
         for (Plugin plugin : plugins) {
             TopicPlugin topicPlugin = (TopicPlugin)plugin;
             topicPlugin.getSubscribersFilter().filter(subscribers, entity);
         }
+        // Current user should be removed after filtering by plugin because filter don't know anything
+        // about current user
+        subscribers.remove(userService.getCurrentUser());
     }
 
     /**

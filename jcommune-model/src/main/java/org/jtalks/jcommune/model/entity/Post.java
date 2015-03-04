@@ -374,7 +374,7 @@ public class Post extends Entity implements SubscriptionAwareEntity {
      * {@inheritDoc}
      */
     @Override
-    public String prepareUrlSuffix() {
+    public String getUrlSuffix() {
         return URL_SUFFIX + getId();
     }
 }

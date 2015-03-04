@@ -140,7 +140,7 @@ public class MailService {
      */
     public void sendUpdatesOnSubscription(JCUser recipient, SubscriptionAwareEntity entity) {
         try {
-            String urlSuffix = entity.prepareUrlSuffix();
+            String urlSuffix = entity.getUrlSuffix();
             String url = this.getDeploymentRootUrl() + urlSuffix;
             Locale locale = recipient.getLanguage().getLocale();
             Map<String, Object> model = new HashMap<>();

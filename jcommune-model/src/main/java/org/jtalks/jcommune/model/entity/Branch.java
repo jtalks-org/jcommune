@@ -191,7 +191,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      * The target URL has the next format http://{forum root}/branches/{id}
      */
     @Override
-    public String prepareUrlSuffix() {
+    public String getUrlSuffix() {
         return URL_SUFFIX + getId();
     }
 

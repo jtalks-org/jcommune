@@ -36,5 +36,5 @@ public interface SubscriptionAwareEntity {
      *
      * @return URL suffix
      */
-    String prepareUrlSuffix();
+    String getUrlSuffix();
 }

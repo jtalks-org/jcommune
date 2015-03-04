@@ -206,7 +206,7 @@ public class BranchController {
         return new ModelAndView("posts/recent")
                 .addObject("feedTitle", branch.getName())
                 .addObject("feedDescription", branch.getDescription())
-                .addObject("urlSuffix", branch.prepareUrlSuffix())
+                .addObject("urlSuffix", branch.getUrlSuffix())
                 .addObject("posts", posts);
 
     }
