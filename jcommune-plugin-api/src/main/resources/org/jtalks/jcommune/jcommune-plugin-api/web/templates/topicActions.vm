@@ -16,7 +16,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *#
 #macro(topicActions $targetId $request $topic $permissionTool)
 <div class="row-fluid upper-pagination forum-pagination-container">
-  <div class="span3">
+  <div class="span4">
     #if($permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.MOVE_TOPICS"))
       <a href="#" class="move_topic btn space-left-medium-nf"
          title="<jcommune:message>label.topic.move.full</jcommune:message>"
