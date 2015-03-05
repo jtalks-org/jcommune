@@ -78,14 +78,6 @@
 </c:choose>
 
 <div class="nav-collapse">
-  <form action='<c:url value="/search/"/>' method="GET" name="search-form" id="search-form"
-        class="navbar-search pull-left dropdown">
-    <input id="searchText" name="text" type="text" class="search-query"
-           placeholder='<fmt:message key="label.search"/>' maxlength="50"
-           value='<c:out value="${searchText}"/>'/>
-    <span id='searchClear' class='search-clear'>×</span>
-  </form>
-
   <ul class="nav pull-right">
     <%--External links start--%>
     <li id="top-line-links-drop-down" class="dropdown topline-links">
@@ -285,6 +277,14 @@
       </sec:authorize>
         <%-- END OF Language chooser --%>
   </ul>
+
+  <form action='<c:url value="/search/"/>' method="GET" name="search-form" id="search-form"
+        class="navbar-search pull-right dropdown">
+      <input id="searchText" name="text" type="text" class="search-query"
+             placeholder='<fmt:message key="label.search"/>' maxlength="50"
+             value='<c:out value="${searchText}"/>'/>
+      <span id='searchClear' class='search-clear'>×</span>
+  </form>
 </div>
 </div>
 </div>

@@ -1145,10 +1145,22 @@ pre.prettyprint {
 }
 
 .brand {
-    max-width: 55%;
+    max-width: 30%;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+@media (max-width: 979px) {
+    .brand {
+        max-width: 70%;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand {
+        max-width: 50%;
+    }
 }
 
 .custom-selected-item, .custom-selected-item a{
