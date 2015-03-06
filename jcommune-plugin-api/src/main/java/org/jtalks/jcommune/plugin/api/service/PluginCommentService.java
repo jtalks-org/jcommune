@@ -36,14 +36,18 @@ public interface PluginCommentService {
     PostComment updateComment(long id, String body, long branchId) throws NotFoundException;
 
     /**
-     * Get comment by id
-     * @param id ID of comment
-     * @return comment from DB
-     * @throws NotFoundException
+     * Fetch comment with specified id from database
+     *
+     * @param id id of interested comment
+     *
+     * @return comment from with specified id
+     * @throws NotFoundException if comment with specified id not found in database
      */
     PostComment getComment(long id) throws NotFoundException;
+
     /**
-     * Delete comment from post
+     * Marks specified comment of specified post as deleted by  setting deletion date
+     *
      * @param post post which contains comment
      * @param comment comment to be delete
      *

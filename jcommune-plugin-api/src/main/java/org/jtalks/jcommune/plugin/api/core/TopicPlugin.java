@@ -50,9 +50,10 @@ public interface TopicPlugin extends PluginWithBranchPermissions {
     String getTopicType();
 
     /**
-     * Gets the permission which allows to add comments to a post for topic provided by this plugin
+     * Gets permission which should be granted to user to allow add comments to posts from topic, provided by plugin
+     * This gives possibility to have different permissions for adding comments in plugins
      *
-     * @return he permission which allows to add comments
+     * @return the permission which allows to add comments
      */
     JtalksPermission getCommentPermission();
 

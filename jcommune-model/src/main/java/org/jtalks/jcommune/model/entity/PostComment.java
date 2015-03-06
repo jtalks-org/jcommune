@@ -155,7 +155,10 @@ public class PostComment extends Entity {
     }
 
     /**
-     * Get a deletion date of the comment
+     * Get a deletion date of the comment. We use {@link #deletionDate} to mark comment as deleted. So, if
+     * {@link #deletionDate} is not null, it means that comment was deleted.
+     * We need this functional because deletion records from database leads to errors with concurrency.
+     * @see <a href="http://jira.jtalks.org/browse/JC-1757">JC-1757</a>
      *
      * @return true if the comment has been deleted
      */
@@ -167,6 +170,7 @@ public class PostComment extends Entity {
      * Set a deletion date of the comment
      *
      * @param deletionDate
+     * @see #getDeletionDate()
      */
     public void setDeletionDate(DateTime deletionDate) {
         this.deletionDate = deletionDate;

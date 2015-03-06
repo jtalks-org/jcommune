@@ -106,7 +106,7 @@ public class TransactionalPostCommentService extends
             "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
             "#comment.author.username != principal.username)")
     public PostComment markCommentAsDeleted(Post post, PostComment comment) {
-        comment.setDeletionDate(new DateTime(System.currentTimeMillis()));
+        comment.setDeletionDate(new DateTime());
         getDao().saveOrUpdate(comment);
         return comment;
     }

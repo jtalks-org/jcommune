@@ -310,6 +310,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
                 pluginFound = true;
                 permissionService.checkPermission(topic.getBranch().getId(), AclClassName.BRANCH,
                         topicPlugin.getCommentPermission());
+                break;
             }
         }
         if (!pluginFound) {

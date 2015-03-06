@@ -39,7 +39,6 @@ import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.PermissionTool;
 import org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin;
 import org.jtalks.jcommune.plugin.questionsandanswers.dto.CommentDto;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.domain.PageImpl;
@@ -342,8 +341,12 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * Process the answer form. Adds new answer to the specified question and redirects to the
      * question view page.
      *
+     * @param questionId id of question to which answer will be added
      * @param postDto dto that contains data entered in form
      * @param result  validation result
+     * @param model model for transferring to template
+     * @param request HttpServletRequest
+     *
      * @return redirect to the answer or back to answer page if validation failed
      * @throws NotFoundException when question or branch not found
      */
@@ -368,7 +371,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             return PLUGIN_VIEW_NAME;
         }
 
-        Post newbie = getTypeAwarePluginTopicService().replyToTopic(questionId, postDto.getBodyText(), topic.getBranch().getId());
+        Post newbie = getTypeAwarePluginTopicService().replyToTopic(questionId,
+                postDto.getBodyText(), topic.getBranch().getId());
         getPluginLastReadPostService().markTopicPageAsRead(newbie.getTopic(), 1);
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + questionId + "#" + newbie.getId();
     }
@@ -424,6 +428,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * Adds new comment to post
      *
      * @param dto dto populated in form
+     * @param result validation result
      * @param request http servlet request
      *
      * @return result in JSON format
@@ -508,7 +513,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     }
 
     /**
-     * Writes icon to response and set apropriate response geaders
+     * Writes icon to response and set apropriate response headers
      *
      * @param request HttpServletRequest
      * @param response HttpServletResponse
@@ -530,9 +535,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         response.setHeader("Cache-Control", "public");
         response.addHeader("Cache-Control", "must-revalidate");
         response.addHeader("Cache-Control", "max-age=0");
-        String formattedDateExpires = DateFormatUtils.format(
-                new Date(System.currentTimeMillis()),
-                HTTP_HEADER_DATETIME_PATTERN, Locale.US);
+        String formattedDateExpires = DateFormatUtils.format(new Date(), HTTP_HEADER_DATETIME_PATTERN, Locale.US);
         response.setHeader("Expires", formattedDateExpires);
         Date lastModificationDate = new Date(0);
         response.setHeader("Last-Modified", DateFormatUtils.format(lastModificationDate, HTTP_HEADER_DATETIME_PATTERN,
@@ -554,7 +557,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * {@inheritDoc}
      */
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
@@ -604,6 +607,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
     /**
      * Needed for mocking
+     *
+     * @return locale resolver used in plugin
      */
     LocaleResolver getLocaleResolver() {
         return  JcLocaleResolver.getInstance();
@@ -611,6 +616,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
     /**
      * Needed for mocking
+     *
+     * @return service for manipulating with posts
      */
     PluginPostService getPluginPostService() {
         return TransactionalPluginPostService.getInstance();
@@ -618,6 +625,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
     /**
      * Needed for mocking
+     *
+     * @return service for manipulating with branches
      */
     PluginBranchService getPluginBranchService() {
         return TransactionalPluginBranchService.getInstance();
@@ -625,6 +634,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
     /**
      * Needed for mocking
+     *
+     * @return service for marking topic as read
      */
     PluginLastReadPostService getPluginLastReadPostService() {
         return TransactionalPluginLastReadPostService.getInstance();
@@ -632,6 +643,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
     /**
      * Needed for mocking
+     *
+     * @return service for manipulating with topics
      */
     TypeAwarePluginTopicService getTypeAwarePluginTopicService() {
         return TransactionalTypeAwarePluginTopicService.getInstance();
@@ -639,13 +652,24 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
     /**
      * Needed for mocking
+     *
+     * @return service for fetching information about users
      */
     UserReader getUserReader() {
         return ReadOnlySecurityService.getInstance();
     }
 
     /**
-     * Needed for mocking
+     *
+     * Merge the specified Velocity template with the given model into a String.
+     * Needed for mocking.
+     *
+     * @param velocityEngine VelocityEngine to work with
+     * @param templateLocation the location of template, relative to Velocity's resource loader path
+     * @param encoding the encoding of the template file
+     * @param model the Map that contains model names as keys and model objects as values
+     *
+     * @return the result as String
      */
     String getMergedTemplate(VelocityEngine velocityEngine, String templateLocation, String encoding,
                              Map<String, Object> model) throws VelocityException {
@@ -654,6 +678,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
     /**
      * Needed for mocking
+     *
+     * @return service for manipulating with user location
      */
     PluginLocationService getLocationService() {
         return PluginLocationServiceImpl.getInstance();
@@ -661,6 +687,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
     /**
      * Needed for mocking
+     *
+     * @return service for manipulating with comments
      */
     PluginCommentService getCommentService() {
         return TransactionalPluginCommentService.getInstance();
@@ -668,7 +696,10 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
 
     /**
+     * Sets specified {@link BreadcrumbBuilder}
      * Needed for tests
+     *
+     * @param breadcrumbBuilder {@link BreadcrumbBuilder} to set
      */
     void setBreadcrumbBuilder(BreadcrumbBuilder breadcrumbBuilder) {
         this.breadcrumbBuilder = breadcrumbBuilder;
