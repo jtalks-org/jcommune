@@ -19,7 +19,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <head>
   <meta name="description" content="${esc.html(${topicDto.topic.branch.name})}">
   <title>
-    ${esc.html(${topicDto.topic.branch.name})} -
+    #if(${topicDto.topic.branch.name})
+      ${esc.html(${topicDto.topic.branch.name})} -
+    #end
     #if(${edit})
       ${messages.getString("label.tips.edit.question")}
     #else
