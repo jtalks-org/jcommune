@@ -146,8 +146,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Branch  branch = getPluginBranchService().get(branchId);
         Map<String, Object> data = getDefaultModel(request);
         if (result.hasErrors()) {
-            topicDto.getTopic().setBranch(branch);
-            data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topicDto.getTopic()));
+            data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
             data.put(TOPIC_DTO, topicDto);
             data.put(RESULT, result);
             model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
