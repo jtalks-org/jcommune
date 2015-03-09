@@ -25,10 +25,18 @@ $(document).ready(function () {
 
     //setting proper datepicker locale, at current time there are not ukraine and spain datepicker locales,
     // so will be used only en and ru locales.
-    if ($localeCode == 'ru') {
-        $.datepicker.setDefaults($.datepicker.regional['ru']);
-    } else {
-        $.datepicker.setDefaults($.datepicker.regional[""]);
+    switch($localeCode) {
+        case "uk":
+            $.datepicker.setDefaults($.datepicker.regional.uk)
+            break;
+        case "es":
+            $.datepicker.setDefaults($.datepicker.regional.es)
+            break;
+        case "ru":
+            $.datepicker.setDefaults($.datepicker.regional.ru)
+            break;
+        default:
+            $.datepicker.setDefaults($.datepicker.regional[""])
     }
 });
 
