@@ -16,7 +16,7 @@ package org.jtalks.jcommune.web.tags;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.Serializable;
 
@@ -25,6 +25,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 
 import org.jtalks.common.service.security.SecurityContextFacade;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.BeanUtils;
@@ -35,8 +37,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.GenericWebApplicationContext;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  * @author Vyacheslav Mishcheryakov
@@ -64,7 +64,7 @@ public class HasPermissionTest {
     @Mock
     private Authentication authentication;
     
-    @BeforeMethod
+    @Before
     public void setUp() {
         initMocks(this);
         when(securityContextFacade.getContext()).thenReturn(securityContext);
@@ -85,21 +85,21 @@ public class HasPermissionTest {
         
     }
     
-    @Test(expectedExceptions=JspException.class)
+    @Test(expected=JspException.class)
     public void testTargetIdNotSpecified() throws JspException {
         tag.setTargetType(TARGET_TYPE);
         tag.setPermission(PERMISSION);
         tag.doStartTag();
     }
     
-    @Test(expectedExceptions=JspException.class)
+    @Test(expected=JspException.class)
     public void testTargetTypeNotSpecified() throws JspException {
         tag.setTargetId(TARGET_ID);
         tag.setPermission(PERMISSION);
         tag.doStartTag();
     }
     
-    @Test(expectedExceptions=JspException.class)
+    @Test(expected=JspException.class)
     public void testTargetTypeBlank() throws JspException {
         tag.setTargetId(TARGET_ID);
         tag.setTargetType("");
@@ -107,14 +107,14 @@ public class HasPermissionTest {
         tag.doStartTag();
     }
     
-    @Test(expectedExceptions=JspException.class)
+    @Test(expected=JspException.class)
     public void testPermissionNotSpecified() throws JspException {
         tag.setTargetId(1L);
         tag.setTargetType("BRANCH");
         tag.doStartTag();
     }
     
-    @Test(expectedExceptions=JspException.class)
+    @Test(expected=JspException.class)
     public void testPermissionBlank() throws JspException {
         tag.setTargetId(1L);
         tag.setTargetType("BRANCH");
