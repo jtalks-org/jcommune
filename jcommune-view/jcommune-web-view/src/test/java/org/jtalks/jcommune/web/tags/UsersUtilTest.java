@@ -17,12 +17,12 @@ package org.jtalks.jcommune.web.tags;
 
 import org.hibernate.ObjectNotFoundException;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class UsersUtilTest {
 

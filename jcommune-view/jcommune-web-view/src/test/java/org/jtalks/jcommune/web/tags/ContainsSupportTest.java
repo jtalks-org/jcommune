@@ -14,12 +14,12 @@
  */
 package org.jtalks.jcommune.web.tags;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockPageContext;
 import org.springframework.mock.web.MockServletContext;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -27,7 +27,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Collections;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class ContainsSupportTest {
 
@@ -40,7 +40,7 @@ public class ContainsSupportTest {
 
     private ContainsSupport tag;
 
-    @BeforeMethod
+    @Before
     public void init() {
         object = new Object();
         tag = new ContainsSupport();

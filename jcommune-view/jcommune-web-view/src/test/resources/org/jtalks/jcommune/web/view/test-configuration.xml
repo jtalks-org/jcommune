@@ -25,4 +25,34 @@
     <bean class="org.jtalks.jcommune.web.filters.HeadRequestTypeFilter"/>
   </util:list>
 
+  <!-- SELECT @@IDENTITY does not work with HSQL db-->
+  <bean id="aclService" class="org.jtalks.common.security.acl.JtalksMutableAcService">
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg ref="lookupStrategy"/>
+    <constructor-arg ref="aclCache"/>
+    <property name="sidFactory" ref="jtalksSidFactory"/>
+  </bean>
+
+  <bean class="org.jtalks.jcommune.model.utils.Users"/>
+
+  <bean class="org.jtalks.jcommune.model.utils.Groups"/>
+
+  <bean class="org.jtalks.jcommune.model.utils.Branches"/>
+
+
+  <!--We don't use FlywayWrapper here because we don't need to disable migrations and also FlywayWrapper is MySQL-oriented-->
+  <bean id="flyway_jcommune_init" class="com.googlecode.flyway.core.Flyway"
+        init-method="init">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="table" value="jcommune_schema_version"/>
+  </bean>
+  <bean id="flyway_jcommune" class="com.googlecode.flyway.core.Flyway"
+        init-method="migrate"
+        depends-on="flyway_jcommune_init">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="basePackage" value="org.jtalks.jcommune.migrations/test"/>
+    <property name="baseDir" value="/org/jtalks/jcommune/migrations/test"/>
+    <property name="table" value="jcommune_schema_version"/>
+  </bean>
+
 </beans>
