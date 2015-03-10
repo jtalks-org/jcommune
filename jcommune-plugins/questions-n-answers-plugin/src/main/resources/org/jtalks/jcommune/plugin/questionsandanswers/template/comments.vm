@@ -14,7 +14,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 *#
-#macro(comments $post $canLeavePosts $permissionTool $targedId $currentUser)
+#macro(comments $post $canLeavePosts $permissionTool $targedId $currentUser $commentsLimit)
   #set($shownComments = 3)
     <div id="comments-$post.id" class="comment-list">
       #foreach($comment in $post.notRemovedComments)
@@ -84,7 +84,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       </div>
 
 
-  #if($canLeavePosts)
+  #if($canLeavePosts && $commentsLimit > $post.notRemovedComments.size())
     <div id="prompt-$post.id" class="comment-prompt">
       <i class="icon-comment"></i>
       <span class="comment-prompt-label">${messages.getString("label.add.comment")}</span>

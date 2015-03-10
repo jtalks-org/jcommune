@@ -209,6 +209,7 @@
 .comment-button:hover {
     cursor: pointer;
     background-color: rgb(207, 210, 204);
+    text-decoration: none;
 }
 
 .no-right-space {

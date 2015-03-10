@@ -83,6 +83,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     private static final String SUBSCRIBED = "subscribed";
     private static final String CONVERTER = "converter";
     private static final String VIEW_LIST = "viewList";
+    private static final String LIMIT_OF_POSTS_ATTRIBUTE = "postLimit";
+    private static final int LIMIT_OF_POSTS_VALUE = 50;
     public static final String PLUGIN_VIEW_NAME = "plugin/plugin";
     public static final String BRANCH_ID = "branchId";
     public static final String CONTENT = "content";
@@ -197,7 +199,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put(CONVERTER, BbToHtmlConverter.getInstance());
         data.put(VIEW_LIST, getLocationService().getUsersViewing(topic));
         data.put(POST_DTO, new PostDto());
-        getPluginLastReadPostService().markTopicPageAsRead(topic, 1);
+        data.put(LIMIT_OF_POSTS_ATTRIBUTE, LIMIT_OF_POSTS_VALUE);
+        getPluginLastReadPostService().markTopicAsRead(topic);
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_TEMPLATE_PATH, "UTF-8", data));
@@ -354,7 +357,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
                                BindingResult result, Model model, HttpServletRequest request) throws NotFoundException {
         postDto.setTopicId(questionId);
         Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
-        if (result.hasErrors()) {
+        //We can't provide limitation properly without database-level locking
+        if (result.hasErrors() || LIMIT_OF_POSTS_VALUE <= topic.getPosts().size() - 1) {
             Map<String, Object> data = getDefaultModel(request);
             VelocityEngine engine = new VelocityEngine(getProperties());
             engine.init();
@@ -366,13 +370,14 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             data.put(CONVERTER, BbToHtmlConverter.getInstance());
             data.put(VIEW_LIST, getLocationService().getUsersViewing(topic));
             data.put(POST_DTO, postDto);
+            data.put(LIMIT_OF_POSTS_ATTRIBUTE, LIMIT_OF_POSTS_VALUE);
             model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_TEMPLATE_PATH, "UTF-8", data));
             return PLUGIN_VIEW_NAME;
         }
 
         Post newbie = getTypeAwarePluginTopicService().replyToTopic(questionId,
                 postDto.getBodyText(), topic.getBranch().getId());
-        getPluginLastReadPostService().markTopicPageAsRead(newbie.getTopic(), 1);
+        getPluginLastReadPostService().markTopicAsRead(newbie.getTopic());
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + questionId + "#" + newbie.getId();
     }
 
@@ -440,6 +445,11 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         }
         PostComment comment;
         try {
+            Post targetPost = getPluginPostService().get(dto.getPostId());
+            //We can't provide limitation properly without database-level locking
+            if (targetPost.getNotRemovedComments().size() >= LIMIT_OF_POSTS_VALUE) {
+                return new JsonResponse(JsonResponseStatus.FAIL);
+            }
             comment = getPluginPostService().addComment(dto.getPostId(), Collections.EMPTY_MAP, dto.getBody());
         } catch (NotFoundException ex) {
             return new FailJsonResponse(JsonResponseReason.ENTITY_NOT_FOUND);

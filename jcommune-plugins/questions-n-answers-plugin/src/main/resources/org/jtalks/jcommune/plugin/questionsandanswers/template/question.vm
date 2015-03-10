@@ -20,6 +20,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/bbeditor.vm")
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/userStats.vm")
 <head>
+  #set($targedId = ${question.branch.id})
+  #set($canLeavePosts=false)
+  #if((!${question.closed} || ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CLOSE_TOPICS")})
+  && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CREATE_POSTS")})
+    #set($canLeavePosts=true)
+  #end
   <script>
     #if(!${currentUser.anonymous})
       var labelVoteErrorNoPermissions = "${messages.getString("label.vote.error.no.permissions")}";
@@ -39,18 +45,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     var labelCancel = "${messages.getString("label.cancel")}";
     var branchId = ${question.branch.id};
     var deleteCommentConfirmation = "<jcommune:message>label.deleteCommentConfirmation</jcommune:message>";
+    var canEditNewlyAddedComments = ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OWN_POSTS")};
+    var canDeleteNewlyAddedComments = ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OWN_POSTS")};
+    var maxCommentNumber = ${postLimit};
+    var labelLimitOfCommentsReached = "${messages.getString("label.comment.limit.reached")}";
   </script>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
   <title>${esc.html(${question.title})}</title>
 </head>
 <body>
-  #set($targedId = ${question.branch.id})
-  #set($canLeavePosts=false)
-  #if((!${question.closed} || ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CLOSE_TOPICS")})
-  && ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.CREATE_POSTS")})
-    #set($canLeavePosts=true)
-  #end
 
 <div class="container">
   <div id="branch-header">
@@ -213,7 +217,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
             <div class="question-footer">
               <div class="comments">
-                #comments(${post} $canLeavePosts ${permissionTool} $targedId ${currentUser})
+                #comments(${post} $canLeavePosts ${permissionTool} $targedId ${currentUser} ${postLimit})
               </div>
 
             </div>
@@ -230,8 +234,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     #end
     <form id="answerForm" action="${request.contextPath}/topics/question/${question.id}"
           method="POST" class='well anti-multipost submit-form'>
-      <form path="topicId"/>
+        <form path="topicId"/>
+    #if(${postLimit} > ${postPage.getContent().size()} - 1)
       #bbeditor(${messages.getString("label.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
+    #else
+      Limit of answers for this question has been reached....
+    #end
     </form>
   #end
 

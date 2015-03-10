@@ -85,6 +85,13 @@ $(function () {
                         type: jDialog.alertType,
                         bodyMessage: labelAddCommentPostNotFound
                     });
+                } else {
+                    //looks like limit of comments was reached
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: labelLimitOfCommentsReached
+                    });
+                    $("#commentForm-" + postId).hide();
                 }
             },
             error: function() {
@@ -448,11 +455,15 @@ function addCommentToPost(postId, comment) {
     if(commentList.length == numberOfCommentsToShow) {
         $("#btns-" + postId).show();
         $($("#btns-" + postId).children()[0]).hide();
+        $($("#btns-" + postId).children()[1]).show();
     }
     $("#comments-" + postId).append(getCommentHtml(comment));
     updateCommentHandlers();
     if (commentList.length > numberOfCommentsToShow - 1) {
         applyCommentsCssClasses(postId);
+    }
+    if(commentList.length >= maxCommentNumber - 1) {
+        $("#prompt-" + postId).hide();
     }
 }
 
@@ -482,24 +493,30 @@ function updateCommentHandlers() {
  * @returns {string} HTML view of specified comment
  */
 function getCommentHtml(comment) {
-    return "<div id='comment-" + comment.id + "'>"
+    var result = "<div id='comment-" + comment.id + "'>"
         + "<div class='comment-header'>"
         + "<div class='comment-author pull-left'>"
         + "<a class='no-right-space' href='/jcommune/users/" + comment.authorId
         + "' data-original-title='" + labelProfileTip + "'>" + comment.authorUsername + "</a> , </div>"
-        + "<div class='comment-buttons pull-left'>"
-        + "<a class='comment-button' data-original-title='" + labelEditCommentTip + "'><i class='icon-pencil' "
+        + "<div class='comment-buttons pull-left'>";
+    if (canEditNewlyAddedComments) {
+        result = result + "<a class='comment-button' data-original-title='" + labelEditCommentTip + "'><i class='icon-pencil' "
+        + "data-comment-id='" + comment.id + "'></i></a>";
+    }
+    if (canDeleteNewlyAddedComments) {
+        result = result + "<a class='comment-button delete-comment' style='margin-left: 10px' data-original-title='" + labelDeleteCommentTip + "'><i class='icon-trash' "
         + "data-comment-id='" + comment.id + "'></i></a>"
-        + "<a class='comment-button delete-comment' style='margin-left: 10px' data-original-title='" + labelDeleteCommentTip + "'><i class='icon-trash' "
-        + "data-comment-id='" + comment.id + "'></i></a></div>"
-        + "<div class='comment-date pull-left'>" + comment.formattedCreationDate + "</div><div class='cleared'></div>"
-        + "</div><div class='comment-body'><span id='body-" + comment.id + "' class='comment-content'>" + comment.body
+    }
+    result = result + "</div><div class='comment-date pull-left'>" + comment.formattedCreationDate + "</div><div class='cleared'></div>"
+        + "</div><div class='comment-body'><span id='body-" + comment.id + "' class='comment-content'>"
+        + Utils.lf2br(Utils.htmlEncode(comment.body))
         + "</span><div id='edit-" + comment.id + "' class='control-group comment-container edit' style='display: none'>"
         + "<textarea id='editable-" + comment.id + "' name='commentBody' class='comment-textarea edit-comment' rows='3'>"
         + comment.body + "</textarea> <div class='comment-buttons-container'><div class='pull-right'>"
         + "<a class='btn btn-primary edit-submit' data-comment-id='" + comment.id + "'>" + labelSave + "</a>"
         + "<a class='btn edit-cancel' data-comment-id='" + comment.id + "'>" + labelCancel + "</a></div></div></div>"
         + "</div></div>";
+    return result;
 }
 
 /**

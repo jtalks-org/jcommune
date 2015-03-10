@@ -42,8 +42,8 @@ public class TransactionalPluginLastReadPostServiceTest {
     public void markTopicPageAsReadShouldCallLastReadPostService() {
         Topic topic = new Topic();
 
-        TransactionalPluginLastReadPostService.getInstance().markTopicPageAsRead(topic, 1);
+        TransactionalPluginLastReadPostService.getInstance().markTopicAsRead(topic);
 
-        verify(lastReadPostService).markTopicPageAsRead(topic, 1);
+        verify(lastReadPostService).markTopicAsRead(topic);
     }
 }

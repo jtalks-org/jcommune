@@ -491,6 +491,7 @@ public class QuestionsAndAnswersControllerTest {
         dto.setPostId(1);
         dto.setBody(comment.getBody());
 
+        when(postService.get(anyLong())).thenReturn(new Post(null, null));
         when(postService.addComment(eq(dto.getPostId()), anyMap(), eq(dto.getBody()))).thenReturn(comment);
 
         JsonResponse response = controller.addComment(dto, result, request);
@@ -518,6 +519,7 @@ public class QuestionsAndAnswersControllerTest {
     public void addCommentShouldReturnFailResponseIfPostNotFound() throws Exception {
         CommentDto dto = new CommentDto();
 
+        when(postService.get(anyLong())).thenReturn(new Post(null, null));
         when(postService.addComment(anyLong(), anyMap(), anyString())).thenThrow(new NotFoundException());
 
         JsonResponse response = controller.addComment(dto, result, request);

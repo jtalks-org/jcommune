@@ -36,8 +36,12 @@ public class QuestionSubscribersFilter implements SubscribersFilter {
     public void filter(Collection<JCUser> users, SubscriptionAwareEntity entity) {
         if (entity instanceof Post
                 && ((Post)entity).getTopic().getType().equals(QuestionsAndAnswersPlugin.TOPIC_TYPE)) {
+            JCUser postCreator = ((Post)entity).getUserCreated();
+            boolean containsCreator = users.contains(postCreator);
             users.clear();
-            users.add(((Post)entity).getUserCreated());
+            if (containsCreator) {
+                users.add(((Post) entity).getUserCreated());
+            }
         }
     }
 }

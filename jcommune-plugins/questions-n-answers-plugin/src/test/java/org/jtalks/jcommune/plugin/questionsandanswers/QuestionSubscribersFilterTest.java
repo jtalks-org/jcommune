@@ -84,7 +84,7 @@ public class QuestionSubscribersFilterTest {
         JCUser user1 = new JCUser("name1", "email1@example.com", "pwd1");
         JCUser user2 = new JCUser("name2", "email2@example.com", "pwd2");
         QuestionSubscribersFilter filter = new QuestionSubscribersFilter();
-        List<JCUser> users = new ArrayList<>(Arrays.asList(user1, user2));
+        List<JCUser> users = new ArrayList<>(Arrays.asList(user1, user2, post.getUserCreated()));
 
         filter.filter(users, post);
 

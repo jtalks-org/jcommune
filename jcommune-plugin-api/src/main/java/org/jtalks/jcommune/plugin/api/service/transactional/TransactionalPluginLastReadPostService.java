@@ -58,7 +58,7 @@ public class TransactionalPluginLastReadPostService implements PluginLastReadPos
      *  {@inheritDoc}
      */
     @Override
-    public void markTopicPageAsRead(Topic topic, int pageNum) {
-        lastReadPostService.markTopicPageAsRead(topic, pageNum);
+    public void markTopicAsRead(Topic topic) {
+        lastReadPostService.markTopicAsRead(topic);
     }
 }

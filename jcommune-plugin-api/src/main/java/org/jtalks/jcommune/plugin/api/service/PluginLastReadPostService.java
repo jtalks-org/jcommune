@@ -23,14 +23,12 @@ public interface PluginLastReadPostService {
 
 
     /**
-     * Marks topic page as read for the current user.
-     * That means all posts on this page are to marked as read.
-     * If paging as disabled all posts in the topic will be marked as read.
+     * Marks the whole topic as read for the current user.
+     * That means all posts there are to marked as read.
      * <p/>
      * For anonymous user call will have no effect.
      *
      * @param topic   topic to mark as read
-     * @param pageNum page to mark as read
      */
-    void markTopicPageAsRead(Topic topic, int pageNum);
+    void markTopicAsRead(Topic topic);
 }
