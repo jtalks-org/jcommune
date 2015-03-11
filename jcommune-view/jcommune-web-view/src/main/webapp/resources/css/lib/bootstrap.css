@@ -2514,7 +2514,7 @@ button.btn.small, input[type="submit"].btn.small {
     border-bottom-left-radius: 4px;
 }
 
-.btn-group .btn:last-child, .btn-group .dropdown-toggle {
+.btn-group .btn:last-of-type, .btn-group .dropdown-toggle {
     -webkit-border-top-right-radius: 4px;
     -moz-border-radius-topright: 4px;
     border-top-right-radius: 4px;
@@ -2533,7 +2533,7 @@ button.btn.small, input[type="submit"].btn.small {
     border-bottom-left-radius: 6px;
 }
 
-.btn-group .btn.large:last-child, .btn-group .large.dropdown-toggle {
+.btn-group .btn.large:last-of-type, .btn-group .large.dropdown-toggle {
     -webkit-border-top-right-radius: 6px;
     -moz-border-radius-topright: 6px;
     border-top-right-radius: 6px;
