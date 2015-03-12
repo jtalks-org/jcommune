@@ -606,6 +606,80 @@ public class QuestionsAndAnswersControllerTest {
         assertEquals(((FailJsonResponse)response).getReason(), JsonResponseReason.ENTITY_NOT_FOUND);
     }
 
+    @Test
+    public void shouldBeImpossibleToAddAnswerIfAnswersLimitReached() throws Exception {
+        Topic topic = getTopicWithPosts(QuestionsAndAnswersController.LIMIT_OF_POSTS_VALUE + 1);
+        Model model = new ExtendedModelMap();
+        PostDto postDto = new PostDto();
+        postDto.setBodyText(answerContent);
+
+        when(topicService.get(1L, QuestionsAndAnswersPlugin.TOPIC_TYPE)).thenReturn(topic);
+        when(result.hasErrors()).thenReturn(false);
+
+        String methodResult = controller.create(1L, postDto, result, model, request);
+
+        assertEquals(methodResult, QuestionsAndAnswersController.PLUGIN_VIEW_NAME);
+        verify(topicService, never()).replyToTopic(anyLong(), anyString(), anyLong());
+    }
+
+    @Test
+    public void shouldBeImpossibleToAddCommentIfCommentsLimitReached() throws Exception {
+        Post post = getPostWithNotRemovedComments(QuestionsAndAnswersController.LIMIT_OF_POSTS_VALUE + 1);
+
+        when(result.hasErrors()).thenReturn(false);
+        when(postService.get(anyLong())).thenReturn(post);
+
+        JsonResponse response = controller.addComment(new CommentDto(), result, request);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+        verify(postService, never()).addComment(anyLong(), anyMap(), anyString());
+    }
+
+    @Test
+    public void canPostShouldReturnSuccessResponseIfLimitOfAnswersNotReached() throws Exception {
+        Topic topic = getTopicWithPosts(QuestionsAndAnswersController.LIMIT_OF_POSTS_VALUE);
+
+        when(topicService.get(1L, QuestionsAndAnswersPlugin.TOPIC_TYPE)).thenReturn(topic);
+
+        JsonResponse response = controller.canPost(1L);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+    }
+
+    @Test
+    public void canPostShouldReturnFailResponseIfLimitOfAnswersNotReached() throws Exception {
+        Topic topic = getTopicWithPosts(QuestionsAndAnswersController.LIMIT_OF_POSTS_VALUE + 1);
+
+        when(topicService.get(1L, QuestionsAndAnswersPlugin.TOPIC_TYPE)).thenReturn(topic);
+
+        JsonResponse response = controller.canPost(1L);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void canPostShouldThrowExceptionIfTopicNotFound() throws Exception {
+        when(topicService.get(anyLong(), anyString())).thenThrow(new NotFoundException());
+
+        controller.canPost(1L);
+    }
+
+    private Post getPostWithNotRemovedComments(int numberOfComments) {
+        Post post = new Post(null, null);
+        for (int i = 0; i < numberOfComments; i ++) {
+            post.addComment(new PostComment());
+        }
+        return post;
+    }
+
+    private Topic getTopicWithPosts(int numberOfPosts) {
+        Topic topic = new Topic();
+        for (int i = 0; i < numberOfPosts; i ++) {
+            topic.addPost(new Post(null, null));
+        }
+        return topic;
+    }
+
     private PostComment getComment() {
         PostComment comment = new PostComment();
         comment.setAuthor(new JCUser("test", "example@test.com", "pwd"));

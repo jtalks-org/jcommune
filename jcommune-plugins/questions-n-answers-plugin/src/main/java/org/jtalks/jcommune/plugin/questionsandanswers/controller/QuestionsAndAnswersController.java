@@ -84,7 +84,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     private static final String CONVERTER = "converter";
     private static final String VIEW_LIST = "viewList";
     private static final String LIMIT_OF_POSTS_ATTRIBUTE = "postLimit";
-    private static final int LIMIT_OF_POSTS_VALUE = 50;
+    public static final int LIMIT_OF_POSTS_VALUE = 50;
     public static final String PLUGIN_VIEW_NAME = "plugin/plugin";
     public static final String BRANCH_ID = "branchId";
     public static final String CONTENT = "content";
@@ -205,6 +205,25 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         engine.init();
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
+    }
+
+    /**
+     * Check if user can answer for question with given id. Yer can answer if question has less than
+     * {@link #LIMIT_OF_POSTS_VALUE} answers
+     *
+     * @param questionId id of question to be checked
+     *
+     * @return Success response in JSON form if user can leave answer and fail response in JSON form otherwise
+     * @throws NotFoundException if question with given id not found
+     */
+    @RequestMapping(value = "{id}/canpost", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse canPost(@PathVariable("id") Long questionId) throws NotFoundException {
+        Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
+        if (topic.getPosts().size() - 1 >= LIMIT_OF_POSTS_VALUE) {
+            return new JsonResponse(JsonResponseStatus.FAIL);
+        }
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
     /**

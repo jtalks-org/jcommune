@@ -62,6 +62,32 @@ $(function () {
         $('#postBody').focus();
     }
 
+    $("#answerForm").submit(function(e) {
+        var url = $(this).attr("action") + "/canpost";
+        var canPost = false;
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            async: false,
+            success: function(data) {
+                canPost = data.status == 'SUCCESS';
+                console.log("success canpost=" + canPost);
+            },
+            error: function() {
+                //if error occurred let user see it
+                canPost = true;
+            }
+        });
+        if (!canPost) {
+            e.preventDefault();
+            jDialog.createDialog({
+                type: jDialog.alertType,
+                bodyMessage: labelLimitOfAnswersReached
+            });
+        }
+    });
+
     $('.comment-submit').click(function (e){
         var commentDto = {};
         var postId = $(this).attr('data-post-id');
@@ -423,7 +449,8 @@ function hideVisibleEditPrompts() {
 
 function hideEmptyCommentTextArea() {
     $(".comment-container").each(function() {
-        if (!$(this).children(".comment-textarea").val()) {
+        var commentTextArea = $(this).children(".comment-textarea");
+        if (!commentTextArea.val() && commentTextArea.is(":visible")) {
             $(this).hide();
             $(this).parent().children(".comment-prompt").show();
         }
@@ -649,8 +676,13 @@ function removeCommentHtml(commentId) {
     var postId = commentElement.parent().attr("id").split("-")[1];
     $("#comment-" + commentId).remove();
     applyCommentsCssClasses(postId);
-    if ($("#comments-" + postId).children().length == numberOfCommentsToShow) {
+    var numberOfComments = $("#comments-" + postId).children().length;
+    if (numberOfComments == numberOfCommentsToShow) {
         $("#btns-" + postId).remove();
+    }
+    if (numberOfComments < maxCommentNumber) {
+        console.log("show prompt");
+        $("#prompt-" + postId).show();
     }
 }
 

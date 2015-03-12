@@ -49,6 +49,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     var canDeleteNewlyAddedComments = ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OWN_POSTS")};
     var maxCommentNumber = ${postLimit};
     var labelLimitOfCommentsReached = "${messages.getString("label.comment.limit.reached")}";
+    var labelLimitOfAnswersReached = "${messages.getString("label.answer.limit.reached")}";
   </script>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
@@ -228,18 +229,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     #end
   </div>
   #topicActions($targedId ${request} ${question} ${permissionTool})
-  #if($canLeavePosts)
+  #if($canLeavePosts && ${postLimit} > ${postPage.getContent().size()} - 1)
     #if(!${postDto.bodyText})
       #set(${postDto.bodyText} = "")
     #end
     <form id="answerForm" action="${request.contextPath}/topics/question/${question.id}"
           method="POST" class='well anti-multipost submit-form'>
-        <form path="topicId"/>
-    #if(${postLimit} > ${postPage.getContent().size()} - 1)
+      <form path="topicId"/>
       #bbeditor(${messages.getString("label.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
-    #else
-      Limit of answers for this question has been reached....
-    #end
     </form>
   #end
 

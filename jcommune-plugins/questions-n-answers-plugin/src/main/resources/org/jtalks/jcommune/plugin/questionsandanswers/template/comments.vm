@@ -86,10 +86,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
   #if($canLeavePosts && $commentsLimit > $post.notRemovedComments.size())
     <div id="prompt-$post.id" class="comment-prompt">
+  #else
+    <div id="prompt-$post.id" class="comment-prompt" style="display: none">
+  #end
       <i class="icon-comment"></i>
       <span class="comment-prompt-label">${messages.getString("label.add.comment")}</span>
     </div>
-  #end
   <div id="commentForm-$post.id" class="control-group comment-container">
     <textarea id="commentBody-$post.id" name="commentBody" class="comment-textarea new-comment" placeholder="${messages.getString("label.add.comment")}" rows="3"></textarea>
     <div class="comment-buttons-container">
