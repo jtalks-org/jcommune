@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Custom handler mapping. Needed to map plugin handlers separately from application handlers. It's necessary to allow
@@ -43,7 +44,7 @@ import java.util.ArrayList;
 public class PluginHandlerMapping extends RequestMappingHandlerMapping {
 
     private static final PluginHandlerMapping INSTANCE = new PluginHandlerMapping();
-    private final Map<MethodAwareKey, HandlerMethod> pluginHandlerMethods = new HashMap<>();
+    private final Map<MethodAwareKey, HandlerMethod> pluginHandlerMethods = new ConcurrentHashMap<>();
     private PluginLoader pluginLoader;
 
     private PluginHandlerMapping() {
@@ -165,12 +166,12 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
      */
     @Override
     protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
+        String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
+        MethodAwareKey key = new MethodAwareKey(RequestMethod.valueOf(request.getMethod()), getUniformUrl(lookupPath));
         //We should clear map in case if plugin version was changed
         pluginHandlerMethods.clear();
         //We should update Web plugins before resolving handler
         pluginLoader.reloadPlugins(new TypeFilter(WebControllerPlugin.class));
-        String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
-        MethodAwareKey key = new MethodAwareKey(RequestMethod.valueOf(request.getMethod()), getUniformUrl(lookupPath));
         HandlerMethod handlerMethod = findHandlerMethod(key);
         if (handlerMethod != null) {
             RequestMappingInfo mappingInfo = getMappingForMethod(handlerMethod.getMethod(), handlerMethod.getBeanType());
