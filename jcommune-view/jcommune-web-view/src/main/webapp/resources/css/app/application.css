@@ -775,6 +775,9 @@ div.signup {
     white-space: nowrap;
 }
 
+.btn:hover{
+    background-position: 0px -25px;
+}
 
 .btn-group .btn:last-of-type {
     -webkit-border-top-right-radius: 4px;
