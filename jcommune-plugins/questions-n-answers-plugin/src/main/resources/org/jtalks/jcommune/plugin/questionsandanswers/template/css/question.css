@@ -156,6 +156,7 @@
     font-size: 13px;
     padding: 5px 10px;
     border: 1px solid #DDD;
+    word-break: break-word;
 }
 
 .comment-header {
@@ -192,6 +193,7 @@
 .btn-container {
     padding: 5px 0px;
     margin-bottom: 5px;
+    word-break: break-word;
 }
 
 .bordered {

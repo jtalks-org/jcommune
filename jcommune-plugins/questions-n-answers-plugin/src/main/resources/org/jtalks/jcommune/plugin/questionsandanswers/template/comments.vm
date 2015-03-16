@@ -42,14 +42,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                 #if(($currentUser.id == $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.EDIT_OWN_POSTS"))
                 || ($currentUser.id != $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.EDIT_OTHERS_POSTS")))
                   <a class="comment-button" data-original-title="${messages.getString("label.edit.comment")}">
-                      <i class="icon-pencil" data-comment-id="$comment.id"></i>
-                  </a>
+                      <i class="icon-pencil" data-comment-id="$comment.id"></i></a>
                 #end
                 #if(($currentUser.id == $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.DELETE_OWN_POSTS"))
                 || ($currentUser.id != $comment.author.id && $permissionTool.hasPermission($targedId.longValue(), "BRANCH","BranchPermission.DELETE_OTHERS_POSTS")))
                   <a class="comment-button delete-comment" data-original-title="${messages.getString("label.delete.comment")}">
-                      <i class="icon-trash" data-comment-id="$comment.id"></i>
-                  </a>
+                      <i class="icon-trash" data-comment-id="$comment.id"></i></a>
                 #end
               </div>
             #end
