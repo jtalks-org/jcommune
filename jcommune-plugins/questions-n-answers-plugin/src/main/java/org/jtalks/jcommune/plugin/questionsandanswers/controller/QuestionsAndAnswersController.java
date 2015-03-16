@@ -146,6 +146,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         engine.init();
         Branch  branch = getPluginBranchService().get(branchId);
         Map<String, Object> data = getDefaultModel(request);
+        topicDto.getTopic().setBranch(branch);
         if (result.hasErrors()) {
             data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
             data.put(TOPIC_DTO, topicDto);
@@ -153,7 +154,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
             return PLUGIN_VIEW_NAME;
         }
-        topicDto.getTopic().setBranch(branch);
         topicDto.getTopic().setType(QuestionsAndAnswersPlugin.TOPIC_TYPE);
         Topic createdQuestion = getTypeAwarePluginTopicService().createTopic(topicDto.getTopic(),
                 topicDto.getBodyText());
