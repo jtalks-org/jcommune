@@ -25,6 +25,7 @@ jQuery(document).ready(function () {
     var recipientField = $('#recipient');
     recipientField.autocomplete({
         source : function(request, response) {
+            clearError();
             sendUserRequest(function(data) {
                 if (data.result && data.result.length > 0) {
                     validOptions = data.result;
@@ -41,24 +42,19 @@ jQuery(document).ready(function () {
         }
     }).autocomplete("widget").addClass("suggestion-list");
 
-    recipientField.blur(function() {
+    recipientField.focusout(function() {
         validateRecipient();
     });
 
-    recipientField.keydown(function(e) {
-        if ((e.ctrlKey && e.keyCode == enterCode) || e.keyCode == tabCode) {
-           validateRecipient();
-        }
-    });
-
     function validateRecipient() {
+        clearError();
         sendUserRequest(function(data) {
             if (data.result && data.result.length > 0) {
                 validOptions = data.result;
             } else {
                 validOptions = [];
             }
-            clearRecipientIfIncorrect();
+            displayValidationErrorIfRecipientIncorrect();
         });
     }
 
@@ -74,11 +70,26 @@ jQuery(document).ready(function () {
         });
     }
 
-    function clearRecipientIfIncorrect() {
-        if (validOptions.indexOf(recipientField.val()) == -1) {
-            recipientField.val("");
-            toggleSaveButtonEnabled();
+    function displayValidationErrorIfRecipientIncorrect() {
+        if (validOptions.indexOf(recipientField.val()) == -1 && recipientField.val() != "") {
+            console.log(recipientField.parent().parent());
+            recipientField.parent().parent().addClass("error");
+            recipientField.after(getValidationErrorMessage());
+        } else {
+            clearError();
         }
+    }
+
+    function clearError() {
+        recipientField.parent().parent().removeClass("error");
+        var errorSpan = recipientField.next();
+        if (errorSpan.hasClass("help-inline")) {
+            errorSpan.remove();
+        }
+    }
+
+    function getValidationErrorMessage() {
+        return "<span class='help-inline show focusToError'>" + $wrongRecepient + "</span>"
     }
 
     var baseUrl = $root;

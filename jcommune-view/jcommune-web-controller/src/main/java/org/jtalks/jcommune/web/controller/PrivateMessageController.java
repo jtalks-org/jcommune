@@ -27,10 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -245,12 +242,10 @@ public class PrivateMessageController {
      * @return redirect to "drafts" folder if saved successfully or show form with error message
      */
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
-    public String saveDraft(@Valid @ModelAttribute PrivateMessageDraftDto pmDto, BindingResult result, Model model) {
+    public String saveDraft(@Valid @ModelAttribute PrivateMessageDraftDto pmDto, BindingResult result) {
         String targetView = "redirect:/drafts";
         if (result.hasErrors()) {
-            rebindErrors(pmDto, result, model);
-            model.addAttribute(DTO, pmDto);
-            return PM_FORM;
+            return targetView;
         }
 
         JCUser userFrom = userService.getCurrentUser();
@@ -262,22 +257,6 @@ public class PrivateMessageController {
         }
 
         return targetView;
-    }
-
-    /**
-     * Rebind errors from object with name "privateMessageDraftDto" to object with name {@link #DTO}
-     * Needed for possibility to use same view for creation of drafts and sending private messages
-     *
-     * @param pmDto Dto populated in form
-     * @param result validation result
-     * @param model model to be transferred to view
-     */
-    private void rebindErrors(PrivateMessageDraftDto pmDto, BindingResult result, Model model) {
-        BindingResult newResult = new BeanPropertyBindingResult(pmDto, DTO);
-        for (ObjectError error : result.getAllErrors()) {
-            newResult.addError(error);
-        }
-        model.addAllAttributes(newResult.getModel());
     }
 
     /**

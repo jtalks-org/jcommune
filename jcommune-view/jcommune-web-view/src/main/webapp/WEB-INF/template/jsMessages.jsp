@@ -154,3 +154,5 @@ $pluginStatusActivated = '<spring:message code="label.plugins.plugin.status.acti
 $pluginStatusDeactivated = '<spring:message code="label.plugins.plugin.status.deactivated" htmlEscape="true"/>';
 $pluginStatusFailed = '<spring:message code="label.plugins.plugin.status.failed" htmlEscape="true"/>';
 $copyLinkToClipboardPopupTitle = '<spring:message code="copy.link.to.clipboard.popup.title" htmlEscape="true"/>';
+
+$wrongRecepient = '<spring:message code="validation.wrong_recipient" htmlEscape="true"/>'

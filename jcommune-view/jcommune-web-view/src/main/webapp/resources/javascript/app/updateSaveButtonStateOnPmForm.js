@@ -46,4 +46,9 @@ $(document).ready(function () {
             updateSaveButtonState();
         });
     }
+
+    //If one of bb-code buttons was pressed text area will be not empty
+    $(".btn-toolbar").mousedown(function() {
+        toggleSaveButtonEnabled(true);
+    });
 });

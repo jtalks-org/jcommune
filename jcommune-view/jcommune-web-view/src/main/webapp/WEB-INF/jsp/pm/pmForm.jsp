@@ -48,8 +48,7 @@
             <spring:message code="label.pm.recipient" var="placeholderRecipient"/>
             <form:input class="span3 script-confirm-unsaved" path="recipient" tabindex="100"
                         placeholder="${placeholderRecipient}"/>
-            <br/>
-            <form:errors path="recipient" cssClass="help-inline focusToError"/>
+            <form:errors path="recipient" cssClass="help-inline show focusToError"/>
           </div>
         </div>
 

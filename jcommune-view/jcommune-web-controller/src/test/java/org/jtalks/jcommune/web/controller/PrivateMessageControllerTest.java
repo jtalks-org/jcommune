@@ -393,10 +393,8 @@ public class PrivateMessageControllerTest {
                 .param("title", TITLE)
                 .param("body", BODY)
                 .param("recipient", USERNAME))
-                .andExpect(status().isOk())
-                .andExpect(forwardedUrl("pm/pmForm"))
-                .andExpect(model().attribute("privateMessageDto", new PrivateMessageDraftDtoMatcher()))
-                .andExpect(model().attributeHasFieldErrors("privateMessageDto", errorFields));
+                .andExpect(status().isMovedTemporarily())
+                .andExpect(redirectedUrl("/drafts"));
     }
 
     @Test
