@@ -18,6 +18,10 @@ $(document).ready(function () {
         resetBannersForm();
     });
 
+    $('form[id^="uploadBannerModal"]').on('shown.bs.modal', function () {
+        $('textarea[id^="bodyBanner"]').focus();
+    });
+    
     $('form[id^="uploadBannerModal"]').find('button.cancel').click(function (e) {
         resetBannersForm();
     });
