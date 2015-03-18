@@ -384,7 +384,7 @@ public class PrivateMessageControllerTest {
     }
 
     @Test
-    public void saveDraftShouldReturnPmFormIfValidationErrorsOccurs() throws Exception {
+    public void saveDraftShouldRedirectToDraftsIfValidationErrorsOccurs() throws Exception {
         String[] errorFields = new String[] {"title", "body", "recipient"};
         Validator validator = new ValidatorStub(errorFields);
         mockMvc = MockMvcBuilders.standaloneSetup(controller).setValidator(validator).build();
@@ -393,6 +393,40 @@ public class PrivateMessageControllerTest {
                 .param("title", TITLE)
                 .param("body", BODY)
                 .param("recipient", USERNAME))
+                .andExpect(status().isMovedTemporarily())
+                .andExpect(redirectedUrl("/drafts"));
+    }
+
+    @Test
+    public void saveDraftShouldRemoveDraftIfValidationErrorOccursAndDraftWasPersistedEarlier() throws Exception {
+        String[] errorFields = new String[] {"title", "body", "recipient"};
+        Validator validator = new ValidatorStub(errorFields);
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).setValidator(validator).build();
+
+        mockMvc.perform(post("/pm/save")
+                .param("id", "1")
+                .param("title", "")
+                .param("body", "")
+                .param("recipient", ""))
+                .andExpect(status().isMovedTemporarily())
+                .andExpect(redirectedUrl("/drafts"));
+        verify(pmService).delete(Arrays.asList(1L));
+    }
+
+    @Test
+    public void testSaveDraftIfTryToEditDraftWhichWasRemovedInSeparateRequestAndValidationErrorOccurred()
+            throws Exception {
+        String[] errorFields = new String[] {"title", "body", "recipient"};
+        Validator validator = new ValidatorStub(errorFields);
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).setValidator(validator).build();
+
+        when(pmService.delete(anyList())).thenThrow(new NotFoundException());
+
+        mockMvc.perform(post("/pm/save")
+                .param("id", "1")
+                .param("title", "")
+                .param("body", "")
+                .param("recipient", ""))
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/drafts"));
     }

@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,7 +49,6 @@ import java.util.List;
 public class PrivateMessageController {
 
     public static final String PM_IDENTIFIERS = "pmIdentifiers";
-    public static final String SENDER_ID = "senderId";
     private PrivateMessageService pmService;
     private BBCodeService bbCodeService;
     private UserService userService;
@@ -245,6 +245,14 @@ public class PrivateMessageController {
     public String saveDraft(@Valid @ModelAttribute PrivateMessageDraftDto pmDto, BindingResult result) {
         String targetView = "redirect:/drafts";
         if (result.hasErrors()) {
+            if (pmDto.getId() != 0) { //means that we try to edit existing draft
+                try {
+                    pmService.delete(Arrays.asList(pmDto.getId()));
+                } catch (NotFoundException e) {
+                    // Catch block is empty because we don't need any additional logic in case if user removed
+                    // draft in separate browser tab. We should just redirect him to list of drafts
+                }
+            }
             return targetView;
         }
 

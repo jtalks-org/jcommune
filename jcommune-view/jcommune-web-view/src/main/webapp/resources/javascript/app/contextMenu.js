@@ -42,8 +42,21 @@ jQuery(document).ready(function () {
         }
     }).autocomplete("widget").addClass("suggestion-list");
 
+    var mousedownHappened = false;
+    var mousedownTarget;
+
+    $("input, a").mousedown(function(e) {
+        mousedownHappened = true;
+        mousedownTarget = $(this);
+    });
+
     recipientField.focusout(function() {
         validateRecipient();
+        //needed because there are problems with click event after blur or focusout
+        if (mousedownHappened) {
+            mousedownHappened = false;
+            mousedownTarget.click();
+        }
     });
 
     function validateRecipient() {
@@ -62,6 +75,7 @@ jQuery(document).ready(function () {
         $.ajax({
             type: 'POST',
             url: baseUrl + '/usernames',
+            async: false,
             data: {pattern: recipientField.val()},
             success: successHandler,
             error: function() {
@@ -72,7 +86,6 @@ jQuery(document).ready(function () {
 
     function displayValidationErrorIfRecipientIncorrect() {
         if (validOptions.indexOf(recipientField.val()) == -1 && recipientField.val() != "") {
-            console.log(recipientField.parent().parent());
             recipientField.parent().parent().addClass("error");
             recipientField.after(getValidationErrorMessage());
         } else {
