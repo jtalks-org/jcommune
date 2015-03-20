@@ -484,6 +484,9 @@ function addCommentToPost(postId, comment) {
         $($("#btns-" + postId).children()[0]).hide();
         $($("#btns-" + postId).children()[1]).show();
     }
+    if (isCommentsHidden(postId)) {
+        toggleCommentsFor(postId);
+    }
     $("#comments-" + postId).append(getCommentHtml(comment));
     updateCommentHandlers();
     if (commentList.length > numberOfCommentsToShow - 1) {
@@ -678,7 +681,7 @@ function removeCommentHtml(commentId) {
     applyCommentsCssClasses(postId);
     var numberOfComments = $("#comments-" + postId).children().length;
     if (numberOfComments == numberOfCommentsToShow) {
-        $("#btns-" + postId).remove();
+        $("#btns-" + postId).hide();
     }
     if (numberOfComments < maxCommentNumber) {
         console.log("show prompt");

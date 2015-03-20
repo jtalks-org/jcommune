@@ -29,7 +29,7 @@ public class CommentDto {
 
     private long postId;
 
-    @NotBlank
+    @NotBlank(message = "{not_empty}")
     @Size(min = PostComment.BODY_MIN_LENGTH, max = PostComment.BODY_MAX_LENGTH)
     private String body;
 
