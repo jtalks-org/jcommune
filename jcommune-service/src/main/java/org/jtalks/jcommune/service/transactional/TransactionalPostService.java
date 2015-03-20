@@ -291,6 +291,10 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         } else {
             throw new AccessDeniedException("Adding comments not allowed for core topic types");
         }
+        if (topic.isClosed()) {
+            permissionService.checkPermission(topic.getBranch().getId(), AclClassName.BRANCH,
+                    BranchPermission.CLOSE_TOPICS);
+        }
     }
 
     /**

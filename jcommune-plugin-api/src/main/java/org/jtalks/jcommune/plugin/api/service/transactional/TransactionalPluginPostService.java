@@ -77,9 +77,9 @@ public class TransactionalPluginPostService implements PluginPostService {
     }
 
     /**
-     * Sets post service. Should be used once, during initialization
+     * Sets specified post service. Should be used once, during initialization
      *
-     * @param postService
+     * @param postService post service to set
      */
     public void setPostService(PluginPostService postService) {
         this.postService = postService;

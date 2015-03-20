@@ -561,6 +561,26 @@ public class TransactionalPostServiceTest {
         postService.addComment(POST_ID, Collections.EMPTY_MAP, "text");
     }
 
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void shouldBeImpossibleToAddCommentsToClosedTopicWithoutCloseTopicPermission() throws Exception {
+        String topicType = "Plugable";
+        Post post = getPostWithTopicInBranch();
+        post.getTopic().setType(topicType);
+        post.getTopic().setClosed(true);
+
+        when(pluginLoader.getPlugins(any(TypeFilter.class), any(StateFilter.class)))
+                .thenReturn(Arrays.<Plugin>asList(topicPlugin));
+        when(topicPlugin.getTopicType()).thenReturn(topicType);
+        when(topicPlugin.getCommentPermission()).thenReturn(BranchPermission.CREATE_POSTS);
+        when(postDao.isExist(POST_ID)).thenReturn(true);
+        when(postDao.get(POST_ID)).thenReturn(post);
+        doThrow(new AccessDeniedException(""))
+                .when(permissionService).checkPermission(post.getTopic().getBranch().getId(), AclClassName.BRANCH,
+                BranchPermission.CLOSE_TOPICS);
+
+        postService.addComment(POST_ID, Collections.EMPTY_MAP, "text");
+    }
+
     @Test
     public void testAddUserToSubscriptedByComment() throws Exception {
         JCUser user = new JCUser("username", null, null);
