@@ -23,5 +23,6 @@ jQuery(document).ready(function(){
         jQuery("a").tooltip();
         jQuery("span").tooltip();
         jQuery('.btn').tooltip({placement: 'bottom'});
-   		jQuery('.script-has-tooltip').tooltip();
+        jQuery('.script-has-tooltip').tooltip();
+        jQuery('[data-toggle="tooltip"]').tooltip();
 });
