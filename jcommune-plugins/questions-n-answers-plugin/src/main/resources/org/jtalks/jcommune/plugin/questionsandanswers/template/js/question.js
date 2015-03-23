@@ -598,6 +598,8 @@ function applyCommentsCssClasses(postId) {
             $(this).show(); //for case of removing comment
             if (i != commentCount - 1) {
                 $(this).addClass("hiddenBorder");
+            }
+            if (!isCommentsHidden(postId)) {
                 $(this).addClass("bordered");
             }
         }
@@ -606,6 +608,7 @@ function applyCommentsCssClasses(postId) {
         }
         i ++;
     });
+    console.log("i = " +  i, ", count = " + commentCount);
 }
 
 /**

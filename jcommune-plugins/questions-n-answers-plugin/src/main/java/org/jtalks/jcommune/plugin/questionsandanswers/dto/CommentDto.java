@@ -14,11 +14,9 @@
  */
 package org.jtalks.jcommune.plugin.questionsandanswers.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.PostComment;
+import org.jtalks.jcommune.model.validation.annotations.NotBlankSized;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
-
-import javax.validation.constraints.Size;
 
 /**
  * @author Mikhail Stryzhonok
@@ -29,8 +27,7 @@ public class CommentDto {
 
     private long postId;
 
-    @NotBlank(message = "{not_empty}")
-    @Size(min = PostComment.BODY_MIN_LENGTH, max = PostComment.BODY_MAX_LENGTH)
+    @NotBlankSized(min = PostComment.BODY_MIN_LENGTH, max = PostComment.BODY_MAX_LENGTH)
     private String body;
 
     private String authorUsername;
@@ -47,6 +44,7 @@ public class CommentDto {
         this.authorUsername = postComment.getAuthor().getUsername();
         this.body = postComment.getBody();
         this.formattedCreationDate = dateTimeTool.format(postComment.getCreationDate());
+        this.authorId = postComment.getAuthor().getId();
     }
 
     public long getId() {
