@@ -60,6 +60,18 @@ public class ValidatorStubTest {
         assertFalse(errors.hasErrors());
     }
 
+    @Test
+    public void validateShouldSetGlobalErrorsIfBeanHasGlobalErrors() {
+        ValidatorStub validator = new ValidatorStub();
+        validator.setGlobalError();
+        TestBean testBean = new TestBean();
+        Errors errors = new BeanPropertyBindingResult(testBean, "object");
+
+        validator.validate(testBean, errors);
+
+        assertTrue(errors.hasGlobalErrors());
+    }
+
     private static class TestBean {
         private String field1;
         private String field2;

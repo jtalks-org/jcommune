@@ -45,7 +45,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -345,7 +344,7 @@ public class PrivateMessageControllerTest {
                 .param("recipient", USERNAME))
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/drafts"));
-        verify(pmService).saveDraft(0, USERNAME, "test title", "test body", JC_USER);
+        verify(pmService).saveDraft(0, JC_USER, "test title", "test body", JC_USER);
     }
 
     @Test
@@ -362,25 +361,7 @@ public class PrivateMessageControllerTest {
                 .param("recipient", USERNAME))
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/drafts"));
-        verify(pmService).saveDraft(0, USERNAME, "test title", "test body", JC_USER);
-    }
-
-    @Test
-    public void saveDraftShouldReturnPmFormIfExceptionWasThrown() throws Exception {
-        Validator validator = new ValidatorStub();
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).setValidator(validator).build();
-
-        when(userService.getByUsername(USERNAME)).thenReturn(JC_USER);
-        when(userService.getCurrentUser()).thenReturn(JC_USER);
-        doThrow(new NotFoundException()).when(pmService).saveDraft(anyLong(), anyString(), anyString(), anyString(),
-                any(JCUser.class));
-
-        mockMvc.perform(post("/pm/save")
-                .param("title", TITLE)
-                .param("body", BODY)
-                .param("recipient", USERNAME))
-                .andExpect(status().isOk())
-                .andExpect(forwardedUrl("pm/pmForm"));
+        verify(pmService).saveDraft(0, JC_USER, "test title", "test body", JC_USER);
     }
 
     @Test
@@ -400,7 +381,8 @@ public class PrivateMessageControllerTest {
     @Test
     public void saveDraftShouldRemoveDraftIfValidationErrorOccursAndDraftWasPersistedEarlier() throws Exception {
         String[] errorFields = new String[] {"title", "body", "recipient"};
-        Validator validator = new ValidatorStub(errorFields);
+        ValidatorStub validator = new ValidatorStub(errorFields);
+        validator.setGlobalError();
         mockMvc = MockMvcBuilders.standaloneSetup(controller).setValidator(validator).build();
 
         mockMvc.perform(post("/pm/save")

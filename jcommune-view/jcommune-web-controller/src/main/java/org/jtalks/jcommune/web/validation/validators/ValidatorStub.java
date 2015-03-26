@@ -26,9 +26,14 @@ import org.springframework.validation.Validator;
 public class ValidatorStub implements Validator {
 
     private String[] errorFields;
+    private boolean hasGlobalErrors = false;
 
     public ValidatorStub(String ... errorFields) {
         this.errorFields = errorFields;
+    }
+
+    public void setGlobalError() {
+        hasGlobalErrors = true;
     }
 
     @Override
@@ -42,6 +47,9 @@ public class ValidatorStub implements Validator {
             for (String field : errorFields) {
                 errors.rejectValue(field, "Test Error");
             }
+        }
+        if (hasGlobalErrors) {
+            errors.reject("Test error");
         }
     }
 }

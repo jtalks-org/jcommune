@@ -182,9 +182,11 @@ public class TransactionalPrivateMessageServiceTest {
 
     @Test
     public void testSaveDraft() throws NotFoundException {
+        JCUser recipient = new JCUser("name", "example@example.com", "pwd");
+
         when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
 
-        pmService.saveDraft(PM_ID, USERNAME, "title", "body", JC_USER);
+        pmService.saveDraft(PM_ID, recipient, "title", "body", JC_USER);
 
         verify(pmDao).saveOrUpdate(any(PrivateMessage.class));
         verify(aclBuilder).grant(GeneralPermission.WRITE);

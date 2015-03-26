@@ -72,14 +72,12 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * Save message as draft. If message exist it will be updated.
      *
      * @param id        message id.
-     * @param recipient addressee.
+     * @param userTo    receiver of the message
      * @param title     the title of the message.
      * @param body      the body of the message.
      * @param userFrom  sender.
-     * @throws NotFoundException if the receiver does not exist.
      */
-    void saveDraft(long id, String recipient, String title, String body, JCUser userFrom)
-            throws NotFoundException;
+    void saveDraft(long id, JCUser userTo, String title, String body, JCUser userFrom);
 
     /**
      * Get count of new messages for current user.

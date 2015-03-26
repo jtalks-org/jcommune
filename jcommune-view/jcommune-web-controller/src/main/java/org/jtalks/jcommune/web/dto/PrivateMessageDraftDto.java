@@ -27,7 +27,7 @@ import javax.validation.constraints.Size;
  *
  * @author Mikhail Stryzhonok
  */
-@AtLeastOneNotEmpty(fieldNames = {"body", "title", "recipient"})
+@AtLeastOneNotEmpty(fieldNames = {"body", "title"})
 public class PrivateMessageDraftDto {
 
     @Size(max = PrivateMessage.MAX_TITLE_LENGTH)

@@ -244,7 +244,7 @@ public class PrivateMessageController {
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
     public String saveDraft(@Valid @ModelAttribute PrivateMessageDraftDto pmDto, BindingResult result) {
         String targetView = "redirect:/drafts";
-        if (result.hasErrors()) {
+        if (result.hasFieldErrors() && result.hasGlobalErrors()) {
             if (pmDto.getId() != 0) { //means that we try to edit existing draft
                 try {
                     pmService.delete(Arrays.asList(pmDto.getId()));
@@ -257,12 +257,15 @@ public class PrivateMessageController {
         }
 
         JCUser userFrom = userService.getCurrentUser();
-        try {
-            pmService.saveDraft(pmDto.getId(), pmDto.getRecipient(), pmDto.getTitle(), pmDto.getBody(), userFrom);
-        } catch (NotFoundException e) {
-            result.rejectValue("recipient", "validation.wrong_recipient");
-            targetView = PM_FORM;
+        JCUser userTo = null;
+        if (pmDto.getRecipient() != null) {
+            try {
+                userTo = userService.getByUsername(pmDto.getRecipient());
+            } catch (NotFoundException e) {
+                userTo = null;
+            }
         }
+        pmService.saveDraft(pmDto.getId(), userTo, pmDto.getTitle(), pmDto.getBody(), userFrom);
 
         return targetView;
     }
