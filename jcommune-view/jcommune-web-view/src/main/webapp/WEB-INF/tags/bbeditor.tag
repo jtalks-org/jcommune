@@ -152,10 +152,9 @@
               placeholder="${placeholderEditorContent}" class="script-confirm-unsaved"><c:out
             value="${postText}"/></textarea>
   </div>
-  <br>
   <c:if test="${showSubmitButton}">
-    <span class="keymaps-caption"><spring:message code="label.keymaps.post"/></span>
-    <br>
+    <span class="keymaps-caption pull-left"><spring:message code="label.keymaps.post"/></span>
+    <div class="cleared"></div>
   </c:if>
   <form:errors path="${bodyParameterName}" cssClass="help-inline focusToError"/>
 </div>

@@ -77,7 +77,7 @@
   </query>
 
   <query name="getCountPostsInBranch">
-    <![CDATA[SELECT COUNT(post) FROM Post post WHERE post.topic.branch = :branch]]>
+    <![CDATA[SELECT COUNT(post) FROM Post post WHERE post.topic.branch = :branch AND post.state = 'DISPLAYED']]>
   </query>
 
   <query name="getAllBranches">

@@ -154,6 +154,26 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         logger.debug("Deleted post id={}", post.getId());
     }
 
+    @Override
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
+    public Post saveOrUpdateDraft(Topic topic, String content) {
+        JCUser currentUser = userService.getCurrentUser();
+        Post draft = topic.getDraftForUser(currentUser);
+        if (draft == null) {
+            draft = new Post(currentUser, content, PostState.DRAFT);
+            topic.addPost(draft);
+        } else {
+            draft.setPostContent(content);
+            draft.updateCreationDate();
+        }
+        getDao().saveOrUpdate(draft);
+
+        logger.debug("Draft saved in topic. Topic id={}, Post id={}, Post author={}",
+                new Object[]{topic.getId(), draft.getId(), currentUser.getUsername()});
+
+        return draft;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -268,6 +288,24 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         getDao().saveOrUpdate(post);
         getDao().changeRating(post.getId(), ratingChanges);
         return post;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @PreAuthorize("(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
+            "#post.userCreated.username == principal.username)") //draft can be deleted only by author
+    @Override
+    public void deleteDraft(Post post) {
+        if (!PostState.DRAFT.equals(post.getState())) {
+            throw new IllegalArgumentException("Required DRAFT but got " + String.valueOf(post.getState()));
+        }
+        Topic topic = post.getTopic();
+        topic.removePost(post);
+        topicDao.saveOrUpdate(topic);
+        securityService.deleteFromAcl(post);
+
+        logger.debug("Deleted draft id={}", post.getId());
     }
 
     /**

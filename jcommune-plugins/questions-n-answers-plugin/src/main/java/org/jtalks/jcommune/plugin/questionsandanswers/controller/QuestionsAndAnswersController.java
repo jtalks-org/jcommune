@@ -191,6 +191,14 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             throws NotFoundException {
         Topic topic = getTypeAwarePluginTopicService().get(id, QuestionsAndAnswersPlugin.TOPIC_TYPE);
         getTypeAwarePluginTopicService().checkViewTopicPermission(topic.getBranch().getId());
+
+        JCUser currentUser = getUserReader().getCurrentUser();
+        PostDto postDto = new PostDto();
+        Post draft = topic.getDraftForUser(currentUser);
+        if (draft != null) {
+            postDto = PostDto.getDtoFor(draft);
+        }
+
         Map<String, Object> data = getDefaultModel(request);
         data.put(QUESTION, topic);
         data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getPosts())));
@@ -198,7 +206,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put(SUBSCRIBED, false);
         data.put(CONVERTER, BbToHtmlConverter.getInstance());
         data.put(VIEW_LIST, getLocationService().getUsersViewing(topic));
-        data.put(POST_DTO, new PostDto());
+        data.put(POST_DTO, postDto);
         data.put(LIMIT_OF_POSTS_ATTRIBUTE, LIMIT_OF_POSTS_VALUE);
         getPluginLastReadPostService().markTopicAsRead(topic);
         VelocityEngine engine = new VelocityEngine(getProperties());
@@ -441,7 +449,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     public String deleteAnswer(@PathVariable Long answerId)
             throws NotFoundException {
         Post answer = getPluginPostService().get(answerId);
-        Post neighborAnswer = answer.getTopic().getNeighborPost(answer);
+        Post neighborAnswer = answer.getTopic().getNeighborDisplayedPost(answer);
         getPluginPostService().deletePost(answer);
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId()
                 + "#" + neighborAnswer.getId();

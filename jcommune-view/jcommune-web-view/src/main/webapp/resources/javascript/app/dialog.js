@@ -325,7 +325,8 @@ $(function () {
                 var func = function (e) {
                     if ((e.keyCode || e.charCode) == tabCode) {
                         e.preventDefault();
-                        nextTabElm(selectors, idx).focus();
+                        var nextElement = e.shiftKey? prevTabElm(selectors, idx) : nextTabElm(selectors, idx);
+                        nextElement.focus();
                     }
                 };
                 $(v).on('keydown', func);
@@ -348,6 +349,14 @@ $(function () {
                 return jDialog.dialog.find(els[0]);
             } else {
                 return jDialog.dialog.find(els[curIdx + 1])
+            }
+        }
+
+        var prevTabElm = function (els, curIdx) {
+            if (curIdx === 0) {
+                return jDialog.dialog.find(els[els.length - 1]);
+            } else {
+                return jDialog.dialog.find(els[curIdx - 1])
             }
         }
     }
