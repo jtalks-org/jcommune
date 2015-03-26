@@ -90,7 +90,7 @@ public class PrivateMessageController {
      * @param page the private message page number.
      * @return {@code ModelAndView} with added {@link Page} instance with of private messages.
      */
-    @RequestMapping(value = "/inbox", method = RequestMethod.GET)
+    @RequestMapping(value = {"/inbox","/pm"}, method = RequestMethod.GET)
     public ModelAndView inboxPage(@RequestParam(value = "page", defaultValue = "1", required = false) String page) {
 
         Page<PrivateMessage> inboxPage = pmService.getInboxForCurrentUser(page);
