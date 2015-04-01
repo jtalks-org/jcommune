@@ -166,6 +166,9 @@
     <listener>
         <listener-class>org.jtalks.jcommune.web.listeners.AppPropertySetupListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>org.springframework.web.util.HttpSessionMutexListener</listener-class>
+    </listener>
 
     <error-page>
         <error-code>403</error-code>

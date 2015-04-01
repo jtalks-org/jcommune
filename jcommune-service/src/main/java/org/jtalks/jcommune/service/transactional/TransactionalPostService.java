@@ -29,7 +29,6 @@ import org.jtalks.jcommune.plugin.api.filters.StateFilter;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.service.PluginPostService;
 import org.jtalks.jcommune.service.BranchLastPostService;
-import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
@@ -62,7 +61,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private TopicDao topicDao;
     private SecurityService securityService;
     private NotificationService notificationService;
-    private LastReadPostService lastReadPostService;
     private UserService userService;
     private BranchLastPostService branchLastPostService;
     private PermissionService permissionService;
@@ -75,7 +73,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param topicDao              this dao used for checking branch existance
      * @param securityService       service for authorization
      * @param notificationService   to send email updates for subscribed users
-     * @param lastReadPostService   to modify last read post information when topic structure is changed
      * @param userService           to get current user
      * @param branchLastPostService to refresh the last post of the branch
      */
@@ -84,7 +81,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             TopicDao topicDao,
             SecurityService securityService,
             NotificationService notificationService,
-            LastReadPostService lastReadPostService,
             UserService userService,
             BranchLastPostService branchLastPostService,
             PermissionService permissionService,
@@ -93,7 +89,6 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         this.topicDao = topicDao;
         this.securityService = securityService;
         this.notificationService = notificationService;
-        this.lastReadPostService = lastReadPostService;
         this.userService = userService;
         this.branchLastPostService = branchLastPostService;
         this.permissionService = permissionService;
@@ -266,7 +261,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     public Post vote(Post post, PostVote vote) {
         JCUser currentUser = userService.getCurrentUser();
         if (!post.canBeVotedBy(currentUser, vote.isVotedUp())) {
-            throw new AccessDeniedException("User cant vote in same direction more than one time");
+            logger.info("User [{}] tries to vote for post with id={} in same direction more than one time",
+                    currentUser.getUsername(), post.getId());
+            throw new AccessDeniedException("User can't vote in same direction more than one time");
         }
         vote.setUser(currentUser);
         int ratingChanges = post.calculateRatingChanges(vote);

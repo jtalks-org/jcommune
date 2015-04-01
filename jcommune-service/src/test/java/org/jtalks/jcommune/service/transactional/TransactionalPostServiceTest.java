@@ -27,7 +27,6 @@ import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.filters.StateFilter;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.BranchLastPostService;
-import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -81,8 +80,6 @@ public class TransactionalPostServiceTest {
     @Mock
     private TopicDao topicDao;
     @Mock
-    private LastReadPostService lastReadPostService;
-    @Mock
     private UserService userService;
     @Mock
     private BranchLastPostService branchLastPostService;
@@ -116,7 +113,6 @@ public class TransactionalPostServiceTest {
                 topicDao,
                 securityService,
                 notificationService,
-                lastReadPostService,
                 userService,
                 branchLastPostService,
                 permissionService,

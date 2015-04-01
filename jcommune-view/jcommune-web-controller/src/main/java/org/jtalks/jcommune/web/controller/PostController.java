@@ -41,8 +41,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -77,9 +78,6 @@ public class PostController {
     private SessionRegistry sessionRegistry;
     private EntityToDtoConverter converter;
 
-    @Autowired(required = true)
-    private ViewResolver viewResolver;
-
     /**
      * This method turns the trim binder on. Trim binder
      * removes leading and trailing spaces from the submitted fields.
@@ -101,7 +99,7 @@ public class PostController {
      * @param bbCodeService            to create valid quotes
      * @param lastReadPostService      not to track user posts as updates for himself
      * @param userService              to get the current user information
-     * @param converter                instance of {@link org.jtalks.jcommune.web.dto.EntityToDtoConverter} needed to
+     * @param converter                instance of {@link EntityToDtoConverter} needed to
      *                                 obtain link to the topic
      */
     @Autowired
@@ -322,21 +320,59 @@ public class PostController {
         return getPreviewModelAndView(result).addObject("content", topicDto.getBodyText());
     }
 
+    /**
+     * Votes up for post with specified id
+     *
+     * @param postId id of a post to vote up
+     * @param request HttpServletRequest
+     *
+     * @return response in JSON format
+     *
+     * @throws NotFoundException if post with specified id not found
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}/voteup")
     @ResponseBody
-    public JsonResponse voteUp(@PathVariable Long postId) throws NotFoundException{
-        Post post = postService.get(postId);
+    public JsonResponse voteUp(@PathVariable Long postId, HttpServletRequest request) throws NotFoundException {
         PostVote vote = new PostVote(true);
-        postService.vote(post, vote);
+        Object mutex = WebUtils.getSessionMutex(request.getSession());
+        /*
+            Next operations performed in synchronized block to prevent handling of concurrent requests from same user.
+            We use session mutex as the lock object. In many cases, the HttpSession reference itself is a safe mutex as
+            well, since it will always be the same object reference for the same active logical session. However, this
+            is not guaranteed across different servlet containers; the only 100% safe way is a session mutex.
+         */
+        synchronized (mutex) {
+            Post post = postService.get(postId);
+            postService.vote(post, vote);
+        }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
+    /**
+     * Votes down for post with specified id
+     *
+     * @param postId id of a post to vote down
+     * @param request HttpServletRequest
+     *
+     * @return response in JSON format
+     *
+     * @throws NotFoundException if post with specified id not found
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/posts/{postId}/votedown")
     @ResponseBody
-    public JsonResponse voteDown(@PathVariable Long postId) throws NotFoundException{
-        Post post = postService.get(postId);
+    public JsonResponse voteDown(@PathVariable Long postId, HttpServletRequest request) throws NotFoundException {
         PostVote vote = new PostVote(false);
-        postService.vote(post, vote);
+        Object mutex = WebUtils.getSessionMutex(request.getSession());
+        /*
+            Next operations performed in synchronized block to prevent handling of concurrent requests from same user.
+            We use session mutex as the lock object. In many cases, the HttpSession reference itself is a safe mutex as
+            well, since it will always be the same object reference for the same active logical session. However, this
+            is not guaranteed across different servlet containers; the only 100% safe way is a session mutex.
+         */
+        synchronized (mutex) {
+            Post post = postService.get(postId);
+            postService.vote(post, vote);
+        }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 

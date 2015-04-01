@@ -209,7 +209,6 @@
     <constructor-arg ref="topicDao"/>
     <constructor-arg ref="securityService"/>
     <constructor-arg ref="notificationService"/>
-    <constructor-arg ref="lastReadPostService"/>
     <constructor-arg ref="userService"/>
     <constructor-arg ref="branchLastPostService"/>
     <constructor-arg ref="permissionService"/>

@@ -38,6 +38,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
@@ -77,6 +79,10 @@ public class PostControllerTest {
     private SessionRegistry sessionRegistry;
     @Mock
     private EntityToDtoConverter converter;
+    @Mock
+    private HttpServletRequest request;
+    @Mock
+    private HttpSession session;
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
@@ -263,8 +269,9 @@ public class PostControllerTest {
         Post post = new Post(user, "text");
 
         when(postService.get(anyLong())).thenReturn(post);
+        when(request.getSession()).thenReturn(session);
 
-        JsonResponse response = controller.voteUp(1L);
+        JsonResponse response = controller.voteUp(1L, request);
 
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
         verify(postService).vote(eq(post), argThat(new PostVoteMacher(true)));
@@ -276,8 +283,9 @@ public class PostControllerTest {
         Post post = new Post(user, "text");
 
         when(postService.get(anyLong())).thenReturn(post);
+        when(request.getSession()).thenReturn(session);
 
-        JsonResponse response = controller.voteDown(1L);
+        JsonResponse response = controller.voteDown(1L, request);
 
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
         verify(postService).vote(eq(post), argThat(new PostVoteMacher(false)));
@@ -286,13 +294,17 @@ public class PostControllerTest {
     @Test(expectedExceptions = NotFoundException.class)
     public void voteUpShouldThrowExceptionIfPostNotFound() throws Exception {
         when(postService.get(anyLong())).thenThrow(new NotFoundException());
-        controller.voteUp(1L);
+        when(request.getSession()).thenReturn(session);
+
+        controller.voteUp(1L, request);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void voteDownShouldThrowExceptionIfPostNotFound() throws Exception {
         when(postService.get(anyLong())).thenThrow(new NotFoundException());
-        controller.voteDown(1L);
+        when(request.getSession()).thenReturn(session);
+
+        controller.voteDown(1L, request);
     }
 
     private class PostVoteMacher extends ArgumentMatcher<PostVote> {
