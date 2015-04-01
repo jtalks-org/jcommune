@@ -36,19 +36,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     var labelAddCommentPostNotFound = "${messages.getString("label.comment.add.error.not.found")}";
     var labelEditCommentNotFound = "${messages.getString("label.comment.edit.error.not.found")}";
     var labelDeleteCommentNotFound = "${messages.getString("label.comment.remove.error.not.found")}";
-    var labelUnexpectedError = "<jcommune:message>label.unexpected.error</jcommune:message>";
     var labelProfileTip = "${messages.getString("label.tips.view_profile")}";
     var labelEditCommentTip = "${messages.getString("label.edit.comment")}";
     var labelDeleteCommentTip = "${messages.getString("label.delete.comment")}";
-    var labelSave = "<jcommune:message>label.save</jcommune:message>";
     var labelCancel = "${messages.getString("label.cancel")}";
     var branchId = ${question.branch.id};
-    var deleteCommentConfirmation = "<jcommune:message>label.deleteCommentConfirmation</jcommune:message>";
     var canEditNewlyAddedComments = ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.EDIT_OWN_POSTS")};
     var canDeleteNewlyAddedComments = ${permissionTool.hasPermission($targedId.longValue(),"BRANCH","BranchPermission.DELETE_OWN_POSTS")};
     var maxCommentNumber = ${postLimit};
     var labelLimitOfCommentsReached = "${messages.getString("label.comment.limit.reached")}";
     var labelLimitOfAnswersReached = "${messages.getString("label.answer.limit.reached")}";
+    #set($subscribesAfterLevingComment = !${question.subscribers.contains(${currentUser})} && ${currentUser.autosubscribe})
+    var subscribesAfterLevingComment = $subscribesAfterLevingComment;
   </script>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>

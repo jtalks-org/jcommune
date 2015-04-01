@@ -72,7 +72,6 @@ $(function () {
             async: false,
             success: function(data) {
                 canPost = data.status == 'SUCCESS';
-                console.log("success canpost=" + canPost);
             },
             error: function() {
                 //if error occurred let user see it
@@ -104,6 +103,7 @@ $(function () {
                 if (data.status == 'SUCCESS') {
                     hideCommentForm(postId);
                     addCommentToPost(postId, data.result);
+                    toggleSubscriptionLink();
                 } else if (data.reason == 'VALIDATION') {
                     displayValidationErrors(data.result, "commentBody-" + postId);
                 } else if (data.reason == 'ENTITY_NOT_FOUND') {
@@ -124,7 +124,7 @@ $(function () {
                 // Should not occur
                 jDialog.createDialog({
                     type: jDialog.alertType,
-                    bodyMessage: labelUnexpectedError
+                    bodyMessage: $labelUnexpectedError
                 });
             }
         });
@@ -168,7 +168,7 @@ var deleteCommentHandler = function(e) {
                 // Should not occur
                 jDialog.createDialog({
                     type: jDialog.alertType,
-                    bodyMessage: labelUnexpectedError
+                    bodyMessage: $labelUnexpectedError
                 });
             }
         });
@@ -179,7 +179,7 @@ var deleteCommentHandler = function(e) {
 	            <button id="remove-review-ok" class="btn btn-primary">' + $labelOk + '</button>';
     jDialog.createDialog({
         type: jDialog.confirmType,
-        bodyMessage : deleteCommentConfirmation,
+        bodyMessage : $labelDeleteCommentConfirmation,
         firstFocus : false,
         footerContent: footerContent,
         maxWidth: 300,
@@ -225,7 +225,7 @@ var editSubmitHandler = function(e) {
             // Should not occur
             jDialog.createDialog({
                 type: jDialog.alertType,
-                bodyMessage: labelUnexpectedError
+                bodyMessage: $labelUnexpectedError
             });
         }
     });
@@ -543,7 +543,7 @@ function getCommentHtml(comment) {
         + "</span><div id='edit-" + comment.id + "' class='control-group comment-container edit' style='display: none'>"
         + "<textarea id='editable-" + comment.id + "' name='commentBody' class='comment-textarea edit-comment' rows='3'>"
         + comment.body + "</textarea> <div class='comment-buttons-container'><div class='pull-right'>"
-        + "<a class='btn btn-primary edit-submit' data-comment-id='" + comment.id + "'>" + labelSave + "</a>"
+        + "<a class='btn btn-primary edit-submit' data-comment-id='" + comment.id + "'>" + $labelSave + "</a>"
         + "<a class='btn edit-cancel' data-comment-id='" + comment.id + "'>" + labelCancel + "</a></div></div></div>"
         + "</div></div>";
     return result;
@@ -599,7 +599,7 @@ function applyCommentsCssClasses(postId) {
             if (i != commentCount - 1) {
                 $(this).addClass("hiddenBorder");
             }
-            if (!isCommentsHidden(postId)) {
+            if (!isCommentsHidden(postId) && i != commentCount - 1) {
                 $(this).addClass("bordered");
             }
         }
@@ -608,7 +608,6 @@ function applyCommentsCssClasses(postId) {
         }
         i ++;
     });
-    console.log("i = " +  i, ", count = " + commentCount);
 }
 
 /**
@@ -687,7 +686,6 @@ function removeCommentHtml(commentId) {
         $("#btns-" + postId).hide();
     }
     if (numberOfComments < maxCommentNumber) {
-        console.log("show prompt");
         $("#prompt-" + postId).show();
     }
 }
@@ -700,4 +698,17 @@ function removeCommentHtml(commentId) {
  */
 function getPostIdForComment(commentId) {
     return $("#comment-" + commentId).parent().attr("id").split("-")[1];
+}
+
+/**
+ * Changes subscription link from "Subscribe" to "Unsubscribe" if it is necessary
+ */
+function toggleSubscriptionLink() {
+    var link = $("a#subscription")[0];
+    if (subscribesAfterLevingComment) {
+        link.textContent = $labelUnsubscribe;
+        link.setAttribute('data-original-title', $labelUnsubscribeTooltip);
+        link.href = link.href.replace("subscribe", "unsubscribe");
+        subscribesAfterLevingComment = false;
+    }
 }
