@@ -262,7 +262,7 @@ public class PrivateMessageController {
             try {
                 userTo = userService.getByUsername(pmDto.getRecipient());
             } catch (NotFoundException e) {
-                userTo = null;
+                //Catch block is empty because we don't need any logic if recipient not found. We should leave it null
             }
         }
         pmService.saveDraft(pmDto.getId(), userTo, pmDto.getTitle(), pmDto.getBody(), userFrom);
