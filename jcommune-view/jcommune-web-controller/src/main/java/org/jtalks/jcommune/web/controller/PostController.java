@@ -44,6 +44,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
@@ -334,17 +335,7 @@ public class PostController {
     @ResponseBody
     public JsonResponse voteUp(@PathVariable Long postId, HttpServletRequest request) throws NotFoundException {
         PostVote vote = new PostVote(true);
-        Object mutex = WebUtils.getSessionMutex(request.getSession());
-        /*
-            Next operations performed in synchronized block to prevent handling of concurrent requests from same user.
-            We use session mutex as the lock object. In many cases, the HttpSession reference itself is a safe mutex as
-            well, since it will always be the same object reference for the same active logical session. However, this
-            is not guaranteed across different servlet containers; the only 100% safe way is a session mutex.
-         */
-        synchronized (mutex) {
-            Post post = postService.get(postId);
-            postService.vote(post, vote);
-        }
+        voteWithSessionLocking(postId, vote, request);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
@@ -362,17 +353,7 @@ public class PostController {
     @ResponseBody
     public JsonResponse voteDown(@PathVariable Long postId, HttpServletRequest request) throws NotFoundException {
         PostVote vote = new PostVote(false);
-        Object mutex = WebUtils.getSessionMutex(request.getSession());
-        /*
-            Next operations performed in synchronized block to prevent handling of concurrent requests from same user.
-            We use session mutex as the lock object. In many cases, the HttpSession reference itself is a safe mutex as
-            well, since it will always be the same object reference for the same active logical session. However, this
-            is not guaranteed across different servlet containers; the only 100% safe way is a session mutex.
-         */
-        synchronized (mutex) {
-            Post post = postService.get(postId);
-            postService.vote(post, vote);
-        }
+        voteWithSessionLocking(postId, vote, request);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
@@ -386,5 +367,43 @@ public class PostController {
         return new ModelAndView("ajax/postPreview").addObject("signature", signature)
                 .addObject("isInvalid", result.hasFieldErrors("bodyText"))
                 .addObject("errors", result.getFieldErrors("bodyText"));
+    }
+
+    /**
+     * Performs vote with session locking to prevent handling of concurrent requests from same user
+     *
+     * @param postId id of a post to vote
+     * @param vote {@link PostVote} object
+     * @param request HttpServletRequest
+     *
+     * @throws NotFoundException if post with specified id not found
+     */
+    private void voteWithSessionLocking(Long postId, PostVote vote, HttpServletRequest request) throws NotFoundException {
+        /**
+         * We should not create session here to prevent possibility of creating multiplier sessions for same user in
+         * concurrent requests
+         */
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            Object mutex = WebUtils.getSessionMutex(session);
+            /**
+             *  Next operations performed in synchronized block to prevent handling of concurrent requests from same
+             *  user. We use session mutex as the lock object. In many cases, the HttpSession reference itself is a safe
+             *  mutex as well, since it will always be the same object reference for the same active logical session.
+             *  However, this is not guaranteed across different servlet containers; the only 100% safe way is a session
+             *  mutex.
+            */
+            synchronized (mutex) {
+                Post post = postService.get(postId);
+                postService.vote(post, vote);
+            }
+        } else {
+            /**
+             * If <code>HttpSession</code> is <code>null</code> we have no mutex object, so we perform operations
+             * without synchronization
+             */
+            Post post = postService.get(postId);
+            postService.vote(post, vote);
+        }
     }
 }
