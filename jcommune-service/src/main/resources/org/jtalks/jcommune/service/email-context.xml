@@ -43,7 +43,7 @@
       <prop key="mail.smtp.auth">true</prop>
   </util:properties>
 
-  <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+  <bean id="messageSourceMail" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     <property name="basenames">
       <list>
         <value>classpath:/org/jtalks/jcommune/service/bundle/TemplatesMessages</value>
@@ -67,7 +67,7 @@
     <!--the following argument should match real mailbox we use to send mails-->
     <constructor-arg name="from" value="${MAIL_FROM:jtalks@inbox.ru}"/>
     <constructor-arg ref="velocityEngine"/>
-    <constructor-arg ref="messageSource"/>
+    <constructor-arg ref="messageSourceMail"/>
     <constructor-arg ref="sendingNotificationsProperty"/>
     <constructor-arg ref="velocityEscapeTool"/>
     <constructor-arg ref="entityToDtoConverter"/>

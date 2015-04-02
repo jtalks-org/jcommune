@@ -12,13 +12,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.web.component
+package org.jtalks.jcommune.test
 
 import org.jtalks.common.model.permissions.BranchPermission
 import org.jtalks.jcommune.model.utils.Branches
 import org.jtalks.jcommune.model.utils.Groups
-import org.jtalks.jcommune.model.utils.Users
+import org.jtalks.jcommune.test.utils.Users
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.mock.web.MockHttpSession
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
@@ -31,9 +32,7 @@ import spock.lang.Specification
 
 import javax.annotation.Resource
 import javax.servlet.Filter
-import javax.servlet.http.HttpSession
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -62,6 +61,7 @@ class TopicControllerTest extends Specification {
     @Autowired
     private Branches branches;
     @Autowired
+    @Qualifier("modelAndViewUsers")
     private Users users;
     @Autowired
     private Groups groups;
@@ -74,6 +74,7 @@ class TopicControllerTest extends Specification {
     def setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(ctx).addFilters(
                 filters.toArray(new Filter[filters.size()])).build()
+        users.mockMvc = mockMvc
         groups.create()
     }
 
@@ -84,7 +85,7 @@ class TopicControllerTest extends Specification {
             users.create().withPermissionOn(branch, BranchPermission.VIEW_TOPICS)
                     .withPermissionOn(branch, BranchPermission.CREATE_POSTS);
         and: "User logged in"
-            def session = users.performLogin(mockMvc)
+            def session = users.performLogin()
         when: 'User creates topic'
             def result = mockMvc.perform(post("/topics/new").session(session as MockHttpSession)
                     .param("bodyText", "text")

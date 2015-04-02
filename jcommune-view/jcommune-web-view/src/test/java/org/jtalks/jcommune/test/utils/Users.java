@@ -12,16 +12,20 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.utils;
+package org.jtalks.jcommune.test.utils;
 
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.utils.PermissionGranter;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.jtalks.jcommune.service.security.PermissionManager;
+import org.jtalks.jcommune.test.utils.exceptions.ValidationException;
+import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException;
+import org.jtalks.jcommune.test.utils.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -30,17 +34,23 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import java.io.Serializable;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class Users {
+public abstract class Users {
+    // Default values
+    public static final String USERNAME = "user";
+    public static final String PASSWORD = "pwd";
 
     @Autowired
     private UserDao userDao;
@@ -56,9 +66,7 @@ public class Users {
     private SessionAuthenticationStrategy sessionStrategy;
     @Autowired
     private EncryptionService encryptionService;
-
-    public static String USERNAME = "user";
-    public static String PASSWORD = "pwd";
+    private MockMvc mockMvc;
 
     public PermissionGranter create() {
         Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
@@ -83,14 +91,55 @@ public class Users {
         securityFacade.getContext().setAuthentication(auth);
         HttpServletRequest request = new MockHttpServletRequest();
         HttpServletResponse response =  new MockHttpServletResponse();
-        sessionStrategy.onAuthentication(auth, request , response);
+        sessionStrategy.onAuthentication(auth, request, response);
     }
 
-    public HttpSession performLogin(MockMvc mockMvc) throws Exception{
-        return mockMvc.perform(post("/login_ajax")
-                .param("userName", USERNAME).param("password", PASSWORD))
-                .andReturn().getRequest().getSession();
+    public String signUpAndActivate(User user) throws Exception {
+        singUp(user);
+
+        JCUser registered = getUserDao().getByUsername(user.getUsername());
+        getMockMvc().perform(get("/user/activate/" + registered.getUuid()));
+
+        return user.getUsername();
+    }
+
+    public abstract HttpSession performLogin() throws Exception;
+
+    public abstract String singUp(User user)  throws Exception;
+
+    public abstract void assertMvcResult(MvcResult result, Serializable entityIdentifier)
+            throws WrongResponseException, ValidationException;
+
+    public boolean isActivated(String username) {
+        JCUser user = userDao.getByUsername(username);
+        if (user == null) {
+            throw new IllegalArgumentException("User with name [" + username + "] not exist");
+        }
+        return user.isEnabled();
+    }
+
+    public boolean isExist(String username) {
+        return userDao.getByUsername(username) != null;
+    }
+
+    public boolean isNotExist(String username) {
+        return userDao.getByUsername(username) == null;
     }
 
 
+    public void setMockMvc(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
+
+    public MockMvc getMockMvc() {
+        return mockMvc;
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 }

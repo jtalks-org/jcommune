@@ -33,8 +33,6 @@
     <property name="sidFactory" ref="jtalksSidFactory"/>
   </bean>
 
-  <bean class="org.jtalks.jcommune.model.utils.Users"/>
-
   <bean class="org.jtalks.jcommune.model.utils.Groups"/>
 
   <bean class="org.jtalks.jcommune.model.utils.Branches"/>
@@ -53,6 +51,16 @@
     <property name="basePackage" value="org.jtalks.jcommune.migrations/test"/>
     <property name="baseDir" value="/org/jtalks/jcommune/migrations/test"/>
     <property name="table" value="jcommune_schema_version"/>
+  </bean>
+
+  <bean id="modelAndViewUsers" class="org.jtalks.jcommune.test.utils.page.PageUsers"/>
+  <bean id="jsonResponseUsers" class="org.jtalks.jcommune.test.utils.popup.PopUpUsers"/>
+
+  <!--We should override localeResolver here to use english messages in tests-->
+  <bean id="localeResolver" class="org.jtalks.jcommune.plugin.api.web.locale.JcLocaleResolver"
+        factory-method="getInstance">
+    <property name="defaultLocale" value="en"/>
+    <property name="userReader"  ref="userService"/>
   </bean>
 
 </beans>
