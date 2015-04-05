@@ -59,6 +59,10 @@ $(function () {
         $('#postBody').focus();
     });
 
+    $("#subscription").click(function (e){
+        subscribed = !subscribed;
+    });
+
     if ($('#answerForm .error:visible').length > 0) {
         $('#postBody').focus();
     }
@@ -706,10 +710,10 @@ function getPostIdForComment(commentId) {
  */
 function toggleSubscriptionLink() {
     var link = $("a#subscription")[0];
-    if (subscribesAfterLevingComment) {
+    if (!subscribed && autosubscribeEnabled) {
         link.textContent = $labelUnsubscribe;
         link.setAttribute('data-original-title', $labelUnsubscribeTooltip);
         link.href = link.href.replace("subscribe", "unsubscribe");
-        subscribesAfterLevingComment = false;
+        subscribed = true;
     }
 }

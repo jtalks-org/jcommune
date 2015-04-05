@@ -46,8 +46,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     var maxCommentNumber = ${postLimit};
     var labelLimitOfCommentsReached = "${messages.getString("label.comment.limit.reached")}";
     var labelLimitOfAnswersReached = "${messages.getString("label.answer.limit.reached")}";
-    #set($subscribesAfterLevingComment = !${question.subscribers.contains(${currentUser})} && ${currentUser.autosubscribe})
-    var subscribesAfterLevingComment = $subscribesAfterLevingComment;
+    var subscribed = ${question.subscribers.contains(${currentUser})};
+    var autosubscribeEnabled = ${currentUser.autosubscribe}
   </script>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
