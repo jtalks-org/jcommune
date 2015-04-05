@@ -189,8 +189,8 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @param post post to add
      */
     public void addPost(Post post) {
+        setModificationDate(post.getCreationDate());
         post.setTopic(this);
-        updateModificationDate();
         this.posts.add(post);
     }
 
@@ -201,6 +201,10 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
+        Topic topic = postToRemove.getTopic();
+        if (postToRemove.getCreationDate().withMillis(0).equals(topic.getModificationDate().withMillis(0))) {
+            topic.recalculateModificationDate();
+        }
     }
 
     /**
@@ -365,17 +369,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         this.modificationDate = modificationDate;
     }
 
-    /**
-     * Set modification date to now.
-     * Used after addition of the post. It is necessary to save the sort order of topics in the future.
-     *
-     * @return new modification date
-     */
-    public DateTime updateModificationDate() {
-        this.modificationDate = new DateTime();
-        return this.modificationDate;
-    }
-    
     /**
      * Calculates modification date of topic taking it as last post in topic creation date.
      * Used after deletion of the post. It is necessary to save the sort order of topics in the future.

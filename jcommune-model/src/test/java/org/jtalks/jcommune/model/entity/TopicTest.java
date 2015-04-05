@@ -68,32 +68,24 @@ public class TopicTest {
     public void addPostShouldUpdateModificationDate() throws InterruptedException {
         Topic topic = createTopic();
         DateTime prevDate = topic.getModificationDate();
-        Thread.sleep(25); // millisecond precise is a kind of fiction
-        topic.addPost(new Post());
-
+        Post post = new Post();
+        post.setCreationDate(new DateTime().plusHours(1));
+        topic.addPost(post);
         assertTrue(topic.getModificationDate().isAfter(prevDate));
     }
 
-
-    public void updatePostShouldUpdateModificationDate() throws InterruptedException {
-        Topic topic = createTopic();
-        DateTime prevDate = topic.getModificationDate();
-        Thread.sleep(25); // millisecond precise is a kind of fiction
-        topic.getPosts().get(0).updateModificationDate();
-
-        assertTrue(topic.getModificationDate().isBefore(prevDate));
-    }
-
     @Test
-    public void updateModificationDateShouldChangeTheModificationDate() {
+    public void addPostShouldSetModificationDateToPostCreationDate() throws InterruptedException {
         Topic topic = createTopic();
         DateTime prevDate = topic.getModificationDate();
+        Post post = new Post();
+        post.setCreationDate(new DateTime().plusDays(1));
+        topic.addPost(post);
 
-        DateTime modDate = topic.updateModificationDate();
-
-        assertNotSame(modDate, prevDate);
+        assertEquals(topic.getModificationDate(), post.getCreationDate());
+        assertFalse(prevDate.equals(topic.getModificationDate()));
     }
-    
+
     @Test
     public void recalculateModificationDateShouldSetModificationDateAsTheLatestDateAmongAllPosts() {
         Topic topic = createTopic();
@@ -106,7 +98,6 @@ public class TopicTest {
         
         topic.addPost(post3);
         
-        topic.updateModificationDate();
         topic.recalculateModificationDate();
         
         assertEquals(topic.getModificationDate(), lastModificationDate);
@@ -189,6 +180,24 @@ public class TopicTest {
         topic.removePost(toRemove);
 
         assertFalse(topic.getPosts().contains(toRemove), "The post isn't removed from the topic");
+    }
+
+    @Test
+    public void removePostShouldSetModificationDateToLastPostInTheTopic(){
+        Post post1 = new Post();
+        post1.setCreationDate(new DateTime());
+        Post post2 = new Post();
+        post2.setCreationDate(new DateTime());
+        Topic topic = new Topic(new JCUser(), "title");
+        topic.addPost(post1);
+        topic.addPost(post2);
+        Post post3 = new Post();
+        post3.setCreationDate(new DateTime());
+        topic.addPost(post3);
+        topic.removePost(post3);
+
+        assertEquals(topic.getModificationDate(), post2.getCreationDate());
+
     }
 
     @Test
@@ -295,6 +304,7 @@ public class TopicTest {
         Post post1 = new Post();
         post1.setCreationDate(new DateTime());
         Post post2 = new Post();
+        post2.setCreationDate(new DateTime());
         Topic topic = new Topic(new JCUser(), "title");
         topic.addPost(post1);
         topic.addPost(post2);
