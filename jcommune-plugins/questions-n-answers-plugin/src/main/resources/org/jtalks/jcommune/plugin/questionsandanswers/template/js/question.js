@@ -33,6 +33,7 @@ $(function () {
         $(this).parents(".comment-container").children(".comment-textarea").val("");
         $(this).parents(".comment-container").hide();
         $(this).parents(".comments").children(".comment-prompt").show();
+        clearValidationErrors($(this).parents(".comment-container"));
     });
 
     $('.expand').click(function(e){
