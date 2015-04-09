@@ -53,6 +53,10 @@
       <artifactId>mockito-all</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.mockejb</groupId>
+      <artifactId>mockejb</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
