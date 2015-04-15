@@ -4,7 +4,7 @@
   <parent>
     <artifactId>jcommune-plugins</artifactId>
     <groupId>org.jtalks.jcommune</groupId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0</version>
   </parent>
   <artifactId>poulpe-auth-plugin</artifactId>
 
