@@ -15,10 +15,8 @@
 package org.jtalks.jcommune.test
 
 import com.google.common.collect.ImmutableMap
-import com.sun.javaws.exceptions.InvalidArgumentException
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus
-import org.jtalks.jcommune.test.utils.JsonResponseUtils
 import org.jtalks.jcommune.test.utils.Users
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
 import org.jtalks.jcommune.web.controller.UserController
@@ -45,7 +43,7 @@ class PopUpSignUpTest extends SignUpTest {
         if (expected instanceof JsonResponse) {
             return jsonResponseToString(expected as JsonResponse).equals(exception.actual)
         } else {
-            throw new InvalidArgumentException('For popup signup test non-default expected should be JsonResponse')
+            throw new IllegalArgumentException('For popup signup test non-default expected should be JsonResponse')
         }
     }
 

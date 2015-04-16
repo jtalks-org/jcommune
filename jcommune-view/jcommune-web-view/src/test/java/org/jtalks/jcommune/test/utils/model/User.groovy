@@ -14,8 +14,6 @@
  */
 package org.jtalks.jcommune.test.utils.model
 
-import org.apache.commons.lang.RandomStringUtils
-
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic
 
 

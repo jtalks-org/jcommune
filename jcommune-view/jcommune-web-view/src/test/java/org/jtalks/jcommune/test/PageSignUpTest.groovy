@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.test
 
-import com.sun.javaws.exceptions.InvalidArgumentException
 import org.jtalks.jcommune.test.utils.Users
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
 import org.jtalks.jcommune.web.controller.UserController
@@ -45,7 +44,7 @@ class PageSignUpTest extends SignUpTest {
         if (expected instanceof String) {
             return expected.equals(exception.actual);
         } else {
-            throw new InvalidArgumentException('For page signup test expected should be String')
+            throw new IllegalArgumentException('For page signup test expected should be String')
         }
     }
 }
