@@ -32,6 +32,13 @@
                   column="MODIFICATION_DATE" not-null="false"/>
         <property name="postContent" type="text" column="POST_CONTENT" not-null="true"/>
         <property name="rating" column="RATING"/>
+        <property name="state" column="STATE">
+          <type name="org.hibernate.type.EnumType">
+            <param name="enumClass">org.jtalks.jcommune.model.entity.PostState</param>
+            <!-- varchar -->
+            <param name="type">12</param>
+          </type>
+        </property>
         <many-to-one name="userCreated" column="USER_CREATED" class="org.jtalks.jcommune.model.entity.JCUser"
                      fetch="join"
                      foreign-key="FK_USER" lazy="false" not-null="true" cascade="save-update"/>
@@ -51,31 +58,31 @@
     </class>
     <query name="getAllPostsInTopic">
         <![CDATA[FROM Post as post
-             WHERE post.topic = :topicId ORDER BY post.creationDate]]>
+             WHERE post.topic = :topicId AND post.state = 'DISPLAYED' ORDER BY post.creationDate]]>
     </query>
 
     <query name="getCountPostsOfUser">
-        <![CDATA[SELECT count(*) FROM Post p WHERE userCreated = :userCreated AND p.topic.branch.id in (:allowedBranchesIds)]]>
+        <![CDATA[SELECT count(*) FROM Post p WHERE userCreated = :userCreated AND p.topic.branch.id in (:allowedBranchesIds) AND p.state = 'DISPLAYED']]>
     </query>
     
     <query name="getPostsOfUser">
-        <![CDATA[FROM Post p WHERE p.userCreated = :userCreated AND p.topic.branch.id in (:allowedBranchesIds) ORDER BY creationDate DESC]]>
+        <![CDATA[FROM Post p WHERE p.userCreated = :userCreated AND p.topic.branch.id in (:allowedBranchesIds) AND p.state = 'DISPLAYED' ORDER BY creationDate DESC]]>
     </query>
     
     <query name="getCountPostsInTopic">
-        <![CDATA[SELECT count(*) FROM Post WHERE topic = :topic]]>
+        <![CDATA[SELECT count(*) FROM Post WHERE topic = :topic AND state = 'DISPLAYED']]>
     </query>
     
     <query name="getPostsInTopic">
-        <![CDATA[FROM Post WHERE topic = :topic ORDER BY creationDate]]>
+        <![CDATA[FROM Post WHERE topic = :topic AND state = 'DISPLAYED' ORDER BY creationDate]]>
     </query>
 
     <query name="getLastPostsForBranch">
-        <![CDATA[FROM Post p WHERE p.topic.branch.id in (:branchIds) ORDER BY p.creationDate DESC]]>
+        <![CDATA[FROM Post p WHERE p.topic.branch.id in (:branchIds) AND p.state = 'DISPLAYED' ORDER BY p.creationDate DESC]]>
     </query>
 
     <query name="getLastPostForBranch">
-        <![CDATA[FROM Post p WHERE p.topic.branch.id = :branchId AND creationDate =
+        <![CDATA[FROM Post p WHERE p.topic.branch.id = :branchId AND p.state = 'DISPLAYED' AND creationDate =
                     (SELECT MAX(pp.creationDate) FROM Post pp WHERE pp.topic.branch.id = :branchId)]]>
     </query>
 

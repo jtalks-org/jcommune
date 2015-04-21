@@ -647,4 +647,36 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     public boolean isPlugable() {
         return type != null && !(this.isCodeReview() || type.equals(TopicTypeName.DISCUSSION.getName()));
     }
+
+    /**
+     * Gets all posts of this topic which have DISPLAYED state
+     *
+     * @return list of posts of this topic which have DISPLAYED state
+     */
+    public List<Post> getDisplayedPosts() {
+        List<Post> result = new ArrayList<>();
+        for (Post post : getPosts()) {
+            if (PostState.DISPLAYED.equals(post.getState())) {
+                result.add(post);
+            }
+        }
+        return  result;
+    }
+
+    /**
+     * Gets draft for user from current topic. Each user may have only one draft in each topic
+     *
+     * @param user interested user
+     *
+     * @return instance of draft if it found
+     *         <code>null</code> otherwise
+     */
+    public Post getDraftForUser(JCUser user) {
+        for (Post post : getPosts()) {
+            if (PostState.DRAFT.equals(post.getState()) && user.equals(post.getUserCreated())) {
+                return post;
+            }
+        }
+        return null;
+    }
 }

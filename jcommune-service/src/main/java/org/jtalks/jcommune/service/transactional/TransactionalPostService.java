@@ -154,6 +154,26 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         logger.debug("Deleted post id={}", post.getId());
     }
 
+    @Override
+    @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
+    public Post saveOrUpdateDraft(Topic topic, String content) {
+        JCUser currentUser = userService.getCurrentUser();
+        Post draft = topic.getDraftForUser(currentUser);
+        if (draft == null) {
+            draft = new Post(currentUser, content, PostState.DRAFT);
+            topic.addPost(draft);
+        } else {
+            draft.setPostContent(content);
+            draft.updateModificationDate();
+        }
+        getDao().saveOrUpdate(draft);
+
+        logger.debug("Draft saved in topic. Topic id={}, Post id={}, Post author={}",
+                new Object[]{topic.getId(), draft.getId(), currentUser.getUsername()});
+
+        return draft;
+    }
+
     /**
      * {@inheritDoc}
      */

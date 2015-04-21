@@ -120,9 +120,6 @@
   <bean id="markBranchAsReadDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.BranchReadedMarkerHibernateDao"/>
 
-  <bean id="postDraftDao" parent="genericDao"
-        class="org.jtalks.jcommune.model.dao.hibernate.PostDraftHibernateDao"/>
-
   <!-- Declaration of Hibernate Search DAO beans -->
   <bean id="topicSearchDao"
         class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">

@@ -17,7 +17,9 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.testng.Assert.*;
@@ -298,6 +300,52 @@ public class TopicTest {
         topic.setType(null);
 
         assertFalse(topic.isPlugable());
+    }
+
+    @Test
+    public void getDisplayedPostsShouldReturnAllPostsWithDisplayedState() {
+        Topic topic = new Topic();
+        Post post1 = new Post();
+        Post post2 = new Post();
+        Post post3 = new Post();
+        post3.setState(PostState.DRAFT);
+        topic.setPosts(Arrays.asList(post1, post2, post3));
+
+        List<Post> posts = topic.getDisplayedPosts();
+
+        assertEquals(posts.size(), 2);
+        assertTrue(posts.contains(post1));
+        assertTrue(posts.contains(post2));
+        assertFalse(posts.contains(post3));
+    }
+
+    @Test
+    public void getDisplayedPostsShouldReturnEmptyListIfNoDisplayedPostsFound() {
+        Topic topic = new Topic();
+        topic.addPost(new Post(new JCUser(), "content", PostState.DRAFT));
+
+        List<Post> result = topic.getDisplayedPosts();
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getDraftForUserShouldReturnDraftOfSpecifiedUser() {
+        JCUser user = new JCUser();
+        Topic topic = new Topic();
+        Post targetDraft = new Post(user, "content", PostState.DRAFT);
+        topic.addPost(targetDraft);
+        topic.addPost(new Post(new JCUser(), "text"));
+
+        assertEquals(topic.getDraftForUser(user), targetDraft);
+    }
+
+    @Test
+    public void getDraftForUserShouldReturnNullIfDraftOfSpecifiedUserNotFound() {
+        Topic topic = new Topic();
+        topic.addPost(new Post(new JCUser(), "text"));
+
+        assertNull(topic.getDraftForUser(new JCUser()));
     }
 
     private Topic createTopic() {

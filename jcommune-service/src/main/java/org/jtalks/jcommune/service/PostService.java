@@ -124,4 +124,14 @@ public interface PostService extends EntityService<Post> {
      * @return post with vote
      */
     Post vote(Post post, PostVote vote);
+
+    /**
+     * Creates new or updates existence draft of current user with specified content in specified topic
+     *
+     * @param topic target topic for draft
+     * @param content content of draft
+     *
+     * @return newly created or updated draft
+     */
+    Post saveOrUpdateDraft(Topic topic, String content);
 }
