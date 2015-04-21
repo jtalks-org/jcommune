@@ -350,12 +350,12 @@
 
 <%--User can answer either if the topic is open, or he has a permission to close/open it--%>
 <c:if test="${(!topic.closed || hasCloseTopicPermission) && !topic.codeReview}">
+  <input id="topicId" type="hidden" value="${topic.id}"/>
   <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                         permission='BranchPermission.CREATE_POSTS'>
     <form:form
             action="${pageContext.request.contextPath}/topics/${topic.id}?page=${page}"
             method="POST" class='well anti-multipost submit-form' modelAttribute="postDto">
-      <form:hidden path="topicId"/>
       <jtalks:bbeditor labelForAction="label.answer"
                        postText="${postDto.bodyText}"
                        bodyParameterName="bodyText"

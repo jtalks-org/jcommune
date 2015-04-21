@@ -235,14 +235,18 @@ public class TopicController {
         if (request.checkNotModified(topic.getLastModificationPostDate().getMillis())) {
             return null;
         }
-
+        PostDto postDto = new PostDto();
+        Post draft = topic.getDraftForUser(currentUser);
+        if (draft != null) {
+            postDto = PostDto.getDtoFor(draft);
+        }
         lastReadPostService.markTopicPageAsRead(topic, postsPage.getNumber());
         return new ModelAndView("topic/postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
                 .addObject("postsPage", postsPage)
                 .addObject("topic", topic)
-                .addObject(POST_DTO, new PostDto())
+                .addObject(POST_DTO, postDto)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }

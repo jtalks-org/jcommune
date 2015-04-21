@@ -66,7 +66,7 @@
               </a>
               <i class="icon-envelope margin-left-big margin-right-big"></i>
               <span class='test-views' data-original-title="<spring:message code="label.branch.header.posts"/>">
-                <c:out value="${topicDto.topic.postCount}"/>
+                <c:out value="${topicDto.topic.displayedPostsCount}"/>
               </span>
             </div>
             <div>
