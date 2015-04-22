@@ -39,6 +39,18 @@ public class TopicTest {
     }
 
     @Test
+    public void getNeighborDisplayedPostIfOnlyOnePostInTheTopic() {
+        Post singlePost = new Post();
+        Topic topicWithSinglePost = new Topic(new JCUser(),
+                "title4getNeighborPostIfOnlyOnePostInTheTopic");
+        topicWithSinglePost.addPost(singlePost);
+
+        Post post = topicWithSinglePost.getNeighborDisplayedPost(singlePost);
+        // same post (singlePost) should be returned
+        assertEquals(post, singlePost);
+    }
+
+    @Test
     public void getNeighborPostForMiddlePostInTheTopic() {
         Topic topicLocal = new Topic(new JCUser(),
                 "title4getNeighborPostForMiddlePostInTheTopic");
@@ -48,6 +60,32 @@ public class TopicTest {
         Post post = topicLocal.getNeighborPost(posts[1]);
         // next post (post2) should be returned
         assertEquals(post, posts[2]);
+    }
+
+    @Test
+    public void getNeighborDisplayedPostShouldReturnNextDisplayedPostForMiddlePostInTheTopic() {
+        Topic topicLocal = new Topic(new JCUser(),
+                "title4getNeighborPostForMiddlePostInTheTopic");
+        // add 3 posts to topic
+        Post[] posts = postList(4, topicLocal);
+        topicLocal.getPosts().get(2).setState(PostState.DRAFT);
+        // get neighbor for post in the middle.
+        Post post = topicLocal.getNeighborDisplayedPost(posts[1]);
+        // next post (post2) should be returned
+        assertEquals(post, posts[3]);
+    }
+
+    @Test
+    public void getNeighborDisplayedPostShouldReturnPreviewsDisplayedPostForMiddlePostInTheTopicIfAllNexNotDisplayed() {
+        Topic topicLocal = new Topic(new JCUser(),
+                "title4getNeighborPostForMiddlePostInTheTopic");
+        // add 3 posts to topic
+        Post[] posts = postList(4, topicLocal);
+        topicLocal.getPosts().get(3).setState(PostState.DRAFT);
+        // get neighbor for post in the middle.
+        Post post = topicLocal.getNeighborDisplayedPost(posts[2]);
+        // next post (post2) should be returned
+        assertEquals(post, posts[1]);
     }
 
     @Test
@@ -113,13 +151,32 @@ public class TopicTest {
     }
 
     @Test
+    public void isHasUpdatesInDisplayedPostsShouldReturnTrueByDefault() {
+        Topic topic = createTopic();
+
+        assertTrue(topic.isHasUpdatesInDisplayedPosts());
+    }
+
+    @Test
     public void hasUpdatesShouldReturnTrueInCaseOfUpdatesExist() {
         Topic topic = createTopic();
         DateTime creationDate = new DateTime();
         topic.getFirstPost().setCreationDate(creationDate);
         topic.getLastPost().setCreationDate(creationDate.plusDays(1));
         topic.setLastReadPostDate(creationDate);
+
         assertTrue(topic.isHasUpdates());
+    }
+
+    @Test
+    public void hasUpdatesInDisplayedPostsShouldReturnTrueInCaseOfUpdatesExist() {
+        Topic topic = createTopic();
+        DateTime creationDate = new DateTime();
+        topic.getFirstPost().setCreationDate(creationDate);
+        topic.getLastPost().setCreationDate(creationDate.plusDays(1));
+        topic.setLastReadPostDate(creationDate);
+
+        assertTrue(topic.isHasUpdatesInDisplayedPosts());
     }
 
     @Test
@@ -132,6 +189,30 @@ public class TopicTest {
 
         topic.setLastReadPostDate(topic.getLastPost().getCreationDate());
         assertFalse(topic.isHasUpdates());
+    }
+
+    @Test
+    public void hasUpdatesInDisplayedPostsShouldReturnFalseInCaseOfNoUpdatesExist() {
+        Topic topic = createTopic();
+        DateTime lastModificationDate = new DateTime();
+
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setCreationDate(lastModificationDate);
+
+        topic.setLastReadPostDate(topic.getLastPost().getCreationDate());
+        assertFalse(topic.isHasUpdatesInDisplayedPosts());
+    }
+
+    @Test
+    public void hasUpdatesInDisplayedPostsShouldReturnFalseIfUpdatesExistInNotDisplayedPosts() {
+        Topic topic = createTopic();
+        DateTime creationDate = new DateTime();
+        topic.getFirstPost().setCreationDate(creationDate);
+        topic.getLastPost().setCreationDate(creationDate.plusDays(1));
+        topic.getLastPost().setState(PostState.DRAFT);
+        topic.setLastReadPostDate(creationDate);
+
+        assertFalse(topic.isHasUpdatesInDisplayedPosts());
     }
 
     @Test
@@ -150,6 +231,23 @@ public class TopicTest {
     }
 
     @Test
+    public void getFirstUnreadDisplayedPostIdShouldReturnTheNextDisplayedPostAfterLastRead() {
+        Topic topic = createTopic();
+        DateTime lastModificationDate = new DateTime();
+
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().add(1, new Post(new JCUser(), "conetnt", PostState.DRAFT));
+        topic.getPosts().get(2).setCreationDate(lastModificationDate);
+
+        topic.setLastReadPostDate(topic.getFirstPost().getCreationDate());
+
+        long id = topic.getFirstUnreadDisplayedPostId();
+
+        assertEquals(topic.getPosts().get(2).getId(), id);
+    }
+
+
+    @Test
     public void getFirstUnreadPostIdShouldReturnFirstPostIdIfAllPostAreRead() {
         Topic topic = createTopic();
         DateTime lastModificationDate = new DateTime();
@@ -158,6 +256,19 @@ public class TopicTest {
         topic.getPosts().get(1).setCreationDate(lastModificationDate);
 
         long id = topic.getFirstUnreadPostId();
+
+        assertEquals(topic.getPosts().get(0).getId(), id);
+    }
+
+    @Test
+    public void getFirstUnreadDisplayedPostIdShouldReturnFirstPostIdIfAllPostAreRead() {
+        Topic topic = createTopic();
+        DateTime lastModificationDate = new DateTime();
+
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setCreationDate(lastModificationDate);
+
+        long id = topic.getFirstUnreadDisplayedPostId();
 
         assertEquals(topic.getPosts().get(0).getId(), id);
     }
@@ -346,6 +457,14 @@ public class TopicTest {
         topic.addPost(new Post(new JCUser(), "text"));
 
         assertNull(topic.getDraftForUser(new JCUser()));
+    }
+
+    @Test
+    public void testGetLastDisplayedPost() {
+        Topic topic = createTopic();
+        topic.getPosts().get(1).setState(PostState.DRAFT);
+
+        assertEquals(topic.getLastDisplayedPost(), topic.getPosts().get(0));
     }
 
     private Topic createTopic() {
