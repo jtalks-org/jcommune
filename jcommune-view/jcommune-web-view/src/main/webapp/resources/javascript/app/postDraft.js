@@ -18,6 +18,8 @@ $(document).ready(function() {
     var savingThreshold = 100;
     var characterCounter = 0;
     var prevLength, currentLength = postTextArea.val().length;
+    var typingTimer;
+    var doneTypingInterval = 15000;
 
     postTextArea.bind('keyup change', function() {
         prevLength = currentLength;
@@ -26,12 +28,23 @@ $(document).ready(function() {
             characterCounter += currentLength - prevLength;
         }
         if (characterCounter >= savingThreshold) {
-            saveDraft(postTextArea.val());
+            saveDraft();
             characterCounter = 0;
         }
-    })
+    });
 
-    function saveDraft(content) {
+    postTextArea.keyup(function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(function (){saveDraft()}, doneTypingInterval);
+    });
+
+    postTextArea.keydown(function () {
+        clearTimeout(typingTimer);
+    });
+
+    function saveDraft() {
+        clearTimeout(typingTimer);
+        var content = postTextArea.val();
         var topicId = $("#topicId").val();
         var data = {bodyText: content, topicId: topicId};
         $.ajax({
