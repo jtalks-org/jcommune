@@ -362,7 +362,14 @@ public class PostController {
     @ResponseBody
     public JsonResponse saveDraft(@Valid @RequestBody PostDto postDto, BindingResult result) throws NotFoundException {
         Topic topic = topicFetchService.getTopicSilently(postDto.getTopicId());
-        postService.saveOrUpdateDraft(topic, postDto.getBodyText());
+        Post saved = postService.saveOrUpdateDraft(topic, postDto.getBodyText());
+        return new JsonResponse(JsonResponseStatus.SUCCESS, saved.getId());
+    }
+
+    @RequestMapping(value = "posts/{postId}/delete", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse deleteDraft(@PathVariable Long postId) throws NotFoundException {
+        deletePostWithLockHandling(postId);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 

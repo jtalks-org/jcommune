@@ -15,35 +15,52 @@
 
 $(document).ready(function() {
     var postTextArea = $("#postBody");
-    var savingThreshold = 100;
     var characterCounter = 0;
-    var prevLength, currentLength = postTextArea.val().length;
-    var typingTimer;
-    var doneTypingInterval = 15000;
+    var currentSaveLength = postTextArea.val().length;
+    var interval = 15000;
+    var intervalId;
+    var isSaved = false;
+    var minDraftLen = 2;
 
     postTextArea.bind('keyup change', function() {
-        prevLength = currentLength;
-        currentLength = postTextArea.val().length;
-        if (currentLength - prevLength > 0) {
-            characterCounter += currentLength - prevLength;
-        }
-        if (characterCounter >= savingThreshold) {
-            saveDraft();
+        startTimer();
+        console.log("trigger");
+        isSaved = false;
+        console.log("is saved " + isSaved);
+        if (postTextArea.val().length == 0 && currentSaveLength != 0) {
+            console.log(currentSaveLength);
+            currentSaveLength = 0;
+            deleteDraft();
             characterCounter = 0;
         }
     });
 
-    postTextArea.keyup(function () {
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(function (){saveDraft()}, doneTypingInterval);
+    postTextArea.blur(function () {
+       saveEvent();
     });
 
-    postTextArea.keydown(function () {
-        clearTimeout(typingTimer);
+    $(".btn-toolbar").click(function () {
+        isSaved = false;
+        startTimer();
     });
+
+    function startTimer() {
+        if (currentSaveLength >= minDraftLen && !intervalId) {
+            intervalId = setInterval(function () {
+                saveEvent();
+            }, interval);
+        }
+    }
+
+    function saveEvent() {
+        console.log("is saved " + isSaved);
+        currentSaveLength = postTextArea.val().length;
+        if (currentSaveLength >= minDraftLen && !isSaved) {
+            saveDraft();
+        }
+    }
 
     function saveDraft() {
-        clearTimeout(typingTimer);
         var content = postTextArea.val();
         var topicId = $("#topicId").val();
         var data = {bodyText: content, topicId: topicId};
@@ -52,9 +69,23 @@ $(document).ready(function() {
             type: 'POST',
             contentType: "application/json",
             data: JSON.stringify(data),
-            success: function() {
+            success: function(resp) {
+                $("#draftId").val(resp.result);
+                isSaved = true;
                 console.log("SUCCESS");
             }
         });
+    }
+
+    function deleteDraft() {
+        var draftId = parseInt($("#draftId").val());
+        if (draftId != 0) {
+            $.ajax({
+                url: baseUrl + "/posts/" + draftId + "/delete",
+                success: function() {
+                    console.log("SUCCESS");
+                }
+            })
+        }
     }
 });
