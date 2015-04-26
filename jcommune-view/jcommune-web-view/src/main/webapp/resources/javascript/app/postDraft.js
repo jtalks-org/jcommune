@@ -30,11 +30,12 @@ $(document).ready(function() {
 
     if (parseInt($("#draftId").val()) != 0) {
         prevSavedMilis = parseInt($("#savedMilis").val());
-        var difSeconds = Math.floor((getUtcCurrentTime().getTime() - prevSavedMilis)/1000);
+        var difSeconds = Math.floor((new Date().getTime() - prevSavedMilis)/1000);
         console.log("prevSavedMilis " + prevSavedMilis);
         console.log("offset " + new Date().getTimezoneOffset());
         console.log("difSeconds" + difSeconds);
-        console.log("now ~ " + new Date().getTime());
+        console.log("now UTC~ " + getUtcCurrentTime().getTime());
+        console.log("now " + new Date().getTime());
         if (difSeconds <= 60) {
             console.log("difSeconds < 60");
             dateUpdateCounter = Math.floor(difSeconds/5);
@@ -54,9 +55,7 @@ $(document).ready(function() {
                 hourIntervalHandler();
             }, 3600000);
         } else {
-            var lastSaved = new Date(0);
-            lastSaved.setUTCMilliseconds(prevSavedMilis - lastSaved.getTimezoneOffset()*60000);
-            printDate(lastSaved);
+            printDate(new Date(prevSavedMilis));
         }
     }
 
