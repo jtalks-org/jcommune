@@ -399,6 +399,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         } else {
             answer.setPostContent(answerBody);
             answer.setState(PostState.DISPLAYED);
+            answer.updateCreationDate();
         }
         return answer;
     }

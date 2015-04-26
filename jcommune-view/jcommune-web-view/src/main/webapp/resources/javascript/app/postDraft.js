@@ -29,8 +29,8 @@ $(document).ready(function() {
     $("<span id='counter' class='keymaps-caption'></span>").insertAfter("#postBody");
 
     if (parseInt($("#draftId").val()) != 0) {
-        prevSavedMilis = parseInt($("#savedMilis").val()) - (new Date().getTimezoneOffset() * 60000);
-        var difSeconds = Math.floor((new Date().getTime() - prevSavedMilis)/1000);
+        prevSavedMilis = parseInt($("#savedMilis").val());
+        var difSeconds = Math.floor((getUtcCurrentTime().getTime() - prevSavedMilis)/1000);
         console.log("prevSavedMilis " + prevSavedMilis);
         console.log("offset " + new Date().getTimezoneOffset());
         console.log("difSeconds" + difSeconds);
@@ -38,7 +38,7 @@ $(document).ready(function() {
         if (difSeconds <= 60) {
             console.log("difSeconds < 60");
             dateUpdateCounter = Math.floor(difSeconds/5);
-            fiveSecondsIntervalHandler();
+            startFiveSecondsInterval();
         } else if (difSeconds > 60 && difSeconds <= 3600) {
             console.log("difSeconds between 60 and 3600");
             dateUpdateCounter = Math.floor(difSeconds/60);
@@ -54,7 +54,9 @@ $(document).ready(function() {
                 hourIntervalHandler();
             }, 3600000);
         } else {
-            printDate(new Date(prevSavedMilis));
+            var lastSaved = new Date(0);
+            lastSaved.setUTCMilliseconds(prevSavedMilis - lastSaved.getTimezoneOffset()*60000);
+            printDate(lastSaved);
         }
     }
 
@@ -111,7 +113,7 @@ $(document).ready(function() {
                 lastSavingDate = new Date();
                 dateUpdateCounter = 0;
                 clearInterval(dateUpdateInterval);
-                fiveSecondsIntervalHandler();
+                startFiveSecondsInterval();
                 console.log("SUCCESS");
             }
         });
@@ -132,13 +134,7 @@ $(document).ready(function() {
     function fiveSecondsIntervalHandler() {
         console.log("fiveSecondsIntervalHandler");
         var counterSpan = $("#counter");
-        if (dateUpdateCounter == 0) {
-            counterSpan.text("Saved just now");
-            dateUpdateCounter += 1;
-            dateUpdateInterval = setInterval(function (){
-                fiveSecondsIntervalHandler();
-            }, 5000);
-        } else if (dateUpdateCounter == 12) {
+        if (dateUpdateCounter == 12) {
             counterSpan.text("Saved minute ago");
             clearInterval(dateUpdateInterval);
             dateUpdateCounter = 1;
@@ -147,8 +143,8 @@ $(document).ready(function() {
             }, 60000);
             return;
         } else {
-            counterSpan.text("Saved " + (dateUpdateCounter * 5).toString() + " seconds ago");
             dateUpdateCounter += 1;
+            counterSpan.text("Saved " + (dateUpdateCounter * 5).toString() + " seconds ago");
         }
 
     }
@@ -185,5 +181,21 @@ $(document).ready(function() {
 
     function printDate(date) {
         $("#counter").text("Saved " + date.toDateString());
+    }
+
+    function getUtcCurrentTime() {
+        var now = new Date();
+        return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+    }
+
+    function startFiveSecondsInterval() {
+        if (dateUpdateCounter == 0) {
+            $("#counter").text("Saved just now");
+        } else {
+            $("#counter").text("Saved " + (dateUpdateCounter * 5).toString() + " seconds ago");
+        }
+        dateUpdateInterval = setInterval(function (){
+            fiveSecondsIntervalHandler();
+        }, 5000);
     }
 });
