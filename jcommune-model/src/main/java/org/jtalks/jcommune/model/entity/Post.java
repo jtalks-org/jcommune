@@ -134,6 +134,19 @@ public class Post extends Entity implements SubscriptionAwareEntity {
         this.modificationDate = new DateTime();
         return this.modificationDate;
     }
+
+    /**
+     * Updates creation date of post. Sets it to NOW
+     *
+     * We need this operation for drafts. We can't update modification date of draft because
+     * if we set it after posting draft it will be marked with "last modified" label
+     *
+     * @return new creation date of post
+     */
+    public DateTime updateCreationDate() {
+        this.creationDate = new DateTime();
+        return this.creationDate;
+    }
     
     /**
      * @return date and time where post what last time modified or created otherwise

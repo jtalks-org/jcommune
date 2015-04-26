@@ -21,6 +21,42 @@ $(document).ready(function() {
     var intervalId;
     var isSaved = false;
     var minDraftLen = 2;
+    var lastSavingDate;
+    var dateUpdateCounter = 0;
+    var dateUpdateInterval;
+    var prevSavedMilis = 0;
+
+    $("<span id='counter' class='keymaps-caption'></span>").insertAfter("#postBody");
+
+    if (parseInt($("#draftId").val()) != 0) {
+        prevSavedMilis = parseInt($("#savedMilis").val()) - (new Date().getTimezoneOffset() * 60000);
+        var difSeconds = Math.floor((new Date().getTime() - prevSavedMilis)/1000);
+        console.log("prevSavedMilis " + prevSavedMilis);
+        console.log("offset " + new Date().getTimezoneOffset());
+        console.log("difSeconds" + difSeconds);
+        console.log("now ~ " + new Date().getTime());
+        if (difSeconds <= 60) {
+            console.log("difSeconds < 60");
+            dateUpdateCounter = Math.floor(difSeconds/5);
+            fiveSecondsIntervalHandler();
+        } else if (difSeconds > 60 && difSeconds <= 3600) {
+            console.log("difSeconds between 60 and 3600");
+            dateUpdateCounter = Math.floor(difSeconds/60);
+            $("#counter").text("Saved " + dateUpdateCounter.toString() + " minutes ago");
+            dateUpdateInterval = setInterval(function() {
+                minuteIntervalHandler();
+            }, 60000);
+        } else if (difSeconds > 3600 && difSeconds <= 86400) {
+            console.log("difSeconds between 3600 and 86400");
+            dateUpdateCounter = Math.floor(difSeconds/3600);
+            $("#counter").text("Saved " + dateUpdateCounter.toString() + " hours ago");
+            dateUpdateInterval = setInterval(function() {
+                hourIntervalHandler();
+            }, 3600000);
+        } else {
+            printDate(new Date(prevSavedMilis));
+        }
+    }
 
     postTextArea.bind('keyup change', function() {
         startTimer();
@@ -72,6 +108,10 @@ $(document).ready(function() {
             success: function(resp) {
                 $("#draftId").val(resp.result);
                 isSaved = true;
+                lastSavingDate = new Date();
+                dateUpdateCounter = 0;
+                clearInterval(dateUpdateInterval);
+                fiveSecondsIntervalHandler();
                 console.log("SUCCESS");
             }
         });
@@ -87,5 +127,63 @@ $(document).ready(function() {
                 }
             })
         }
+    }
+
+    function fiveSecondsIntervalHandler() {
+        console.log("fiveSecondsIntervalHandler");
+        var counterSpan = $("#counter");
+        if (dateUpdateCounter == 0) {
+            counterSpan.text("Saved just now");
+            dateUpdateCounter += 1;
+            dateUpdateInterval = setInterval(function (){
+                fiveSecondsIntervalHandler();
+            }, 5000);
+        } else if (dateUpdateCounter == 12) {
+            counterSpan.text("Saved minute ago");
+            clearInterval(dateUpdateInterval);
+            dateUpdateCounter = 1;
+            dateUpdateInterval = setInterval(function() {
+                minuteIntervalHandler();
+            }, 60000);
+            return;
+        } else {
+            counterSpan.text("Saved " + (dateUpdateCounter * 5).toString() + " seconds ago");
+            dateUpdateCounter += 1;
+        }
+
+    }
+
+    function minuteIntervalHandler() {
+        console.log("minuteIntervalHandler");
+        var counterSpan = $("#counter");
+        dateUpdateCounter += 1;
+        if (dateUpdateCounter == 60) {
+            counterSpan.text("Saved hour ago");
+            clearInterval(dateUpdateInterval);
+            dateUpdateCounter = 1;
+            dateUpdateInterval = setInterval(function() {
+                hourIntervalHandler();
+            }, 3600000);
+        }
+        else {
+            counterSpan.text("Saved " + dateUpdateCounter.toString() + " minutes ago");
+        }
+    }
+
+    function hourIntervalHandler() {
+        console.log("hourIntervalHandler");
+        var counterSpan = $("#counter");
+        dateUpdateCounter += 1;
+        if (dateUpdateCounter == 24) {
+            printDate(lastSavingDate);
+            clearInterval(dateUpdateInterval);
+            dateUpdateCounter = 0;
+        } else {
+            counterSpan.text("Saved " + dateUpdateCounter.toString() + " hours ago");
+        }
+    }
+
+    function printDate(date) {
+        $("#counter").text("Saved " + date.toDateString());
     }
 });

@@ -369,7 +369,7 @@ public class PostController {
     @RequestMapping(value = "posts/{postId}/delete", method = RequestMethod.GET)
     @ResponseBody
     public JsonResponse deleteDraft(@PathVariable Long postId) throws NotFoundException {
-        deletePostWithLockHandling(postId);
+        postService.deleteDraft(postService.get(postId));
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 

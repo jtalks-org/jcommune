@@ -16,6 +16,7 @@ package org.jtalks.jcommune.plugin.api.web.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
@@ -141,6 +142,19 @@ public class PostDto {
      */
     public void setModificationDate(DateTime modificationDate) {
         this.modificationDate = modificationDate;
+    }
+
+    /**
+     * Gets millisecond representation of post creation date in UTC timezone
+     *
+     * We store dates in database in timezone of server. And to display correct time of creation draft
+     * we convert UTC representation ot user's timezone in javascript
+     *
+     * @return millisecond representation of post creation date in UTC timezone
+     */
+    public long getUtcCreationTime() {
+        DateTimeZone zone = creationDate.getZone();
+        return zone.convertLocalToUTC(creationDate.getMillis(), false);
     }
 
     /**
