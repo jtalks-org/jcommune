@@ -357,7 +357,16 @@ public class PostController {
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
-
+    /**
+     * Saves new draft or update if it already exist
+     *
+     * @param postDto post dto populated in form
+     * @param result validation result
+     *
+     * @return response in JSON format
+     *
+     * @throws NotFoundException if topic to store draft not exist
+     */
     @RequestMapping(value = "/posts/savedraft", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse saveDraft(@Valid @RequestBody PostDto postDto, BindingResult result) throws NotFoundException {
@@ -366,6 +375,15 @@ public class PostController {
         return new JsonResponse(JsonResponseStatus.SUCCESS, saved.getId());
     }
 
+    /**
+     * Deletes draft
+     *
+     * @param postId id of draft to delete
+     *
+     * @return response in JSON format
+     *
+     * @throws NotFoundException if post with specified id not exist
+     */
     @RequestMapping(value = "posts/{postId}/delete", method = RequestMethod.GET)
     @ResponseBody
     public JsonResponse deleteDraft(@PathVariable Long postId) throws NotFoundException {

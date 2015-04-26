@@ -298,7 +298,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     @Override
     public void deleteDraft(Post post) {
         if (!PostState.DRAFT.equals(post.getState())) {
-            new IllegalArgumentException("Required DRAFT but got " + String.valueOf(post.getState()));
+            throw new IllegalArgumentException("Required DRAFT but got " + String.valueOf(post.getState()));
         }
         Topic topic = post.getTopic();
         topic.removePost(post);
