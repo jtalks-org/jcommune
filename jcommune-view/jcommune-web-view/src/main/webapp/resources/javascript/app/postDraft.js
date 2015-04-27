@@ -25,8 +25,10 @@ $(document).ready(function() {
     var dateUpdateCounter = 0;
     var dateUpdateInterval;
     var prevSavedMilis = 0;
+    var maxTextLength = 20000;
+    var errorSpan = "<div id='bodyText-errors' class='cleared'><span class='help-inline focusToError' data-original-title=''>Размер должен быть между 2 и 20000</span></div>";
 
-    $("<span id='counter' class='keymaps-caption'></span>").insertAfter("#postBody");
+    $("<span id='counter' class='keymaps-caption pull-right'></span>").insertAfter("#editorBbCodeDiv");
 
     if (parseInt($("#draftId").val()) != 0) {
         prevSavedMilis = parseInt($("#savedMilis").val());
@@ -62,6 +64,7 @@ $(document).ready(function() {
     postTextArea.bind('keyup change', function() {
         startTimer();
         console.log("trigger");
+        updateValidationErrors();
         isSaved = false;
         console.log("is saved " + isSaved);
         if (postTextArea.val().length == 0 && currentSaveLength != 0) {
@@ -105,15 +108,29 @@ $(document).ready(function() {
             url: baseUrl + "/posts/savedraft",
             type: 'POST',
             contentType: "application/json",
+            timeout: 15000,
             data: JSON.stringify(data),
             success: function(resp) {
-                $("#draftId").val(resp.result);
-                isSaved = true;
-                lastSavingDate = new Date();
-                dateUpdateCounter = 0;
-                clearInterval(dateUpdateInterval);
-                startFiveSecondsInterval();
-                console.log("SUCCESS");
+                if (resp.status == 'SUCCESS') {
+                    $("#draftId").val(resp.result);
+                    isSaved = true;
+                    lastSavingDate = new Date();
+                    dateUpdateCounter = 0;
+                    clearInterval(dateUpdateInterval);
+                    startFiveSecondsInterval();
+                    console.log("SUCCESS");
+                } else {
+                    updateValidationErrors();
+                }
+            },
+            error: function (jqHXHR, status, e) {
+                if (status == 'timeout' || jqHXHR.status == 0) {
+                    clearInterval(intervalId);
+                    jDialog.createDialog({
+                        type: jDialog.alertType,
+                        bodyMessage: "Connection to the server was lost, please save your text locally"
+                    });
+                }
             }
         });
     }
@@ -133,7 +150,7 @@ $(document).ready(function() {
     function fiveSecondsIntervalHandler() {
         console.log("fiveSecondsIntervalHandler");
         var counterSpan = $("#counter");
-        if (dateUpdateCounter == 12) {
+        if (dateUpdateCounter == 11) {
             counterSpan.text("Saved minute ago");
             clearInterval(dateUpdateInterval);
             dateUpdateCounter = 1;
@@ -196,5 +213,16 @@ $(document).ready(function() {
         dateUpdateInterval = setInterval(function (){
             fiveSecondsIntervalHandler();
         }, 5000);
+    }
+
+    function updateValidationErrors() {
+        $(".control-group").removeClass("error");
+        $("#bodyText-errors").remove();
+        $(".focusToError").remove();
+        console.log("len" + postTextArea.val().length);
+        if (postTextArea.val().length > maxTextLength) {
+            $(".control-group").addClass("error");
+            $(errorSpan).insertAfter(".keymaps-caption.pull-left");
+        }
     }
 });

@@ -370,6 +370,9 @@ public class PostController {
     @RequestMapping(value = "/posts/savedraft", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse saveDraft(@Valid @RequestBody PostDto postDto, BindingResult result) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL);
+        }
         Topic topic = topicFetchService.getTopicSilently(postDto.getTopicId());
         Post saved = postService.saveOrUpdateDraft(topic, postDto.getBodyText());
         return new JsonResponse(JsonResponseStatus.SUCCESS, saved.getId());
