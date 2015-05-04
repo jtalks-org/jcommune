@@ -288,7 +288,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     /**
      * @return the list of posts in the topic, always not null and not empty
      */
-    @IndexedEmbedded(prefix = TOPIC_POSTS_PREFIX)
     public List<Post> getPosts() {
         return posts;
     }
@@ -747,6 +746,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      *
      * @return list of posts of this topic which have DISPLAYED state
      */
+    @IndexedEmbedded(prefix = TOPIC_POSTS_PREFIX)
     public List<Post> getDisplayedPosts() {
         List<Post> result = new ArrayList<>();
         for (Post post : getPosts()) {

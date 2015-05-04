@@ -19,9 +19,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.model.dto.PageRequest;
-import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.model.search.SearchRequestFilter;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -42,6 +41,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Anuar Nurmakanov
@@ -217,11 +218,7 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
 
     @Test(dataProvider = "parameterPiecePhraseSearch")
     public void testPiecePhraseSearch(String firstPiece, char delimeter, String secondPiece) {
-        String content = new StringBuilder().
-                append(firstPiece).
-                append(delimeter).
-                append(secondPiece).
-                toString();
+        String content = firstPiece + delimeter + secondPiece;
 
         Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
         expectedTopic.setTitle(content);
@@ -332,6 +329,37 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
                 bbCodeContent, DEFAULT_PAGE_REQUEST, Arrays.asList(expectedTopic.getBranch().getId()));
         Assert.assertTrue(searchResultPage.hasContent(), "Search result must not be empty.");
+    }
+
+    @Test
+    public void searchByTitleAndContentShouldIgnoreTopicIfOnlyDraftSatisfiesCondition() {
+        String phrase = "java";
+        Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
+        expectedTopic.addPost(new Post(PersistedObjectsFactory.getDefaultUser(), phrase, PostState.DRAFT));
+
+        saveAndFlushIndexes(Arrays.asList(expectedTopic));
+        configureMocks(phrase, phrase);
+
+        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+                phrase, DEFAULT_PAGE_REQUEST, Arrays.asList(expectedTopic.getBranch().getId()));
+
+        assertFalse(searchResultPage.hasContent());
+    }
+
+    @Test
+    public void searchByTitleAndContentShouldFindTopicIfDraftAndDisplayedPostsSatisfiesCondition() {
+        String phrase = "java";
+        Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
+        expectedTopic.addPost(new Post(PersistedObjectsFactory.getDefaultUser(), phrase, PostState.DRAFT));
+        expectedTopic.addPost(new Post(PersistedObjectsFactory.getUser("name", "mail@mail.ru"), phrase));
+
+        saveAndFlushIndexes(Arrays.asList(expectedTopic));
+        configureMocks(phrase, phrase);
+
+        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
+                phrase, DEFAULT_PAGE_REQUEST, Arrays.asList(expectedTopic.getBranch().getId()));
+
+        assertTrue(searchResultPage.hasContent());
     }
 
     @DataProvider(name = "parameterSearchByBbCodesContent")
