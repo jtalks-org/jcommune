@@ -79,11 +79,14 @@ $(document).ready(function() {
        saveEvent();
     });
 
-    $(".btn-toolbar").click(function () {
+    $(".btn-toolbar").mouseup(function () {
         isSaved = false;
         startTimer();
     });
 
+    /**
+     * Starts timer of saving draft
+     */
     function startTimer() {
         if (currentSaveLength >= minDraftLen && !intervalId) {
             intervalId = setInterval(function () {
@@ -92,6 +95,9 @@ $(document).ready(function() {
         }
     }
 
+    /**
+     * Checks if it is necessary to save draft and saves if necessary
+     */
     function saveEvent() {
         console.log("is saved " + isSaved);
         currentSaveLength = postTextArea.val().length;
@@ -100,7 +106,12 @@ $(document).ready(function() {
         }
     }
 
+    /**
+     * Sends request for saving draft
+     */
     function saveDraft() {
+        //should be set here to prevent race condition
+        isSaved = true;
         var content = postTextArea.val();
         var topicId = $("#topicId").val();
         var data = {bodyText: content, topicId: topicId};
@@ -113,17 +124,18 @@ $(document).ready(function() {
             success: function(resp) {
                 if (resp.status == 'SUCCESS') {
                     $("#draftId").val(resp.result);
-                    isSaved = true;
                     lastSavingDate = new Date();
                     dateUpdateCounter = 0;
                     clearInterval(dateUpdateInterval);
                     startFiveSecondsInterval();
                     console.log("SUCCESS");
                 } else {
+                    isSaved = false;
                     updateValidationErrors();
                 }
             },
             error: function (jqHXHR, status, e) {
+                isSaved = false;
                 if (status == 'timeout' || jqHXHR.status == 0) {
                     clearInterval(intervalId);
                     jDialog.createDialog({
@@ -135,6 +147,9 @@ $(document).ready(function() {
         });
     }
 
+    /**
+     * Sends request for deletion draft
+     */
     function deleteDraft() {
         var draftId = parseInt($("#draftId").val());
         if (draftId != 0) {
@@ -147,6 +162,9 @@ $(document).ready(function() {
         }
     }
 
+    /**
+     * Handler for update label "Saved xx seconds ago" every 5 seconds
+     */
     function fiveSecondsIntervalHandler() {
         console.log("fiveSecondsIntervalHandler");
         var counterSpan = $("#counter");
@@ -165,6 +183,9 @@ $(document).ready(function() {
 
     }
 
+    /**
+     * Handler for update label "Saved xx minutes ago" every minute
+     */
     function minuteIntervalHandler() {
         console.log("minuteIntervalHandler");
         var counterSpan = $("#counter");
@@ -182,6 +203,9 @@ $(document).ready(function() {
         }
     }
 
+    /**
+     * Handler for update label "Saved xx hours ago" every hour
+     */
     function hourIntervalHandler() {
         console.log("hourIntervalHandler");
         var counterSpan = $("#counter");
@@ -195,15 +219,28 @@ $(document).ready(function() {
         }
     }
 
+    /**
+     * Prints saving date
+     *
+     * @param date saving date to print
+     */
     function printDate(date) {
         $("#counter").text("Saved " + date.toDateString());
     }
 
+    /**
+     * Gets current UTC time
+     *
+     * @returns {Date} current UTC time
+     */
     function getUtcCurrentTime() {
         var now = new Date();
         return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
     }
 
+    /**
+     * Starts timer for update label
+     */
     function startFiveSecondsInterval() {
         if (dateUpdateCounter == 0) {
             $("#counter").text("Saved just now");
@@ -215,6 +252,10 @@ $(document).ready(function() {
         }, 5000);
     }
 
+    /**
+     * Highlights textarea and prints error message if validation error occurs
+     * or clears highlight and validation messages
+     */
     function updateValidationErrors() {
         $(".control-group").removeClass("error");
         $("#bodyText-errors").remove();
