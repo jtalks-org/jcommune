@@ -124,4 +124,26 @@ public interface PostService extends EntityService<Post> {
      * @return post with vote
      */
     Post vote(Post post, PostVote vote);
+
+    /**
+     * Creates new or updates existence draft of current user with specified content in specified topic
+     *
+     * @param topic target topic for draft
+     * @param content content of draft
+     *
+     * @return newly created or updated draft
+     */
+    Post saveOrUpdateDraft(Topic topic, String content);
+
+    /**
+     * Deletes specified draft.
+     * We need separate method for deletion drafts because method for deletion posts does much job except deletion.
+     * For example it recalculates last post for branch, sends email notifications, decrease users post count.
+     * We don't need this job here.
+     *
+     * @param post draft to delete
+     *
+     * @throws java.lang.IllegalArgumentException if specified post has in different state than <code>DRAFT</code>
+     */
+    void deleteDraft(Post post);
 }

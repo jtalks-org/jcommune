@@ -441,7 +441,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     public String deleteAnswer(@PathVariable Long answerId)
             throws NotFoundException {
         Post answer = getPluginPostService().get(answerId);
-        Post neighborAnswer = answer.getTopic().getNeighborPost(answer);
+        Post neighborAnswer = answer.getTopic().getNeighborDisplayedPost(answer);
         getPluginPostService().deletePost(answer);
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId()
                 + "#" + neighborAnswer.getId();

@@ -152,6 +152,9 @@
     </filter-mapping>
 
     <listener>
+        <listener-class>org.jtalks.jcommune.web.listeners.LoggerInitializationListener</listener-class>
+    </listener>
+    <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
@@ -169,6 +172,7 @@
     <listener>
         <listener-class>org.springframework.web.util.HttpSessionMutexListener</listener-class>
     </listener>
+
 
     <error-page>
         <error-code>403</error-code>

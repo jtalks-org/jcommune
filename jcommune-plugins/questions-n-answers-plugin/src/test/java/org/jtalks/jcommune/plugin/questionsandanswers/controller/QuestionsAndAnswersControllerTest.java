@@ -474,7 +474,7 @@ public class QuestionsAndAnswersControllerTest {
 
         Topic topic = mock(Topic.class);
         when(topic.getId()).thenReturn(42L);
-        when(topic.getNeighborPost(answer)).thenReturn(neighborAnswer);
+        when(topic.getNeighborDisplayedPost(answer)).thenReturn(neighborAnswer);
         answer.setTopic(topic);
 
         when(postService.get(answer.getId())).thenReturn(answer);

@@ -146,9 +146,8 @@ public class MailService {
             Map<String, Object> model = new HashMap<>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            if (entity instanceof Branch) {
-                model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(entity));
-            }
+            model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(entity));
+
             sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity,
                     "subscriptionNotification.subject", "subscriptionNotification.vm");
         } catch (MailingFailedException e) {
@@ -508,10 +507,10 @@ public class MailService {
             return result.replace("{0}", "" + ((Branch) entity).getId());
         }
         if (entity instanceof Topic) {
-            return result.replace("{0}", "" + ((Topic) entity).getBranch().getId());
+            return result.replace("/branches/{0}", "/topics/" + ((Topic) entity).getId());
         }
         if (entity instanceof Post) {
-            return result.replace("{0}", "" + ((Post) entity).getTopic().getBranch().getId());
+            return result.replace("/branches/{0}", "/topics/" + ((Post) entity).getTopic().getId());
         }
         return null;
     }

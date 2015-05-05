@@ -132,7 +132,7 @@ public class PostController {
     public ModelAndView delete(@PathVariable(POST_ID) Long postId)
             throws NotFoundException {
         Post post = this.postService.get(postId);
-        Post nextPost = post.getTopic().getNeighborPost(post);
+        Post nextPost = post.getTopic().getNeighborDisplayedPost(post);
         deletePostWithLockHandling(postId);
         return new ModelAndView("redirect:/posts/" + nextPost.getId());
     }
@@ -354,6 +354,43 @@ public class PostController {
     public JsonResponse voteDown(@PathVariable Long postId, HttpServletRequest request) throws NotFoundException {
         PostVote vote = new PostVote(false);
         voteWithSessionLocking(postId, vote, request);
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
+    /**
+     * Saves new draft or update if it already exist
+     *
+     * @param postDto post dto populated in form
+     * @param result validation result
+     *
+     * @return response in JSON format
+     *
+     * @throws NotFoundException if topic to store draft not exist
+     */
+    @RequestMapping(value = "/posts/savedraft", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse saveDraft(@Valid @RequestBody PostDto postDto, BindingResult result) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL);
+        }
+        Topic topic = topicFetchService.getTopicSilently(postDto.getTopicId());
+        Post saved = postService.saveOrUpdateDraft(topic, postDto.getBodyText());
+        return new JsonResponse(JsonResponseStatus.SUCCESS, saved.getId());
+    }
+
+    /**
+     * Deletes draft
+     *
+     * @param postId id of draft to delete
+     *
+     * @return response in JSON format
+     *
+     * @throws NotFoundException if post with specified id not exist
+     */
+    @RequestMapping(value = "posts/{postId}/delete", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse deleteDraft(@PathVariable Long postId) throws NotFoundException {
+        postService.deleteDraft(postService.get(postId));
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 

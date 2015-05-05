@@ -129,8 +129,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
         JCUser currentUser = userService.getCurrentUser();
         currentUser.setPostCount(currentUser.getPostCount() + 1);
 
-        Post answer = new Post(currentUser, answerBody);
-        topic.addPost(answer);
+        Post answer = getAnswer(topic, currentUser, answerBody);
+
         if (currentUser.isAutosubscribe()) {
             Set<JCUser> topicSubscribers = topic.getSubscribers();
             topicSubscribers.add(currentUser);
@@ -379,6 +379,29 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         securityService.deleteFromAcl(Topic.class, topic.getId());
         return branch;
+    }
+
+    /**
+     * Creates replay for specified user and topic. If user have saved draft in this topic, updates it's body
+     * and state and return. Otherwise creates new post with specified body
+     *
+     * @param topic topic in which answer will be created
+     * @param currentUser current user
+     * @param answerBody body of the answer
+     *
+     * @return answer for specified topic from specified user
+     */
+    private Post getAnswer(Topic topic, JCUser currentUser, String answerBody) {
+        Post answer = topic.getDraftForUser(currentUser);
+        if (answer == null) {
+            answer = new Post(currentUser, answerBody);
+            topic.addPost(answer);
+        } else {
+            answer.setPostContent(answerBody);
+            answer.setState(PostState.DISPLAYED);
+            answer.updateCreationDate();
+        }
+        return answer;
     }
 
     /**

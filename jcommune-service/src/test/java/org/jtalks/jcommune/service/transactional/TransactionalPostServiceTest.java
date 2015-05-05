@@ -710,13 +710,116 @@ public class TransactionalPostServiceTest {
 
     }
 
+    @Test
+    public void saverOrUpdateDraftShouldCreateNewDraftIfUserStillHasNoDraftsInSpecifiedTopic() {
+        Topic topic = new Topic();
+        JCUser currentUser = new JCUser("username", null, null);
+        String content = "content";
+
+        when(userService.getCurrentUser()).thenReturn(currentUser);
+
+        Post draft = postService.saveOrUpdateDraft(topic, content);
+
+        verify(postDao).saveOrUpdate(draft);
+        assertEquals(draft.getPostContent(), content);
+        assertEquals(draft.getState(), PostState.DRAFT);
+        assertTrue(topic.getPosts().contains(draft));
+    }
+
+    @Test
+    public void saverOrUpdateDraftShouldUpdateDraftIfUserAlreadyHasDraftInSpecifiedTopic() {
+        Topic topic = new Topic();
+        JCUser currentUser = new JCUser("username", null, null);
+        Post draft = new Post(currentUser, "content", PostState.DRAFT);
+        topic.addPost(draft);
+        String newContent = "Something amazing";
+
+        when(userService.getCurrentUser()).thenReturn(currentUser);
+
+        Post result = postService.saveOrUpdateDraft(topic, newContent);
+
+        verify(postDao).saveOrUpdate(result);
+        assertEquals(result, draft);
+        assertEquals(result.getPostContent(), newContent);
+        assertTrue(topic.getPosts().contains(result));
+        assertEquals(topic.getPosts().size(), 1);
+    }
+
+    @Test
+    public void saverOrUpdateDraftShouldNotModifyCounterOfUserPosts() {
+        Topic topic = new Topic();
+        JCUser currentUser = new JCUser("username", null, null);
+        int before = currentUser.getPostCount();
+
+        when(userService.getCurrentUser()).thenReturn(currentUser);
+
+        postService.saveOrUpdateDraft(topic, "123");
+
+        assertEquals(before, user.getPostCount());
+    }
+
+    @Test
+    public void saveOrUpdateDraftShouldNotSendNotifications() {
+        Topic topic = new Topic();
+        JCUser currentUser = new JCUser("username", null, null);
+
+        when(userService.getCurrentUser()).thenReturn(currentUser);
+
+        postService.saveOrUpdateDraft(topic, "123");
+
+        verify(notificationService, never()).subscribedEntityChanged(any(SubscriptionAwareEntity.class));
+    }
+
+    @Test
+    public void testDeleteDraft() {
+        Post draft = getPostWithTopicInBranch();
+        draft.setState(PostState.DRAFT);
+
+        postService.deleteDraft(draft);
+
+        verify(topicDao).saveOrUpdate(draft.getTopic());
+        verify(securityService).deleteFromAcl(draft);
+        assertFalse(draft.getTopic().getPosts().contains(draft));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void deleteDraftShouldThrowExceptionIfPostForDeletionIsNotDraft() {
+        Post draft = getPostWithTopicInBranch();
+
+        postService.deleteDraft(draft);
+    }
+
+    @Test
+    public void deleteDraftShouldNotChangeUserPostCounter() {
+        Post draft = getPostWithTopicInBranch();
+        draft.setState(PostState.DRAFT);
+        int before = draft.getUserCreated().getPostCount();
+
+        postService.deleteDraft(draft);
+
+        assertEquals(draft.getUserCreated().getPostCount(), before);
+    }
+
+    @Test
+    public void deleteDraftShouldNotSendNotifications() {
+        Post draft = getPostWithTopicInBranch();
+        draft.setState(PostState.DRAFT);
+
+        postService.deleteDraft(draft);
+
+        verify(notificationService, never()).subscribedEntityChanged(any(SubscriptionAwareEntity.class));
+    }
+
     private Post getPostWithTopicInBranch() {
         Branch branch = new Branch(null, null);
         branch.setId(1);
         Topic topic = new Topic();
-        Post firstPost = new Post(null, null);
+        Post firstPost = new Post(user, null);
         firstPost.setId(1l);
+        Post secondPost = new Post(user, null);
+        secondPost.setId(2l);
         topic.addPost(firstPost);
+        topic.addPost(secondPost);
         topic.setBranch(branch);
         return firstPost;
     }

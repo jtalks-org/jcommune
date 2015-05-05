@@ -83,6 +83,8 @@ public class PostControllerTest {
     private HttpServletRequest request;
     @Mock
     private HttpSession session;
+    @Mock
+    private BindingResult result;
 
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
@@ -305,6 +307,58 @@ public class PostControllerTest {
         when(request.getSession()).thenReturn(session);
 
         controller.voteDown(1L, request);
+    }
+
+    @Test
+    public void testSaveDraft() throws Exception {
+        PostDto dto = getDto();
+        Topic topic = new Topic();
+        Post  saved = new Post(new JCUser("name", null, null),"content");
+        saved.setId(1);
+
+        when(topicFetchService.getTopicSilently(dto.getTopicId())).thenReturn(topic);
+        when(postService.saveOrUpdateDraft(topic, dto.getBodyText())).thenReturn(saved);
+
+        JsonResponse response = controller.saveDraft(dto, result);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+        assertEquals(1, (long)response.getResult());
+    }
+
+    @Test
+    public void saveDraftShouldReturnFailResponseIfValidationErrorsOccurred() throws Exception {
+        when(result.hasErrors()).thenReturn(true);
+
+        JsonResponse response = controller.saveDraft(getDto(), result);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void saveDraftShouldThrowExceptionIfTopicNotFound() throws Exception {
+        PostDto dto = getDto();
+
+        when(topicFetchService.getTopicSilently(dto.getTopicId())).thenThrow(new NotFoundException());
+
+        controller.saveDraft(dto, result);
+    }
+
+    @Test
+    public void testDeleteDraft() throws Exception {
+        Post draft = new Post(new JCUser("name", null, null),"content");
+
+        when(postService.get(draft.getId())).thenReturn(draft);
+
+        controller.deleteDraft(draft.getId());
+
+        verify(postService).deleteDraft(draft);
+    }
+
+    @Test(expectedExceptions = NotFoundException.class)
+    public void deleteDraftShouldThrowExceptionIfPostNotFound() throws Exception {
+        when(postService.get(anyLong())).thenThrow(new NotFoundException());
+
+        controller.deleteDraft(1L);
     }
 
     private class PostVoteMacher extends ArgumentMatcher<PostVote> {
