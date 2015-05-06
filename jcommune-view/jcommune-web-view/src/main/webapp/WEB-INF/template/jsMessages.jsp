@@ -155,4 +155,18 @@ $pluginStatusDeactivated = '<spring:message code="label.plugins.plugin.status.de
 $pluginStatusFailed = '<spring:message code="label.plugins.plugin.status.failed" htmlEscape="true"/>';
 $copyLinkToClipboardPopupTitle = '<spring:message code="copy.link.to.clipboard.popup.title" htmlEscape="true"/>';
 
-$wrongRecepient = '<spring:message code="validation.wrong_recipient" htmlEscape="true"/>'
+$wrongRecepient = '<spring:message code="validation.wrong_recipient" htmlEscape="true"/>';
+
+$labelSavedJustNow = '<spring:message code="label.saved.just.now" htmlEscape="true"/>';
+$labelConnectionLost = '<spring:message code="label.connection.lost" htmlEscape="true"/>';
+$labelSaved = '<spring:message code="label.saved" htmlEscape="true"/>';
+$labelAgo = '<spring:message code="label.ago" htmlEscape="true"/>';
+$labelSeconds = '<spring:message code="label.seconds" htmlEscape="true"/>';
+$labelMinute = '<spring:message code="label.minute" htmlEscape="true"/>';
+$labelMinute1Suffix = '<spring:message code="label.minute.1.suffix" htmlEscape="true" text=""/>';
+$labelHour = '<spring:message code="label.hour" htmlEscape="true"/>';
+$labelMinutes24Suffix = '<spring:message code="label.minutes.2.4.suffix" htmlEscape="true" text=""/>';
+$labelHours24Suffix = '<spring:message code="label.hours.2.4.suffix" htmlEscape="true" text=""/>';
+$labelHoursMoreThan4Suffix = '<spring:message code="label.hours.more.than.4.suffix" htmlEscape="true" text=""/>';
+$labelMinutesMoreThan4Suffix = '<spring:message code="label.minutes.more.than.4.suffix" htmlEscape="true" text=""/>';
+$labelHours1Suffix = '<spring:message code="label.hours.1.suffix" htmlEscape="true" text=""/>';
