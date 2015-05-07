@@ -64,7 +64,7 @@ public class JcLocaleResolverTest {
     @Test
     public void resolveLocaleShouldReturnRequestLocaleIfUserAnonymous() {
         AnonymousUser user = new AnonymousUser();
-        user.setLanguage(Language.SPANISH);
+        user.setLanguage(Language.RUSSIAN);
         Locale defaultLocale = Language.ENGLISH.getLocale();
         when(userReader.getCurrentUser()).thenReturn(user);
         when(request.getLocale()).thenReturn(defaultLocale);

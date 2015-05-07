@@ -205,6 +205,18 @@ public class JCUserTest {
         assertEquals(actual.getDescription(), expected.getDescription());
     }
 
+    /**
+    * Accert that getLanguage return English in case of Spanish language of user
+    * */
+    @Test
+    public void spanishLanguageHandling () {
+        JCUser user =  new JCUser("username", "email@mail.com", "pass");
+        user.setLanguage(Language.SPANISH);
+
+        Language language = user.getLanguage();
+        assertEquals(language, Language.ENGLISH);
+    }
+
 
 
 }

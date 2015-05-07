@@ -130,6 +130,10 @@ public class JCUser extends User {
      * @return user language
      */
     public Language getLanguage() {
+        // add verification if language is not SPANISH. if it is SPANISH, language changed to default ENGLISH
+        if (language.equals(Language.SPANISH)) {
+            language = Language.ENGLISH;
+        }
         return language;
     }
 

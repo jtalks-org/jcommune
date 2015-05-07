@@ -23,7 +23,7 @@ public enum Language {
 
     //simple alphabetical order, no holywars please
     ENGLISH("label.english", "en"),
-    RUSSIAN("label.russian", "ru"),    
+    RUSSIAN("label.russian", "ru"),
     SPANISH("label.spanish", "es"),
     UKRAINIAN("label.ukrainian", "uk");
 
