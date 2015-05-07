@@ -240,6 +240,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <form id="answerForm" action="${request.contextPath}/topics/question/${question.id}"
           method="POST" class='well anti-multipost submit-form'>
       <form path="topicId"/>
+      <input id="topicId" type="hidden" value="${question.id}"/>
+      <input id="draftId" type="hidden" value="${postDto.id}"/>
+      #if(${postDto.id} != 0)
+        <input id="savedMilis" type="hidden" value="${postDto.creationDate.millis}"/>
+      #end
       #bbeditor(${messages.getString("label.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
     </form>
   #end
