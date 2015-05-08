@@ -20,9 +20,14 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.util.SerializationUtils;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static junit.framework.Assert.assertFalse;
@@ -83,34 +88,7 @@ public class JCUserTest {
 
     @Test
     public void copyUserShouldCopyCorrectlyIfAllFieldsFilled() {
-        JCUser user =  new JCUser("username", "email@mail.com", "pass");
-        user.setId(1);
-        user.setFirstName("firstname");
-        user.setLastName("lastname");
-        user.setBanReason("spam");
-        user.setRole("ROLE_USER");
-        user.setAvatar(new byte[]{1, 2, 3});
-        user.setVersion(1L);
-        Group group = new Group("users");
-        group.getUsers().add(user);
-        user.setGroups(Arrays.asList(group));
-        user.setSalt("salt");
-        user.setPostCount(1);
-        user.setLanguage(Language.ENGLISH);
-        user.setPageSize(15);
-        user.setLocation("world");
-        user.setSignature("signature");
-        user.setRegistrationDate(new DateTime());
-        user.setEnabled(true);
-        user.setAutosubscribe(true);
-        user.setMentioningNotificationsEnabled(true);
-        user.setSendPmNotification(true);
-        UserContact contact = new UserContact("contact1", new UserContactType());
-        contact.setOwner(user);
-        user.setContacts(Sets.newHashSet(contact));
-        user.setAvatarLastModificationTime(new DateTime());
-        user.setAllForumMarkedAsReadTime(new DateTime());
-        user.setUuid("uuid");
+        JCUser user =  getJCUserWithAllFieldsFilled();
 
         JCUser copy = JCUser.copyUser(user);
 
@@ -205,18 +183,47 @@ public class JCUserTest {
         assertEquals(actual.getDescription(), expected.getDescription());
     }
 
-    /**
-    * Accert that getLanguage return English in case of Spanish language of user
-    * */
     @Test
-    public void spanishLanguageHandling () {
-        JCUser user =  new JCUser("username", "email@mail.com", "pass");
-        user.setLanguage(Language.SPANISH);
+    public void theEntityFieldsShouldBeSerialized() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        JCUser user = getJCUserWithAllFieldsFilled();
+        user.setGroups(new ArrayList<Group>());
+        user.setContacts(new HashSet<UserContact>());
 
-        Language language = user.getLanguage();
-        assertEquals(language, Language.ENGLISH);
+        byte[] serialize = SerializationUtils.serialize(user);
+        JCUser serializedUser = (JCUser)SerializationUtils.deserialize(serialize);
+        assertReflectionEquals(user, serializedUser);
     }
 
+    private JCUser getJCUserWithAllFieldsFilled(){
+        JCUser user =  new JCUser("username", "email@mail.com", "pass");
+        user.setId(1);
+        user.setFirstName("firstname");
+        user.setLastName("lastname");
+        user.setBanReason("spam");
+        user.setRole("ROLE_USER");
+        user.setAvatar(new byte[]{1, 2, 3});
+        user.setVersion(1L);
+        Group group = new Group("users");
+        group.getUsers().add(user);
+        user.setGroups(Arrays.asList(group));
+        user.setSalt("salt");
+        user.setPostCount(1);
+        user.setLanguage(Language.ENGLISH);
+        user.setPageSize(15);
+        user.setLocation("world");
+        user.setSignature("signature");
+        user.setRegistrationDate(new DateTime());
+        user.setEnabled(true);
+        user.setAutosubscribe(true);
+        user.setMentioningNotificationsEnabled(true);
+        user.setSendPmNotification(true);
+        UserContact contact = new UserContact("contact1", new UserContactType());
+        contact.setOwner(user);
+        user.setContacts(Sets.newHashSet(contact));
+        user.setAvatarLastModificationTime(new DateTime());
+        user.setAllForumMarkedAsReadTime(new DateTime());
+        user.setUuid("uuid");
 
-
+        return user;
+    }
 }
