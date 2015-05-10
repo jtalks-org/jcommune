@@ -774,6 +774,12 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         return null;
     }
 
+    /**
+     * Gets number of post with <code>DISPLAYED</code> state
+     *
+     * @return number of post with <code>DISPLAYED</code> state
+     *
+     */
     public int getDisplayedPostsCount() {
         return getDisplayedPosts().size();
     }
