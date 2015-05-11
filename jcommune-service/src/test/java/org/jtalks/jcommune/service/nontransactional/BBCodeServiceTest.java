@@ -66,7 +66,11 @@ public class BBCodeServiceTest {
             {"[quote=\"admin\"]quote[/quote]", "quote", "strip named quote"},
             {"[b][i][u][s][highlight][left][center][right][color=000033][size=12][quote][indent=15]"
                 + "Ваш текст[/indent][/quote][/size][/color][/right][/center][/left][/highlight][/s][/u][/i][/b]",
-             "Ваш текст", "strip a pack of bb-codes"}
+             "Ваш текст", "strip a pack of bb-codes"},
+            {"[url][/url]", "", "strip empty url"},
+            {"[url=1][/url]", "", "strip empty url with non empty parameter" },
+            {"[url=][/url]", "", "strip empty url with empty parameter"},
+            {"[img][/img]", "", "strip empty img"}
         };
     }
     
