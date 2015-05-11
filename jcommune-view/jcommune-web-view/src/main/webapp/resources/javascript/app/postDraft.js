@@ -26,11 +26,12 @@ $(document).ready(function() {
     var dateUpdateInterval;
     var prevSavedMilis = 0;
     var maxTextLength = 20000;
-    var errorSpan = "<div id='bodyText-errors' class='cleared'><span class='help-inline focusToError' data-original-title=''>Размер должен быть между 2 и 20000</span></div>";
+    var errorSpan = "<div id='bodyText-errors' class='cleared'><span class='help-inline focusToError' data-original-title=''>"
+        + $labelMessageSizeValidation.replace('{min}',minDraftLen.toString()).replace('{max}',maxTextLength.toString()) + "</span></div>";
 
     $("<span id='counter' class='keymaps-caption pull-right'></span>").insertAfter("#editorBbCodeDiv");
-
-    if (parseInt($("#draftId").val()) != 0) {
+    console.log(isNaN($("#savedMilis").val()));
+    if (!isNaN($("#savedMilis").val()) && parseInt($("#draftId").val()) != 0) {
         prevSavedMilis = parseInt($("#savedMilis").val());
         var difSeconds = Math.floor((new Date().getTime() - prevSavedMilis)/1000);
         if (difSeconds <= 60) {
@@ -237,6 +238,7 @@ $(document).ready(function() {
         $(".control-group").removeClass("error");
         $("#bodyText-errors").remove();
         $(".focusToError").remove();
+        $(".help-inline").remove();
         if (postTextArea.val().length > maxTextLength) {
             $(".control-group").addClass("error");
             $(errorSpan).insertAfter(".keymaps-caption.pull-left");
