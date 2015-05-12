@@ -55,9 +55,9 @@ $(document).ready(function() {
     }
 
     postTextArea.bind('keyup change', function() {
-        startTimer();
         updateValidationErrors();
         isSaved = false;
+        startTimer();
         if (postTextArea.val().length == 0 && currentSaveLength != 0) {
             currentSaveLength = 0;
             deleteDraft();
@@ -78,7 +78,7 @@ $(document).ready(function() {
      * Starts timer of saving draft
      */
     function startTimer() {
-        if (currentSaveLength >= minDraftLen && !intervalId) {
+        if (postTextArea.val().length >= minDraftLen && !intervalId) {
             intervalId = setInterval(function () {
                 saveEvent();
             }, interval);
@@ -124,14 +124,28 @@ $(document).ready(function() {
             },
             error: function (jqHXHR, status, e) {
                 isSaved = false;
+                console.log(status);
+                console.log(jqHXHR.status);
+                console.log(" e " + e);
                 if (status == 'timeout' || jqHXHR.status == 0) {
                     clearInterval(intervalId);
-                    jDialog.createDialog({
-                        type: jDialog.alertType,
-                        bodyMessage: $labelConnectionLost
-                    });
+                    if (jqHXHR.status == 0) {
+                        //Need it because firefox makes no difference between refused connection and
+                        //aborted request
+                        setTimeout(showConnectionErrorPopUp, 2000);
+                    } else {
+                        showConnectionErrorPopUp();
+                    }
+
                 }
             }
+        });
+    }
+
+    function showConnectionErrorPopUp() {
+        jDialog.createDialog({
+            type: jDialog.alertType,
+            bodyMessage: $labelConnectionLost
         });
     }
 
@@ -142,7 +156,12 @@ $(document).ready(function() {
         var draftId = parseInt($("#draftId").val());
         if (draftId != 0) {
             $.ajax({
-                url: baseUrl + "/posts/" + draftId + "/delete"
+                url: baseUrl + "/posts/" + draftId + "/delete",
+                success: function() {
+                    console.log("deleted");
+                    $("#counter").text("");
+                    clearInterval(dateUpdateInterval);
+                }
             })
         }
     }
@@ -255,11 +274,11 @@ $(document).ready(function() {
     function composeMinuteLabel(numberMinutes) {
         var suffixGroup = numberMinutes % 10;
         switch (suffixGroup) {
-            case 1: return $labelSaved + " " + numberSeconds.toString() + " " + $labelMinute
+            case 1: return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
                 + $labelMinute1Suffix + " " + $labelAgo;
-            case 2:case 3:case 4: return $labelSaved + " " + numberSeconds.toString() + " " + $labelMinute
+            case 2:case 3:case 4: return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
             + $labelMinutes24Suffix + " " + $labelAgo;
-            default: return  $labelSaved + " " + numberSeconds.toString() + " " + $labelMinute
+            default: return  $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
                 + $labelMinutesMoreThan4Suffix + " " + $labelAgo;
         }
     }
