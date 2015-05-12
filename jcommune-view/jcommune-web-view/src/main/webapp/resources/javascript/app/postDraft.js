@@ -30,7 +30,6 @@ $(document).ready(function() {
         + $labelMessageSizeValidation.replace('{min}',minDraftLen.toString()).replace('{max}',maxTextLength.toString()) + "</span></div>";
 
     $("<span id='counter' class='keymaps-caption pull-right'></span>").insertAfter("#editorBbCodeDiv");
-    console.log(isNaN($("#savedMilis").val()));
     if (!isNaN($("#savedMilis").val()) && parseInt($("#draftId").val()) != 0) {
         prevSavedMilis = parseInt($("#savedMilis").val());
         var difSeconds = Math.floor((new Date().getTime() - prevSavedMilis)/1000);
@@ -124,9 +123,6 @@ $(document).ready(function() {
             },
             error: function (jqHXHR, status, e) {
                 isSaved = false;
-                console.log(status);
-                console.log(jqHXHR.status);
-                console.log(" e " + e);
                 if (status == 'timeout' || jqHXHR.status == 0) {
                     clearInterval(intervalId);
                     if (jqHXHR.status == 0) {
@@ -158,7 +154,6 @@ $(document).ready(function() {
             $.ajax({
                 url: baseUrl + "/posts/" + draftId + "/delete",
                 success: function() {
-                    console.log("deleted");
                     $("#counter").text("");
                     clearInterval(dateUpdateInterval);
                 }
