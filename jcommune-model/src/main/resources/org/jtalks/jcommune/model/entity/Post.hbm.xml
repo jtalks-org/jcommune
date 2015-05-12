@@ -83,7 +83,7 @@
 
     <query name="getLastPostForBranch">
         <![CDATA[FROM Post p WHERE p.topic.branch.id = :branchId AND p.state = 'DISPLAYED' AND creationDate =
-                    (SELECT MAX(pp.creationDate) FROM Post pp WHERE pp.topic.branch.id = :branchId)]]>
+                    (SELECT MAX(pp.creationDate) FROM Post pp WHERE pp.topic.branch.id = :branchId AND pp.state = 'DISPLAYED')]]>
     </query>
 
     <query name="increaseRating">
