@@ -104,19 +104,19 @@ This might be tuned further in the future if the page size itself changes.-->
     </query>
 
     <query name="getCountUnansweredTopicsByGroups">
-        <![CDATA[SELECT COUNT(t) FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view where view.sid in (:groupIds) and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds)))]]>
+        <![CDATA[SELECT COUNT(*) FROM Topic tt where tt.id IN (SELECT t.id FROM Topic t JOIN t.posts p WHERE p.state=org.jtalks.jcommune.model.entity.PostState.DISPLAYED AND t.branch.id in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view where view.sid in (:groupIds) and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds))) GROUP BY t.id HAVING COUNT(p.id)=1)]]>
     </query>
 
     <query name="getUnansweredTopicsByGroups">
-        <![CDATA[FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view where view.sid in (:groupIds) and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds))) ORDER BY modificationDate DESC]]>
+        <![CDATA[SELECT t FROM Topic t JOIN t.posts p WHERE p.state=org.jtalks.jcommune.model.entity.PostState.DISPLAYED AND t.branch.id in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view where view.sid in (:groupIds) and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds))) GROUP BY t.id HAVING COUNT(p.id)=1 ORDER BY t.modificationDate DESC]]>
     </query>
 
     <query name="getCountUnansweredTopicsForAnonymousUser">
-        <![CDATA[SELECT COUNT(t) FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (select distinct branch.id from org.jtalks.jcommune.model.entity.Branch branch, org.jtalks.jcommune.model.entity.ViewTopicsBranches view where branch.id=view.branchId and view.granting=1 and view.sid like 'anonymousUser' )]]>
+        <![CDATA[SELECT COUNT(*) FROM Topic tt where tt.id IN (SELECT t.id FROM Topic t JOIN t.posts p WHERE p.state=org.jtalks.jcommune.model.entity.PostState.DISPLAYED  AND t.branch.id in (select distinct branch.id from org.jtalks.jcommune.model.entity.Branch branch, org.jtalks.jcommune.model.entity.ViewTopicsBranches view where branch.id=view.branchId and view.granting=1 and view.sid like 'anonymousUser' ) GROUP BY t.id HAVING COUNT(p.id)=1)]]>
     </query>
 
     <query name="getUnansweredTopicsForAnonymousUser">
-        <![CDATA[FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (select distinct branch.id from org.jtalks.jcommune.model.entity.Branch branch, org.jtalks.jcommune.model.entity.ViewTopicsBranches view where branch.id=view.branchId and view.granting=1 and view.sid like 'anonymousUser' ) ORDER BY modificationDate DESC]]>
+        <![CDATA[SELECT t FROM Topic t JOIN t.posts p WHERE p.state=org.jtalks.jcommune.model.entity.PostState.DISPLAYED AND t.branch.id in (select distinct branch.id from org.jtalks.jcommune.model.entity.Branch branch, org.jtalks.jcommune.model.entity.ViewTopicsBranches view where branch.id=view.branchId and view.granting=1 and view.sid like 'anonymousUser' ) GROUP BY t.id HAVING COUNT(p.id)=1 ORDER BY t.modificationDate DESC]]>
     </query>
 
     <!--Get all the topics ID and the number of posts (to them) from the branch-->
