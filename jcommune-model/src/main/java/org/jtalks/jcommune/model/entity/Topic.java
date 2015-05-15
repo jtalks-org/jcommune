@@ -783,4 +783,18 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     public int getDisplayedPostsCount() {
         return getDisplayedPosts().size();
     }
+
+	/**
+	 * Checks if this topic contains only posts added by topic Owner.
+	 *
+	 * @return <code>true</code> if condition is followed, otherwise <code>false</code>
+	 */
+	public boolean isContainsOwnerPostsOnly() {
+		for (Post post : getDisplayedPosts()) {
+			if (post.getUserCreated().getId() != topicStarter.getId()) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
