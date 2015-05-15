@@ -189,7 +189,9 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @param post post to add
      */
     public void addPost(Post post) {
-        setModificationDate(post.getCreationDate());
+        if (PostState.DISPLAYED.equals(post.getState())) {
+            setModificationDate(post.getCreationDate());
+        }
         post.setTopic(this);
         this.posts.add(post);
     }
