@@ -171,7 +171,7 @@ public class TopicController {
                     .addObject(BRANCH_ID, branchId)
                     .addObject(TOPIC_DTO, topicDto)
                     .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
-                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
+                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
         }
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);

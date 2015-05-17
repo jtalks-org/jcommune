@@ -205,7 +205,7 @@ public class TopicControllerTest {
         ModelAndView mav = controller.createTopic(getDto(), result, BRANCH_ID);
 
         verify(branchService).get(BRANCH_ID);
-        verify(breadcrumbBuilder).getForumBreadcrumb(branch);
+        verify(breadcrumbBuilder).getNewTopicBreadcrumb(branch);
         //
         assertViewName(mav, "topic/topicForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
