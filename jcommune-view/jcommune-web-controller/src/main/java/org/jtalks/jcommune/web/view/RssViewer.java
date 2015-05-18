@@ -86,7 +86,7 @@ public class RssViewer extends AbstractRssFeedView {
             response.sendRedirect(request.getContextPath() + "/errors/404");
             return null;
         }
-        List<Item> items = new ArrayList<Item>(listContent.size());
+        List<Item> items = new ArrayList<>(listContent.size());
 
         for (Topic topic : listContent) {
             items.add(createFeedItem(topic, url));
@@ -108,15 +108,15 @@ public class RssViewer extends AbstractRssFeedView {
         Item item = new Item();
         Description description = new Description();
         description.setType("text");
-        description.setValue(topic.getLastPost().getPostContent());
+        description.setValue(topic.getLastDisplayedPost().getPostContent());
 
         Content content = new Content();
         item.setContent(content);
 
         item.setTitle(topic.getTitle());
-        item.setAuthor(topic.getLastPost().getUserCreated().getUsername());
+        item.setAuthor(topic.getLastDisplayedPost().getUserCreated().getUsername());
 
-        item.setLink(url + "/posts/" + topic.getLastPost().getId());
+        item.setLink(url + "/posts/" + topic.getLastDisplayedPost().getId());
 
         item.setComments(topic.getTopicStarter().getSignature());
         item.setDescription(description);

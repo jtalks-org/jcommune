@@ -65,7 +65,7 @@ $(document).ready(function() {
     });
 
     postTextArea.blur(function () {
-       saveEvent();
+        setTimeout(saveEvent, 1000);
     });
 
     $(".btn-toolbar").mouseup(function () {
@@ -128,7 +128,7 @@ $(document).ready(function() {
                     if (jqHXHR.status == 0) {
                         //Need it because firefox makes no difference between refused connection and
                         //aborted request
-                        setTimeout(showConnectionErrorPopUp, 2000);
+                        setTimeout(showConnectionErrorPopUp, 3000);
                     } else {
                         showConnectionErrorPopUp();
                     }
