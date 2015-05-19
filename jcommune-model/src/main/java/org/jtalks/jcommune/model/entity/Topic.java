@@ -189,7 +189,9 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @param post post to add
      */
     public void addPost(Post post) {
-        setModificationDate(post.getCreationDate());
+        if (PostState.DISPLAYED.equals(post.getState())) {
+            setModificationDate(post.getCreationDate());
+        }
         post.setTopic(this);
         this.posts.add(post);
     }
@@ -783,4 +785,18 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     public int getDisplayedPostsCount() {
         return getDisplayedPosts().size();
     }
+
+	/**
+	 * Checks if this topic contains only posts added by topic Owner.
+	 *
+	 * @return <code>true</code> if condition is followed, otherwise <code>false</code>
+	 */
+	public boolean isContainsOwnerPostsOnly() {
+		for (Post post : getDisplayedPosts()) {
+			if (post.getUserCreated().equals(topicStarter)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
