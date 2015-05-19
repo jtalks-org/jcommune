@@ -329,6 +329,18 @@ public class PostHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
                 "The branch is empty, so last post mustn't be found");
     }
 
+
+    @Test
+    public void getLastPostInBranchShouldFindOnlyDisplayedPosts() {
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
+        topic.addPost(new Post(PersistedObjectsFactory.getUser("puzer", "user@mail.ru"), "content", PostState.DRAFT));
+        Branch branch = topic.getBranch();
+
+        session.save(branch);
+
+        assertEquals(dao.getLastPostFor(branch), topic.getPosts().get(0));
+    }
+
     @Test
     public void getLastPostsInEmptyBranchShouldReturnEmptyList() {
         Topic topic = PersistedObjectsFactory.getDefaultTopic();

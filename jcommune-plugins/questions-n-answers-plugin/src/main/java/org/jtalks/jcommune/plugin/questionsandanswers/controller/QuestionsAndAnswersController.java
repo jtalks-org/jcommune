@@ -201,7 +201,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
         Map<String, Object> data = getDefaultModel(request);
         data.put(QUESTION, topic);
-        data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getPosts())));
+        data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getDisplayedPosts())));
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(SUBSCRIBED, false);
         data.put(CONVERTER, BbToHtmlConverter.getInstance());
@@ -228,7 +228,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     @ResponseBody
     public JsonResponse canPost(@PathVariable("id") Long questionId) throws NotFoundException {
         Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
-        if (topic.getPosts().size() - 1 >= LIMIT_OF_POSTS_VALUE) {
+        if (topic.getDisplayedPostsCount() - 1 >= LIMIT_OF_POSTS_VALUE) {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
@@ -385,12 +385,12 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         postDto.setTopicId(questionId);
         Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
         //We can't provide limitation properly without database-level locking
-        if (result.hasErrors() || LIMIT_OF_POSTS_VALUE <= topic.getPosts().size() - 1) {
+        if (result.hasErrors() || LIMIT_OF_POSTS_VALUE <= topic.getDisplayedPostsCount() - 1) {
             Map<String, Object> data = getDefaultModel(request);
             VelocityEngine engine = new VelocityEngine(getProperties());
             engine.init();
             data.put(QUESTION, topic);
-            data.put(POST_PAGE, new PageImpl<>(topic.getPosts()));
+            data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getDisplayedPosts())    ));
             data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
             data.put(SUBSCRIBED, false);
             data.put(RESULT, result);

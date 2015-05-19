@@ -26,11 +26,11 @@ $(document).ready(function() {
     var dateUpdateInterval;
     var prevSavedMilis = 0;
     var maxTextLength = 20000;
-    var errorSpan = "<div id='bodyText-errors' class='cleared'><span class='help-inline focusToError' data-original-title=''>Размер должен быть между 2 и 20000</span></div>";
+    var errorSpan = "<div id='bodyText-errors' class='cleared'><span class='help-inline focusToError' data-original-title=''>"
+        + $labelMessageSizeValidation.replace('{min}',minDraftLen.toString()).replace('{max}',maxTextLength.toString()) + "</span></div>";
 
     $("<span id='counter' class='keymaps-caption pull-right'></span>").insertAfter("#editorBbCodeDiv");
-
-    if (parseInt($("#draftId").val()) != 0) {
+    if (!isNaN($("#savedMilis").val()) && parseInt($("#draftId").val()) != 0) {
         prevSavedMilis = parseInt($("#savedMilis").val());
         var difSeconds = Math.floor((new Date().getTime() - prevSavedMilis)/1000);
         if (difSeconds <= 60) {
@@ -54,9 +54,9 @@ $(document).ready(function() {
     }
 
     postTextArea.bind('keyup change', function() {
-        startTimer();
         updateValidationErrors();
         isSaved = false;
+        startTimer();
         if (postTextArea.val().length == 0 && currentSaveLength != 0) {
             currentSaveLength = 0;
             deleteDraft();
@@ -65,7 +65,7 @@ $(document).ready(function() {
     });
 
     postTextArea.blur(function () {
-       saveEvent();
+        setTimeout(saveEvent, 1000);
     });
 
     $(".btn-toolbar").mouseup(function () {
@@ -77,7 +77,7 @@ $(document).ready(function() {
      * Starts timer of saving draft
      */
     function startTimer() {
-        if (currentSaveLength >= minDraftLen && !intervalId) {
+        if (postTextArea.val().length >= minDraftLen && !intervalId) {
             intervalId = setInterval(function () {
                 saveEvent();
             }, interval);
@@ -125,12 +125,23 @@ $(document).ready(function() {
                 isSaved = false;
                 if (status == 'timeout' || jqHXHR.status == 0) {
                     clearInterval(intervalId);
-                    jDialog.createDialog({
-                        type: jDialog.alertType,
-                        bodyMessage: $labelConnectionLost
-                    });
+                    if (jqHXHR.status == 0) {
+                        //Need it because firefox makes no difference between refused connection and
+                        //aborted request
+                        setTimeout(showConnectionErrorPopUp, 3000);
+                    } else {
+                        showConnectionErrorPopUp();
+                    }
+
                 }
             }
+        });
+    }
+
+    function showConnectionErrorPopUp() {
+        jDialog.createDialog({
+            type: jDialog.alertType,
+            bodyMessage: $labelConnectionLost
         });
     }
 
@@ -141,7 +152,11 @@ $(document).ready(function() {
         var draftId = parseInt($("#draftId").val());
         if (draftId != 0) {
             $.ajax({
-                url: baseUrl + "/posts/" + draftId + "/delete"
+                url: baseUrl + "/posts/" + draftId + "/delete",
+                success: function() {
+                    $("#counter").text("");
+                    clearInterval(dateUpdateInterval);
+                }
             })
         }
     }
@@ -237,6 +252,7 @@ $(document).ready(function() {
         $(".control-group").removeClass("error");
         $("#bodyText-errors").remove();
         $(".focusToError").remove();
+        $(".help-inline").remove();
         if (postTextArea.val().length > maxTextLength) {
             $(".control-group").addClass("error");
             $(errorSpan).insertAfter(".keymaps-caption.pull-left");
@@ -253,11 +269,11 @@ $(document).ready(function() {
     function composeMinuteLabel(numberMinutes) {
         var suffixGroup = numberMinutes % 10;
         switch (suffixGroup) {
-            case 1: return $labelSaved + " " + numberSeconds.toString() + " " + $labelMinute
+            case 1: return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
                 + $labelMinute1Suffix + " " + $labelAgo;
-            case 2:case 3:case 4: return $labelSaved + " " + numberSeconds.toString() + " " + $labelMinute
+            case 2:case 3:case 4: return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
             + $labelMinutes24Suffix + " " + $labelAgo;
-            default: return  $labelSaved + " " + numberSeconds.toString() + " " + $labelMinute
+            default: return  $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
                 + $labelMinutesMoreThan4Suffix + " " + $labelAgo;
         }
     }

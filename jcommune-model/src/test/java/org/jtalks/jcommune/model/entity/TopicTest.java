@@ -115,6 +115,19 @@ public class TopicTest {
     }
 
     @Test
+    public void additionOfDraftShouldNotUpdateModificetionDate() {
+        Topic topic = createTopic();
+        DateTime modificationDate = topic.getModificationDate();
+        Post post = new Post();
+        post.setState(PostState.DRAFT);
+        post.setCreationDate(new DateTime().plusMonths(12));
+
+        topic.addPost(post);
+
+        assertEquals(topic.getModificationDate(), modificationDate);
+    }
+
+    @Test
     public void addPostShouldSetModificationDateToPostCreationDate() throws InterruptedException {
         Topic topic = createTopic();
         DateTime prevDate = topic.getModificationDate();

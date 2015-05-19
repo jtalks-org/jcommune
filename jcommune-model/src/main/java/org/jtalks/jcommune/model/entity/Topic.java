@@ -189,7 +189,9 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @param post post to add
      */
     public void addPost(Post post) {
-        setModificationDate(post.getCreationDate());
+        if (PostState.DISPLAYED.equals(post.getState())) {
+            setModificationDate(post.getCreationDate());
+        }
         post.setTopic(this);
         this.posts.add(post);
     }
@@ -774,6 +776,12 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
         return null;
     }
 
+    /**
+     * Gets number of post with <code>DISPLAYED</code> state
+     *
+     * @return number of post with <code>DISPLAYED</code> state
+     *
+     */
     public int getDisplayedPostsCount() {
         return getDisplayedPosts().size();
     }
