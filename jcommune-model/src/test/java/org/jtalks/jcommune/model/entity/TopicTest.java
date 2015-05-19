@@ -17,10 +17,7 @@ package org.jtalks.jcommune.model.entity;
 import org.joda.time.DateTime;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.testng.Assert.*;
 
@@ -480,14 +477,59 @@ public class TopicTest {
         assertEquals(topic.getLastDisplayedPost(), topic.getPosts().get(0));
     }
 
+	@Test
+	public void testIsContainsOwnerPostsOnlyReturnsTrueIfOthersDidNotRespond() {
+		Topic topic = createTopic();
+
+		assertTrue(topic.getPosts().size() > 0);
+		assertTrue(topic.isContainsOwnerPostsOnly());
+	}
+
+	@Test
+	public void testIsContainsOwnerPostsOnlyReturnsFalseIfOthersHaveResponded() {
+		Topic topic = createTopicWithOthersPosts();
+
+		assertTrue(topic.getPosts().size() > 0);
+		assertFalse(topic.isContainsOwnerPostsOnly());
+	}
+
+	@Test
+	public void testIsContainsOwnerPostsOnlyReturnsTrueOnEmptyTopic() {
+		Topic topic = createTopicWithOthersPosts();
+		topic.setPosts(Collections.<Post>emptyList());
+
+		assertTrue(topic.getPosts().size() == 0);
+		assertTrue(topic.isContainsOwnerPostsOnly());
+	}
+
     private Topic createTopic() {
-        Post post1 = new Post();
+		JCUser topicStarter = new JCUser();
+
+        Post post1 = new Post(topicStarter, "Post N1 for tests");
         post1.setCreationDate(new DateTime());
-        Post post2 = new Post();
-        post2.setCreationDate(new DateTime());
-        Topic topic = new Topic(new JCUser(), "title");
+		Post post2 = new Post(topicStarter, "Post N2 for tests");
+		post2.setCreationDate(new DateTime());
+
+        Topic topic = new Topic(topicStarter, "Topic title for testing");
         topic.addPost(post1);
         topic.addPost(post2);
+
         return topic;
     }
+
+	private Topic createTopicWithOthersPosts() {
+		JCUser topicStarter = new JCUser();
+		JCUser otherUser = new JCUser();
+
+		Post post1 = new Post(topicStarter, "Post N1 by topic starter");
+		post1.setCreationDate(new DateTime());
+		Post post2 = new Post(otherUser, "Post N2 by other user");
+		post2.setCreationDate(new DateTime());
+
+		Topic topic = new Topic(topicStarter, "Topic title for testing");
+		topic.addPost(post1);
+		topic.addPost(post2);
+
+		return topic;
+	}
 }
