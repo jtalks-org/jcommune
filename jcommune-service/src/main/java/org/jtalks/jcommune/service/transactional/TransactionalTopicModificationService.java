@@ -325,11 +325,9 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * {@inheritDoc}
      */
     @PreAuthorize("(hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
-            "#topic.topicStarter.username == principal.username and " +
-            "#topic.displayedPostsCount == 1) or " +
+            "#topic.containsOwnerPostsOnly) or " +
             "(hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
-            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS')) or " +
-			"#topic.containsOwnerPostsOnly")
+            "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS'))")
     @Override
     public void deleteTopic(Topic topic) throws NotFoundException {
         Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(topic);

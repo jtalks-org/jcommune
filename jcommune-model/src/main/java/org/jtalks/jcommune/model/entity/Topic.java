@@ -793,7 +793,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
 	 */
 	public boolean isContainsOwnerPostsOnly() {
 		for (Post post : getDisplayedPosts()) {
-			if (post.getUserCreated().getId() != topicStarter.getId()) {
+			if (post.getUserCreated().equals(topicStarter)) {
 				return false;
 			}
 		}

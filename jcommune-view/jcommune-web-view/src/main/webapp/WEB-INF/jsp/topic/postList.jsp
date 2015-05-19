@@ -212,7 +212,7 @@
                 <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
                                       permission="BranchPermission.DELETE_OWN_POSTS">
                   <c:set var="isDeleteButtonAvailable"
-                         value='${(userId == post.userCreated.id && topic.displayedPostsCount == 1) || topic.containsOwnerPostsOnly}'/>
+						 value='${topic.containsOwnerPostsOnly}'/>
                   <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                         permission='BranchPermission.DELETE_OTHERS_POSTS'>
                     <c:set var="isDeleteButtonAvailable" value="true"/>
