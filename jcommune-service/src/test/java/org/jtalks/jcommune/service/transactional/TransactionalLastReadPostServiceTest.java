@@ -176,6 +176,22 @@ public class TransactionalLastReadPostServiceTest {
     }
 
     @Test
+    public void userShouldNotSeeUpdatesAfterAdditionOfDraft() {
+        List<Topic> topicList = ObjectsFactory.topics(user, 1);
+        when(lastReadPostDao.getLastReadPosts(user, Collections.<Topic>emptyList()))
+                .thenReturn(Collections.<LastReadPost>emptyList());
+        DateTime forumMarkedAsReadDate = new DateTime().plusMinutes(1);
+        user.setAllForumMarkedAsReadTime(forumMarkedAsReadDate);
+        topicList.get(0).addPost(new Post(user, "sadsad", PostState.DRAFT));
+        when(userService.getCurrentUser()).thenReturn(user);
+
+        List<Topic> result = lastReadPostService.fillLastReadPostForTopics(topicList);
+
+        assertEquals(1, result.size());
+        assertFalse(result.get(0).isHasUpdatesInDisplayedPosts());
+    }
+
+    @Test
     public void testMarkTopicPageAsRead() {
         Topic topic = this.createTestTopic();
         user.setPageSize(3);
@@ -262,7 +278,7 @@ public class TransactionalLastReadPostServiceTest {
         lastReadPostService.markTopicAsRead(topic);
 
         verify(lastReadPostDao).saveOrUpdate(argThat(
-                new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
+                new LastReadPostMatcher(topic, topic.getLastDisplayedPost().getCreationDate())));
     }
 
     @Test
@@ -275,7 +291,7 @@ public class TransactionalLastReadPostServiceTest {
         lastReadPostService.markTopicAsRead(topic);
 
         verify(lastReadPostDao, never()).saveOrUpdate(argThat(
-                new LastReadPostMatcher(topic, topic.getLastPost().getCreationDate())));
+                new LastReadPostMatcher(topic, topic.getLastDisplayedPost().getCreationDate())));
     }
 
     @Test

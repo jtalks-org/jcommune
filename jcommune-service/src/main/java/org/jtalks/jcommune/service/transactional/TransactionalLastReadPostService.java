@@ -69,7 +69,7 @@ public class TransactionalLastReadPostService implements LastReadPostService, Pl
             List<Topic> notModifiedTopics = extractNotModifiedTopicsSinceForumMarkedAsRead(
                     currentUser, topics);
             for (Topic notModifiedTopic : notModifiedTopics) {
-                Post lastPost = notModifiedTopic.getLastPost();
+                Post lastPost = notModifiedTopic.getLastDisplayedPost();
                 notModifiedTopic.setLastReadPostDate(lastPost.getCreationDate());
             }
             //
@@ -201,7 +201,7 @@ public class TransactionalLastReadPostService implements LastReadPostService, Pl
     public void markTopicAsRead(Topic topic) {
         JCUser current = userService.getCurrentUser();
         if (!current.isAnonymous()) { // topics are always unread for anonymous users
-            saveLastReadPost(current, topic, topic.getLastPost());
+            saveLastReadPost(current, topic, topic.getLastDisplayedPost());
         }
     }
 
