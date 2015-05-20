@@ -54,6 +54,12 @@ function showExternalLinksDialog() {
     });
     tabNavigationOrder.push('#addMainLink');
     tabNavigationOrder.push('button.close');
+    tabNavigationOrder.push('#linkTitle');
+    tabNavigationOrder.push('#linkUrl');
+    tabNavigationOrder.push('#linkHint');
+    tabNavigationOrder.push('#saveLink');
+    tabNavigationOrder.push('#removeLink');
+    tabNavigationOrder.push('#cancelLink');
 
     var footerContent = '' +
         '<button id="addMainLink" class="btn btn-block list-of-links hide-element">' + $labelAdd + '</button> \
@@ -65,7 +71,11 @@ function showExternalLinksDialog() {
         '<table cellpadding="0" cellspacing="0" class="list-of-links"> <tbody>' +
             createLinksTableRows(elements) + ' \
          </tbody></table>' +
-         "<div id='linkEditorPlaceholder'></div>"+
+         "<div id='linkEditorPlaceholder' class='hide-element'>" +
+        Utils.createFormElement($labelTitle, 'linkTitle', 'text', 'edit-links dialog-input') +
+        Utils.createFormElement($labelUrl, 'linkUrl', 'text', 'edit-links dialog-input') +
+        Utils.createFormElement($labelHint, 'linkHint', 'text', 'edit-links dialog-input') +
+        "</div>"+
          '<span class="confirm-delete-text remove-links"></span> ';
 
     var editButtonClick = function (e) {
@@ -86,20 +96,6 @@ function showExternalLinksDialog() {
         toAction('add');
     };
 
-    var linksEditorCloseButtonInput = function (e) {
-        if ((e.keyCode || e.charCode) == tabCode) {
-            e.preventDefault();
-            if ($('#mainLinksEditor #linkTitle:visible')[0]) {
-                $('#mainLinksEditor #linkTitle').focus();
-            } else if ($('#mainLinksEditor #removeLink:visible')[0]) {
-                $('#mainLinksEditor #removeLink').focus();
-            }
-            else {
-                $(tabNavigationOrder[0]).focus();
-            }
-        }
-    }
-
     jDialog.createDialog({
         dialogId: 'mainLinksEditor',
         title: $labelLinksEditor,
@@ -110,12 +106,7 @@ function showExternalLinksDialog() {
         tabNavigation: tabNavigationOrder,
         dialogKeydown: Keymaps.linksEditor,
         handlers: {
-            '#addMainLink': {'click': addButtonClick},
-            'button.close': {'keydown': linksEditorCloseButtonInput},
-            '#mainLinksEditor #linkHint': {'keydown': Keymaps.linksEditorHintInput},
-            '#mainLinksEditor #saveLink': {'keydown': Keymaps.linksEditorSaveButton},
-            '#mainLinksEditor #cancelLink': {'keydown': Keymaps.linksEditorCancelButton},
-            '#mainLinksEditor #removeLink': {'keydown': Keymaps.linksEditorRemoveButton}
+            '#addMainLink': {'click': addButtonClick}
         },
         handlersDelegate: {
             '.icon-pencil': {'click': editButtonClick},
@@ -182,18 +173,12 @@ function listOfLinksVisible(visible) {
     }, '100');
 }
 
-function getLinkEditorFormElements() {
-    return  Utils.createFormElement($labelTitle, 'linkTitle', 'text', 'edit-links dialog-input') +
-            Utils.createFormElement($labelUrl, 'linkUrl', 'text', 'edit-links dialog-input') +
-            Utils.createFormElement($labelHint, 'linkHint', 'text', 'edit-links dialog-input');
-}
-
 function editLinksVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links')) {
             if (visible) {
                 var link = getLinkById(actionId);
-                $("#linkEditorPlaceholder").html(getLinkEditorFormElements());
+                $("#linkEditorPlaceholder").removeClass("hide-element");
                 $('#linkTitle').val(link.title);
                 $('#linkUrl').val(link.url);
                 $('#linkHint').val(link.hint);
@@ -240,7 +225,7 @@ function editLinksVisible(visible) {
                 });
             }
             else {
-                $("#linkEditorPlaceholder").html("");
+                $("#linkEditorPlaceholder").addClass("hide-element");
                 $('.edit-links').addClass("hide-element");
             }
             clearInterval(intervalID)
@@ -281,11 +266,11 @@ function addLinkVisible(visible) {
     var intervalID = setInterval(function () {
         if ($('.edit-links')) {
             if (visible) {
-                $("#linkEditorPlaceholder").html(getLinkEditorFormElements());
+                $("#linkEditorPlaceholder").removeClass("hide-element");
+                $('.edit-links').removeClass("hide-element");
                 $('#linkTitle').val("");
                 $('#linkUrl').val("");
                 $('#linkHint').val("");
-                $('.edit-links').removeClass("hide-element");
                 $('#linkTitle').focus();
                 $('#saveLink').unbind('click').bind('click', function (e) {
                     e.preventDefault();
@@ -328,7 +313,7 @@ function addLinkVisible(visible) {
                 });
             }
             else {
-                $("#linkEditorPlaceholder").html("");
+                $("#linkEditorPlaceholder").addClass("hide-element");
                 $('.edit-links').addClass("hide-element");
             }
             clearInterval(intervalID)

@@ -323,9 +323,22 @@ $(function () {
         var tabNavigation = function (selectors) {
             $.each(selectors, function (idx, v) {
                 var func = function (e) {
-                    if ((e.keyCode || e.charCode) == tabCode) {
+                    if ((e.keyCode || e.charCode) === tabCode) {
                         e.preventDefault();
-                        var nextElement = e.shiftKey? prevTabElm(selectors, idx) : nextTabElm(selectors, idx);
+                        // to prevent infinite cycle if all element are not visible or do not exist
+                        var skipCount = 0;
+                        var currentIndex = idx;
+                        var nextElement;
+                        do {
+                            if (e.shiftKey) {
+                                currentIndex = currentIndex == 0? selectors.length - 1 : currentIndex - 1;
+                            } else {
+                                currentIndex = currentIndex === (selectors.length - 1)? 0 : currentIndex + 1;
+                            }
+                            nextElement = jDialog.dialog.find(selectors[currentIndex]);
+                            ++skipCount;
+                        } while ((nextElement.length === 0 || !nextElement.is(":visible"))
+                                 && skipCount <= selectors.length);
                         nextElement.focus();
                     }
                 };
@@ -343,22 +356,6 @@ $(function () {
                     break;
             }
         };
-
-        var nextTabElm = function (els, curIdx) {
-            if (els.length == curIdx + 1) {
-                return jDialog.dialog.find(els[0]);
-            } else {
-                return jDialog.dialog.find(els[curIdx + 1])
-            }
-        }
-
-        var prevTabElm = function (els, curIdx) {
-            if (curIdx === 0) {
-                return jDialog.dialog.find(els[els.length - 1]);
-            } else {
-                return jDialog.dialog.find(els[curIdx - 1])
-            }
-        }
     }
 )
 ;

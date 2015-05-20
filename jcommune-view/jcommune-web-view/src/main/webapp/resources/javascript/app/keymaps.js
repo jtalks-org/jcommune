@@ -119,34 +119,6 @@ Keymaps.linksEditor = function (e) {
     }
 }
 
-Keymaps.linksEditorRemoveButton = function (e) {
-    if ((e.keyCode || e.charCode) == tabCode) {
-        e.preventDefault();
-        $('#mainLinksEditor #cancelLink').focus();
-    }
-}
-
-Keymaps.linksEditorCancelButton = function (e) {
-    if ((e.keyCode || e.charCode) == tabCode) {
-        e.preventDefault();
-        $('#mainLinksEditor button.close').focus();
-    }
-}
-
-Keymaps.linksEditorHintInput = function (e) {
-    if ((e.keyCode || e.charCode) == tabCode) {
-        e.preventDefault();
-        $('#mainLinksEditor #saveLink').focus();
-    }
-}
-
-Keymaps.linksEditorSaveButton = function (e) {
-    if ((e.keyCode || e.charCode) == tabCode) {
-        e.preventDefault();
-        $('#mainLinksEditor #cancelLink').focus();
-    }
-}
-
 Keymaps.uploadBannerCancelButton = function (e) {
     if ((e.keyCode || e.charCode) == tabCode) {
         e.preventDefault();

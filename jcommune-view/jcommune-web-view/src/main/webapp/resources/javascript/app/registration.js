@@ -143,7 +143,8 @@ function signUp(e) {
                 footerContent: footerContent,
                 maxWidth: 400,
                 maxHeight: 600,
-                tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '.captcha', '#signup-submit-button'],
+                tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '.captcha',
+                                '#signup-submit-button', 'button.close'],
                 handlers: {
                     '#signup-submit-button': {'click': submitFunc},
                     '.captcha-refresh, .captcha-img': {'click' : refreshCaptcha}
