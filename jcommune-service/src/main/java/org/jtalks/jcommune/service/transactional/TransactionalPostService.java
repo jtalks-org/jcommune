@@ -293,7 +293,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     /**
      * {@inheritDoc}
      */
-    @PreAuthorize("#post.userCreated.username == principal.username)") //draft can be deleted only by author
+    @PreAuthorize("#post.userCreated.username == principal.username") //draft can be deleted only by author
     @Override
     public void deleteDraft(Post post) {
         if (!PostState.DRAFT.equals(post.getState())) {
