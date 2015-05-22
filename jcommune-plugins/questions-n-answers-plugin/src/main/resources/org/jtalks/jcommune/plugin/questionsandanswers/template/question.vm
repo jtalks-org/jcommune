@@ -188,7 +188,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                            class="edit_button btn btn-mini"
                            title="${esc.html(${messages.getString("label.tips.answer")})}">
                           <i class="icon-pencil"></i>
-                          ${esc.html(${messages.getString("label.answer")})}
+                            #if (${currentUser.id} == ${post.userCreated.id})
+                              ${esc.html(${messages.getString("label.own.answer")})}
+                            #else
+                              ${esc.html(${messages.getString("label.answer")})}
+                            #end
                         </a>
                       #end
                         #if($canEdit)
@@ -245,7 +249,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #if(${postDto.id} != 0)
         <input id="savedMilis" type="hidden" value="${postDto.creationDate.millis}"/>
       #end
-      #bbeditor(${messages.getString("label.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
+      #if ($own)
+        #set($labelAnswer = "label.own.answer")
+      #else
+        #set($labelAnswer = "label.answer")
+      #end
+      #bbeditor(${messages.getString($labelAnswer)} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
     </form>
   #end
 
