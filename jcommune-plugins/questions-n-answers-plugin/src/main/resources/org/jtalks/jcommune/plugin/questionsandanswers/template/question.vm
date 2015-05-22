@@ -87,6 +87,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   #topicActions($targedId ${request} ${question} ${permissionTool})
 
   <div>
+    #set($labelAnswerType = "label.answer")
+    #if(${question.topicStarter.id} == ${currentUser.id})
+      #set($labelAnswerType = "label.own.answer")
+    #end
     #set($answersCount = ${postPage.getContent().size()} - 1)
     #foreach(${post} in ${postPage.content})
       #set($voteUpClass = "vote-up-unpressed")
@@ -188,7 +192,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
                            class="edit_button btn btn-mini"
                            title="${esc.html(${messages.getString("label.tips.answer")})}">
                           <i class="icon-pencil"></i>
-                          ${esc.html(${messages.getString("label.answer")})}
+                          ${esc.html(${messages.getString($labelAnswerType)})}
                         </a>
                       #end
                         #if($canEdit)
@@ -245,7 +249,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #if(${postDto.id} != 0)
         <input id="savedMilis" type="hidden" value="${postDto.creationDate.millis}"/>
       #end
-      #bbeditor(${messages.getString("label.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
+      #bbeditor(${messages.getString($labelAnswerType)} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
     </form>
   #end
 
