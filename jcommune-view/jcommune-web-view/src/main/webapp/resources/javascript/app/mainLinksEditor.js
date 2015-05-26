@@ -49,17 +49,10 @@ function showExternalLinksDialog() {
 
         idToExternalLinkMap[id] = externalLink;
         elements[i] = externalLink;
-        tabNavigationOrder.push("#editLink" + id);
-        tabNavigationOrder.push("#removeLink" + id);
+        tabNavigationOrder.push("#editLink" + id, "#removeLink" + id);
     });
-    tabNavigationOrder.push('#addMainLink');
-    tabNavigationOrder.push('button.close');
-    tabNavigationOrder.push('#linkTitle');
-    tabNavigationOrder.push('#linkUrl');
-    tabNavigationOrder.push('#linkHint');
-    tabNavigationOrder.push('#saveLink');
-    tabNavigationOrder.push('#removeLink');
-    tabNavigationOrder.push('#cancelLink');
+    tabNavigationOrder.push('#addMainLink', 'button.close', '#linkTitle', '#linkUrl',
+                            '#linkHint', '#saveLink', '#removeLink', '#cancelLink');
 
     var footerContent = '' +
         '<button id="addMainLink" class="btn btn-block list-of-links hide-element">' + $labelAdd + '</button> \
