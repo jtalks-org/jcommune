@@ -268,11 +268,22 @@ $(document).ready(function() {
 
     function composeMinuteLabel(numberMinutes) {
         var suffixGroup = numberMinutes % 10;
+        var between2And4Suffix = $labelMinutes24Suffix;
+        if (numberMinutes > 10 && numberMinutes < 20) {
+            between2And4Suffix = $labelMinutesMoreThan4Suffix;
+        }
+        var oneAtTheEndSuffix = $labelMinute1Suffix;
+        if (numberMinutes == 11) {
+            oneAtTheEndSuffix = $label11Suffix;
+
+        } else if (numberMinutes > 20) {
+                oneAtTheEndSuffix = $labelMinutes1AtTheEndSuffix;
+        }
         switch (suffixGroup) {
             case 1: return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
-                + $labelMinute1Suffix + " " + $labelAgo;
+                + oneAtTheEndSuffix + " " + $labelAgo;
             case 2:case 3:case 4: return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
-            + $labelMinutes24Suffix + " " + $labelAgo;
+            + between2And4Suffix + " " + $labelAgo;
             default: return  $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
                 + $labelMinutesMoreThan4Suffix + " " + $labelAgo;
         }
@@ -280,11 +291,21 @@ $(document).ready(function() {
 
     function composeHourLabel(numberHours) {
         var suffixGroup = numberHours % 10;
+        var between2And4Suffix = $labelHours24Suffix;
+        if (numberHours > 10 && numberHours < 20) {
+            between2And4Suffix = $labelHoursMoreThan4Suffix;
+        }
+        var oneAtTheEndSuffix = $labelHours1Suffix;
+        if (numberHours == 11) {
+            oneAtTheEndSuffix = $label11HoursSuffix;
+        } else if (numberHours > 20) {
+            oneAtTheEndSuffix = $labelHours1AteTheEndSuffix;
+        }
         switch (suffixGroup) {
             case 1: return $labelSaved + " " + numberHours.toString() + " " + $labelHour
-                + $labelHours1Suffix + " " + $labelAgo;
+                + oneAtTheEndSuffix + " " + $labelAgo;
             case 2:case 3:case 4: return $labelSaved + " " + numberHours.toString() + " " + $labelHour
-                + $labelHours24Suffix + " " + $labelAgo;
+                + between2And4Suffix + " " + $labelAgo;
             default: return $labelSaved + " " + numberHours.toString() + " " + $labelHour
                 + $labelHoursMoreThan4Suffix + " " + $labelAgo;
         }
