@@ -139,10 +139,16 @@ $(document).ready(function() {
     }
 
     function showConnectionErrorPopUp() {
-        jDialog.createDialog({
-            type: jDialog.alertType,
-            bodyMessage: $labelConnectionLost
+        $("#connectionErrorAlert").remove();
+        var closeButton = $("<a>").addClass('close').html("&times;").click(function() {
+            // for some reason standard "close" handler cause refresh of the page
+            $("#connectionErrorAlert").remove();
         });
+        var alert = $("<div>").attr("id", "connectionErrorAlert").addClass("alert alert-error")
+            .append(closeButton)
+            .append(document.createTextNode($labelConnectionLost));
+
+        $("form#postDto .btn-toolbar").after(alert);
     }
 
     /**
