@@ -170,7 +170,7 @@ $labelHours24Suffix = '<spring:message code="label.hours.2.4.suffix" htmlEscape=
 $labelHoursMoreThan4Suffix = '<spring:message code="label.hours.more.than.4.suffix" htmlEscape="true" text=""/>';
 $labelMinutesMoreThan4Suffix = '<spring:message code="label.minutes.more.than.4.suffix" htmlEscape="true" text=""/>';
 $labelHours1Suffix = '<spring:message code="label.hours.1.suffix" htmlEscape="true" text=""/>';
-$labelMessageSizeValidation = '<spring:message code="javax.validation.constraints.Size.message" htmlEscape="true"/>'
+$labelMessageSizeValidation = '<spring:message code="javax.validation.constraints.Size.message" htmlEscape="true"/>';
 $label11Suffix = '<spring:message code="label.11.minutes.suffix" htmlEscape="true" text=""/>';
 $label11HoursSuffix = '<spring:message code="label.11.hours.suffix" htmlEscape="true" text=""/>';
 $labelMinutes1AtTheEndSuffix = '<spring:message code="label.minute.one.at.the.end.suffix" htmlEscape="true" text=""/>';
