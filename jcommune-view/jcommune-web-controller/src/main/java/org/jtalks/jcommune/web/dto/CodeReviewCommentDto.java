@@ -14,10 +14,8 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.PostComment;
+import org.jtalks.jcommune.model.validation.annotations.NotBlankSized;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,9 +32,8 @@ public class CodeReviewCommentDto {
     private long id;
     
     private int lineNumber;
-    
-    @NotBlank
-    @Size(min = PostComment.BODY_MIN_LENGTH, max = PostComment.BODY_MAX_LENGTH)
+
+    @NotBlankSized(min = PostComment.BODY_MIN_LENGTH, max = PostComment.BODY_MAX_LENGTH)
     private String body;
     
     private long authorId;
