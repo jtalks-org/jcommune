@@ -110,6 +110,7 @@ $(document).ready(function() {
             timeout: 15000,
             data: JSON.stringify(data),
             success: function(resp) {
+                removeConnectionErrorAlert();
                 if (resp.status == 'SUCCESS') {
                     $("#draftId").val(resp.result);
                     lastSavingDate = new Date();
@@ -138,12 +139,15 @@ $(document).ready(function() {
         });
     }
 
-    function showConnectionErrorPopUp() {
+    function removeConnectionErrorAlert() {
         $("#connectionErrorAlert").remove();
-        var closeButton = $("<a>").addClass('close').html("&times;").click(function() {
-            // for some reason standard "close" handler cause refresh of the page
-            $("#connectionErrorAlert").remove();
-        });
+    }
+
+    function showConnectionErrorPopUp() {
+        removeConnectionErrorAlert();
+
+        // for some reason standard "close" handler cause refresh of the page
+        var closeButton = $("<a>").addClass('close').html("&times;").click(removeConnectionErrorAlert);
         var alert = $("<div>").attr("id", "connectionErrorAlert").addClass("alert alert-error")
             .append(closeButton)
             .append(document.createTextNode($labelConnectionLost));
