@@ -129,11 +129,13 @@ $(document).ready(function() {
                     if (jqHXHR.status == 0) {
                         //Need it because firefox makes no difference between refused connection and
                         //aborted request
-                        setTimeout(showConnectionErrorPopUp, 3000);
+                        setTimeout(function() {showConnectionErrorPopUp($labelConnectionLost);}, 3000);
                     } else {
-                        showConnectionErrorPopUp();
+                        showConnectionErrorPopUp($labelConnectionLost);
                     }
 
+                } else if (jqHXHR.status == 403) {
+                    showConnectionErrorPopUp($labelNotLoggedInError);
                 }
             }
         });
@@ -143,14 +145,14 @@ $(document).ready(function() {
         $("#connectionErrorAlert").remove();
     }
 
-    function showConnectionErrorPopUp() {
+    function showConnectionErrorPopUp(text) {
         removeConnectionErrorAlert();
 
         // for some reason standard "close" handler cause refresh of the page
         var closeButton = $("<a>").addClass('close').html("&times;").click(removeConnectionErrorAlert);
         var alert = $("<div>").attr("id", "connectionErrorAlert").addClass("alert alert-error")
             .append(closeButton)
-            .append(document.createTextNode($labelConnectionLost));
+            .append(document.createTextNode(text));
 
         $("form#postDto .btn-toolbar").after(alert);
     }

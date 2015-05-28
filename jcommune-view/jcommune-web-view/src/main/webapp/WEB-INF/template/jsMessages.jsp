@@ -175,3 +175,4 @@ $label11Suffix = '<spring:message code="label.11.minutes.suffix" htmlEscape="tru
 $label11HoursSuffix = '<spring:message code="label.11.hours.suffix" htmlEscape="true" text=""/>';
 $labelMinutes1AtTheEndSuffix = '<spring:message code="label.minute.one.at.the.end.suffix" htmlEscape="true" text=""/>';
 $labelHours1AteTheEndSuffix = '<spring:message code="label.hour.one.at.the.end.suffix" htmlEscape="true" text=""/>';
+$labelNotLoggedInError = '<spring:message code="label.not.logged.in.error" htmlEscape="true" text=""/>';
