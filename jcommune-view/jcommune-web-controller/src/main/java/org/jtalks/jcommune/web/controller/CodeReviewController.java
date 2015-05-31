@@ -114,7 +114,7 @@ public class CodeReviewController {
                     .addObject(TOPIC_DTO, topicDto)
                     .addObject(BRANCH_ID, branchId)
                     .addObject(SUBMIT_URL, "/reviews/new?branchId=" + branchId)
-                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
+                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
         }
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
