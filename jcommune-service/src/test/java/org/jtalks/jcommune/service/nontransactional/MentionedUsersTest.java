@@ -34,8 +34,7 @@ import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /** @author Anuar_Nurmakanov */
 public class MentionedUsersTest {
@@ -146,8 +145,8 @@ public class MentionedUsersTest {
         MentionedUsers mentionedUsers = MentionedUsers.parse(textWithUsersMentioning);
         Set<String> extractedUserNames = mentionedUsers.extractAllMentionedUsers(textWithUsersMentioning);
 
-        assertTrue(extractedUserNames.contains("иванов"), "иванов is mentioned, so he should be extracted.");
-        assertTrue(extractedUserNames.contains("\\yak"), "\\yak is mentioned, so he should be extracted.");
+        assertFalse(extractedUserNames.contains("иванов"), "We don't have to decode this values.");
+        assertFalse(extractedUserNames.contains("\\yak"), "We don't have to decode this value.");
     }
 
     @Test
@@ -416,13 +415,13 @@ public class MentionedUsersTest {
 
         MentionedUsers mentionedUsers = MentionedUsers.parse(notProcessedSource);
 
-        String expectedAfterProcess = format(MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE,
+        String wrongAfterProcess = format(MENTIONING_WITH_LINK_TO_PROFILE_TEMPALTE,
                 cyrillicCharsUserProfile, cyrillicCharsUserName,
                 cyrillicCharsUserWithSpaceProfile, cyrillicCharsUserNameWithSpaces);
 
         String actualAfterProcess = mentionedUsers.getTextWithProcessedUserTags(userDao);
 
-        assertEquals(actualAfterProcess, expectedAfterProcess);
+        assertFalse(actualAfterProcess.equals(wrongAfterProcess), "Values which seems to be encoded should not be decoded.");
     }
 
     @Test

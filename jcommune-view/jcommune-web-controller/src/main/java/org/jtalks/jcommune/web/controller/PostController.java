@@ -66,7 +66,7 @@ public class PostController {
     public static final String POST_DTO = "postDto";
     public static final String TOPIC_TITLE = "topicTitle";
     public static final String BREADCRUMB_LIST = "breadcrumbList";
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
 
     private PostService postService;
     private LastReadPostService lastReadPostService;

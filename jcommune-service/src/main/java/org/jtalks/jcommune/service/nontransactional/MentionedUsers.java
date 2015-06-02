@@ -26,9 +26,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -189,57 +186,24 @@ public class MentionedUsers {
             while (matcher.find()) {
                 String userBBCode = matcher.group();
                 String mentionedUser = userBBCode.replaceAll("\\[.*?\\]", StringUtils.EMPTY);
-                mentionedUsernames.add(decodeUsername(mentionedUser));
+                mentionedUsernames.add(replacePlaceholdersWithChars(mentionedUser));
             }
             return mentionedUsernames;
         }
         return Collections.emptySet();
     }
 
-    private String decodeUsername(String encodedUsername) {
-        String decodeUserName = encodedUsername;
-
-        Object jsDecodedName = invokeJavaScript("decodeURI", encodedUsername.replace("\\", "\\\\"));
-        if (jsDecodedName != null) {
-            decodeUserName = jsDecodedName.toString();
-        }
-
+    private String replacePlaceholdersWithChars(String userNameWithPlaceholders) {
+        String formattedUserName = userNameWithPlaceholders;
         for (Map.Entry<String, String> decodeEntry : CHARS_PLACEHOLDERS.entrySet()) {
-            decodeUserName = decodeUserName.replace(decodeEntry.getValue(), decodeEntry.getKey());
+            formattedUserName = formattedUserName.replace(decodeEntry.getValue(), decodeEntry.getKey());
         }
-        encodedUserNames.put(decodeUserName, encodedUsername);
-        return decodeUserName;
+        encodedUserNames.put(formattedUserName, userNameWithPlaceholders);
+        return formattedUserName;
     }
 
     private String encodeUsername(String decodedUsername) {
         return encodedUserNames.get(decodedUsername);
-    }
-
-    /**
-     * Invokes JavaScript function via built-in JavaScript engine
-     *
-     * @param functionName name of the function to be invoked
-     * @param arguments    arguments of the function joined in one string
-     * @return result of the invocation or null if some error happened
-     */
-    private Object invokeJavaScript(String functionName, String arguments) {
-        Object result = null;
-
-        ScriptEngineManager factory = new ScriptEngineManager();
-        ScriptEngine engine = factory.getEngineByName("JavaScript");
-
-        if (engine == null) {
-            LOGGER.error("JavaScript engige was not found.");
-            return result;
-        }
-
-        try {
-            result = engine.eval(functionName + "('" + arguments + "')").toString();
-        } catch (ScriptException e) {
-            LOGGER.error("Error while invoking JavaScript function.", e);
-        }
-
-        return result;
     }
 
     /**
