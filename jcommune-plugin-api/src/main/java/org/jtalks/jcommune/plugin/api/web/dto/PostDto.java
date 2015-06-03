@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.plugin.api.web.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jtalks.jcommune.model.entity.Post;
@@ -26,7 +25,6 @@ import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
  */
 public class PostDto {
 
-    @NotBlank
     @BbCodeAwareSize(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH)
     @BbCodeNesting
     private String bodyText;
