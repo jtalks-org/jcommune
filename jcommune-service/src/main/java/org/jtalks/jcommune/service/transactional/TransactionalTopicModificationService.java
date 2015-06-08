@@ -325,7 +325,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * {@inheritDoc}
      */
     @PreAuthorize("(hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
-            "#topic.containsOwnerPostsOnly) or " +
+            "#topic.containsOwnerPostsOnly and #topic.topicStarter.id == principal.id)  or " +
             "(hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
             "hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS'))")
     @Override

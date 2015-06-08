@@ -209,14 +209,16 @@
             <c:choose>
               <%--Controls for the first post, they affect topic--%>
               <c:when test="${isFirstPost}">
-                <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
-                                      permission="BranchPermission.DELETE_OWN_POSTS">
-                  <c:set var="isDeleteButtonAvailable"
-						 value='${topic.containsOwnerPostsOnly}'/>
+                  <c:if test='${userId == topic.topicStarter.id}'>
+                      <jtalks:hasPermission targetId="${topic.branch.id}" targetType="BRANCH"
+                                    permission="BranchPermission.DELETE_OWN_POSTS">
+                          <c:set var="isDeleteButtonAvailable"
+				              value='${topic.containsOwnerPostsOnly}'/>
+				      </jtalks:hasPermission>
+			      </c:if>
                   <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                                         permission='BranchPermission.DELETE_OTHERS_POSTS'>
                     <c:set var="isDeleteButtonAvailable" value="true"/>
-                  </jtalks:hasPermission>
                 </jtalks:hasPermission>
               </c:when>
               <%--Controls for the any other ordinaru post--%>
