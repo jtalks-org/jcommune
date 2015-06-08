@@ -88,7 +88,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
   <div>
     #set($labelAnswerType = "label.answer")
-    #if(${question.topicStarter.id} == ${currentUser.id})
+    #if(!${currentUser.anonymous} && ${question.topicStarter.id} == ${currentUser.id})
       #set($labelAnswerType = "label.own.answer")
     #end
     #set($answersCount = ${postPage.getContent().size()} - 1)
