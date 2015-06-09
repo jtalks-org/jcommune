@@ -20,6 +20,7 @@ import com.sun.syndication.feed.rss.Item;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PostState;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -58,8 +59,8 @@ public class RssViewerTest {
         rssViewer.setContentType("application/rss+xml;charset=UTF-8");
         rssViewerMock = mock(RssViewer.class);
         channel = new Channel();
-        model = new HashMap<String, Object>();
-        List<Topic> topics = new ArrayList<Topic>();
+        model = new HashMap<>();
+        List<Topic> topics = new ArrayList<>();
         JCUser user = new JCUser("username", "email", "password");
         user.setSignature("Signature");
         Post post = new Post(user, "sagjalighjh eghjwhjslhjsdfhdfhljdfh");
@@ -118,6 +119,17 @@ public class RssViewerTest {
 
         verify(rssViewerMock).buildFeedMetadata(model, channel, request);
         verify(rssViewerMock).buildFeedItems(model, request, response);
+    }
+
+    @Test
+    public void buildFeedItemsShouldTakeInAccountOnlyDisplayedPosts() throws Exception{
+        topic.addPost(new Post(new JCUser("qwerty", "qwerty@qwert.com", "wq"), "content", PostState.DRAFT));
+
+        List<Item> items = rssViewer.buildFeedItems(model, request, response);
+
+        for (Item item : items) {
+            assertEquals(item.getDescription().getValue(), topic.getLastDisplayedPost().getPostContent());
+        }
     }
 
 }

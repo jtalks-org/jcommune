@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.questionsandanswers.controller;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.ByteStreams;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.velocity.app.VelocityEngine;
@@ -540,7 +541,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      *
      * @return collection of posts sorted by rating and creation date
      */
-    private List<Post> getSortedPosts(List<Post> posts) {
+    @VisibleForTesting
+    List<Post> getSortedPosts(List<Post> posts) {
         List<Post> result = new ArrayList<>(posts);
         Post question = result.remove(0);
         Collections.sort(result, new PostComparator());

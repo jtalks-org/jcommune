@@ -664,6 +664,20 @@ public class QuestionsAndAnswersControllerTest {
         controller.canPost(1L);
     }
 
+    @Test
+    public void showQuestionsShouldShowOnlyDisplayedPosts() throws Exception {
+        Topic topic = getTopicWithPosts(5);
+        topic.addPost(new Post(null, null, PostState.DRAFT));
+        topic.setBranch( new Branch("name", "description"));
+
+        when(topicService.get(1L, QuestionsAndAnswersPlugin.TOPIC_TYPE)).thenReturn(topic);
+        when(userReader.getCurrentUser()).thenReturn(new JCUser("name", "name@mail.ru", "12"));
+
+        controller.showQuestion(request, new ExtendedModelMap(), 1L);
+
+        verify(controller).getSortedPosts(topic.getDisplayedPosts());
+    }
+
     private Post getPostWithNotRemovedComments(int numberOfComments) {
         Post post = new Post(null, null);
         for (int i = 0; i < numberOfComments; i ++) {
