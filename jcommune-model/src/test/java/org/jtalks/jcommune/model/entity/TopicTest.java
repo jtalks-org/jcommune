@@ -502,6 +502,24 @@ public class TopicTest {
 		assertTrue(topic.isContainsOwnerPostsOnly());
 	}
 
+    @Test
+    public void recalculateModificationDateShouldTakeInAccountOnlyDisplayedPosts() {
+        Topic topic = createTopic();
+        DateTime lastModificationDate = new DateTime();
+
+        topic.getFirstPost().setCreationDate(lastModificationDate.minusDays(1));
+        topic.getPosts().get(1).setCreationDate(lastModificationDate);
+        Post post3 = new Post();
+        post3.setCreationDate(lastModificationDate.plusDays(2));
+        post3.setState(PostState.DRAFT);
+
+        topic.addPost(post3);
+
+        topic.recalculateModificationDate();
+
+        assertEquals(topic.getModificationDate(), lastModificationDate);
+    }
+
     private Topic createTopic() {
 		JCUser topicStarter = new JCUser();
 

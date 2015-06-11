@@ -428,7 +428,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void recalculateModificationDate() {
         DateTime newTopicModificationDate = getFirstPost().getCreationDate();
-        for (Post post : posts) {
+        for (Post post : getDisplayedPosts()) {
             if (post.getCreationDate().isAfter(newTopicModificationDate.toInstant())) {
                 newTopicModificationDate = post.getCreationDate();
             }
@@ -441,7 +441,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public DateTime getLastModificationPostDate() {
         DateTime newTopicModificationDate = getFirstPost().getLastTouchedDate();
-        for (Post post : posts) {
+        for (Post post : getDisplayedPosts()) {
             if (post.getLastTouchedDate().isAfter(newTopicModificationDate.toInstant())) {
                 newTopicModificationDate = post.getLastTouchedDate();
             }
