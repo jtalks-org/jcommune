@@ -23,6 +23,11 @@
   <!--This property is used in jcommune-service\src\main\resources\org\jtalks\jcommune\service\applicationContext-service.xml -->
   <Environment name="JCOMMUNE_PLUGIN_FOLDER" value="~" type="java.lang.String"/>
 
+  <!--You will need this property for changing path to log4j configuration file. -->
+  <!--Example of log4j you can find in jcommune-view\jcommune-web-view\src\main\resources\log4j.xml -->
+  <!--that used by default.  -->
+  <!--<Environment name="JCOMMUNE_LOG4J_CONFIGURATION_FILE" value="/log4j.xml" type="java.lang.String"/> -->
+  
   <!-- You'll need this configuration to be in $TOMCAT_HOME/conf only if you need to run Poulpe together with JCommune -->
   <!-- Note, that if you really need this, ehcache configuration should have the same port as Poulpe ehcache configuration. -->
   <!--Environment name="EH_CACHE_CONFIG" value="file:/home/tomcat/app/tomcat-uat/conf/jcommune.ehcache.xml" type="java.lang.String" /-->
