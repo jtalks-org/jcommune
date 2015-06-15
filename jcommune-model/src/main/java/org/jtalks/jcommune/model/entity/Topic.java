@@ -614,7 +614,8 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @return if current topic has posts still unread by the current user
      */
     public boolean isHasUpdatesInDisplayedPosts() {
-        return (lastReadPostDate == null) || (lastReadPostDate.isBefore(getLastDisplayedPost().getCreationDate()));
+        return (lastReadPostDate == null)
+                || (lastReadPostDate.isBefore(getLastDisplayedPost().getCreationDate().withMillis(0)));
     }
 
     /**

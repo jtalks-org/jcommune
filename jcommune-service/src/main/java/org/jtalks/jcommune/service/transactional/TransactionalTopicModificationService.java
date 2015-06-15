@@ -398,6 +398,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
             answer.setPostContent(answerBody);
             answer.setState(PostState.DISPLAYED);
             answer.updateCreationDate();
+            answer.getTopic().recalculateModificationDate();
         }
         return answer;
     }

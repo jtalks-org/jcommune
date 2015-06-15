@@ -695,6 +695,23 @@ public class TransactionalTopicModificationServiceTest {
         verify(topicDao).saveOrUpdate(topic);
     }
 
+    @Test
+    public void postingOfDraftShouldUpdateModificationDate() throws Exception{
+        Topic topic = new Topic(user, "title");
+        topic.setType(TopicTypeName.DISCUSSION.getName());
+        topic.setBranch(new Branch("name", "description"));
+        Post draft = new Post(user, "blahblah", PostState.DRAFT);
+        topic.addPost(draft);
+
+        when(userService.getCurrentUser()).thenReturn(user);
+        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(topic);
+        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+
+        topicService.replyToTopic(TOPIC_ID, "qwerty", BRANCH_ID);
+
+        assertEquals(topic.getModificationDate(), draft.getCreationDate());
+    }
+
     private Branch createBranch() {
         Branch branch = new Branch("branch name", "branch description");
         branch.setId(BRANCH_ID);
