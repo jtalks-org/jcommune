@@ -615,7 +615,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public boolean isHasUpdatesInDisplayedPosts() {
         return (lastReadPostDate == null)
-                || (lastReadPostDate.isBefore(getLastDisplayedPost().getCreationDate().withMillis(0)));
+                || (lastReadPostDate.isBefore(getLastDisplayedPost().getCreationDate().withMillisOfSecond(0)));
     }
 
     /**
