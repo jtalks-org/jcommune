@@ -125,7 +125,6 @@ $(document).ready(function() {
             error: function (jqHXHR, status, e) {
                 isSaved = false;
                 if (status == 'timeout' || jqHXHR.status == 0) {
-                    clearInterval(intervalId);
                     if (jqHXHR.status == 0) {
                         //Need it because firefox makes no difference between refused connection and
                         //aborted request
@@ -154,7 +153,7 @@ $(document).ready(function() {
             .append(closeButton)
             .append(document.createTextNode(text));
 
-        $("form#postDto .btn-toolbar").after(alert);
+        $("form.submit-form .btn-toolbar").after(alert);
     }
 
     /**
