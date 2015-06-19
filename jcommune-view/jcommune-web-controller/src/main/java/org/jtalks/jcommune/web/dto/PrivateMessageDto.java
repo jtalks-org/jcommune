@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.dto;
 import org.hibernate.validator.constraints.NotBlank;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
+import org.jtalks.jcommune.model.validation.annotations.NotBlankSized;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
 import org.jtalks.jcommune.web.validation.annotations.Exists;
@@ -36,13 +37,10 @@ import javax.validation.constraints.Size;
 public class PrivateMessageDto {
 
 
-    @NotBlank
-    @Size(min = PrivateMessage.MIN_TITLE_LENGTH, max = PrivateMessage.MAX_TITLE_LENGTH, message = "{title.length}")
+    @NotBlankSized(min = PrivateMessage.MIN_TITLE_LENGTH, max = PrivateMessage.MAX_TITLE_LENGTH)
     private String title;
 
-    @NotBlank
-    @BbCodeAwareSize(min = PrivateMessage.MIN_MESSAGE_LENGTH,
-            max = PrivateMessage.MAX_MESSAGE_LENGTH, message = "{body.length}")
+    @BbCodeAwareSize(min = PrivateMessage.MIN_MESSAGE_LENGTH, max = PrivateMessage.MAX_MESSAGE_LENGTH)
     @BbCodeNesting
     private String body;
 
