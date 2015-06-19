@@ -34,9 +34,11 @@ $labelContactsAddDialog = '<spring:message code="label.contacts.addDialog" htmlE
 
 $labelRegistrationSuccess = '<spring:message code="label.registration.success" htmlEscape="true"/>';
 $labelRegistrationFailture = '<spring:message code="label.registration.failture" htmlEscape="true"/>';
+$labelSendConfirmationEmail = '<spring:message code="label.email.confirmation" htmlEscape="true"/>';
 $labelRegistrationConnectionError = '<spring:message code="label.registration.connection.error" htmlEscape="true"/>';
 $labelHoneypotCaptchaFilled = '<spring:message code="label.honeypot.not.null" htmlEscape="true"/>';
 $labelAuthenticationConnectionError = '<spring:message code="label.authentication.connection.error" htmlEscape="true"/>';
+$labelEmailConfirmationWasSent = '<spring:message code="label.registration.success" htmlEscape="true"/>';
 $labelUrlHeader = '<spring:message code="label.url.header" htmlEscape="true"/>';
 $labelUrlText = '<spring:message code="label.url.text" htmlEscape="true"/>';
 $labelUrl = '<spring:message code="label.url" htmlEscape="true"/>';

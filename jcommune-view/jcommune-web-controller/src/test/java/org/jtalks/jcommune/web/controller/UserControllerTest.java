@@ -28,10 +28,12 @@ import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
@@ -73,6 +75,7 @@ public class UserControllerTest {
     private final String EMAIL = "mail@mail.com";
     private UserController userController;
     private UserService userService;
+    private MailService mailService;
     private PluginService pluginService;
     private Authenticator authenticator;
     private LocaleResolver localeResolver;
@@ -83,6 +86,7 @@ public class UserControllerTest {
     @BeforeMethod
     public void setUp() throws IOException {
         userService = mock(UserService.class);
+        mailService = mock(MailService.class);
         pluginService = mock(PluginService.class);
         authenticator = mock(Authenticator.class);
         requestContextUtils = mock(RequestContextUtils.class);
@@ -93,7 +97,7 @@ public class UserControllerTest {
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
         when(request.getHeader("X-FORWARDED-FOR")).thenReturn("192.168.1.1");
-        userController = new UserController(userService, authenticator, pluginService, userService);
+        userController = new UserController(userService, authenticator, pluginService, userService,mailService);
     }
 
     @Test
@@ -375,7 +379,7 @@ public class UserControllerTest {
     @Test(enabled = false)
     public void testAjaxLoginSuccess() throws Exception {
         when(userService.loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), 
-                any(HttpServletResponse.class))).thenReturn(true);
+                any(HttpServletResponse.class))).thenReturn(AuthenticationStatus.AUTHENTICATED);
 
         JsonResponse response = userController.loginAjax(null, null, "on", null, null);
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
@@ -387,7 +391,7 @@ public class UserControllerTest {
     @Test
     public void testAjaxLoginFailure() throws Exception {
         when(userService.loginUser(any(LoginUserDto.class),any(HttpServletRequest.class), 
-                any(HttpServletResponse.class))).thenReturn(false);
+                any(HttpServletResponse.class))).thenReturn(AuthenticationStatus.AUTHENTICATION_FAIL);
         JsonResponse response = userController.loginAjax(null, null, "on", request, null);
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
         verify(userService).loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), any(HttpServletResponse.class));
@@ -417,7 +421,7 @@ public class UserControllerTest {
     public void testLoginWithCorrectParametersShouldBeSuccessful() throws Exception {
         LoginUserDto loginUserDto = new LoginUserDto("userName", "password", true, "192.168.1.1");
         when(userService.loginUser(loginUserDto, any(HttpServletRequest.class), any(HttpServletResponse.class)))
-                .thenReturn(true);
+                .thenReturn(AuthenticationStatus.AUTHENTICATED);
         
         ModelAndView view = userController.login(loginUserDto, "on", null, request, null);
 
@@ -428,7 +432,7 @@ public class UserControllerTest {
     @Test
     public void testLoginWithIncorrectParametersShouldFail() throws Exception {
         when(userService.loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), any(HttpServletResponse.class)))
-                .thenReturn(false);
+                .thenReturn(AuthenticationStatus.AUTHENTICATION_FAIL);
         
         LoginUserDto loginUserDto = new LoginUserDto();
         ModelAndView view = userController.login(loginUserDto, null,  "on", request, null);

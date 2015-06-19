@@ -26,10 +26,12 @@ import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
+import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
@@ -103,20 +105,23 @@ public class UserController {
     private final Authenticator authenticator;
     private final PluginService pluginService;
     private final UserService plainPasswordUserService;
+    private final MailService mailService;
 
     /**
      * @param userService              to delegate business logic invocation
      * @param authenticator            default authenticator
      * @param pluginService            for communication with available registration or authentication plugins
      * @param plainPasswordUserService strategy for authenticating by password without hashing
+     * @param mailService              to send account confirmation
      */
     @Autowired
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService,
-                          UserService plainPasswordUserService) {
+                          UserService plainPasswordUserService, MailService mailService) {
         this.userService = userService;
         this.authenticator = authenticator;
         this.pluginService = pluginService;
         this.plainPasswordUserService = plainPasswordUserService;
+        this.mailService = mailService;
     }
 
     /**
@@ -408,19 +413,27 @@ public class UserController {
                                   HttpServletRequest request, HttpServletResponse response) {
         LoginUserDto loginUserDto = new LoginUserDto(username, password, rememberMe.equals(REMEMBER_ME_ON),
                 getClientIpAddress(request));
-        boolean isAuthenticated;
+        AuthenticationStatus authenticationStatus;
         try {
-            isAuthenticated = loginWithLockHandling(loginUserDto, request, response,
+            authenticationStatus = loginWithLockHandling(loginUserDto, request, response,
                     userService);
         } catch (NoConnectionException e) {
             return getCustomErrorJsonResponse("connectionError");
         } catch (UnexpectedErrorException e) {
             return getCustomErrorJsonResponse("unexpectedError");
         }
-        if (isAuthenticated) {
+        if (authenticationStatus.equals(AuthenticationStatus.AUTHENTICATED)) {
             LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
             localeResolver.setLocale(request, response, userService.getCurrentUser().getLanguage().getLocale());
             return new JsonResponse(JsonResponseStatus.SUCCESS);
+        } else if(authenticationStatus.equals(AuthenticationStatus.NOT_ENABLED)){
+            JCUser user;
+            try {
+                user = userService.getByUsername(username);
+            } catch (NotFoundException e) {
+                return getCustomErrorJsonResponse("unexpectedError");
+            }
+            return new JsonResponse(JsonResponseStatus.FAIL, user.getId());
         } else {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
@@ -448,7 +461,7 @@ public class UserController {
         }
         try {
             isAuthenticated = loginWithLockHandling(loginUserDto, request, response,
-                    userService);
+                    userService).equals(AuthenticationStatus.AUTHENTICATED);
         } catch (NoConnectionException e) {
             return new ModelAndView(AUTH_SERVICE_FAIL_URL);
         } catch (UnexpectedErrorException e) {
@@ -466,7 +479,7 @@ public class UserController {
         }
     }
 
-    private boolean loginWithLockHandling(LoginUserDto loginUserDto, HttpServletRequest request,
+    private AuthenticationStatus loginWithLockHandling(LoginUserDto loginUserDto, HttpServletRequest request,
                                           HttpServletResponse response, UserService userService)
             throws UnexpectedErrorException, NoConnectionException {
         for (int i = 0; i < LOGIN_TRIES_AFTER_LOCK; i++) {
@@ -505,5 +518,15 @@ public class UserController {
         return ipAddress;
     }
 
-
+    @RequestMapping(value = "/confirm", method=RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse sendEmailConfirmation(@RequestParam("id")long id){
+        try {
+            JCUser recipient = userService.get(id);
+            mailService.sendAccountActivationMail(recipient);
+        } catch (Exception e) {
+            return new JsonResponse(JsonResponseStatus.FAIL);
+        }
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
 }

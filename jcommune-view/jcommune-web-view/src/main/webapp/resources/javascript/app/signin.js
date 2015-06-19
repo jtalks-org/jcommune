@@ -110,6 +110,31 @@ $(function () {
     }
 });
 
+function sendEmailConfirmation(recipient) {
+  $.ajax({
+          type: 'GET',
+          url: $root + '/confirm?id='+recipient,
+          success: function () {
+          var message = "";
+             if (resp.status == 'SUCCESS') {
+                message = $labelEmailConfirmationWasSent;
+              } else {
+                message = $labelError500Detail
+              }
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelEmailConfirmationWasSent
+              });
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            jDialog.createDialog({
+               type: jDialog.alertType,
+               bodyMessage: $labelError500Detail
+             });
+          }
+  });
+};
+
 /**
  * Handles submit request from login form by sending POST request, with params
  * such as user and password, if "remember me" wasn't checked, for request will be
@@ -152,15 +177,30 @@ function sendLoginPost(e) {
                         bodyMessage: $labelAuthenticationConnectionError
                     });
                 } else {
+                    var error_message = '';
+                    var userId = resp.result;
+                    if (userId == null) {
+                        error_message = $labelLoginError;
+                    } else {
+                        error_message=$labelSendConfirmationEmail
+                            .replace("{0}",'<a id="confirm_email_link" href="'+ $root + '/confirm" > ')
+                            .replace("{1}","</a>");
+                    }
+
                     jDialog.prepareDialog(jDialog.dialog);
 
                     ErrorUtils.addErrorStyles('#userName');
                     ErrorUtils.addErrorStyles('#password');
 
                     passwordElement.val("");
-                    passwordElement.parent().append('<span class="help-inline _error">' + $labelLoginError + '</span>');
+                    passwordElement.parent().append('<span class="help-inline _error">' + error_message + '</span>');
                     jDialog.resizeDialog(jDialog.dialog);
                     jDialog.focusFirstElement();
+
+                    $("#confirm_email_link").on('click', function (e) {
+                        e.preventDefault();
+                        sendEmailConfirmation(userId);
+                    });
                 }
             }
         },

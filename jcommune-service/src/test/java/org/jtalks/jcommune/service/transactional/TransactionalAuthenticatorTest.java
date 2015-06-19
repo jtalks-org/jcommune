@@ -31,6 +31,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.PluginService;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -40,6 +41,7 @@ import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.mockito.Mock;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContext;
@@ -66,7 +68,6 @@ import static org.testng.Assert.*;
  * @author Andrey Pogorelov
  */
 public class TransactionalAuthenticatorTest {
-
     @Mock
     private PluginLoader pluginLoader;
     @Mock
@@ -157,9 +158,10 @@ public class TransactionalAuthenticatorTest {
         prepareAuth();
         preparePlugin(user.getUsername(), passwordHash, authInfo);
 
-        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
+        AuthenticationStatus result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
-        assertTrue(result, "Authentication existing user with correct credentials should be successful.");
+        assertEquals(result, AuthenticationStatus.AUTHENTICATED,
+                "Authentication existing user with correct credentials should be successful.");
     }
 
     @Test
@@ -173,9 +175,10 @@ public class TransactionalAuthenticatorTest {
         prepareAuth();
         preparePlugin(user.getUsername(), passwordHash, authInfo);
 
-        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
+        AuthenticationStatus result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
-        assertTrue(result, "Authentication not existing user with correct credentials should be successful.");
+        assertEquals(result, AuthenticationStatus.AUTHENTICATED,
+                "Authentication not existing user with correct credentials should be successful.");
     }
 
     @Test
@@ -198,11 +201,32 @@ public class TransactionalAuthenticatorTest {
                 .thenThrow(new BadCredentialsException(null)).thenReturn(expectedToken);
         preparePlugin(oldUser.getUsername(), passwordHash, authInfo);
 
-        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
+        AuthenticationStatus result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
         verify(userDao).saveOrUpdate(oldUser);
 
-        assertTrue(result, "Authentication user with new credentials should be successful.");
+        assertEquals(result, AuthenticationStatus.AUTHENTICATED,
+                "Authentication user with new credentials should be successful.");
+    }
+
+    @Test
+    public void authenticateNotEnabledUserShouldFail() throws Exception {
+            String password = "password";
+            String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
+            LoginUserDto loginUserDto = createDefaultLoginUserDto();
+            JCUser oldUser = prepareOldUser(loginUserDto.getUserName());
+            when(userDao.getByUsername(oldUser.getUsername())).thenReturn(oldUser);
+            when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
+            when(securityFacade.getContext()).thenReturn(securityContext);
+            when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                    .thenThrow(new DisabledException(null));
+
+            preparePlugin(oldUser.getUsername(), passwordHash, Collections.EMPTY_MAP);
+
+            AuthenticationStatus result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
+
+            assertEquals(result, AuthenticationStatus.NOT_ENABLED,
+                    "Authenticate user with bad credentials should fail.");
     }
 
     @Test
@@ -223,10 +247,11 @@ public class TransactionalAuthenticatorTest {
         prepareAuth();
         preparePlugin(username, passwordHash, authInfo);
 
-        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
+        AuthenticationStatus result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
-        assertTrue(result, "Authentication not existing user with correct credentials should be successful " +
-                "if case Plugin and JCommune use the same database.");
+        assertEquals(result, AuthenticationStatus.AUTHENTICATED,
+                "Authentication not existing user with correct credentials should be successful " +
+                        "if case Plugin and JCommune use the same database.");
     }
 
     @Test
@@ -244,9 +269,10 @@ public class TransactionalAuthenticatorTest {
 
         when(pluginLoader.getPlugins(any(TypeFilter.class))).thenReturn(Collections.EMPTY_LIST);
 
-        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
+        AuthenticationStatus result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
-        assertFalse(result, "Authenticate user with new credentials should fail if plugin not found.");
+        assertEquals(result, AuthenticationStatus.AUTHENTICATION_FAIL,
+                "Authenticate user with new credentials should fail if plugin not found.");
     }
 
     @Test
@@ -263,9 +289,10 @@ public class TransactionalAuthenticatorTest {
 
         preparePlugin(oldUser.getUsername(), passwordHash, Collections.EMPTY_MAP);
 
-        boolean result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
+        AuthenticationStatus result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
-        assertFalse(result, "Authenticate user with bad credentials should fail.");
+        assertEquals(result, AuthenticationStatus.AUTHENTICATION_FAIL,
+                "Authenticate user with bad credentials should fail.");
     }
 
     @Test(expectedExceptions = NoConnectionException.class)

@@ -32,6 +32,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.api.service.UserReader;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
@@ -333,7 +334,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public boolean loginUser(LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response)
+    public AuthenticationStatus loginUser(LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
         return authenticator.authenticate(loginUserDto, request, response);
     }
