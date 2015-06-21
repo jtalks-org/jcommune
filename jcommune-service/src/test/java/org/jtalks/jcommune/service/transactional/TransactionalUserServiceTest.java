@@ -513,8 +513,7 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testLoginNotActivatedUserShouldFail()
-            throws UnexpectedErrorException, NoConnectionException {
+    public void testLoginNotActivatedUserShouldFail() throws Exception {
         HttpServletRequest httpRequest = new MockHttpServletRequest();
         HttpServletResponse httpResponse = new MockHttpServletResponse();
         LoginUserDto loginUserDto = new LoginUserDto("username", "password", true, "192.168.1.1");

@@ -211,18 +211,10 @@ public class TransactionalAuthenticatorTest {
 
     @Test
     public void authenticateNotEnabledUserShouldFail() throws Exception {
-            String password = "password";
-            String passwordHash = "5f4dcc3b5aa765d61d8327deb882cf99";
             LoginUserDto loginUserDto = createDefaultLoginUserDto();
-            JCUser oldUser = prepareOldUser(loginUserDto.getUserName());
-            when(userDao.getByUsername(oldUser.getUsername())).thenReturn(oldUser);
-            when(encryptionService.encryptPassword(password)).thenReturn(passwordHash);
-            when(securityFacade.getContext()).thenReturn(securityContext);
+            prepareOldUser(loginUserDto.getUserName());
             when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                     .thenThrow(new DisabledException(null));
-
-            preparePlugin(oldUser.getUsername(), passwordHash, Collections.EMPTY_MAP);
-
             AuthenticationStatus result = authenticator.authenticate(loginUserDto, httpRequest, httpResponse);
 
             assertEquals(result, AuthenticationStatus.NOT_ENABLED,
