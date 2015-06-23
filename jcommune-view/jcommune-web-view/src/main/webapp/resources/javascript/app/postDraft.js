@@ -26,6 +26,7 @@ $(document).ready(function() {
     var dateUpdateInterval;
     var prevSavedMilis = 0;
     var maxTextLength = 20000;
+    var pendingSaveRequest;
     var errorSpan = "<div id='bodyText-errors' class='cleared'><span class='help-inline focusToError' data-original-title=''>"
         + $labelMessageSizeValidation.replace('{min}',minDraftLen.toString()).replace('{max}',maxTextLength.toString()) + "</span></div>";
 
@@ -103,7 +104,7 @@ $(document).ready(function() {
         var content = postTextArea.val();
         var topicId = $("#topicId").val();
         var data = {bodyText: content, topicId: topicId};
-        $.ajax({
+        pendingSaveRequest = $.ajax({
             url: baseUrl + "/posts/savedraft",
             type: 'POST',
             contentType: "application/json",
@@ -155,6 +156,11 @@ $(document).ready(function() {
 
         $("form.submit-form .btn-toolbar").after(alert);
     }
+
+    $("#post").mousedown(function(e) {
+        //We need to abort save request in case if user posts message to prevent race condition
+        pendingSaveRequest.abort();
+    });
 
     /**
      * Sends request for deletion draft
