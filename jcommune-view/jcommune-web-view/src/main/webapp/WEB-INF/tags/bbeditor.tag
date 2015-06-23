@@ -105,7 +105,8 @@
       <i class="icon-link"></i>
     </a>
 
-    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake">
+    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
+       title="<spring:message code='label.answer.font_code'/>">
       <spring:message code="label.answer.font_code"/>
       <span class="caret"></span>
     </a>

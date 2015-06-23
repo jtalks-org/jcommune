@@ -101,7 +101,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         <i class="icon-link"></i>
       </a>
 
-      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake">
+      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
+              title="<jcommune:message>label.answer.font_code</jcommune:message>">
         <jcommune:message>label.answer.font_code</jcommune:message>
         <span class="caret"></span>
       </a>
