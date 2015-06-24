@@ -34,6 +34,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -43,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -135,9 +137,9 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * {@inheritDoc}
      */
     @Override
-    public boolean authenticate(LoginUserDto loginUserDto, HttpServletRequest request,
+    public AuthenticationStatus authenticate(LoginUserDto loginUserDto, HttpServletRequest request,
                                 HttpServletResponse response) throws UnexpectedErrorException, NoConnectionException {
-        boolean result;
+        AuthenticationStatus result;
         JCUser user;
         try {
             user = getByUsername(loginUserDto.getUserName());
@@ -146,6 +148,10 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             LOGGER.info("User was not found during login process, username = {}, IP={}", 
                     loginUserDto.getUserName(), loginUserDto.getClientIp());
             result = authenticateByPluginAndUpdateUserInfo(loginUserDto, true, request, response);
+        } catch(DisabledException e) {
+            LOGGER.info("DisabledException: username = {}, IP={}, message={}",
+                    new String[]{loginUserDto.getUserName(), loginUserDto.getClientIp(), e.getMessage()});
+            result = AuthenticationStatus.NOT_ENABLED;
         } catch (AuthenticationException e) {
             LOGGER.info("AuthenticationException: username = {}, IP={}, message={}",
                     new String[]{loginUserDto.getUserName(), loginUserDto.getClientIp(), e.getMessage()});
@@ -159,11 +165,11 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      *
      * @param loginUserDto DTO object which represent authentication information
      * @param newUser  is new user or not
-     * @return true if authentication was successful, otherwise false
+     * @return AUTHENTICATED if authentication was successful, otherwise AUTHENTICATION_FAIL
      * @throws UnexpectedErrorException if some unexpected error occurred
      * @throws NoConnectionException    if some connection error occurred
      */
-    private boolean authenticateByPluginAndUpdateUserInfo(LoginUserDto loginUserDto, boolean newUser,
+    private AuthenticationStatus authenticateByPluginAndUpdateUserInfo(LoginUserDto loginUserDto, boolean newUser,
                                                           HttpServletRequest request,
                                                           HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException {
@@ -179,13 +185,13 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         Map<String, String> authInfo = authenticateByAvailablePlugin(encodedUsername, passwordHash);
         if (authInfo.isEmpty() || !authInfo.containsKey("email") || !authInfo.containsKey("username")) {
             LOGGER.info("Could not authenticate user '{}' by plugin.", loginUserDto.getUserName());
-            return false;
+            return AuthenticationStatus.AUTHENTICATION_FAIL;
         }
         JCUser user = saveUser(authInfo, passwordHash, newUser);
         try {
             return authenticateDefault(user, loginUserDto.getUserName(), loginUserDto.isRememberMe(), request, response);
         } catch (AuthenticationException e) {
-            return false;
+            return AuthenticationStatus.AUTHENTICATION_FAIL;
         }
     }
 
@@ -197,10 +203,10 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
      * @param rememberMe remember this user or not
      * @param request    HTTP request
      * @param response   HTTP response
-     * @return true if authentication was successful, otherwise false
+     * @return AUTHENTICATED if authentication was successful, otherwise AUTHENTICATION_FAIL
      * @throws AuthenticationException
      */
-    private boolean authenticateDefault(JCUser user, String password, boolean rememberMe,
+    private AuthenticationStatus authenticateDefault(JCUser user, String password, boolean rememberMe,
                                         HttpServletRequest request,
                                         HttpServletResponse response) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token =
@@ -214,9 +220,9 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                 rememberMeServices.loginSuccess(request, response, auth);
             }
             user.updateLastLoginTime();
-            return true;
+            return AuthenticationStatus.AUTHENTICATED;
         }
-        return false;
+        return AuthenticationStatus.AUTHENTICATION_FAIL;
     }
 
     /**

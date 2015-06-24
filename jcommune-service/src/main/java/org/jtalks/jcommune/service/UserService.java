@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
@@ -179,10 +180,12 @@ public interface UserService extends EntityService<JCUser> {
      * @param loginUserDto DTO object which represent authentication information
      * @param request    HTTP request
      * @param response   HTTP response
-     * @return true if user was logged in. false if there were any errors during
-     *         logging in.
+     * @return AuthenticationStatus.AUTHENTICATED if user's account
+     * is enabled and he was logged in. AuthenticationStatus.NOT_ENABLED if
+     * user's account was not activated. AuthenticationStatus.AUTHENTICATION_FAIL
+     * if there were any errors during logging in.
      */
-    boolean loginUser(LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response)
+    AuthenticationStatus loginUser(LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response)
             throws UnexpectedErrorException, NoConnectionException;
 
     /**

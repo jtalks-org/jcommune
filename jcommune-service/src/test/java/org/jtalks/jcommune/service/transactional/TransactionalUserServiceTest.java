@@ -29,6 +29,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
@@ -489,11 +490,12 @@ public class TransactionalUserServiceTest {
         HttpServletResponse httpResponse = new MockHttpServletResponse();
         LoginUserDto loginUserDto = new LoginUserDto("username", "password", true, "192.168.1.1");
         when(authenticator.authenticate(loginUserDto, httpRequest, httpResponse))
-                .thenReturn(true);
+                .thenReturn(AuthenticationStatus.AUTHENTICATED);
 
-        boolean result = userService.loginUser(loginUserDto, httpRequest, httpResponse);
+        AuthenticationStatus result = userService.loginUser(loginUserDto, httpRequest, httpResponse);
 
-        assertTrue(result, "Login user with correct credentials should be successful.");
+        assertEquals(result, AuthenticationStatus.AUTHENTICATED,
+                "Login user with correct credentials should be successful.");
     }
 
     @Test
@@ -503,11 +505,24 @@ public class TransactionalUserServiceTest {
         HttpServletResponse httpResponse = new MockHttpServletResponse();
         LoginUserDto loginUserDto = new LoginUserDto("", "password", true, "192.168.1.1");
         when(authenticator.authenticate(loginUserDto, httpRequest, httpResponse))
-                .thenReturn(false);
+                .thenReturn(AuthenticationStatus.AUTHENTICATION_FAIL);
 
-        boolean result = userService.loginUser(loginUserDto, httpRequest, httpResponse);
+        AuthenticationStatus result = userService.loginUser(loginUserDto, httpRequest, httpResponse);
 
-        assertFalse(result, "Login user with bad credentials should fail.");
+        assertEquals(result, AuthenticationStatus.AUTHENTICATION_FAIL, "Login user with bad credentials should fail.");
+    }
+
+    @Test
+    public void testLoginNotActivatedUserShouldFail() throws Exception {
+        HttpServletRequest httpRequest = new MockHttpServletRequest();
+        HttpServletResponse httpResponse = new MockHttpServletResponse();
+        LoginUserDto loginUserDto = new LoginUserDto("username", "password", true, "192.168.1.1");
+        when(authenticator.authenticate(loginUserDto, httpRequest, httpResponse))
+                .thenReturn(AuthenticationStatus.NOT_ENABLED);
+
+        AuthenticationStatus result = userService.loginUser(loginUserDto, httpRequest, httpResponse);
+
+        assertEquals(result, AuthenticationStatus.NOT_ENABLED, "Login not activated user should fail.");
     }
 
     @Test
