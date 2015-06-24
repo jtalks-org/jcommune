@@ -356,7 +356,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * @return branch without deleted topic
      */
     private Branch deleteTopicSilent(Topic topic) {
-        List<Post> topicPosts = topic.getPosts();
+        List<Post> topicPosts = topic.getDisplayedPosts();
         for (Post post : topicPosts) {
             JCUser user = post.getUserCreated();
             user.setPostCount(user.getPostCount() - 1);

@@ -204,7 +204,8 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     public void removePost(Post postToRemove) {
         posts.remove(postToRemove);
         Topic topic = postToRemove.getTopic();
-        if (postToRemove.getCreationDate().withMillis(0).equals(topic.getModificationDate().withMillis(0))) {
+        if (postToRemove.getCreationDate().withMillisOfSecond(0)
+                .equals(topic.getModificationDate().withMillisOfSecond(0))) {
             topic.recalculateModificationDate();
         }
     }
