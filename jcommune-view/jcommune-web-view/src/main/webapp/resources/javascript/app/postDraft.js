@@ -26,7 +26,7 @@ $(document).ready(function() {
     var dateUpdateInterval;
     var prevSavedMilis = 0;
     var maxTextLength = 20000;
-    var pendingSaveRequest;
+    var postPressed = false;
     var errorSpan = "<div id='bodyText-errors' class='cleared'><span class='help-inline focusToError' data-original-title=''>"
         + $labelMessageSizeValidation.replace('{min}',minDraftLen.toString()).replace('{max}',maxTextLength.toString()) + "</span></div>";
 
@@ -66,7 +66,11 @@ $(document).ready(function() {
     });
 
     postTextArea.blur(function () {
-        setTimeout(saveEvent, 1000);
+        if (!postPressed) {
+            saveEvent();
+        } else {
+            postPressed = false;
+        }
     });
 
     $(".btn-toolbar").mouseup(function () {
@@ -89,6 +93,7 @@ $(document).ready(function() {
      * Checks if it is necessary to save draft and saves if necessary
      */
     function saveEvent() {
+        postPressed = false;
         currentSaveLength = postTextArea.val().length;
         if (currentSaveLength >= minDraftLen && !isSaved) {
             saveDraft();
@@ -124,6 +129,7 @@ $(document).ready(function() {
                 }
             },
             error: function (jqHXHR, status, e) {
+                console.log("errored");
                 isSaved = false;
                 if (status == 'timeout' || jqHXHR.status == 0) {
                     if (jqHXHR.status == 0) {
@@ -159,7 +165,7 @@ $(document).ready(function() {
 
     $("#post").mousedown(function(e) {
         //We need to abort save request in case if user posts message to prevent race condition
-        pendingSaveRequest.abort();
+        postPressed = true;
     });
 
     /**
