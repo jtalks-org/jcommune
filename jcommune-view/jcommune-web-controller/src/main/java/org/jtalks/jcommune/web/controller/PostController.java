@@ -41,6 +41,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -226,31 +227,44 @@ public class PostController {
      * @return redirect to the topic or back to answer pae if validation failed
      * @throws NotFoundException when topic or branch not found
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/topics/{topicId}")
+    @RequestMapping(method = RequestMethod.POST, value = "/topics/{topicId}") //
     public ModelAndView create(@RequestParam(value = "page", defaultValue = "1", required = false) String page,
                                @PathVariable(TOPIC_ID) Long topicId,
                                @Valid @ModelAttribute PostDto postDto,
-                               BindingResult result) throws NotFoundException {
+                               BindingResult result, RedirectAttributes attr) throws NotFoundException {
         postDto.setTopicId(topicId);
         if (result.hasErrors()) {
-            JCUser currentUser = userService.getCurrentUser();
-            Topic topic = topicFetchService.get(topicId);
-            postDto.setTopicId(topicId);
-            Page<Post> postsPage = postService.getPosts(topic, page);
-
-            return new ModelAndView("topic/postList")
-                    .addObject("viewList", locationService.getUsersViewing(topic))
-                    .addObject("usersOnline", sessionRegistry.getAllPrincipals())
-                    .addObject("postsPage", postsPage)
-                    .addObject("topic", topic)
-                    .addObject(POST_DTO, postDto)
-                    .addObject("subscribed", topic.getSubscribers().contains(currentUser))
-                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+            attr.addFlashAttribute("postDto", postDto);
+            return new ModelAndView("redirect:/topics/error/" + topicId + "?page=" + page);
         }
 
         Post newbie = replyToTopicWithLockHandling(postDto, topicId);
         lastReadPostService.markTopicAsRead(newbie.getTopic());
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/topics/error/{topicId}")
+    public ModelAndView errorRedirect(@RequestParam(value = "page", required = false) String page,
+                                      @PathVariable(TOPIC_ID) Long topicId, @ModelAttribute @Valid PostDto postDto,
+                                      BindingResult result) throws NotFoundException {
+        JCUser currentUser = userService.getCurrentUser();
+        Topic topic = topicFetchService.get(topicId);
+
+        Post draft = topic.getDraftForUser(currentUser);
+        if (draft != null) {
+            postDto = PostDto.getDtoFor(draft);
+        }
+        postDto.setTopicId(topicId);
+        Page<Post> postsPage = postService.getPosts(topic, page);
+
+        return new ModelAndView("topic/postList")
+                .addObject("viewList", locationService.getUsersViewing(topic))
+                .addObject("usersOnline", sessionRegistry.getAllPrincipals())
+                .addObject("postsPage", postsPage)
+                .addObject("topic", topic)
+                .addObject(POST_DTO, postDto)
+                .addObject("subscribed", topic.getSubscribers().contains(currentUser))
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
     }
 
     private Post replyToTopicWithLockHandling(PostDto postDto, Long topicId) throws NotFoundException {
