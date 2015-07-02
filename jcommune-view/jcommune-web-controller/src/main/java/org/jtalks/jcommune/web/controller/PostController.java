@@ -243,6 +243,19 @@ public class PostController {
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
 
+    /**
+     * Gets validation errors from 'create' methods to redirect them to the view. We need it
+     * to implement POST/redirect/GET pattern, which leads to preventing of repeating POST request
+     * on browser refresh.
+     *
+     * @param page  page of the current post
+     * @param topicId ID of a topic
+     * @param postDto Dto with failed validation
+     * @param result  validation result
+     *
+     * @return {@code ModelAndView} object which shows form with an error message
+     * @throws NotFoundException when topic, branch or post not found
+     */
     @RequestMapping(method = RequestMethod.GET, value = "/topics/error/{topicId}")
     public ModelAndView errorRedirect(@RequestParam(value = "page", required = false) String page,
                                       @PathVariable(TOPIC_ID) Long topicId, @ModelAttribute @Valid PostDto postDto,
