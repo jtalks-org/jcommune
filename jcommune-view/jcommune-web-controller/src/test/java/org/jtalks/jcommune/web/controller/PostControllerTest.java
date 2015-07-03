@@ -35,6 +35,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -208,7 +209,7 @@ public class PostControllerTest {
         when(topicModificationService.replyToTopic(anyLong(), Matchers.<String>any(), eq(BRANCH_ID))).thenReturn(post);
         when(postService.calculatePageForPost(post)).thenReturn(1);
         //invoke the object under test
-        ModelAndView mav = controller.create(null, TOPIC_ID, getDto(), resultWithoutErrors);
+        ModelAndView mav = controller.create(null, TOPIC_ID, getDto(), resultWithoutErrors, null);
 
         //check expectations
         verify(topicModificationService).replyToTopic(TOPIC_ID, POST_CONTENT, BRANCH_ID);
@@ -223,13 +224,13 @@ public class PostControllerTest {
         BeanPropertyBindingResult resultWithErrors = mock(BeanPropertyBindingResult.class);
         when(resultWithErrors.hasErrors()).thenReturn(true);
         //invoke the object under test
-        ModelAndView mav = controller.create(null, TOPIC_ID, getDto(), resultWithErrors);
+        ModelAndView mav = controller.create(null, TOPIC_ID, getDto(), resultWithErrors, new RedirectAttributesModelMap());
 
         //check expectations
         verify(topicModificationService, never()).replyToTopic(anyLong(), anyString(), eq(BRANCH_ID));
 
         //check result
-        assertViewName(mav, "topic/postList");
+        assertEquals(mav.getViewName(), "redirect:/topics/error/" + TOPIC_ID + "?page=null");
     }
 
     @Test
