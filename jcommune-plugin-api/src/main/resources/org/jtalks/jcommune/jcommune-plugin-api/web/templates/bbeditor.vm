@@ -44,7 +44,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       </a>
       <a id="format_highlight" class="btn" accesskey="h" href="#fake"
          title="<jcommune:message>label.answer.highlight</jcommune:message>">
-      &nbsp;Highlight&nbsp;
+      <jcommune:message>label.answer.highlight.button</jcommune:message>
       </a>
     </div>
     <div class='btn-group'>
