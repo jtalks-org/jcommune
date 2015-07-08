@@ -15,8 +15,11 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.*;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +51,36 @@ public final class ObjectsFactory {
         newUser.setFirstName("first name");
         newUser.setLastName("last name");
         return newUser;
+    }
+
+    public static JCUser getUserWithAllFieldsFilled() throws NoSuchMethodException, InvocationTargetException,
+            IllegalAccessException {
+        JCUser user = getDefaultUser();
+        DateTime dateTime = new DateTime();
+        user.setId(1);
+        user.setLanguage(Language.RUSSIAN);
+        user.setPageSize(1);
+        user.setLocation("location");
+        user.setSignature("signature");
+        user.setRegistrationDate(dateTime);
+        user.setEnabled(true);
+        user.setAutosubscribe(true);
+        user.setMentioningNotificationsEnabled(true);
+        user.setSendPmNotification(true);
+        user.getContacts().add(ObjectsFactory.getDefaultUserContact());
+        user.setAvatarLastModificationTime(dateTime);
+        user.setAllForumMarkedAsReadTime(dateTime);
+        user.setAvatar(new byte[]{1});
+        user.setVersion(1L);
+        user.setBanReason("Ban Reason");
+        user.setRole("Role");
+        Method setLastLogin = User.class.getDeclaredMethod("setLastLogin", DateTime.class);
+        Method setEncodedUsername = User.class.getDeclaredMethod("setEncodedUsername", String.class);
+        setLastLogin.setAccessible(true);
+        setEncodedUsername.setAccessible(true);
+        setLastLogin.invoke(user, new DateTime());
+        setEncodedUsername.invoke(user, "Encoded Username");
+        return user;
     }
 
     public static Branch getDefaultBranch() {

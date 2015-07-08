@@ -19,6 +19,9 @@ import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,7 +54,18 @@ public class JCUser extends User {
     public static final int[] PAGE_SIZES_AVAILABLE = new int[]{15, 25, 50};
 
     private static final long serialVersionUID = 19981017L;
-    private Set<UserContact> contacts = new HashSet<>();
+
+    /**
+     *  The {@link org.jtalks.jcommune.model.entity.JCUser} uses serialization for saving own state between
+     *  Tomcat' session restarts. But there is not urgent needs to save state of
+     *  the {@link org.jtalks.jcommune.model.entity.UserContact}, and moreover serialization of this one
+     *  will pull serialization of even more classes which is undesirable.
+     *
+     *  While we won't serialize full {@link org.jtalks.jcommune.model.entity.UserContact} entity
+     *  we mark {@link org.jtalks.jcommune.model.entity.JCUser#contacts} as transient to avoid the problems
+     *  during serialization of the {@link org.jtalks.common.model.entity.User} and his successors.
+     */
+    private transient Set<UserContact> contacts = new HashSet<>();
 
     private DateTime avatarLastModificationTime = new DateTime(System.currentTimeMillis());
 
@@ -415,5 +429,52 @@ public class JCUser extends User {
         copy.setUuid(group.getUuid());
         copy.getUsers().add(user);
         return copy;
+    }
+
+    /**
+     * Customized deserialization of the fields {@link org.jtalks.common.model.entity.Entity#id},
+     * {@link org.jtalks.common.model.entity.Entity#uuid}
+     *
+     * Note: The {@link org.jtalks.common.model.entity.User#groups} is marked as transient and will not be serialized
+     * (for more details pls. see at <a href="http://jira.jtalks.org/browse/POULPE-528">JIRA</a>).
+     *
+     * @serialData  {@link org.jtalks.common.model.entity.Entity#id},
+     *              {@link org.jtalks.common.model.entity.Entity#uuid},
+     *              and the hole entities {@link org.jtalks.common.model.entity.User},
+     *              {@link org.jtalks.jcommune.model.entity.JCUser}
+     *              expect for the transient fields {@link org.jtalks.common.model.entity.User#groups} and
+     *              {@link org.jtalks.jcommune.model.entity.JCUser#contacts}
+     * @param s
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        long id = s.readLong();
+        String uuid = (String)s.readObject();
+        setId(id);
+        setUuid(uuid);
+    }
+
+    /**
+     * Customized serialization of the fields {@link org.jtalks.common.model.entity.Entity#id},
+     * {@link org.jtalks.common.model.entity.Entity#uuid}
+     *
+     * Note: The {@link org.jtalks.common.model.entity.User#groups} is marked as transient and will not be serialized
+     * (for more details pls. see at <a href="http://jira.jtalks.org/browse/POULPE-528">JIRA</a>).
+     *
+     * @serialData  {@link org.jtalks.common.model.entity.Entity#id},
+     *              {@link org.jtalks.common.model.entity.Entity#uuid},
+     *              and the hole entities {@link org.jtalks.common.model.entity.User},
+     *              {@link org.jtalks.jcommune.model.entity.JCUser}
+     *              expect for the transient fields {@link org.jtalks.common.model.entity.User#groups} and
+     *              {@link org.jtalks.jcommune.model.entity.JCUser#contacts}
+     * @param s
+     * @throws IOException
+     */
+    private void writeObject(ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+        s.writeLong(getId());
+        s.writeObject(getUuid());
     }
 }

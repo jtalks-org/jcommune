@@ -20,8 +20,10 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.util.SerializationUtils;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -217,6 +219,27 @@ public class JCUserTest {
         assertEquals(language, Language.ENGLISH);
     }
 
+    @Test
+    public void entityFieldsShouldBeSerialized() throws NoSuchMethodException, InvocationTargetException,
+            IllegalAccessException {
+        JCUser user = ObjectsFactory.getUserWithAllFieldsFilled();
 
+        byte[] serialize = SerializationUtils.serialize(user);
+        JCUser serializedUser = (JCUser)SerializationUtils.deserialize(serialize);
+        assertReflectionEquals(user, serializedUser);
+    }
+
+    @Test
+    public void groupsFieldIsNotSerializable(){
+        List<Group> groups = Group.createGroupsWithNames("Group");
+        JCUser userInGroup = new JCUser("user","email","password");
+        userInGroup.setGroups(groups);
+
+        byte[] serialize = SerializationUtils.serialize(userInGroup);
+        JCUser serializedUser = (JCUser) SerializationUtils.deserialize(serialize);
+
+        assertNull(serializedUser.getGroups(),
+                "After deserialiation, the transient field `List<Group> groups` must be null");
+    }
 
 }
