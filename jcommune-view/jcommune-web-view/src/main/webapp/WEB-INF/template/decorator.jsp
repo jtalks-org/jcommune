@@ -57,7 +57,7 @@ in the future.
 <link rel="alternate" type="application/rss+xml" title="${rssTitle}"
       href="${pageContext.request.contextPath}/topics/recent.rss"/>
 
-<link rel="stylesheet" type="text/css" media="screen, projection"
+<link rel="stylesheet" type="text/css" media="screen"
       href="${pageContext.request.contextPath}/resources/css/manual/i18n/<spring:message code="locale.code"/>.css"/>
 
 <%--
@@ -73,7 +73,7 @@ in the future.
 <c:set var="uriString" value="${pageContext.request.requestURI}"/>
 <c:choose>
   <c:when test="${mode eq 'true'}">
-    <link rel="stylesheet" type="text/css" media="screen, projection"
+    <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/resources/wro/main.css?${project.version}"/>
 
     <script src="${pageContext.request.contextPath}/resources/wro/main.js?${project.version}"></script>
@@ -96,7 +96,7 @@ in the future.
     </c:if>
 
     <c:if test="${fn:contains(uriString, 'user')}">
-      <link rel="stylesheet" type="text/css" media="screen, projection"
+      <link rel="stylesheet" type="text/css" media="screen"
             href="${pageContext.request.contextPath}/resources/wro/user.css?${project.version}"/>
 
       <script type="text/javascript"
@@ -115,21 +115,21 @@ in the future.
   </c:when>
 
   <c:otherwise>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
+    <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/resources/css/app/editor.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
+    <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/resources/css/lib/fonts-googleapis-com.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
+    <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/resources/css/lib/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
+    <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/resources/css/lib/bootstrap-responsive.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
+    <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/resources/css/lib/prettify.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
+    <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/resources/css/lib/prettyPhoto.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
+    <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/resources/css/lib/inline.css"/>
-    <link rel="stylesheet" type="text/css" media="screen, projection"
+    <link rel="stylesheet" type="text/css" media="screen"
           href="${pageContext.request.contextPath}/resources/css/app/application.css"/>
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/resources/css/lib/jquery.contextMenu.css"
@@ -227,7 +227,7 @@ in the future.
     </c:if>
 
     <c:if test="${fn:contains(uriString, 'user')}">
-      <link rel="stylesheet" type="text/css" media="screen, projection"
+      <link rel="stylesheet" type="text/css" media="screen"
             href="${pageContext.request.contextPath}/resources/css/app/profile.css"/>
 
       <script src="${pageContext.request.contextPath}/resources/javascript/app/avatarUpload.js"></script>
