@@ -356,6 +356,7 @@
   <input id="draftId" type="hidden" value="${postDto.id}"/>
   <c:if test="${postDto.id != 0}">
     <input id="savedMilis" type="hidden" value="${postDto.creationDate.millis}"/>
+    <input id="currentMilis" type="hidden" value="${postDto.currentTime.millis}">
   </c:if>
   <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                         permission='BranchPermission.CREATE_POSTS'>

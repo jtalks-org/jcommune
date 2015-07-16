@@ -33,6 +33,7 @@ public class PostDto {
     private TopicDto topicDto;
     private DateTime creationDate;
     private DateTime modificationDate;
+    private DateTime currentTime;
 
     /**
      * Get topic id.
@@ -169,6 +170,10 @@ public class PostDto {
         dto.setCreationDate(post.getCreationDate());
         dto.setModificationDate(post.getModificationDate());
         return dto;
+    }
+
+    public DateTime getCurrentTime() {
+        return new DateTime();
     }
 }
 
