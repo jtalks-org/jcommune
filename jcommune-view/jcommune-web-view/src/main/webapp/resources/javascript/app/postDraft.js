@@ -169,6 +169,11 @@ $(document).ready(function() {
         postPressed = true;
     });
 
+    $(".submit-form").submit(function(e) {
+        //We need to abort save request in case if user posts message with hot-keys 'ctr+enter' to prevent race condition
+        postPressed = true;
+    });
+
     /**
      * Sends request for deletion draft
      */
