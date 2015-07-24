@@ -248,6 +248,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       <input id="draftId" type="hidden" value="${postDto.id}"/>
       #if(${postDto.id} != 0)
         <input id="savedMilis" type="hidden" value="${postDto.creationDate.millis}"/>
+        <input id="differenceMillis" type="hidden" value="${postDto.differenceMillis}"/>
       #end
       #bbeditor(${messages.getString($labelAnswerType)} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
     </form>

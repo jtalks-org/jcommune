@@ -25,7 +25,6 @@ $(document).ready(function() {
     var dateUpdateCounter = 0;
     var dateUpdateInterval;
     var prevSavedMilis = 0;
-    var currentMilis = 0;
     var maxTextLength = 20000;
     var postPressed = false;
     var errorSpan = "<div id='bodyText-errors' class='cleared'><span class='help-inline focusToError' data-original-title=''>"
@@ -34,8 +33,8 @@ $(document).ready(function() {
     $("<span id='counter' class='keymaps-caption pull-right'></span>").insertAfter("#editorBbCodeDiv");
     if (!isNaN($("#savedMilis").val()) && parseInt($("#draftId").val()) != 0) {
         prevSavedMilis = parseInt($("#savedMilis").val());
-        currentMilis = parseInt($("#currentMilis").val());
-        var difSeconds = Math.floor((currentMilis - prevSavedMilis)/1000);
+        var differenceMillis = parseInt($("#differenceMillis").val());
+        var difSeconds = Math.floor(differenceMillis/1000);
         if (difSeconds <= 60) {
             dateUpdateCounter = Math.floor(difSeconds/5);
             startFiveSecondsInterval();
