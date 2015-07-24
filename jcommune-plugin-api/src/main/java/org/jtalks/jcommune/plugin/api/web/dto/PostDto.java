@@ -33,7 +33,6 @@ public class PostDto {
     private TopicDto topicDto;
     private DateTime creationDate;
     private DateTime modificationDate;
-    private DateTime currentTime;
 
     /**
      * Get topic id.
@@ -172,8 +171,9 @@ public class PostDto {
         return dto;
     }
 
-    public DateTime getCurrentTime() {
-        return new DateTime();
+    public long getDifferenceMillis() {
+        DateTime currentDate = new DateTime();
+        long differenceTime = currentDate.getMillis() - creationDate.getMillis();
+        return differenceTime > 0 ? differenceTime : creationDate.getMillis();
     }
 }
-
