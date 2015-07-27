@@ -18,6 +18,7 @@ import org.jtalks.common.model.permissions.BranchPermission
 import org.jtalks.jcommune.model.utils.Branches
 import org.jtalks.jcommune.model.utils.Groups
 import org.jtalks.jcommune.test.utils.Users
+import org.jtalks.jcommune.test.utils.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.mock.web.MockHttpSession
@@ -79,13 +80,15 @@ class TopicControllerTest extends Specification {
     }
 
     def 'test create topic'() {
-        given: 'Branch created logged id '
+        given: 'User with username and password'
+            def user = new User(username: "name", password: "pwd")
+        and: 'Branch created'
             def branch = branches.create()
         and: "User registered and has permissions to create topics in current branch"
-            users.create().withPermissionOn(branch, BranchPermission.VIEW_TOPICS)
+            users.create(user).withPermissionOn(branch, BranchPermission.VIEW_TOPICS)
                     .withPermissionOn(branch, BranchPermission.CREATE_POSTS);
         and: "User logged in"
-            def session = users.performLogin()
+            def session = users.signIn(user)
         when: 'User creates topic'
             def result = mockMvc.perform(post("/topics/new").session(session as MockHttpSession)
                     .param("bodyText", "text")

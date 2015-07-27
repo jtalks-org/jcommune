@@ -22,9 +22,7 @@ import org.jtalks.jcommune.web.controller.UserController;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.validation.BindingResult;
 
-import javax.servlet.http.HttpSession;
-
-import java.io.Serializable;
+import javax.servlet.http.HttpSession
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -36,12 +34,15 @@ class PageUsers extends Users {
     static final def BINDING_RESULT_ATTRIBUTE_NAME = BindingResult.MODEL_KEY_PREFIX + "newUser"
 
     @Override
-    def HttpSession performLogin() {
-        return mockMvc.perform(post('/login')
-                .param('userName', USERNAME)
-                .param('password', PASSWORD)
+    def HttpSession signIn(User user) {
+        def result = mockMvc.perform(post('/login')
+                .param('userName', user.username)
+                .param('password', user.password)
                 .param('referer', '/'))
-                .andReturn().request.session
+                .andReturn()
+
+        assertView(result, "redirect:/")
+        return result.request.session
     }
 
     @Override
@@ -53,12 +54,14 @@ class PageUsers extends Users {
                 .param('passwordConfirm', user.confirmation)
                 .param('honeypotCaptcha', user.honeypot))
 
-        assertMvcResult(resultActions.andReturn(), user.username)
+        MvcResult result = resultActions.andReturn();
+        assertMvcResult(result)
+        assertView(result, UserController.AFTER_REGISTRATION)
         return user.username
     }
 
     @Override
-    def void assertMvcResult(MvcResult mvcResult, Serializable entityIdentifier) {
+    def void assertMvcResult(MvcResult mvcResult) {
         def mav = mvcResult.modelAndView
         def result = mav.model.get(BINDING_RESULT_ATTRIBUTE_NAME) as BindingResult
         if (result.hasErrors()) {
@@ -68,7 +71,11 @@ class PageUsers extends Users {
             }
             throw ex
         }
-        if (!UserController.AFTER_REGISTRATION.equals(mav.viewName)) {
+    }
+
+    def void assertView(MvcResult mvcResult, String expectedViewName) {
+        def mav = mvcResult.modelAndView
+        if (!expectedViewName.equals(mav.viewName)) {
             throw new WrongResponseException(UserController.AFTER_REGISTRATION,
                     mvcResult.modelAndView.viewName)
         }

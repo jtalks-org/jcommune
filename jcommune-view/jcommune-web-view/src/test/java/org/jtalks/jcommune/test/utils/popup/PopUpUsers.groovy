@@ -35,14 +35,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 class PopUpUsers extends Users {
 
     @Override
-    def HttpSession performLogin() {
-        return mockMvc.perform(post('/login_ajax')
-                .param('userName', USERNAME).param('password', PASSWORD))
-                .andReturn().request.session
+    def HttpSession signIn(User user) {
+        MvcResult result =  mockMvc.perform(post('/login_ajax')
+                .param('userName', user.username).param('password', user.password))
+                .andReturn()
+
+        assertMvcResult(result)
+        return result.request.session
     }
 
     @Override
-    def void assertMvcResult(MvcResult result, Serializable entityIdentifier) {
+    def void assertMvcResult(MvcResult result) {
         def response = result.response.contentAsString
         if(!jsonResponseToString(new JsonResponse(JsonResponseStatus.SUCCESS)).equals(response)
                 && response != null) {
@@ -60,12 +63,14 @@ class PopUpUsers extends Users {
 
     @Override
     def String singUp(User user) {
-        assertMvcResult(mockMvc.perform(post('/user/new_ajax')
+        def result = mockMvc.perform(post('/user/new_ajax')
                 .param('userDto.username', user.username)
                 .param('userDto.email', user.email)
                 .param('userDto.password', user.password)
                 .param('passwordConfirm', user.confirmation)
-                .param('honeypotCaptcha', user.honeypot)).andReturn(), user.username)
+                .param('honeypotCaptcha', user.honeypot)).andReturn();
+
+        assertMvcResult(result)
         return user.username
     }
 
