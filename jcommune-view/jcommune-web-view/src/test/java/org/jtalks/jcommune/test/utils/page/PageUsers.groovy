@@ -20,11 +20,7 @@ import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException;
 import org.jtalks.jcommune.test.utils.model.User;
 import org.jtalks.jcommune.web.controller.UserController;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.validation.BindingResult;
-
-import javax.servlet.http.HttpSession;
-
-import java.io.Serializable;
+import org.springframework.validation.BindingResult
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -36,16 +32,19 @@ class PageUsers extends Users {
     static final def BINDING_RESULT_ATTRIBUTE_NAME = BindingResult.MODEL_KEY_PREFIX + "newUser"
 
     @Override
-    def HttpSession performLogin() {
-        return mockMvc.perform(post('/login')
-                .param('userName', USERNAME)
-                .param('password', PASSWORD)
+    def signIn(User user) {
+        def result = mockMvc.perform(post('/login')
+                .param('userName', user.username)
+                .param('password', user.password)
                 .param('referer', '/'))
-                .andReturn().request.session
+                .andReturn()
+
+        assertViewEquals(result, "redirect:/")
+        return result.request.session
     }
 
     @Override
-    def String singUp(User user) {
+    def singUp(User user) {
         def resultActions = mockMvc.perform(post('/user/new')
                 .param('userDto.username', user.username)
                 .param('userDto.email', user.email)
@@ -53,12 +52,14 @@ class PageUsers extends Users {
                 .param('passwordConfirm', user.confirmation)
                 .param('honeypotCaptcha', user.honeypot))
 
-        assertMvcResult(resultActions.andReturn(), user.username)
+        MvcResult result = resultActions.andReturn();
+        assertNoErrors(result)
+        assertViewEquals(result, UserController.AFTER_REGISTRATION)
         return user.username
     }
 
     @Override
-    def void assertMvcResult(MvcResult mvcResult, Serializable entityIdentifier) {
+    def assertNoErrors(MvcResult mvcResult) {
         def mav = mvcResult.modelAndView
         def result = mav.model.get(BINDING_RESULT_ATTRIBUTE_NAME) as BindingResult
         if (result.hasErrors()) {
@@ -68,8 +69,12 @@ class PageUsers extends Users {
             }
             throw ex
         }
-        if (!UserController.AFTER_REGISTRATION.equals(mav.viewName)) {
-            throw new WrongResponseException(UserController.AFTER_REGISTRATION,
+    }
+
+    def assertViewEquals(MvcResult mvcResult, String expectedViewName) {
+        def mav = mvcResult.modelAndView
+        if (expectedViewName != mav.viewName) {
+            throw new WrongResponseException(expectedViewName,
                     mvcResult.modelAndView.viewName)
         }
     }

@@ -12,25 +12,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.utils;
+package org.jtalks.jcommune.test
 
-import org.jtalks.common.model.entity.Group;
-import org.jtalks.jcommune.model.dao.GroupDao;
-import org.jtalks.jcommune.service.security.AdministrationGroup;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jtalks.jcommune.test.utils.Users
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class Groups {
+class PopUpSingInTest extends SignInTest {
 
     @Autowired
-    private GroupDao groupDao;
-
-    public void createDefaultGroups() {
-        groupDao.saveOrUpdate(new Group(AdministrationGroup.ADMIN.getName()));
-        groupDao.saveOrUpdate(new Group(AdministrationGroup.BANNED_USER.getName()));
-        groupDao.saveOrUpdate(new Group(AdministrationGroup.USER.getName()));
+    @Qualifier('jsonResponseUsers')
+    @Override
+    void setUsers(Users users) {
+        super.setUsers(users)
     }
-    
 }

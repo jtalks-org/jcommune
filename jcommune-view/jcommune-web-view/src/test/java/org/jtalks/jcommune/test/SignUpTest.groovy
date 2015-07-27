@@ -72,7 +72,7 @@ abstract class SignUpTest extends Specification {
         initNonDefaultFailParameters()
         users.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(filters.toArray(new Filter[filters.size()])).build()
-        groups.create();
+        groups.createDefaultGroups();
     }
 
     def 'test sign up success'() {

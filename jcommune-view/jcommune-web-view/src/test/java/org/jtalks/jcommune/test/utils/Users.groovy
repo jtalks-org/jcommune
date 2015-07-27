@@ -27,16 +27,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import javax.servlet.http.HttpSession;
 
-import java.io.Serializable;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
 /**
  * @author Mikhail Stryzhonok
@@ -62,22 +62,22 @@ abstract class Users {
     private EncryptionService encryptionService
     MockMvc mockMvc
 
-    def PermissionGranter create() {
+    def create(User user) {
         def group = groupDao.getGroupByName(AdministrationGroup.USER.name)
-        def user = userDao.getByUsername(USERNAME)
-        if (user == null) {
-            user = new JCUser(USERNAME, 'sample@example.com', encryptionService.encryptPassword(PASSWORD))
-            user.enabled = true
-            user.addGroup(group)
-            userDao.saveOrUpdate(user)
+        def fromDb = userDao.getByUsername(user.username)
+        if (!fromDb) {
+            fromDb = new JCUser(user.username, user.email, encryptionService.encryptPassword(user.password))
+            fromDb.enabled = true
+            fromDb.addGroup(group)
+            userDao.saveOrUpdate(fromDb)
             userDao.flush()
         }
         //Needed for managing permissions
-        setAuthentication(new JCUser(USERNAME, 'sample@example.com', PASSWORD));
+        setAuthentication(new JCUser(user.username, user.email, user.password));
         return new PermissionGranter(permissionManager, group);
     }
 
-    def void setAuthentication(JCUser user) {
+    def setAuthentication(JCUser user) {
         def token = new UsernamePasswordAuthenticationToken(user.username, user.password)
         token.details = user
         def auth = authenticationManager.authenticate(token)
@@ -87,7 +87,7 @@ abstract class Users {
         sessionStrategy.onAuthentication(auth, request, response)
     }
 
-    def String signUpAndActivate(User user) throws Exception {
+    def signUpAndActivate(User user) throws Exception {
         singUp(user)
 
         def registered = userDao.getByUsername(user.username)
@@ -96,26 +96,39 @@ abstract class Users {
         return user.username;
     }
 
-    def abstract HttpSession performLogin()
+    def abstract signIn(User user)
 
-    def abstract String singUp(User user)
+    def abstract singUp(User user)
 
-    def abstract void assertMvcResult(MvcResult result, Serializable entityIdentifier)
+    def abstract assertNoErrors(MvcResult result)
 
-    def boolean isActivated(String username) {
+    def isActivated(String username) {
         def user = userDao.getByUsername(username)
-        if (user == null) {
+        if (!user) {
             throw new IllegalArgumentException("User with name [${user.username}] not exist")
         }
         return user.enabled;
     }
 
-    def boolean isExist(String username) {
+    def isExist(String username) {
         return userDao.getByUsername(username) != null
     }
 
-    def boolean isNotExist(String username) {
+    def isNotExist(String username) {
         return userDao.getByUsername(username) == null
+    }
+
+    def isAuthenticated(HttpSession session, User user) {
+
+        //From Spring Security source code
+        def context = session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)
+
+        if (!context || !(context instanceof SecurityContext)) {
+            return false;
+        }
+
+        def auth = (context as SecurityContext).authentication
+        return auth?.authenticated && ((auth.principal as JCUser).username == user.username)
     }
 
 }
