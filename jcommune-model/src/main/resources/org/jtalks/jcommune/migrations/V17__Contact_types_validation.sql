@@ -13,7 +13,7 @@ UPDATE CONTACT_TYPE SET MASK='twitter_name', DISPLAY_PATTERN='<a href="http://tw
 UPDATE CONTACT_TYPE SET MASK='mail@gmail.com', VALIDATION_PATTERN='^([a-z0-9_\\.-]+)@gmail.com$' WHERE TYPE_ID = 8;
 UPDATE CONTACT_TYPE SET MASK='id123456', DISPLAY_PATTERN='<a href="http://vk.com/%s">%s</a>', VALIDATION_PATTERN='^id[\\d]+$' WHERE TYPE_ID = 9;
 UPDATE CONTACT_TYPE SET MASK='12423632', DISPLAY_PATTERN='<a href="http://www.odnoklassniki.ru/profile/%s">http://www.odnoklassniki.ru/profile/%s</a>', VALIDATION_PATTERN='^[\\d]+$' WHERE TYPE_ID = 10;
-UPDATE CONTACT_TYPE SET MASK='user-name.livejournal.com', DISPLAY_PATTERN='<a href="http://%s">%s</a>', VALIDATION_PATTERN='^[A-Za-z0-9-]+\\.livejournal\\.com' WHERE TYPE_ID = 11;
+UPDATE CONTACT_TYPE SET MASK='user-name.livejournal.com', DISPLAY_PATTERN='<a href="http://%s">%s</a>', VALIDATION_PATTERN='^[A-Za-z0-9-]+\\.livejournal\\.com|\\.жж\\.рф' WHERE TYPE_ID = 11;
 UPDATE CONTACT_TYPE SET MASK='user-name.tumblr.com', DISPLAY_PATTERN='<a href="http://%s">%s</a>', VALIDATION_PATTERN='^[A-Za-z0-9-]+\\.tumblr\\.com' WHERE TYPE_ID = 12;
 UPDATE CONTACT_TYPE SET MASK='user-name.blogspot.com', DISPLAY_PATTERN='<a href="http://%s">%s</a>', VALIDATION_PATTERN='^[A-Za-z0-9-]+\\.blogspot\\.com' WHERE TYPE_ID = 13;
 UPDATE CONTACT_TYPE SET MASK='aim@server.com', VALIDATION_PATTERN='^([a-z0-9_\\.-]+)@([\\da-z\\._-]+)\\.([a-z]{2,6})$' WHERE TYPE_ID = 14;
