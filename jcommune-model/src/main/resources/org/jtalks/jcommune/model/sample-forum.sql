@@ -35,10 +35,10 @@ insert ignore into GROUPS (UUID, `NAME`) values
 	((select UUID() from dual), 'createCodeReview'),
 	((select UUID() from dual), 'leaveCommentsInCodeReview');
 
-set @admin_group_id := (select GROUP_ID from GROUPS where `NAME`='Administrators');
-set @registered_group_id := (select GROUP_ID from GROUPS where `NAME`='Registered Users');
-set @banned_group_id := (select GROUP_ID from GROUPS where `NAME`='Banned Users');
-set @moderator_group_id := (select GROUP_ID from GROUPS where `NAME`='Moderators');
+set @admin_group_id = (select GROUP_ID from GROUPS where `NAME`='Administrators');
+set @registered_group_id = (select GROUP_ID from GROUPS where `NAME`='Registered Users');
+set @banned_group_id = (select GROUP_ID from GROUPS where `NAME`='Banned Users');
+set @moderator_group_id = (select GROUP_ID from GROUPS where `NAME`='Moderators');
 set @createPosts_group_id = (select GROUP_ID from GROUPS where `NAME`='createPosts');
 set @createStickedPosts_group_id = (select GROUP_ID from GROUPS where `NAME`='createStickedPosts');
 set @createAnnouncements_group_id = (select GROUP_ID from GROUPS where `NAME`='createAnnouncements');
@@ -264,7 +264,7 @@ set @closetopics_group_object_identity=@branches_acl_object_identity_id_start + 
 set @createCodeReview_group_object_identity=@branches_acl_object_identity_id_start + @branches_count + 14;
 set @leaveCommentsInCodeReview_group_object_identity=@branches_acl_object_identity_id_start + @branches_count + 15;
 
-insert into acl_object_identity values
+insert ignore into acl_object_identity values
   (@registered_group_object_identity, @group_acl_class, @registered_group_id, NULL, 1, 1),
   (@admin_group_object_identity, @group_acl_class, @admin_group_id, NULL, 1, 1),
   (@banned_group_object_identity, @group_acl_class, @banned_group_id, NULL, 1, 1);
@@ -394,19 +394,25 @@ insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audi
 delete from acl_entry where acl_object_identity = @branches_acl_object_identity_id_start + 51;
   
 -- personal permissions
-insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (@registered_group_object_identity, 1000, @registered_group_sid_id, @SEND_PRIVATE_MESSAGES_MASK, 1, 0, 0);
-insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (@registered_group_object_identity, 1001, @registered_group_sid_id, @EDIT_OWN_PROFILE_MASK, 1, 0, 0);
+-- variables for prevention key duplicate from groups which were created via poulpe and via script  
+set @registered_group_personal_identity = (SELECT id FROM acl_object_identity WHERE object_id_class = @group_acl_class AND object_id_identity = @registered_group_id);
+set @admin_group_personal_identity = (SELECT id FROM acl_object_identity WHERE object_id_class = @group_acl_class AND object_id_identity = @admin_group_id);
+set @banned_group_personal_identity = (SELECT id FROM acl_object_identity WHERE object_id_class = @group_acl_class AND object_id_identity = @banned_group_id);
+
+-- registered
+insert ignore into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+  values (@registered_group_personal_identity, 1000, @registered_group_sid_id, @SEND_PRIVATE_MESSAGES_MASK, 1, 0, 0);
+insert ignore into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+  values (@registered_group_personal_identity, 1001, @registered_group_sid_id, @EDIT_OWN_PROFILE_MASK, 1, 0, 0);
 -- admin
-insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (@admin_group_object_identity, 1002, @admin_group_sid_id, @EDIT_OTHERS_PROFILE_MASK, 1, 0, 0);
+insert ignore into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+  values (@admin_group_personal_identity, 1002, @admin_group_sid_id, @EDIT_OTHERS_PROFILE_MASK, 1, 0, 0);
 -- banned
-insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (@banned_group_object_identity, 1003, @banned_group_sid_id, @SEND_PRIVATE_MESSAGES_MASK, 0, 0, 0);
-insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (@banned_group_object_identity, 1004, @banned_group_sid_id, @EDIT_OWN_PROFILE_MASK, 0, 0, 0);
+insert ignore into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+  values (@banned_group_personal_identity, 1003, @banned_group_sid_id, @SEND_PRIVATE_MESSAGES_MASK, 0, 0, 0);
+insert ignore into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+  values (@banned_group_personal_identity, 1004, @banned_group_sid_id, @EDIT_OWN_PROFILE_MASK, 0, 0, 0);
 
 -- admin permissions for the component
 insert into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
-  values (@admin_group_object_identity, 1000, @admin_group_sid_id, @ADMIN_MASK, 1, 0, 0);
+  values (@admin_group_personal_identity, 1000, @admin_group_sid_id, @ADMIN_MASK, 1, 0, 0);
