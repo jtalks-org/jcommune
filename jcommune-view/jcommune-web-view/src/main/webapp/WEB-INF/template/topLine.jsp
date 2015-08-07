@@ -121,7 +121,7 @@
       </li>
       <li class="divider-vertical"></li>
       <li>
-        <a id="signin" rel="${sessionScope.customReferer}" href="${pageContext.request.contextPath}/login">
+        <a id="signin" href="${pageContext.request.contextPath}/login">
           <fmt:message key="label.signin"/>
         </a>
       </li>
