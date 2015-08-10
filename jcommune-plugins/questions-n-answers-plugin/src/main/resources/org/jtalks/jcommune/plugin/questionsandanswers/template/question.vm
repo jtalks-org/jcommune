@@ -51,7 +51,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   </script>
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
-  <title>${esc.html(${question.title})}</title>
+  <title>
+    ${propertiesHolder.allPagesTitlePrefix}
+    ${esc.html(${question.title})}
+  </title>
 </head>
 <body>
 

@@ -19,6 +19,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <head>
   <meta name="description" content="${esc.html(${topicDto.topic.branch.name})}">
   <title>
+    ${propertiesHolder.allPagesTitlePrefix}
     #if(!${result.hasErrors()})
       ${esc.html(${topicDto.topic.branch.name})} -
     #end

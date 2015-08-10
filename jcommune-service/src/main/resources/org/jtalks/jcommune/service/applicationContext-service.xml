@@ -461,6 +461,10 @@
     <property name="commentService" ref="postCommentService"/>
   </bean>
 
+  <bean class="org.jtalks.jcommune.plugin.api.service.nontransactional.PropertiesHolder" factory-method="getInstance">
+      <property name="allPagesTitlePrefixProperty" ref="componentAllPagesTitlePrefixProperty"/>
+  </bean>
+
   <bean id="entityToDtoConverter" class="org.jtalks.jcommune.service.dto.EntityToDtoConverter">
       <constructor-arg ref="pluginLoader"/>
   </bean>

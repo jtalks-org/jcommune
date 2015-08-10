@@ -25,6 +25,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.*;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.BbToHtmlConverter;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.PluginLocationServiceImpl;
+import org.jtalks.jcommune.plugin.api.service.nontransactional.PropertiesHolder;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginCommentService;
 import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService;
@@ -633,6 +634,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         model.put("currentUser", currentUser);
         model.put("messages", getLocalizedMessagesBundle(request));
         model.put("permissionTool", tool);
+        model.put("propertiesHolder", PropertiesHolder.getInstance());
         return model;
     }
 
