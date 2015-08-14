@@ -5,7 +5,7 @@
   <parent>
     <artifactId>jcommune-plugins</artifactId>
       <groupId>org.jtalks.jcommune</groupId>
-      <version>3.1</version>
+      <version>3.2-SNAPSHOT</version>
   </parent>
   <artifactId>jcommune-dummy-plugin</artifactId>
 
