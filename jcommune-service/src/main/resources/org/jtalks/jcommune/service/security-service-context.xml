@@ -116,7 +116,7 @@
   <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
     <constructor-arg>
       <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <property name="cacheManager" ref="localCache"/>
+        <property name="cacheManager" ref="distributedChace"/>
         <property name="cacheName" value="org.jtalks.EHCOMMON"/>
       </bean>
     </constructor-arg>

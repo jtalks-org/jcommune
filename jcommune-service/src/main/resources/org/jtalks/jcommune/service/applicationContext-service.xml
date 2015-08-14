@@ -404,7 +404,12 @@
   Now used for storing new private messages count.
   -->
   <bean id="localCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-    <property name="configLocation" value="classpath:/org/jtalks/jcommune/model/entity/ehcache.xml"/>
+    <property name="configLocation" value="classpath:/org/jtalks/jcommune/model/entity/localCache.xml"/>
+  </bean>
+
+  <!--Used for caching acl items-->
+  <bean id="distributedChace" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+    <property name="configLocation" value="${EH_CACHE_CONFIG:classpath:/org/jtalks/jcommune/model/entity/ehcache.xml}"/>
   </bean>
 
   <bean id="userDataCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">

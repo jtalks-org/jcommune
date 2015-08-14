@@ -226,7 +226,7 @@
           ${hibernate.use_query_cache}
         </prop>
         <prop key="net.sf.ehcache.configurationResourceName">
-          ${EH_CACHE_CONFIG}
+          ${EH_CACHE_CONFIG:/org/jtalks/jcommune/model/entity/ehcache.xml}
         </prop>
         <prop key="hibernate.search.default.directory_provider">
           ${hibernate.search.default.directory_provider}
@@ -252,7 +252,7 @@
     <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
   <bean class="org.jtalks.jcommune.model.utils.ConfigurationLogger">
-    <property name="ehCacheConfigLocation" value="${EH_CACHE_CONFIG}"/>
+    <property name="ehCacheConfigLocation" value="${EH_CACHE_CONFIG:/org/jtalks/jcommune/model/entity/ehcache.xml}"/>
   </bean>
 
   <bean class="org.jtalks.jcommune.model.utils.PersistenceCleanupContextShutdownHook" destroy-method="dispose"/>
