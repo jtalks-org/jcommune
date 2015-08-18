@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
-import org.jtalks.common.model.dao.hibernate.GenericDao;
+import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
@@ -66,7 +66,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private BranchLastPostService branchLastPostService;
     private PermissionService permissionService;
     private PluginLoader pluginLoader;
-    private GenericDao<PostDraft> postDraftDao;
+    private Crud<PostDraft> postDraftDao;
 
     /**
      * Create an instance of Post entity based service
@@ -90,7 +90,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             BranchLastPostService branchLastPostService,
             PermissionService permissionService,
             PluginLoader pluginLoader,
-            GenericDao<PostDraft> postDraftDao) {
+            Crud<PostDraft> postDraftDao) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
@@ -173,7 +173,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             draft.setContent(content);
             draft.updateLastSavedTime();
         }
-        postDraftDao.saveOrUpdate(draft);
+        topicDao.saveOrUpdate(topic);
 
         logger.debug("Draft saved in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topic.getId(), draft.getId(), currentUser.getUsername()});

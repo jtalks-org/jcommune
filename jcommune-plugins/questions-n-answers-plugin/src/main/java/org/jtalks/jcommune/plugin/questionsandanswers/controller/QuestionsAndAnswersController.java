@@ -195,14 +195,14 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
 
         JCUser currentUser = getUserReader().getCurrentUser();
         PostDto postDto = new PostDto();
-        Post draft = topic.getDraftForUser(currentUser);
+        PostDraft draft = topic.getDraftForUser(currentUser);
         if (draft != null) {
             postDto = PostDto.getDtoFor(draft);
         }
 
         Map<String, Object> data = getDefaultModel(request);
         data.put(QUESTION, topic);
-        data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getDisplayedPosts())));
+        data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getPosts())));
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(SUBSCRIBED, false);
         data.put(CONVERTER, BbToHtmlConverter.getInstance());
@@ -229,7 +229,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     @ResponseBody
     public JsonResponse canPost(@PathVariable("id") Long questionId) throws NotFoundException {
         Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
-        if (topic.getDisplayedPostsCount() - 1 >= LIMIT_OF_POSTS_VALUE) {
+        if (topic.getPostCount() - 1 >= LIMIT_OF_POSTS_VALUE) {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
@@ -386,12 +386,12 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         postDto.setTopicId(questionId);
         Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
         //We can't provide limitation properly without database-level locking
-        if (result.hasErrors() || LIMIT_OF_POSTS_VALUE <= topic.getDisplayedPostsCount() - 1) {
+        if (result.hasErrors() || LIMIT_OF_POSTS_VALUE <= topic.getPostCount() - 1) {
             Map<String, Object> data = getDefaultModel(request);
             VelocityEngine engine = new VelocityEngine(getProperties());
             engine.init();
             data.put(QUESTION, topic);
-            data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getDisplayedPosts())    ));
+            data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getPosts())));
             data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
             data.put(SUBSCRIBED, false);
             data.put(RESULT, result);
@@ -450,7 +450,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     public String deleteAnswer(@PathVariable Long answerId)
             throws NotFoundException {
         Post answer = getPluginPostService().get(answerId);
-        Post neighborAnswer = answer.getTopic().getNeighborDisplayedPost(answer);
+        Post neighborAnswer = answer.getTopic().getNeighborPost(answer);
         getPluginPostService().deletePost(answer);
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId()
                 + "#" + neighborAnswer.getId();

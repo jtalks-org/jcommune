@@ -474,7 +474,7 @@ public class QuestionsAndAnswersControllerTest {
 
         Topic topic = mock(Topic.class);
         when(topic.getId()).thenReturn(42L);
-        when(topic.getNeighborDisplayedPost(answer)).thenReturn(neighborAnswer);
+        when(topic.getNeighborPost(answer)).thenReturn(neighborAnswer);
         answer.setTopic(topic);
 
         when(postService.get(answer.getId())).thenReturn(answer);
@@ -662,20 +662,6 @@ public class QuestionsAndAnswersControllerTest {
         when(topicService.get(anyLong(), anyString())).thenThrow(new NotFoundException());
 
         controller.canPost(1L);
-    }
-
-    @Test
-    public void showQuestionsShouldShowOnlyDisplayedPosts() throws Exception {
-        Topic topic = getTopicWithPosts(5);
-        topic.addPost(new Post(null, null, PostState.DRAFT));
-        topic.setBranch( new Branch("name", "description"));
-
-        when(topicService.get(1L, QuestionsAndAnswersPlugin.TOPIC_TYPE)).thenReturn(topic);
-        when(userReader.getCurrentUser()).thenReturn(new JCUser("name", "name@mail.ru", "12"));
-
-        controller.showQuestion(request, new ExtendedModelMap(), 1L);
-
-        verify(controller).getSortedPosts(topic.getDisplayedPosts());
     }
 
     private Post getPostWithNotRemovedComments(int numberOfComments) {

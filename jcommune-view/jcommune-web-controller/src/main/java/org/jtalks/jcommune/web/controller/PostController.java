@@ -15,10 +15,7 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.apache.commons.lang.StringUtils;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.PostVote;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
@@ -133,7 +130,7 @@ public class PostController {
     public ModelAndView delete(@PathVariable(POST_ID) Long postId)
             throws NotFoundException {
         Post post = this.postService.get(postId);
-        Post nextPost = post.getTopic().getNeighborDisplayedPost(post);
+        Post nextPost = post.getTopic().getNeighborPost(post);
         deletePostWithLockHandling(postId);
         return new ModelAndView("redirect:/posts/" + nextPost.getId());
     }
@@ -263,7 +260,7 @@ public class PostController {
         JCUser currentUser = userService.getCurrentUser();
         Topic topic = topicFetchService.get(topicId);
 
-        Post draft = topic.getDraftForUser(currentUser);
+        PostDraft draft = topic.getDraftForUser(currentUser);
         if (draft != null) {
             postDto = PostDto.getDtoFor(draft);
         }
@@ -401,7 +398,7 @@ public class PostController {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
         Topic topic = topicFetchService.getTopicSilently(postDto.getTopicId());
-        Post saved = postService.saveOrUpdateDraft(topic, postDto.getBodyText());
+        PostDraft saved = postService.saveOrUpdateDraft(topic, postDto.getBodyText());
         return new JsonResponse(JsonResponseStatus.SUCCESS, saved.getId());
     }
 
@@ -417,7 +414,7 @@ public class PostController {
     @RequestMapping(value = "posts/{postId}/delete", method = RequestMethod.GET)
     @ResponseBody
     public JsonResponse deleteDraft(@PathVariable Long postId) throws NotFoundException {
-        postService.deleteDraft(postService.get(postId));
+        postService.deleteDraft(postId);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 

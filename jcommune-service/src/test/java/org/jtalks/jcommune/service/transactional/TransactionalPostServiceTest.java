@@ -724,7 +724,7 @@ public class TransactionalPostServiceTest {
 
         PostDraft draft = postService.saveOrUpdateDraft(topic, content);
 
-        verify(postDraftDao).saveOrUpdate(draft);
+        verify(topicDao).saveOrUpdate(topic);
         assertEquals(draft.getContent(), content);
         assertTrue(topic.getDrafts().contains(draft));
     }
@@ -741,7 +741,7 @@ public class TransactionalPostServiceTest {
 
         PostDraft result = postService.saveOrUpdateDraft(topic, newContent);
 
-        verify(postDraftDao).saveOrUpdate(result);
+        verify(topicDao).saveOrUpdate(topic);
         assertEquals(result, draft);
         assertEquals(result.getContent(), newContent);
         assertTrue(topic.getDrafts().contains(result));

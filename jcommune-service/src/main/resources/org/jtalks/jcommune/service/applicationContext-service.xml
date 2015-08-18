@@ -213,6 +213,7 @@
     <constructor-arg ref="branchLastPostService"/>
     <constructor-arg ref="permissionService"/>
     <constructor-arg ref="pluginLoader"/>
+    <constructor-arg ref="postDraftDao"/>
   </bean>
 
   <bean id="topicModificationService"
