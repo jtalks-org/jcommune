@@ -120,7 +120,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private DateTime creationDate;
     private DateTime modificationDate;
     private JCUser topicStarter;
-    @NotBlankSized(min = MIN_NAME_SIZE, max = MAX_NAME_SIZE, message = "{length.constraint}")
+    @NotBlankSized(min = MIN_NAME_SIZE, max = MAX_NAME_SIZE, message = "{javax.validation.constraints.Size.message}")
     private String title;
     private boolean sticked;
     private boolean announcement;
