@@ -16,7 +16,6 @@ package org.jtalks.jcommune.model.dao.hibernate;
 
 
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
@@ -50,21 +49,6 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
     private static final String MAX_MOD_DATE = "maxModDate";
     private static final String GROUP_IDS = "groupIds";
     private static final String UNCHECKED = "unchecked";
-
-    /**
-     * We need to use native queries because hibernate does not support derived tables.
-     * Currently we didn't figured out way to query count of unanswered topics without derived tables in an acceptable time
-     */
-    private static final String GET_COUNT_UNANSWERED_TOPIC_BY_GROUPS = "SELECT COUNT(*) FROM (SELECT t.TOPIC_ID FROM " +
-            "TOPIC t JOIN POST p ON t.TOPIC_ID = p.TOPIC_ID AND p.STATE='DISPLAYED' AND t.BRANCH_ID in " +
-            "(select distinct view.BRANCH_ID from BRANCHES_VIEW_TOPICS view where view.SID in (:groupIds) " +
-            "and view.BRANCH_ID not in (select v.BRANCH_ID from BRANCHES_VIEW_TOPICS v where " +
-            "v.GRANTING=0 and v.SID in (:groupIds))) GROUP BY t.TOPIC_ID HAVING COUNT(p.POST_ID)=1) tmp";
-    private static final String GET_COUNT_UNANSWERED_TOPICS_FOR_ANONYMOUS_USER ="SELECT COUNT(*) FROM (" +
-            "SELECT t.TOPIC_ID FROM TOPIC t JOIN POST p ON p.TOPIC_ID=t.TOPIC_ID AND p.state='DISPLAYED' " +
-            "AND t.BRANCH_ID in (select distinct branch.BRANCH_ID from BRANCHES branch, BRANCHES_VIEW_TOPICS view where " +
-            "branch.BRANCH_ID=view.BRANCH_ID and view.GRANTING=1 and view.SID like 'anonymousUser' ) " +
-            "GROUP BY t.TOPIC_ID HAVING COUNT(p.POST_ID)=1) tmp";
 
     /**
      * @param sessionFactory The SessionFactory.
@@ -104,7 +88,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      */
     private List<String> getGroupIds(JCUser user) {
         List<Group> groups = user.getGroups();
-        List<String> groupIds = new ArrayList<>();
+        List<String> groupIds = new ArrayList<String>();
         for (Group g : groups) {
             groupIds.add(g.getId() + "");
         }
@@ -120,9 +104,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      */
     private PageImpl<Topic> getUnansweredTopicsByGroupIds(List<String> groupIds, PageRequest pageRequest) {
         if (!groupIds.isEmpty()) {
-            Query query = session().createSQLQuery(GET_COUNT_UNANSWERED_TOPIC_BY_GROUPS);
-            //Needed to prevent cache invalidation
-            ((SQLQuery)query).addSynchronizedQuerySpace("");
+            Query query = session().getNamedQuery("getCountUnansweredTopicsByGroups");
             query.setParameterList(GROUP_IDS, groupIds);
             Number totalCount = (Number) query.uniqueResult();
             pageRequest.adjustPageNumber(totalCount.intValue());
@@ -132,9 +114,9 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
             query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
             @SuppressWarnings(UNCHECKED)
             List<Topic> unansweredTopics = (List<Topic>) query.list();
-            return new PageImpl<>(unansweredTopics, pageRequest, totalCount.intValue());
+            return new PageImpl<Topic>(unansweredTopics, pageRequest, totalCount.intValue());
         }
-        return new PageImpl<>(new ArrayList<Topic>(), pageRequest, 0);
+        return new PageImpl<Topic>(new ArrayList<Topic>(), pageRequest, 0);
     }
 
     /**
@@ -144,9 +126,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
      * @return unanswered topics
      */
     private PageImpl<Topic> getUnansweredTopicsForAnonymousUser(PageRequest pageRequest) {
-        Query query = session().createSQLQuery(GET_COUNT_UNANSWERED_TOPICS_FOR_ANONYMOUS_USER);
-        //Needed to prevent cache invalidation
-        ((SQLQuery)query).addSynchronizedQuerySpace("");
+        Query query = session().getNamedQuery("getCountUnansweredTopicsForAnonymousUser");
         Number totalCount = (Number) query.uniqueResult();
         pageRequest.adjustPageNumber(totalCount.intValue());
 
@@ -180,9 +160,9 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
             query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
             @SuppressWarnings(UNCHECKED)
             List<Topic> recentTopics = (List<Topic>) query.list();
-            return new PageImpl<>(recentTopics, pageRequest, totalCount.intValue());
+            return new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
         }
-        return new PageImpl<>(new ArrayList<Topic>(), pageRequest, 0);
+        return new PageImpl<Topic>(new ArrayList<Topic>(), pageRequest, 0);
     }
 
     /**
@@ -203,7 +183,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
         query.setFirstResult(pageRequest.getOffset()).setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings(UNCHECKED)
         List<Topic> recentTopics = (List<Topic>) query.list();
-        return new PageImpl<>(recentTopics, pageRequest, totalCount.intValue());
+        return new PageImpl<Topic>(recentTopics, pageRequest, totalCount.intValue());
     }
 
     /**
@@ -241,7 +221,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
                 .setMaxResults(pageRequest.getPageSize());
         @SuppressWarnings(UNCHECKED)
         List<Topic> topics = (List<Topic>) query.list();
-        return new PageImpl<>(topics, pageRequest, totalCount);
+        return new PageImpl<Topic>(topics, pageRequest, totalCount);
     }
 
     /**
@@ -263,7 +243,7 @@ public class TopicHibernateDao extends GenericDao<Topic> implements TopicDao {
     public Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity) {
         // use set for remove duplicates
         @SuppressWarnings("unchecked")
-        Set<JCUser> foundUsers = new HashSet<>(session()
+        Set<JCUser> foundUsers = new HashSet<JCUser>(session()
                 .getNamedQuery("getAllowedSubscribersForTopic")
                 .setParameter("topic", entity)
                 .list());

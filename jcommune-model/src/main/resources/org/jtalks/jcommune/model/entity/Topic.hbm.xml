@@ -44,6 +44,12 @@ This might be tuned further in the future if the page size itself changes.-->
             <one-to-many class="Post"/>
         </bag>
 
+        <bag name="drafts" cascade="all-delete-orphan" inverse="true">
+          <cache usage="read-write"/>
+          <key column="TOPIC_ID" foreign-key="FK_TOPIC_POST_DRAFT"/>
+          <one-to-many class="PostDraft"/>
+        </bag>
+
         <many-to-one name="topicStarter" column="TOPIC_STARTER" class="JCUser"
                      lazy="false"
                      not-null="true" foreign-key="FK_TOPIC_STARTER"/>
@@ -104,19 +110,19 @@ This might be tuned further in the future if the page size itself changes.-->
     </query>
 
     <query name="getCountUnansweredTopicsByGroups">
-        <![CDATA[SELECT COUNT(*) FROM Topic tt where tt.id IN (SELECT t.id FROM Topic t JOIN t.posts p WHERE p.state=org.jtalks.jcommune.model.entity.PostState.DISPLAYED AND t.branch.id in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view where view.sid in (:groupIds) and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds))) GROUP BY t.id HAVING COUNT(p.id)=1)]]>
+        <![CDATA[SELECT COUNT(t) FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view where view.sid in (:groupIds) and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds)))]]>
     </query>
 
     <query name="getUnansweredTopicsByGroups">
-        <![CDATA[SELECT t FROM Topic t JOIN t.posts p WHERE p.state=org.jtalks.jcommune.model.entity.PostState.DISPLAYED AND t.branch.id in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view where view.sid in (:groupIds) and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds))) GROUP BY t.id HAVING COUNT(p.id)=1 ORDER BY t.modificationDate DESC]]>
+        <![CDATA[FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (select distinct view.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches view where view.sid in (:groupIds) and view.branchId not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in (:groupIds))) ORDER BY modificationDate DESC]]>
     </query>
 
     <query name="getCountUnansweredTopicsForAnonymousUser">
-        <![CDATA[SELECT COUNT(*) FROM Topic tt where tt.id IN (SELECT t.id FROM Topic t JOIN t.posts p WHERE p.state=org.jtalks.jcommune.model.entity.PostState.DISPLAYED  AND t.branch.id in (select distinct branch.id from org.jtalks.jcommune.model.entity.Branch branch, org.jtalks.jcommune.model.entity.ViewTopicsBranches view where branch.id=view.branchId and view.granting=1 and view.sid like 'anonymousUser' ) GROUP BY t.id HAVING COUNT(p.id)=1)]]>
+        <![CDATA[SELECT COUNT(t) FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (select distinct branch.id from org.jtalks.jcommune.model.entity.Branch branch, org.jtalks.jcommune.model.entity.ViewTopicsBranches view where branch.id=view.branchId and view.granting=1 and view.sid like 'anonymousUser' )]]>
     </query>
 
     <query name="getUnansweredTopicsForAnonymousUser">
-        <![CDATA[SELECT t FROM Topic t JOIN t.posts p WHERE p.state=org.jtalks.jcommune.model.entity.PostState.DISPLAYED AND t.branch.id in (select distinct branch.id from org.jtalks.jcommune.model.entity.Branch branch, org.jtalks.jcommune.model.entity.ViewTopicsBranches view where branch.id=view.branchId and view.granting=1 and view.sid like 'anonymousUser' ) GROUP BY t.id HAVING COUNT(p.id)=1 ORDER BY t.modificationDate DESC]]>
+        <![CDATA[FROM Topic t WHERE t.posts.size=1 AND t.branch.id in (select distinct branch.id from org.jtalks.jcommune.model.entity.Branch branch, org.jtalks.jcommune.model.entity.ViewTopicsBranches view where branch.id=view.branchId and view.granting=1 and view.sid like 'anonymousUser' ) ORDER BY modificationDate DESC]]>
     </query>
 
     <!--Get all the topics ID and the number of posts (to them) from the branch-->

@@ -103,6 +103,11 @@
                      value="org.jtalks.jcommune.model.entity.PostComment"/>
   </bean>
 
+  <bean id="postDraftDao" parent="genericDao"
+        class="org.jtalks.common.model.dao.hibernate.GenericDao">
+    <constructor-arg name="type" value="org.jtalks.jcommune.model.entity.PostDraft"/>
+  </bean>
+
   <bean id="bannerDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.BannerHibernateDao"/>
 
@@ -204,6 +209,7 @@
         <value>/org/jtalks/jcommune/model/entity/PluginProperty.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/BranchReadedMarker.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/PostVote.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/PostDraft.hbm.xml</value>
       </list>
     </property>
     <property name="hibernateProperties">
