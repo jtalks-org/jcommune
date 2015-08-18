@@ -42,7 +42,7 @@ public class ForumStatisticsHibernateDao implements ForumStatisticsDao {
     @Override
     public int getPostsOnForumCount() {
         return ((Number) sessionFactory.getCurrentSession()
-                .createQuery("select count(*) from Post p where p.state = 'DISPLAYED'")
+                .createQuery("select count(*) from Post p")
                 .setCacheable(true)
                 .uniqueResult())
                 .intValue();

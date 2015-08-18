@@ -133,17 +133,16 @@ public interface PostService extends EntityService<Post> {
      *
      * @return newly created or updated draft
      */
-    Post saveOrUpdateDraft(Topic topic, String content);
+    PostDraft saveOrUpdateDraft(Topic topic, String content);
 
     /**
-     * Deletes specified draft.
-     * We need separate method for deletion drafts because method for deletion posts does much job except deletion.
-     * For example it recalculates last post for branch, sends email notifications, decrease users post count.
-     * We don't need this job here.
+     * Deletes draft with specified id.
      *
-     * @param post draft to delete
+     * @param draftId  id of draft to delete
      *
-     * @throws java.lang.IllegalArgumentException if specified post has in different state than <code>DRAFT</code>
+     * @throws NotFoundException if draft not found
+     * @throws org.springframework.security.access.AccessDeniedException if user who try to delete draft is no author of
+     *                                                                   th draft
      */
-    void deleteDraft(Post post);
+    void deleteDraft(Long draftId) throws NotFoundException;
 }

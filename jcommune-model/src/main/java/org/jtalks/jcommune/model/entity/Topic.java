@@ -132,6 +132,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     private String type;
     private Map<String, String> attributes = new HashMap<>();
     private List<Post> posts = new ArrayList<>();
+    private List<PostDraft> drafts = new ArrayList<>();
     private Set<JCUser> subscribers = new HashSet<>();
 
     // transient, makes sense for current user only if set explicitly
@@ -189,9 +190,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * @param post post to add
      */
     public void addPost(Post post) {
-        if (PostState.DISPLAYED.equals(post.getState())) {
-            setModificationDate(post.getCreationDate());
-        }
+        setModificationDate(post.getCreationDate());
         post.setTopic(this);
         this.posts.add(post);
     }
@@ -291,6 +290,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     /**
      * @return the list of posts in the topic, always not null and not empty
      */
+    @IndexedEmbedded(prefix = TOPIC_POSTS_PREFIX)
     public List<Post> getPosts() {
         return posts;
     }
@@ -333,24 +333,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Gets last post with state <code>DISPLAYED</code>
-     *
-     * @return last post with state <code>DISPLAYED</code>
-     *         null if none of post have <code>DISPLAYED</code> state
-     */
-    public Post getLastDisplayedPost() {
-        for (int i = posts.size() - 1; i >= 0; i --) {
-            Post post = posts.get(i);
-            if (PostState.DISPLAYED.equals(post.getState())) {
-                return post;
-            }
-        }
-        // should never occur in current implementation
-        //TODO: rework when posts will be marked as deleted
-        return null;
-    }
-
-    /**
      * Get next post to given post in topic. Following basic cases are possible:
      * <ol>
      * <li>In case of one post in topic it returns it back (not valid case from
@@ -362,7 +344,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      * Used to find closest post which is good to be displayed after deletion of
      * post we pass as a parameter.
      * 
-     * @param post
+     * @param post post to search next
      * @return Neighbor post
      */
     public Post getNeighborPost(Post post) {
@@ -370,40 +352,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
             if (posts.get(i).equals(post)) {
                 return (i == posts.size() - 1) ? posts.get(i - 1) : posts
                         .get(i + 1);
-            }
-        }
-        return getFirstPost();
-    }
-
-    /**
-     * Get next post with <code>DISPLAYED</code> state to given post in topic. Following basic cases are possible:
-     * <ol>
-     * <li>In case of one post in topic it returns it back (not valid case from
-     * end-user point of view).</li>
-     * <li>In case if we pass post in the middle of the topic it returns next
-     * post.</li>
-     * <li>In case if we pass last post in the topic it returns previous one.</li>
-     * </ol>
-     * Used to find closest post which is good to be displayed after deletion of
-     * post we pass as a parameter.
-     *
-     * @param post
-     * @return Neighbor post with <code>DISPLAYED</code> state
-     */
-    public Post getNeighborDisplayedPost(Post post) {
-        if (getLastDisplayedPost().equals(post)) {
-            for (int i = posts.size() - 1; i > 0; i--) {
-                Post item = posts.get(i);
-                if (PostState.DISPLAYED.equals(item.getState()) && !post.equals(item)) {
-                    return item;
-                }
-            }
-        } else {
-            for (int i = posts.indexOf(post) + 1; i < posts.size(); i ++) {
-                Post item = posts.get(i);
-                if (PostState.DISPLAYED.equals(item.getState())) {
-                    return item;
-                }
             }
         }
         return getFirstPost();
@@ -429,7 +377,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public void recalculateModificationDate() {
         DateTime newTopicModificationDate = getFirstPost().getCreationDate();
-        for (Post post : getDisplayedPosts()) {
+        for (Post post : getPosts()) {
             if (post.getCreationDate().isAfter(newTopicModificationDate.toInstant())) {
                 newTopicModificationDate = post.getCreationDate();
             }
@@ -442,7 +390,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public DateTime getLastModificationPostDate() {
         DateTime newTopicModificationDate = getFirstPost().getLastTouchedDate();
-        for (Post post : getDisplayedPosts()) {
+        for (Post post : getPosts()) {
             if (post.getLastTouchedDate().isAfter(newTopicModificationDate.toInstant())) {
                 newTopicModificationDate = post.getLastTouchedDate();
             }
@@ -549,21 +497,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Returns first unread post for current user with <code>DISPLAYED</code> state. If no unread post
-     * information has been set explicitly this method will return
-     * first topic's post id, considering all topic as unread.
-     *
-     * @return returns first unread post id for the current user
-     */
-    public Long getFirstUnreadDisplayedPostId() {
-        if (isHasUpdatesInDisplayedPosts()) {
-            return getFirstNewerDisplayedPost(lastReadPostDate).getId();
-        }
-
-        return getFirstPost().getId();
-    }
-
-    /**
      * Returns first post that is newer then give time
      * @param time time to looking for newer post
      * @return first post that is newer then give time or first post if there is no post that is newer
@@ -579,20 +512,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Returns first post with <code>DISPLAYED</code> state that is newer then give time
-     * @param time time to looking for newer post
-     * @return first post that is newer then give time or first post if there is no post that is newer
-     */
-    private Post getFirstNewerDisplayedPost(DateTime time) {
-        for (Post post : getPosts()) {
-            if (post.getCreationDate().isAfter(time) && PostState.DISPLAYED.equals(post.getState())) {
-                return post;
-            }
-        }
-        return getFirstPost();
-    }
-
-    /**
      * This method will return true if there are unread posts in that topic
      * for the current user. This state is NOT persisted and must be
      * explicitly set by calling  Topic.setLastReadPostDate().
@@ -603,20 +522,6 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
      */
     public boolean isHasUpdates() {
         return (lastReadPostDate == null) || (lastReadPostDate.isBefore(getLastPost().getCreationDate()));
-    }
-
-    /**
-     * This method will return true if there are unread posts with <code>DISPLAYED</code> status in that topic
-     * for the current user. This state is NOT persisted and must be
-     * explicitly set by calling  Topic.setLastReadPostDate().
-     * <p/>
-     * If setter has not been called this method will always return <code>true</code>
-     *
-     * @return if current topic has posts still unread by the current user
-     */
-    public boolean isHasUpdatesInDisplayedPosts() {
-        return (lastReadPostDate == null)
-                || (lastReadPostDate.isBefore(getLastDisplayedPost().getCreationDate().withMillisOfSecond(0)));
     }
 
     /**
@@ -746,59 +651,81 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
-     * Gets all posts of this topic which have DISPLAYED state
+     * Checks if this topic contains only posts added by topic Owner.
      *
-     * @return list of posts of this topic which have DISPLAYED state
+     * @return <code>true</code> if condition is followed, otherwise <code>false</code>
      */
-    @IndexedEmbedded(prefix = TOPIC_POSTS_PREFIX)
-    public List<Post> getDisplayedPosts() {
-        List<Post> result = new ArrayList<>();
+    public boolean isContainsOwnerPostsOnly() {
         for (Post post : getPosts()) {
-            if (PostState.DISPLAYED.equals(post.getState())) {
-                result.add(post);
+            if (!post.getUserCreated().equals(topicStarter)) {
+                return false;
             }
         }
-        return  result;
+        return true;
     }
 
     /**
-     * Gets draft for user from current topic. Each user may have only one draft in each topic
+     * Gets list of drafts for current topic
      *
-     * @param user interested user
-     *
-     * @return instance of draft if it found
-     *         <code>null</code> otherwise
+     * @return list of drafts
      */
-    public Post getDraftForUser(JCUser user) {
-        for (Post post : getPosts()) {
-            if (PostState.DRAFT.equals(post.getState()) && user.equals(post.getUserCreated())) {
-                return post;
+    public List<PostDraft> getDrafts() {
+        return drafts;
+    }
+
+    /**
+     * Sets list of drafts to current topic
+     *
+     * @param drafts list of drafts to set
+     */
+    public void setDrafts(List<PostDraft> drafts) {
+        this.drafts = drafts;
+    }
+
+    /**
+     * Adds draft to current topic
+     *
+     * @param draft draft to add
+     */
+    public void addDraft(PostDraft draft) {
+        draft.setTopic(this);
+        getDrafts().add(draft);
+    }
+
+    /**
+     * Get draft of specified user in current topic
+     *
+     * @param user user to search draft
+     *
+     * @return draft of specified user or null if draft not found
+     */
+    public PostDraft getDraftForUser(JCUser user) {
+        for (PostDraft draft : getDrafts()) {
+            if (draft.getAuthor().equals(user)) {
+                return draft;
             }
         }
         return null;
     }
 
     /**
-     * Gets number of post with <code>DISPLAYED</code> state
+     * removes specified draft from topic
      *
-     * @return number of post with <code>DISPLAYED</code> state
-     *
+     * @param draft draft to be removed
      */
-    public int getDisplayedPostsCount() {
-        return getDisplayedPosts().size();
+    public void removeDraft(PostDraft draft) {
+        getDrafts().remove(draft);
     }
 
-	/**
-	 * Checks if this topic contains only posts added by topic Owner.
-	 *
-	 * @return <code>true</code> if condition is followed, otherwise <code>false</code>
-	 */
-	public boolean isContainsOwnerPostsOnly() {
-		for (Post post : getDisplayedPosts()) {
-			if (!post.getUserCreated().equals(topicStarter)) {
-				return false;
-			}
-		}
-		return true;
-	}
+    /**
+     * Removes draft of specified user if exist
+     *
+     * @param user user to search draft
+     */
+    public void removeDraftOfUser(JCUser user) {
+        PostDraft draft = getDraftForUser(user);
+        if (draft != null) {
+            removeDraft(draft);
+        }
+    }
 }

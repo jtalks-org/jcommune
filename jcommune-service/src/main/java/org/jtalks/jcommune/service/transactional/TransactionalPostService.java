@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.joda.time.DateTime;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
@@ -65,6 +66,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
     private BranchLastPostService branchLastPostService;
     private PermissionService permissionService;
     private PluginLoader pluginLoader;
+    private GenericDao<PostDraft> postDraftDao;
 
     /**
      * Create an instance of Post entity based service
@@ -75,6 +77,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      * @param notificationService   to send email updates for subscribed users
      * @param userService           to get current user
      * @param branchLastPostService to refresh the last post of the branch
+     * @param permissionService     service for cheking permissions
+     * @param pluginLoader          loader of pluinf
+     * @param postDraftDao          data access object for manipulating with drafts
      */
     public TransactionalPostService(
             PostDao dao,
@@ -84,7 +89,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             UserService userService,
             BranchLastPostService branchLastPostService,
             PermissionService permissionService,
-            PluginLoader pluginLoader) {
+            PluginLoader pluginLoader,
+            GenericDao<PostDraft> postDraftDao) {
         super(dao);
         this.topicDao = topicDao;
         this.securityService = securityService;
@@ -93,6 +99,7 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         this.branchLastPostService = branchLastPostService;
         this.permissionService = permissionService;
         this.pluginLoader = pluginLoader;
+        this.postDraftDao = postDraftDao;
     }
 
     /**
@@ -156,17 +163,17 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
 
     @Override
     @PreAuthorize("hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.CREATE_POSTS')")
-    public Post saveOrUpdateDraft(Topic topic, String content) {
+    public PostDraft saveOrUpdateDraft(Topic topic, String content) {
         JCUser currentUser = userService.getCurrentUser();
-        Post draft = topic.getDraftForUser(currentUser);
+        PostDraft draft = topic.getDraftForUser(currentUser);
         if (draft == null) {
-            draft = new Post(currentUser, content, PostState.DRAFT);
-            topic.addPost(draft);
+            draft = new PostDraft(content, currentUser);
+            topic.addDraft(draft);
         } else {
-            draft.setPostContent(content);
-            draft.updateCreationDate();
+            draft.setContent(content);
+            draft.updateLastSavedTime();
         }
-        getDao().saveOrUpdate(draft);
+        postDraftDao.saveOrUpdate(draft);
 
         logger.debug("Draft saved in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topic.getId(), draft.getId(), currentUser.getUsername()});
@@ -295,16 +302,19 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
      */
     @PreAuthorize("#post.userCreated.username == principal.username") //draft can be deleted only by author
     @Override
-    public void deleteDraft(Post post) {
-        if (!PostState.DRAFT.equals(post.getState())) {
-            throw new IllegalArgumentException("Required DRAFT but got " + String.valueOf(post.getState()));
+    public void deleteDraft(Long draftId) throws NotFoundException{
+        if (!postDraftDao.isExist(draftId)) {
+            throw new NotFoundException("Draft with id=" + draftId + " not found");
         }
-        Topic topic = post.getTopic();
-        topic.removePost(post);
+        PostDraft draft = postDraftDao.get(draftId);
+        if (!draft.getAuthor().equals(userService.getCurrentUser())) {
+            throw new AccessDeniedException("Only author can delete draft");
+        }
+        Topic topic = draft.getTopic();
+        topic.getDrafts().remove(draft);
         topicDao.saveOrUpdate(topic);
-        securityService.deleteFromAcl(post);
 
-        logger.debug("Deleted draft id={}", post.getId());
+        logger.debug("Deleted draft id={}", draft.getId());
     }
 
     /**
