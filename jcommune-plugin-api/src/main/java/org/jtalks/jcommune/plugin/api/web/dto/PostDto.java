@@ -17,6 +17,7 @@ package org.jtalks.jcommune.plugin.api.web.dto;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.PostDraft;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
 
@@ -168,6 +169,22 @@ public class PostDto {
         dto.setTopicId(post.getTopic().getId());
         dto.setCreationDate(post.getCreationDate());
         dto.setModificationDate(post.getModificationDate());
+        return dto;
+    }
+
+    /**
+     * Creates dto from draft
+     *
+     * @param postdraft draft to create dto
+     *
+     * @return dto for draft
+     */
+    public static PostDto getDtoFor(PostDraft postdraft) {
+        PostDto dto = new PostDto();
+        dto.setBodyText(postdraft.getContent());
+        dto.setId(postdraft.getId());
+        dto.setTopicId(postdraft.getTopic().getId());
+        dto.setCreationDate(postdraft.getLastSaved());
         return dto;
     }
 
