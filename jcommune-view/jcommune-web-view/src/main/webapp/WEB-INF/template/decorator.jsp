@@ -112,6 +112,10 @@ in the future.
       <script type="text/javascript"
               src="${pageContext.request.contextPath}/resources/wro/topic.js?${project.version}"></script>
     </c:if>
+    <c:if test="${fn:contains(uriString, 'topics') and not fn:contains(uriString, 'new')}">
+      <script type="text/javascript"
+              src="${pageContext.request.contextPath}/resources/wro/draft.js?${project.version}"></script>
+    </c:if>
   </c:when>
 
   <c:otherwise>

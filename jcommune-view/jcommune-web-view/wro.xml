@@ -109,6 +109,8 @@
     <js>/resources/javascript/app/codeHighlighting.js</js>
     <js>/resources/javascript/app/permissionService.js</js>
     <js>/resources/javascript/lib/purl.js</js>
+  </group>
+  <group name="draft">
     <js>/resources/javascript/app/postDraft.js</js>
   </group>
 </groups>
