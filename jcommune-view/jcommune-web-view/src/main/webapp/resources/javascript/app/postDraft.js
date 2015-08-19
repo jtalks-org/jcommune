@@ -130,7 +130,6 @@ $(document).ready(function() {
                 }
             },
             error: function (jqHXHR, status, e) {
-                console.log("errored");
                 isSaved = false;
                 if (status == 'timeout' || jqHXHR.status == 0) {
                     if (jqHXHR.status == 0) {
