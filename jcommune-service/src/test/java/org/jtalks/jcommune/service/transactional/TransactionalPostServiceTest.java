@@ -794,7 +794,7 @@ public class TransactionalPostServiceTest {
     }
 
     @Test(expectedExceptions = AccessDeniedException.class)
-    public void deleteDraftShouldThrowExceptionIfOthreUserTryToDeleteDeraft() throws Exception {
+    public void deleteDraftShouldThrowExceptionIfAnotherUserTryToDeleteDeraft() throws Exception {
         PostDraft draft = getDraftWithTopicInBranch();
         draft.setAuthor(new JCUser("name", "mylo@mail.ru", "123"));
 

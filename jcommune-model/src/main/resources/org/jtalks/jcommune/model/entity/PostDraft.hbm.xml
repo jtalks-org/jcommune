@@ -28,7 +28,7 @@
     <property name="content" column="CONTENT" type="text" not-null="true"/>
     <property name="lastSaved" column="LAST_SAVED" type="org.joda.time.contrib.hibernate.PersistentDateTime"
               not-null="true"/>
-    <many-to-one name="topic" column="TOPIC_ID" not-null="false"/>
+    <many-to-one name="topic" column="TOPIC_ID" not-null="true"/>
     <many-to-one name="author" column="USER_ID" class="org.jtalks.jcommune.model.entity.JCUser"
                  lazy="false"
                  not-null="true" foreign-key="FK_USER_POST_DRAFT"/>
