@@ -44,6 +44,7 @@ This might be tuned further in the future if the page size itself changes.-->
             <one-to-many class="Post"/>
         </bag>
 
+      <!-- Here inverse="true"  should increase performance of insertaion new draft by avoiding redundant update statement -->
         <bag name="drafts" cascade="all-delete-orphan" inverse="true">
           <cache usage="read-write"/>
           <key column="TOPIC_ID" foreign-key="FK_TOPIC_POST_DRAFT"/>
