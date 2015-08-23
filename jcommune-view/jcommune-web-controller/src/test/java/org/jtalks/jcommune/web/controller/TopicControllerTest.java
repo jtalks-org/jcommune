@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
@@ -106,6 +107,7 @@ public class TopicControllerTest {
     @BeforeMethod
     public void prepareTestData() {
         branch = new Branch("", "description");
+        branch.setSection(new Section("sectionname"));
         branch.setId(BRANCH_ID);
         user = new JCUser("username", "email@mail.com", "password");
     }
@@ -200,13 +202,20 @@ public class TopicControllerTest {
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(true);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(breadcrumbBuilder.getForumBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
+        List<Breadcrumb> breadcrumbs = new BreadcrumbBuilder().getNewTopicBreadcrumb(branch);
+        when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(breadcrumbs);
 
         ModelAndView mav = controller.createTopic(getDto(), result, BRANCH_ID);
 
         verify(branchService).get(BRANCH_ID);
         verify(breadcrumbBuilder).getNewTopicBreadcrumb(branch);
-        //
+
+        List<Breadcrumb> breadcrumbsFromModel = (List) mav.getModel().get("breadcrumbList");
+        for (int i = 0; i < breadcrumbs.size(); i++) {
+            assertEquals(breadcrumbs.get(i).getValue(), breadcrumbsFromModel.get(i).getValue());
+        }
+        assertEquals(breadcrumbsFromModel.get(1).getValue(), branch.getSection().getName());
+        assertEquals(breadcrumbsFromModel.get(2).getValue(), branch.getName());
         assertViewName(mav, "topic/topicForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
