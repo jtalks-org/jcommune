@@ -30,7 +30,6 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -77,8 +76,6 @@ public class PostControllerTest {
     @Mock
     private LocationService locationService;
     @Mock
-    private SessionRegistry sessionRegistry;
-    @Mock
     private EntityToDtoConverter converter;
     @Mock
     private HttpServletRequest request;
@@ -118,7 +115,7 @@ public class PostControllerTest {
 
         controller = new PostController(
                 postService, breadcrumbBuilder, topicFetchService, topicModificationService,
-                bbCodeService, lastReadPostService, userService, locationService, sessionRegistry, converter);
+                bbCodeService, lastReadPostService, userService, locationService, converter);
     }
 
     @Test

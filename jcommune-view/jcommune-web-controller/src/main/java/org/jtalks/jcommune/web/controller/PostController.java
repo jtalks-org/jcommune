@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -74,7 +73,6 @@ public class PostController {
     private BBCodeService bbCodeService;
     private UserService userService;
     private LocationService locationService;
-    private SessionRegistry sessionRegistry;
     private EntityToDtoConverter converter;
 
     /**
@@ -105,8 +103,7 @@ public class PostController {
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
                           TopicFetchService topicFetchService, TopicModificationService topicModificationService,
                           BBCodeService bbCodeService, LastReadPostService lastReadPostService,
-                          UserService userService, LocationService locationService, SessionRegistry sessionRegistry,
-                          EntityToDtoConverter converter) {
+                          UserService userService, LocationService locationService, EntityToDtoConverter converter) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicFetchService = topicFetchService;
@@ -115,7 +112,6 @@ public class PostController {
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
         this.locationService = locationService;
-        this.sessionRegistry = sessionRegistry;
         this.converter = converter;
     }
 
@@ -269,7 +265,6 @@ public class PostController {
 
         return new ModelAndView("topic/postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
-                .addObject("usersOnline", sessionRegistry.getAllPrincipals())
                 .addObject("postsPage", postsPage)
                 .addObject("topic", topic)
                 .addObject(POST_DTO, postDto)
