@@ -8,9 +8,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <c:choose>
-  <c:when test="${topicDto.topic.hasUpdatesInDisplayedPosts}">
+  <c:when test="${topicDto.topic.hasUpdates}">
     <%-- if there are new posts this icon should be a link to the first unread post --%>
-    <c:set var="linkUrl" value="${pageContext.request.contextPath}${topicDto.postUrlPrefix}${topicDto.topic.firstUnreadDisplayedPostId}"/>
+    <c:set var="linkUrl" value="${pageContext.request.contextPath}${topicDto.postUrlPrefix}${topicDto.topic.firstUnreadPostId}"/>
   </c:when>
   <c:otherwise>
     <%-- if all posts have been read this icon should be a link to the last post in topic --%>
@@ -21,7 +21,7 @@
 <%--actual icon depends on both new posts presence and topic closed status--%>
 <a href="${linkUrl}">
   <c:choose>
-    <c:when test="${topicDto.topic.hasUpdatesInDisplayedPosts && authenticated}">
+    <c:when test="${topicDto.topic.hasUpdates && authenticated}">
       <c:set var="iconUrl" value="${topicDto.unreadIconUrl}"/>
        <c:set var="titleCode" value="label.topic.new_posts"/>
     </c:when>

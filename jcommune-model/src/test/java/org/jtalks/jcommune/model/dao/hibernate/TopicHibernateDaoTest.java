@@ -261,17 +261,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetUnansweredTopicsForRegisteredUsers() {
-        JCUser user = createAndSaveUnansweredTopics();
-        PageRequest pageRequest = new PageRequest("1", 2);
-
-        Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
-        assertEquals(result.getContent().size(), 2);
-        assertEquals(result.getTotalElements(), 2);
-    }
-
-    @Test
-    public void testGetUnansweredTopicsWithDraftsForRegisteredUsers() {
-        JCUser user = createAndSaveUnansweredTopicsWithDrafts();
+        JCUser user = createAndSaveBranchesWithUnansweredTopics();
         PageRequest pageRequest = new PageRequest("1", 2);
 
         Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
@@ -281,17 +271,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetUnansweredTopicsForAnonymousUsers() {
-        createAndSaveUnansweredTopicsWithDrafts();
-        PageRequest pageRequest = new PageRequest("1", 2);
-
-        Page<Topic> result = dao.getUnansweredTopics(pageRequest, new AnonymousUser());
-        assertEquals(result.getContent().size(), 2);
-        assertEquals(result.getTotalElements(), 2);
-    }
-
-    @Test
-    public void testGetUnansweredTopicsWithDraftsForAnonymousUsers() {
-        createAndSaveUnansweredTopics();
+        createAndSaveBranchesWithUnansweredTopics();
         PageRequest pageRequest = new PageRequest("1", 2);
 
         Page<Topic> result = dao.getUnansweredTopics(pageRequest, new AnonymousUser());
@@ -301,7 +281,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetUnansweredTopicsWithPaging() {
-        JCUser user = createAndSaveUnansweredTopics();
+        JCUser user = createAndSaveBranchesWithUnansweredTopics();
         PageRequest pageRequest = new PageRequest("2", 1);
         Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
         assertEquals(result.getContent().size(), 1);
@@ -310,7 +290,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetUnansweredTopicsWithPagingPageTooLow() {
-        JCUser user = createAndSaveUnansweredTopics();
+        JCUser user = createAndSaveBranchesWithUnansweredTopics();
         PageRequest pageRequest = new PageRequest("0", 1);
         Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
         assertEquals(result.getContent().size(), 1);
@@ -320,7 +300,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
 
     @Test
     public void testGetUnansweredTopicsWithPagingPageTooBig() {
-        JCUser user = createAndSaveUnansweredTopics();
+        JCUser user = createAndSaveBranchesWithUnansweredTopics();
         PageRequest pageRequest = new PageRequest("1000", 1);
         Page<Topic> result = dao.getUnansweredTopics(pageRequest, user);
         assertEquals(result.getContent().size(), 1);
@@ -328,7 +308,7 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         assertEquals(result.getNumber(), 2);
     }
 
-    private JCUser createAndSaveUnansweredTopics() {
+    private JCUser createAndSaveBranchesWithUnansweredTopics() {
         JCUser author = PersistedObjectsFactory.getDefaultUserWithGroups();
 
         Branch branch = ObjectsFactory.getDefaultBranch();
@@ -340,31 +320,6 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         branch.addTopic(topic2);
         Topic topic3 = ObjectsFactory.getTopic(author, 2);
         topic3.setType("Discussion");
-        branch.addTopic(topic3);
-        session.save(branch);
-
-        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(branch.getId(),
-                String.valueOf(author.getGroups().get(0).getId()), true);
-        PersistedObjectsFactory.createAndSaveViewTopicsBranchesEntity(branch.getId(), "anonymousUser", true);
-
-        return author;
-    }
-
-    private JCUser createAndSaveUnansweredTopicsWithDrafts() {
-        JCUser author = PersistedObjectsFactory.getDefaultUserWithGroups();
-
-        Branch branch = ObjectsFactory.getDefaultBranch();
-        Topic topic1 = ObjectsFactory.getTopic(author, 1);
-        topic1.setType("Discussion");
-        topic1.addPost(new Post(author, "content", PostState.DRAFT));
-        branch.addTopic(topic1);
-        Topic topic2 = ObjectsFactory.getTopic(author, 1);
-        topic2.setType("Discussion");
-        topic1.addPost(new Post(author, "content", PostState.DRAFT));
-        branch.addTopic(topic2);
-        Topic topic3 = ObjectsFactory.getTopic(author, 2);
-        topic3.setType("Discussion");
-        topic1.addPost(new Post(author, "content", PostState.DRAFT));
         branch.addTopic(topic3);
         session.save(branch);
 
@@ -645,6 +600,54 @@ public class TopicHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         Topic result = (Topic)session.get(Topic.class, topic.getId());
 
         assertEquals("newValue", result.getAttributes().get("name"));
+    }
+
+    @Test
+    public void postDraftShouldBeSavedByCascade() {
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
+        PostDraft draft = new PostDraft("content", PersistedObjectsFactory.getDefaultUser());
+
+        topic.addDraft(draft);
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
+
+        PostDraft result = (PostDraft)session.get(PostDraft.class, draft.getId());
+
+        assertReflectionEquals(draft, result);
+    }
+
+    @Test
+    public void postDraftShouldBeUpdatedByCascade() {
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
+        PostDraft draft = new PostDraft("content", PersistedObjectsFactory.getDefaultUser());
+        topic.addDraft(draft);
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
+        String newContent = "newContent";
+
+        topic.getDrafts().get(0).setContent(newContent);
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
+
+        PostDraft result = (PostDraft)session.get(PostDraft.class, draft.getId());
+
+        assertEquals(result.getContent(), newContent);
+    }
+
+    @Test
+    public void postDraftShouldBeDeletedByCascade() {
+        Topic topic = PersistedObjectsFactory.getDefaultTopic();
+        PostDraft draft = new PostDraft("content", PersistedObjectsFactory.getDefaultUser());
+        topic.addDraft(draft);
+        dao.saveOrUpdate(topic);
+        flushAndClearSession();
+
+        topic.getDrafts().clear();
+        dao.saveOrUpdate(topic);
+
+        PostDraft result = (PostDraft)session.get(PostDraft.class, draft.getId());
+
+        assertNull(result);
     }
 
     private void flushAndClearSession() {

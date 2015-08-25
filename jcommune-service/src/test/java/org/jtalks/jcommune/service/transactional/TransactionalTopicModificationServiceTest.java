@@ -409,26 +409,6 @@ public class TransactionalTopicModificationServiceTest {
         verify(branchLastPostService, Mockito.never()).refreshLastPostInBranch(branch);
     }
 
-    @Test
-    public void deleteTopicShouldNotTakeInAccountDraftsWhenReducesUserPostCount() throws Exception {
-        int postCount = 1;
-        Topic topic = new Topic(user, "title");
-        topic.setId(TOPIC_ID);
-        Post firstPost = new Post(user, ANSWER_BODY);
-        Post draft = new Post(user, ANSWER_BODY, PostState.DRAFT);
-        topic.addPost(firstPost);
-        topic.addPost(draft);
-        user.setPostCount(postCount);
-        Branch branch = createBranch();
-        branch.addTopic(topic);
-        when(topicDao.isExist(TOPIC_ID)).thenReturn(true);
-        when(topicDao.get(TOPIC_ID)).thenReturn(topic);
-
-        topicService.deleteTopic(topic);
-
-        assertEquals(user.getPostCount(), postCount - 1);
-    }
-
 
     @Test(expectedExceptions = {NotFoundException.class})
     public void testDeleteTopicSilentNonExistent() throws NotFoundException {
@@ -713,23 +693,6 @@ public class TransactionalTopicModificationServiceTest {
 
         assertFalse(topic.isClosed());
         verify(topicDao).saveOrUpdate(topic);
-    }
-
-    @Test
-    public void postingOfDraftShouldUpdateModificationDate() throws Exception{
-        Topic topic = new Topic(user, "title");
-        topic.setType(TopicTypeName.DISCUSSION.getName());
-        topic.setBranch(new Branch("name", "description"));
-        Post draft = new Post(user, "blahblah", PostState.DRAFT);
-        topic.addPost(draft);
-
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(topicFetchService.getTopicSilently(TOPIC_ID)).thenReturn(topic);
-        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
-
-        topicService.replyToTopic(TOPIC_ID, "qwerty", BRANCH_ID);
-
-        assertEquals(topic.getModificationDate(), draft.getCreationDate());
     }
 
     private Branch createBranch() {

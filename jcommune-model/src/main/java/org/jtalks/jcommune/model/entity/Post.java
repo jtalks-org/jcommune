@@ -45,7 +45,6 @@ public class Post extends Entity implements SubscriptionAwareEntity {
     private String postContent;
     private Topic topic;
     private int rating;
-    private PostState state = PostState.DISPLAYED;
 
     private List<PostComment> comments = new ArrayList<>();
     private Set<PostVote> votes = new HashSet<>();
@@ -79,11 +78,6 @@ public class Post extends Entity implements SubscriptionAwareEntity {
         this.creationDate = new DateTime();
         this.userCreated = userCreated;
         this.postContent = postContent;
-    }
-
-    public Post(JCUser userCreated, String postContent, PostState state) {
-        this(userCreated, postContent);
-        this.state = state;
     }
 
     /**
@@ -397,21 +391,4 @@ public class Post extends Entity implements SubscriptionAwareEntity {
         return URL_SUFFIX + getId();
     }
 
-    /**
-     * Gets state of current post
-     *
-     * @return state of current post
-     */
-    public PostState getState() {
-        return state;
-    }
-
-    /**
-     * Sets state of current post
-     *
-     * @param state state to set
-     */
-    public void setState(PostState state) {
-        this.state = state;
-    }
 }

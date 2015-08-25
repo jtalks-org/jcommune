@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.dao.Crud;
+import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
@@ -93,6 +94,8 @@ public class TransactionalPostServiceTest {
     private PluginLoader pluginLoader;
     @Mock
     private TopicPlugin topicPlugin;
+    @Mock
+    private GenericDao<PostDraft> postDraftDao;
 
     private PostService postService;
 
@@ -116,7 +119,8 @@ public class TransactionalPostServiceTest {
                 userService,
                 branchLastPostService,
                 permissionService,
-                pluginLoader);
+                pluginLoader,
+                postDraftDao);
     }
 
     @Test
@@ -718,31 +722,30 @@ public class TransactionalPostServiceTest {
 
         when(userService.getCurrentUser()).thenReturn(currentUser);
 
-        Post draft = postService.saveOrUpdateDraft(topic, content);
+        PostDraft draft = postService.saveOrUpdateDraft(topic, content);
 
-        verify(postDao).saveOrUpdate(draft);
-        assertEquals(draft.getPostContent(), content);
-        assertEquals(draft.getState(), PostState.DRAFT);
-        assertTrue(topic.getPosts().contains(draft));
+        verify(topicDao).saveOrUpdate(topic);
+        assertEquals(draft.getContent(), content);
+        assertTrue(topic.getDrafts().contains(draft));
     }
 
     @Test
     public void saverOrUpdateDraftShouldUpdateDraftIfUserAlreadyHasDraftInSpecifiedTopic() {
         Topic topic = new Topic();
         JCUser currentUser = new JCUser("username", null, null);
-        Post draft = new Post(currentUser, "content", PostState.DRAFT);
-        topic.addPost(draft);
+        PostDraft draft = new PostDraft("content", currentUser);
+        topic.addDraft(draft);
         String newContent = "Something amazing";
 
         when(userService.getCurrentUser()).thenReturn(currentUser);
 
-        Post result = postService.saveOrUpdateDraft(topic, newContent);
+        PostDraft result = postService.saveOrUpdateDraft(topic, newContent);
 
-        verify(postDao).saveOrUpdate(result);
+        verify(topicDao).saveOrUpdate(topic);
         assertEquals(result, draft);
-        assertEquals(result.getPostContent(), newContent);
-        assertTrue(topic.getPosts().contains(result));
-        assertEquals(topic.getPosts().size(), 1);
+        assertEquals(result.getContent(), newContent);
+        assertTrue(topic.getDrafts().contains(result));
+        assertEquals(topic.getDrafts().size(), 1);
     }
 
     @Test
@@ -771,43 +774,69 @@ public class TransactionalPostServiceTest {
     }
 
     @Test
-    public void testDeleteDraft() {
-        Post draft = getPostWithTopicInBranch();
-        draft.setState(PostState.DRAFT);
+    public void testDeleteDraft() throws Exception{
+        PostDraft draft = getDraftWithTopicInBranch();
 
-        postService.deleteDraft(draft);
+        when(postDraftDao.isExist(draft.getId())).thenReturn(true);
+        when(postDraftDao.get(draft.getId())).thenReturn(draft);
+
+        postService.deleteDraft(draft.getId());
 
         verify(topicDao).saveOrUpdate(draft.getTopic());
-        verify(securityService).deleteFromAcl(draft);
         assertFalse(draft.getTopic().getPosts().contains(draft));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void deleteDraftShouldThrowExceptionIfPostForDeletionIsNotDraft() {
-        Post draft = getPostWithTopicInBranch();
+    @Test(expectedExceptions = NotFoundException.class)
+    public void deleteDraftShouldThrowExceptionIfDraftNotFound() throws Exception {
+        when(postDraftDao.isExist(anyLong())).thenReturn(false);
 
-        postService.deleteDraft(draft);
+        postService.deleteDraft(1l);
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void deleteDraftShouldThrowExceptionIfAnotherUserTryToDeleteDeraft() throws Exception {
+        PostDraft draft = getDraftWithTopicInBranch();
+        draft.setAuthor(new JCUser("name", "mylo@mail.ru", "123"));
+
+        when(postDraftDao.isExist(draft.getId())).thenReturn(true);
+        when(postDraftDao.get(draft.getId())).thenReturn(draft);
+
+        postService.deleteDraft(draft.getId());
     }
 
     @Test
-    public void deleteDraftShouldNotChangeUserPostCounter() {
-        Post draft = getPostWithTopicInBranch();
-        draft.setState(PostState.DRAFT);
-        int before = draft.getUserCreated().getPostCount();
+    public void deleteDraftShouldNotChangeUserPostCounter() throws Exception {
+        PostDraft draft = getDraftWithTopicInBranch();
+        int before = draft.getAuthor().getPostCount();
 
-        postService.deleteDraft(draft);
+        when(postDraftDao.isExist(draft.getId())).thenReturn(true);
+        when(postDraftDao.get(draft.getId())).thenReturn(draft);
 
-        assertEquals(draft.getUserCreated().getPostCount(), before);
+        postService.deleteDraft(draft.getId());
+
+        assertEquals(draft.getAuthor().getPostCount(), before);
     }
 
     @Test
-    public void deleteDraftShouldNotSendNotifications() {
-        Post draft = getPostWithTopicInBranch();
-        draft.setState(PostState.DRAFT);
+    public void deleteDraftShouldNotSendNotifications() throws Exception {
+        PostDraft draft = getDraftWithTopicInBranch();
 
-        postService.deleteDraft(draft);
+        when(postDraftDao.isExist(draft.getId())).thenReturn(true);
+        when(postDraftDao.get(draft.getId())).thenReturn(draft);
+
+        postService.deleteDraft(draft.getId());
 
         verify(notificationService, never()).subscribedEntityChanged(any(SubscriptionAwareEntity.class));
+    }
+
+    private PostDraft getDraftWithTopicInBranch() {
+        Branch branch = new Branch(null, null);
+        branch.setId(1);
+        Topic topic = new Topic();
+        PostDraft draft = new PostDraft("content", currentUser);
+        draft.setId(1);
+        topic.addDraft(draft);
+        return draft;
     }
 
     private Post getPostWithTopicInBranch() {

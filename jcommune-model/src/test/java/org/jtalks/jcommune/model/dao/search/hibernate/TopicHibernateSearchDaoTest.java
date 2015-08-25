@@ -331,37 +331,6 @@ public class TopicHibernateSearchDaoTest extends AbstractTransactionalTestNGSpri
         Assert.assertTrue(searchResultPage.hasContent(), "Search result must not be empty.");
     }
 
-    @Test
-    public void searchByTitleAndContentShouldIgnoreTopicIfOnlyDraftSatisfiesCondition() {
-        String phrase = "java";
-        Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
-        expectedTopic.addPost(new Post(PersistedObjectsFactory.getDefaultUser(), phrase, PostState.DRAFT));
-
-        saveAndFlushIndexes(Arrays.asList(expectedTopic));
-        configureMocks(phrase, phrase);
-
-        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
-                phrase, DEFAULT_PAGE_REQUEST, Arrays.asList(expectedTopic.getBranch().getId()));
-
-        assertFalse(searchResultPage.hasContent());
-    }
-
-    @Test
-    public void searchByTitleAndContentShouldFindTopicIfDraftAndDisplayedPostsSatisfiesCondition() {
-        String phrase = "java";
-        Topic expectedTopic = PersistedObjectsFactory.getDefaultTopic();
-        expectedTopic.addPost(new Post(PersistedObjectsFactory.getDefaultUser(), phrase, PostState.DRAFT));
-        expectedTopic.addPost(new Post(PersistedObjectsFactory.getUser("name", "mail@mail.ru"), phrase));
-
-        saveAndFlushIndexes(Arrays.asList(expectedTopic));
-        configureMocks(phrase, phrase);
-
-        Page<Topic> searchResultPage = topicSearchDao.searchByTitleAndContent(
-                phrase, DEFAULT_PAGE_REQUEST, Arrays.asList(expectedTopic.getBranch().getId()));
-
-        assertTrue(searchResultPage.hasContent());
-    }
-
     @DataProvider(name = "parameterSearchByBbCodesContent")
     public Object[][] parameterSearchByBbCodesContent() {
         return new Object[][]{

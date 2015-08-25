@@ -129,7 +129,9 @@ public class TransactionalTopicModificationService implements TopicModificationS
         JCUser currentUser = userService.getCurrentUser();
         currentUser.setPostCount(currentUser.getPostCount() + 1);
 
-        Post answer = getAnswer(topic, currentUser, answerBody);
+        Post answer = new Post(currentUser, answerBody);
+        topic.addPost(answer);
+        topic.removeDraftOfUser(currentUser);
 
         if (currentUser.isAutosubscribe()) {
             Set<JCUser> topicSubscribers = topic.getSubscribers();
@@ -140,6 +142,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Branch branch = topic.getBranch();
         branch.setLastPost(answer);
         branchDao.saveOrUpdate(branch);
+        dao.saveOrUpdate(topic);
 
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.subscribedEntityChanged(topic);
@@ -356,7 +359,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * @return branch without deleted topic
      */
     private Branch deleteTopicSilent(Topic topic) {
-        List<Post> topicPosts = topic.getDisplayedPosts();
+        List<Post> topicPosts = topic.getPosts();
         for (Post post : topicPosts) {
             JCUser user = post.getUserCreated();
             user.setPostCount(user.getPostCount() - 1);
@@ -377,30 +380,6 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         securityService.deleteFromAcl(Topic.class, topic.getId());
         return branch;
-    }
-
-    /**
-     * Creates replay for specified user and topic. If user have saved draft in this topic, updates it's body
-     * and state and return. Otherwise creates new post with specified body
-     *
-     * @param topic topic in which answer will be created
-     * @param currentUser current user
-     * @param answerBody body of the answer
-     *
-     * @return answer for specified topic from specified user
-     */
-    private Post getAnswer(Topic topic, JCUser currentUser, String answerBody) {
-        Post answer = topic.getDraftForUser(currentUser);
-        if (answer == null) {
-            answer = new Post(currentUser, answerBody);
-            topic.addPost(answer);
-        } else {
-            answer.setPostContent(answerBody);
-            answer.setState(PostState.DISPLAYED);
-            answer.updateCreationDate();
-            answer.getTopic().recalculateModificationDate();
-        }
-        return answer;
     }
 
     /**

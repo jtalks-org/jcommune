@@ -60,21 +60,21 @@
           <td class="latest-by shrink-to-fit">
             <div>
               <i class="icon-calendar"></i>
-              <a class="date margin-right-big" href="${pageContext.request.contextPath}/posts/${topicDto.topic.lastDisplayedPost.id}"
+              <a class="date margin-right-big" href="${pageContext.request.contextPath}/posts/${topicDto.topic.lastPost.id}"
                  data-original-title="<spring:message code="label.branch.header.lastMessage.tooltip"/>">
-                <jtalks:format value="${topicDto.topic.lastDisplayedPost.creationDate}"/>
+                <jtalks:format value="${topicDto.topic.lastPost.creationDate}"/>
               </a>
               <i class="icon-envelope margin-left-big margin-right-big"></i>
               <span class='test-views' data-original-title="<spring:message code="label.branch.header.posts"/>">
-                <c:out value="${topicDto.topic.displayedPostsCount}"/>
+                <c:out value="${topicDto.topic.postCount}"/>
               </span>
             </div>
             <div>
               <i class="icon-user"></i>
               <a class="space-left-small"
-                 href="${pageContext.request.contextPath}/users/${topicDto.topic.lastDisplayedPost.userCreated.id}"
+                 href="${pageContext.request.contextPath}/users/${topicDto.topic.lastPost.userCreated.id}"
                  title="<spring:message code='label.tips.view_profile'/>">
-                <c:out value="${topicDto.topic.lastDisplayedPost.userCreated.username}"/>
+                <c:out value="${topicDto.topic.lastPost.userCreated.username}"/>
               </a>
             </div>
           </td>

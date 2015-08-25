@@ -314,7 +314,7 @@ public class PostControllerTest {
     public void testSaveDraft() throws Exception {
         PostDto dto = getDto();
         Topic topic = new Topic();
-        Post  saved = new Post(new JCUser("name", null, null),"content");
+        PostDraft  saved = new PostDraft("content", new JCUser("name", null, null));
         saved.setId(1);
 
         when(topicFetchService.getTopicSilently(dto.getTopicId())).thenReturn(topic);
@@ -346,20 +346,10 @@ public class PostControllerTest {
 
     @Test
     public void testDeleteDraft() throws Exception {
-        Post draft = new Post(new JCUser("name", null, null),"content");
 
-        when(postService.get(draft.getId())).thenReturn(draft);
+        controller.deleteDraft(1l);
 
-        controller.deleteDraft(draft.getId());
-
-        verify(postService).deleteDraft(draft);
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void deleteDraftShouldThrowExceptionIfPostNotFound() throws Exception {
-        when(postService.get(anyLong())).thenThrow(new NotFoundException());
-
-        controller.deleteDraft(1L);
+        verify(postService).deleteDraft(1l);
     }
 
     private class PostVoteMacher extends ArgumentMatcher<PostVote> {

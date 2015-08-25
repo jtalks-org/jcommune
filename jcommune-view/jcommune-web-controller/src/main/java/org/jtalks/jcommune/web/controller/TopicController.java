@@ -236,7 +236,7 @@ public class TopicController {
             return null;
         }
         PostDto postDto = new PostDto();
-        Post draft = topic.getDraftForUser(currentUser);
+        PostDraft draft = topic.getDraftForUser(currentUser);
         if (draft != null) {
             postDto = PostDto.getDtoFor(draft);
         }
