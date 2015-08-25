@@ -180,7 +180,7 @@ $(document).ready(function() {
         var draftId = parseInt($("#draftId").val());
         if (draftId != 0) {
             $.ajax({
-                url: baseUrl + "/posts/" + draftId + "/delete",
+                url: baseUrl + "/drafts/" + draftId + "/delete",
                 success: function() {
                     $("#counter").text("");
                     clearInterval(dateUpdateInterval);

@@ -411,7 +411,7 @@ public class PostController {
      *
      * @throws NotFoundException if post with specified id not exist
      */
-    @RequestMapping(value = "posts/{postId}/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "drafts/{postId}/delete", method = RequestMethod.GET)
     @ResponseBody
     public JsonResponse deleteDraft(@PathVariable Long postId) throws NotFoundException {
         postService.deleteDraft(postId);
