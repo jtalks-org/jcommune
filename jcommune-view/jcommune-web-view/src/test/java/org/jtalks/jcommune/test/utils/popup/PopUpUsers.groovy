@@ -19,7 +19,7 @@ import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.test.utils.exceptions.ValidationException;
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException;
-import org.jtalks.jcommune.test.utils.model.User;
+import org.jtalks.jcommune.test.model.User;
 import org.springframework.test.web.servlet.MvcResult;
 
 import javax.servlet.http.HttpSession;

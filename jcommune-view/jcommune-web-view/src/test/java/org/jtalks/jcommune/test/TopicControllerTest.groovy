@@ -15,10 +15,11 @@
 package org.jtalks.jcommune.test
 
 import org.jtalks.common.model.permissions.BranchPermission
-import org.jtalks.jcommune.model.utils.Branches
-import org.jtalks.jcommune.model.utils.Groups
+import org.jtalks.jcommune.test.service.BranchService
+import org.jtalks.jcommune.test.service.GroupsService
+import org.jtalks.jcommune.test.service.UserService
 import org.jtalks.jcommune.test.utils.Users
-import org.jtalks.jcommune.test.utils.model.User
+import org.jtalks.jcommune.test.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.mock.web.MockHttpSession
@@ -60,12 +61,14 @@ class TopicControllerTest extends Specification {
     @Autowired
     private WebApplicationContext ctx;
     @Autowired
-    private Branches branches;
+    private BranchService branches;
     @Autowired
     @Qualifier("modelAndViewUsers")
     private Users users;
     @Autowired
-    private Groups groups;
+    private GroupsService groups;
+    @Autowired
+    private UserService userService
 
     private MockMvc mockMvc;
 
@@ -85,10 +88,10 @@ class TopicControllerTest extends Specification {
         and: 'Branch created'
             def branch = branches.create()
         and: "User registered and has permissions to create topics in current branch"
-            users.create(user).withPermissionOn(branch, BranchPermission.VIEW_TOPICS)
+            userService.create(user).withPermissionOn(branch, BranchPermission.VIEW_TOPICS)
                     .withPermissionOn(branch, BranchPermission.CREATE_POSTS);
         and: "User logged in"
-            def session = users.signIn(user)
+            def session = userService.signIn(mockMvc, user)
         when: 'User creates topic'
             def result = mockMvc.perform(post("/topics/new").session(session as MockHttpSession)
                     .param("bodyText", "text")

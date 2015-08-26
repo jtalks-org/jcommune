@@ -33,9 +33,11 @@
     <property name="sidFactory" ref="jtalksSidFactory"/>
   </bean>
 
-  <bean class="org.jtalks.jcommune.model.utils.Groups"/>
+  <bean class="org.jtalks.jcommune.test.service.GroupsService"/>
 
-  <bean class="org.jtalks.jcommune.model.utils.Branches"/>
+  <bean class="org.jtalks.jcommune.test.service.BranchService"/>
+
+  <bean class="org.jtalks.jcommune.test.service.UserService"/>
 
 
   <!--We don't use FlywayWrapper here because we don't need to disable migrations and also FlywayWrapper is MySQL-oriented-->

@@ -14,10 +14,11 @@
  */
 package org.jtalks.jcommune.test
 
-import org.jtalks.jcommune.model.utils.Groups
+import org.jtalks.jcommune.test.service.GroupsService
+import org.jtalks.jcommune.test.service.UserService
 import org.jtalks.jcommune.test.utils.Users
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
-import org.jtalks.jcommune.test.utils.model.User
+import org.jtalks.jcommune.test.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
@@ -56,7 +57,9 @@ abstract class SignInTest extends Specification {
 
     protected Users users
     @Autowired
-    private Groups groups
+    private GroupsService groups
+    @Autowired
+    private UserService userService
 
     @Resource(name = 'testFilters')
     List<Filter> filters
@@ -80,11 +83,11 @@ abstract class SignInTest extends Specification {
     def 'Sign in success scenarios'() {
         given: 'User with username and password registered and activated'
             def user = new User(username: username, password: password)
-            users.create(user)
+            userService.create(user)
         when: caseName
             def session = users.signIn(user)
         then: 'User becomes logged in'
-            users.isAuthenticated(session, user)
+            userService.isAuthenticated(session, user)
         where:
         username            |password               |caseName
         randomAlphabetic(25)| randomAlphabetic(50)  |'Username and password valid'
@@ -93,7 +96,7 @@ abstract class SignInTest extends Specification {
     def 'Sign in fail scenarios'() {
         given: 'User with username and password registered and activated'
             def user = new User(username: usernameForCreation, password: passwordForCreation)
-            users.create(user)
+            userService.create(user)
         when: caseName
             user.username = usernameForSignIn
             user.password = passwordForSignIn
