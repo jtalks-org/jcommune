@@ -32,7 +32,7 @@ abstract class Users {
     UserDao userDao
     MockMvc mockMvc
 
-    def String signUpAndActivate(User user) throws Exception {
+    def signUpAndActivate(User user) throws Exception {
         singUp(user)
 
         def registered = userDao.getByUsername(user.username)

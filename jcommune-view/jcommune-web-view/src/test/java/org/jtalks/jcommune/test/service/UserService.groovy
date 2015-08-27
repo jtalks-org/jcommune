@@ -66,7 +66,7 @@ class UserService {
                 .session
     }
 
-    def PermissionGranter create(User user) {
+    def create(User user) {
         def group = groupDao.getGroupByName(AdministrationGroup.USER.name)
         def fromDb = userDao.getByUsername(user.username)
         if (fromDb == null) {
@@ -81,7 +81,7 @@ class UserService {
         return new PermissionGranter(permissionManager, group);
     }
 
-    def void setAuthentication(JCUser user) {
+    def setAuthentication(JCUser user) {
         def token = new UsernamePasswordAuthenticationToken(user.username, user.password)
         token.details = user
         def auth = authenticationManager.authenticate(token)
@@ -90,6 +90,12 @@ class UserService {
         def response =  new MockHttpServletResponse()
         sessionStrategy.onAuthentication(auth, request, response)
     }
+
+
+
+
+
+
 
     def boolean isActivated(String username) {
         def user = userDao.getByUsername(username)

@@ -39,6 +39,9 @@
 
   <bean class="org.jtalks.jcommune.test.service.UserService"/>
 
+  <bean class="org.jtalks.jcommune.test.service.ComponentService"/>
+
+  <bean class="org.jtalks.jcommune.test.service.SectionService"/>
 
   <!--We don't use FlywayWrapper here because we don't need to disable migrations and also FlywayWrapper is MySQL-oriented-->
   <bean id="flyway_jcommune_init" class="com.googlecode.flyway.core.Flyway"

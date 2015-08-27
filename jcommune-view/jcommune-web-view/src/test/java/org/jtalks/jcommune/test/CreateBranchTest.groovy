@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.test
 
+import org.jtalks.jcommune.test.utils.Branches
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
@@ -44,12 +45,15 @@ import javax.servlet.Filter
 @Transactional
 class CreateBranchTest extends Specification {
 
-//    @Autowired
-//    private WebApplicationContext ctx
-//    @Resource(name = 'testFilters')
-//    List<Filter> filters
-//
-//    def setUp() {
-//
-//    }
+    @Autowired
+    private WebApplicationContext ctx
+    @Resource(name = 'testFilters')
+    List<Filter> filters
+
+    @Autowired
+    Branches branches;
+
+    def setup() {
+
+    }
 }
