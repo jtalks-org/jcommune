@@ -381,8 +381,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @return redirect to the answer or back to answer page if validation failed
      * @throws NotFoundException when question or branch not found
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.POST)
-    public String create(@PathVariable("id") Long questionId, @Valid @ModelAttribute PostDto postDto,
+    @RequestMapping(value = "{questionId}", method = RequestMethod.POST)
+    public String create(@PathVariable("questionId") Long questionId, @Valid @ModelAttribute PostDto postDto,
                                BindingResult result, Model model, HttpServletRequest request) throws NotFoundException {
         postDto.setTopicId(questionId);
         Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
