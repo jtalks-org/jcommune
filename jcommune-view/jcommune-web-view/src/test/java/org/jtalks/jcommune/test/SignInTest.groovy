@@ -73,7 +73,7 @@ abstract class SignInTest extends Specification {
     def 'Sign in without activation registration should fail'() {
         given: 'User is registered and not activated'
             def user = new User()
-            users.singUp(user)
+            userService.createNotActivated(user)
         when: 'User tries to log in'
             users.signIn(user)
         then: 'Wrong response exception is thrown'

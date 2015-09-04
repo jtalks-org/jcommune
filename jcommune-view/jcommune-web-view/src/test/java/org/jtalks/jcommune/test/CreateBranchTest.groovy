@@ -14,17 +14,31 @@
  */
 package org.jtalks.jcommune.test
 
+import org.jtalks.common.model.entity.Component
+import org.jtalks.common.model.permissions.GeneralPermission
+import org.jtalks.jcommune.test.model.Branch
+import org.jtalks.jcommune.test.model.User
+import org.jtalks.jcommune.test.service.BranchService
+import org.jtalks.jcommune.test.service.ComponentService
+import org.jtalks.jcommune.test.service.GroupsService
+import org.jtalks.jcommune.test.service.UserService
 import org.jtalks.jcommune.test.utils.Branches
+import org.jtalks.jcommune.test.utils.exceptions.ProcessingException
+import org.jtalks.jcommune.test.utils.exceptions.ValidationException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 
 import javax.annotation.Resource
 import javax.servlet.Filter
+
+import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic
 
 /**
  * @author Mikhail Stryzhonak
@@ -51,9 +65,94 @@ class CreateBranchTest extends Specification {
     List<Filter> filters
 
     @Autowired
-    Branches branches;
+    private Branches branches;
+    @Autowired
+    private ComponentService componentService
+    @Autowired
+    private UserService userService
+    @Autowired
+    private BranchService branchService
+    @Autowired
+    private GroupsService groupsService
+
+    private MockMvc mockMvc
+
+    private Component forum
 
     def setup() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
+                .addFilters(filters.toArray(new Filter[filters.size()])).build()
+        branches.mockMvc = mockMvc
+        groupsService.create()
+        forum = componentService.createForumComponent()
+    }
 
+    def 'test create branch success'() {
+        given: 'User created and have admin permission on forum'
+            def user = new User()
+            userService.create(user).withPermissionOn(forum, GeneralPermission.ADMIN)
+        and: 'User signed in'
+            def session = userService.signIn(mockMvc, user)
+        when: 'User creates branch'
+            def branch = new Branch(name: branchName, description: branchDescription)
+            branches.create(branch, session)
+        then: 'Branch is created'
+            branchService.isExist(branch.name)
+        where:
+        branchName          |branchDescription      |caseName
+        randomAlphabetic(25)|randomAlphabetic(100)  |'Branch name between 1 and 80 characters, branch description between 1 and 255 characters'
+    }
+
+    def 'create branch with invalid name should fail'() {
+        given: 'User created and have admin permission on forum'
+            def user = new User()
+            userService.create(user).withPermissionOn(forum, GeneralPermission.ADMIN)
+        and: 'User signed in'
+            def session = userService.signIn(mockMvc, user)
+        when: 'User creates branch'
+            def branch = new Branch(name: branchName)
+            branches.create(branch, session)
+        then: 'Validetion error occurs'
+            def e = thrown(ValidationException)
+            [errorMessage].equals(e.defaultErrorMessages)
+        and: 'Branch is not created'
+            !branchService.isExist(branch.name)
+        where:
+        branchName  |errorMessage                       |caseName
+        ''          |'Branch name shouldn\'t be empty'  |'Branch name is empty'
+    }
+
+    def 'create branch with invalid description should fail'() {
+        given: 'User created and have admin permission on forum'
+            def user = new User()
+            userService.create(user).withPermissionOn(forum, GeneralPermission.ADMIN)
+        and: 'User signed in'
+            def session = userService.signIn(mockMvc, user)
+        when: 'User creates branch'
+            def branch = new Branch(description: description)
+            branches.create(branch, session)
+        then: 'Validetion error occurs'
+            def e = thrown(ValidationException)
+            [errorMessage].equals(e.defaultErrorMessages)
+        and: 'Branch is not created'
+            !branchService.isExist(branch.name)
+        where:
+        description             |errorMessage                                               |caseName
+        randomAlphabetic(256)   |'Branch description length should be 255 characters max'   |'Branch description length greather than 255 characters'
+    }
+
+    def 'create branch should fail if user have no permissions'() {
+        given: 'User created and have no admin permission on forum'
+            def user = new User()
+        and: 'User signed in'
+            def session = userService.signIn(mockMvc, user)
+        when: 'User creates branch'
+            def branch = new Branch()
+            branches.create(branch, session)
+        then: 'Processing exception occurs'
+            def e = thrown(ProcessingException)
+            e.defaultMessage == 'Access denied!'
+        and: 'Branch is not created'
+            !branchService.isExist(branch.name)
     }
 }

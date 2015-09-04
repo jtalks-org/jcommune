@@ -60,6 +60,7 @@
 
   <bean id="modelAndViewUsers" class="org.jtalks.jcommune.test.utils.page.PageUsers"/>
   <bean id="jsonResponseUsers" class="org.jtalks.jcommune.test.utils.popup.PopUpUsers"/>
+  <bean class="org.jtalks.jcommune.test.utils.Branches"/>
 
   <!--We should override localeResolver here to use english messages in tests-->
   <bean id="localeResolver" class="org.jtalks.jcommune.plugin.api.web.locale.JcLocaleResolver"

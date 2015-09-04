@@ -12,14 +12,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.test.model
-
-import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic
+package org.jtalks.jcommune.test.utils.exceptions;
 
 /**
  * @author Mikhail Stryzhonok
  */
-class Section {
-    String name = randomAlphabetic(80)
-    String description = randomAlphabetic(255)
+public class ProcessingException extends Exception {
+    private String defaultMessage;
+
+     public ProcessingException(String defaultMessage) {
+         this.defaultMessage = defaultMessage;
+     }
+
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 }

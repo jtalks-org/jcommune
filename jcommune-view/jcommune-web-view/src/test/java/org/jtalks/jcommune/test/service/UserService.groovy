@@ -77,8 +77,14 @@ class UserService {
             userDao.flush()
         }
         //Needed for managing permissions
-        setAuthentication(new JCUser(user.username, 'sample@example.com', user.password));
+        setAuthentication(new JCUser(user.username, 'sample@example.com', user.password))
         return new PermissionGranter(permissionManager, group);
+    }
+
+    def createNotActivated(User user) {
+        def toCreate = new JCUser(user.username, 'sample@example.com', encryptionService.encryptPassword(user.password))
+        userDao.saveOrUpdate(toCreate)
+        userDao.flush()
     }
 
     def setAuthentication(JCUser user) {

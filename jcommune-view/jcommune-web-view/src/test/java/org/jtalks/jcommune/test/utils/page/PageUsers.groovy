@@ -14,7 +14,8 @@
  */
 package org.jtalks.jcommune.test.utils.page;
 
-import org.jtalks.jcommune.test.utils.Users;
+import org.jtalks.jcommune.test.utils.Users
+import org.jtalks.jcommune.test.utils.assertions.Assert;
 import org.jtalks.jcommune.test.utils.exceptions.ValidationException;
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException;
 import org.jtalks.jcommune.test.model.User;
@@ -41,7 +42,7 @@ class PageUsers extends Users {
                 .param('referer', '/'))
                 .andReturn()
 
-        assertView(result, "redirect:/")
+        Assert.assertView(result, "redirect:/")
         return result.request.session
     }
 
@@ -56,28 +57,13 @@ class PageUsers extends Users {
 
         MvcResult result = resultActions.andReturn();
         assertMvcResult(result)
-        assertView(result, UserController.AFTER_REGISTRATION)
+        Assert.assertView(result, UserController.AFTER_REGISTRATION)
         return user.username
     }
 
     @Override
     def void assertMvcResult(MvcResult mvcResult) {
-        def mav = mvcResult.modelAndView
-        def result = mav.model.get(BINDING_RESULT_ATTRIBUTE_NAME) as BindingResult
-        if (result.hasErrors()) {
-            def ex = new ValidationException()
-            for (def error in result.allErrors) {
-                ex.addDefaultErrorMessage(error.defaultMessage)
-            }
-            throw ex
-        }
+        Assert.assertPageResult(mvcResult, BINDING_RESULT_ATTRIBUTE_NAME)
     }
 
-    def void assertView(MvcResult mvcResult, String expectedViewName) {
-        def mav = mvcResult.modelAndView
-        if (!expectedViewName.equals(mav.viewName)) {
-            throw new WrongResponseException(UserController.AFTER_REGISTRATION,
-                    mvcResult.modelAndView.viewName)
-        }
-    }
 }
