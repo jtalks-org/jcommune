@@ -74,6 +74,11 @@ $(document).ready(function() {
         }
     });
 
+
+    $(window).on('unload', function() {
+        saveEvent();
+    });
+
     $(".btn-toolbar").mouseup(function () {
         isSaved = false;
         startTimer();
@@ -115,6 +120,7 @@ $(document).ready(function() {
             type: 'POST',
             contentType: "application/json",
             timeout: 15000,
+            async:false,
             data: JSON.stringify(data),
             success: function(resp) {
                 removeConnectionErrorAlert();
