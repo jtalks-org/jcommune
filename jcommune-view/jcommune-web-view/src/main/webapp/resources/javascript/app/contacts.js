@@ -93,26 +93,10 @@ function validationHandler() {
     var contactTypeId = $(this).find('.controls select').val();
     var contactId = $(this).find('input').val();
     var input = $(this).find('.controls input');
-    var value = input.val().trim();
     AddContact.selectedContactType = AddContact.getContactType(contactTypeId, AddContact.contactTypes);
     input.attr('placeholder', AddContact.selectedContactType.mask);
-    var valueValid = value.match(new RegExp(AddContact.selectedContactType.validationPattern));
-    if (value.length > 0 && !valueValid) {
-        if (contactId == '' || AddContact.isValueValid[contactId] == undefined || AddContact.isValueValid[contactId]) {
-            ErrorUtils.removeErrorMessage(input);
-            ErrorUtils.addErrorMessage(input, $labelValidationUsercontactNotMatch);
-            AddContact.isValueValid[contactId] = false;
-            $(this).find('.contact-tooltip').remove();
-        }
-    } else {
         ErrorUtils.removeErrorMessage(input);
         AddContact.isValueValid[contactId] = true;
-        if (value.length > 0 && valueValid) {
-            $(this).find('.contact-tooltip').remove();
-        } else if (value.length == 0 && $(this).find('.contact-tooltip').size() < 1) {
-            $(this).find('.controls').append(AddContact.tooltip);
-        }
-    }
     enableOrDisableSaveChangesBtn();
 }
 

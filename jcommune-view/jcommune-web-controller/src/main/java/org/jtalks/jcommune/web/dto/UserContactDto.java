@@ -28,7 +28,7 @@ import javax.validation.constraints.Size;
  * @author Michael Gamov
  */
 
-@ValidUserContact(field="value", storedTypeId="type.id", message = "{validation.usercontact.notmatch}")
+
 public class UserContactDto implements Comparable<UserContactDto> {
 
     private Long id;

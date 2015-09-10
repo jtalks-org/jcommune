@@ -1,130 +1,135 @@
 @CHARSET "UTF-8";
 
 .control-label {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 input[readonly] {
-  cursor: text;
+    cursor: text;
 }
 
-.userprofile { 
-  display: inline-block;
-  width: 450px;
-  background-color: #f9f9f9; 
-  border: 1px solid #ccc; 
-  -moz-border-radius: 5px; 
-  -webkit-border-radius: 5px; 
-  border-radius: 5px; 
-  padding: 12px; 
+.userprofile {
+    display: inline-block;
+    width: 450px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 12px;
 }
 
 .contacts {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
 }
 
 .contacts li {
-  padding: 0;
-  padding-top: 5px;
-  margin: 0 0 5px;
+    padding: 0;
+    padding-top: 5px;
+    margin: 0 0 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .contacts li i {
-  padding-right: 4px;
+    padding-right: 4px;
 }
 
 .contacts span.contact {
-  margin-left: 3px;
+    margin-left: 3px;
 }
 
 .contacts li i {
-  padding-right: 4px;
+    padding-right: 4px;
 }
 
 .contacts .btn-mini {
-  padding: 0px;
-  width: 14px;
+    padding: 0px;
+    width: 14px;
 }
 
 li.contact .controls {
-  display: inline;
-  margin-left: 5px;
+    display: inline;
+    margin-left: 5px;
 }
 
 li.contact .controls input {
-  margin-left: 10px;
-  width: 245px;
+    margin-left: 10px;
+    width: 245px;
 }
 
 li.contact .controls span.help-inline,
 li.contact .controls span.dialog-info {
-  margin-left: 25px;
+    margin-left: 25px;
 }
 
 li.contact .control-group {
-  margin-bottom: 9px;
+    margin-bottom: 9px;
 }
 
 .wraptocenter {
-  display: table-cell;
-  text-align: center;
-  vertical-align: middle;
-  width: 105px;
-  height: 105px;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 105px;
+    height: 105px;
 }
 
 .wraptocenter * {
-  vertical-align: middle;
+    vertical-align: middle;
 }
 
 .wraptocenter span {
-  display: inline-block;
-  height: 100%;
-  width: 1px;
+    display: inline-block;
+    height: 100%;
+    width: 1px;
 }
 
 .profile-menu-btn {
-  width: 100%;
-  margin: 7px 7px 7px 7px;
-  float: right;
-  border-radius: 0;
-  color: black;
-  border-bottom: 1px solid gray;
-  padding-bottom: 10px;
-  font-size: 14px;
+    width: 100%;
+    margin: 7px 7px 7px 7px;
+    float: right;
+    border-radius: 0;
+    color: black;
+    border-bottom: 1px solid gray;
+    padding-bottom: 10px;
+    font-size: 14px;
 }
 
 .profile-menu-btn i {
-  margin: 1px 5px 0 3px;
-  padding-top: 2px;
+    margin: 1px 5px 0 3px;
+    padding-top: 2px;
 }
 
 .profile-menu-btn.selected-tab {
-  background-color: transparent;
-  border-bottom: 2px solid #3a87ad;
-  font-weight: bold;
+    background-color: transparent;
+    border-bottom: 2px solid #3a87ad;
+    font-weight: bold;
 }
 
 .profile-menu-btn.selected-tab:hover {
-  background-position: 0 40px;
+    background-position: 0 40px;
 }
 
 .user-profile-menu {
-  width: 145px;
-  display: inline-block;
-  vertical-align: top;
-  margin-top: 3px;
+    width: 145px;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 3px;
 }
 
 .notification-control {
-  margin-left: 80px;
+    margin-left: 80px;
 }
 
 .notification-control .tooltip {
-  max-width: 40em;
+    max-width: 40em;
 }
+
 .notification-control .tooltip {
-  max-width: 40em;
+    max-width: 40em;
 }
