@@ -16,7 +16,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *#
 <div class='control-group'>
   <div class='controls captcha-images'>
-    <img class='captcha-img' alt='${altCaptcha}' src='${baseUrl}/plugin/${captchaPluginId}/refreshCaptcha'/>
+##  Fix for [http://jira.jtalks.org/browse/JC-2094] issue. Query t="date" added because Firefox ignores cache control
+##  headers if DOM changed by JavaScript and no way to prevent image caching.
+    <img class='captcha-img' alt='${altCaptcha}' src='${baseUrl}/plugin/${captchaPluginId}/refreshCaptcha?t=$date.getSystemTime()'/>
     <img class='captcha-refresh' alt='${altRefreshCaptcha}' src='${baseUrl}/resources/images/captcha-refresh.png'/>
   </div>
   <div class='controls'>
