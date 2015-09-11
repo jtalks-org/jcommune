@@ -28,7 +28,6 @@ import javax.validation.constraints.Size;
  * @author Michael Gamov
  */
 
-
 public class UserContactDto implements Comparable<UserContactDto> {
 
     private Long id;

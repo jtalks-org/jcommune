@@ -95,8 +95,8 @@ function validationHandler() {
     var input = $(this).find('.controls input');
     AddContact.selectedContactType = AddContact.getContactType(contactTypeId, AddContact.contactTypes);
     input.attr('placeholder', AddContact.selectedContactType.mask);
-        ErrorUtils.removeErrorMessage(input);
-        AddContact.isValueValid[contactId] = true;
+    ErrorUtils.removeErrorMessage(input);
+    AddContact.isValueValid[contactId] = true;
     enableOrDisableSaveChangesBtn();
 }
 

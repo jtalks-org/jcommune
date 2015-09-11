@@ -23,7 +23,6 @@ input[readonly] {
     margin: 0;
     padding: 0;
     list-style: none;
-
 }
 
 .contacts li {
@@ -129,7 +128,6 @@ li.contact .control-group {
 .notification-control .tooltip {
     max-width: 40em;
 }
-
 .notification-control .tooltip {
     max-width: 40em;
 }
