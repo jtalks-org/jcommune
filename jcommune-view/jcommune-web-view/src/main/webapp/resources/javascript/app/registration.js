@@ -143,11 +143,11 @@ function signUp(e) {
                 footerContent: footerContent,
                 maxWidth: 400,
                 maxHeight: 600,
-                tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '.captcha',
+                tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '#refreshCaptchaBtn','.captcha',
                                 '#signup-submit-button', 'button.close'],
                 handlers: {
                     '#signup-submit-button': {'click': submitFunc},
-                    '.captcha-refresh, .captcha-img': {'click' : refreshCaptcha}
+                    '#refreshCaptchaBtn': {'click' : refreshCaptcha}
                 }
             });
         }
@@ -158,7 +158,8 @@ function signUp(e) {
 /**
  * Get new captcha images
  */
-function refreshCaptcha() {
+function refreshCaptcha(e) {
+    e.preventDefault();
     jDialog.dialog.find('.captcha-img').each(function(){
         var attrSrc = $(this).attr("src").split("?")[0] + "?param=" + $.now();
         $(this).removeAttr('src');
