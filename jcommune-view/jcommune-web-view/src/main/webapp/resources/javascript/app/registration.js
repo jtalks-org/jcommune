@@ -143,11 +143,11 @@ function signUp(e) {
                 footerContent: footerContent,
                 maxWidth: 400,
                 maxHeight: 600,
-                tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '#refreshCaptchaBtn','.captcha',
-                                '#signup-submit-button', 'button.close'],
+                tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '.btn-captcha-refresh',
+                                '.captcha', '#signup-submit-button', 'button.close'],
                 handlers: {
                     '#signup-submit-button': {'click': submitFunc},
-                    '#refreshCaptchaBtn': {'click' : refreshCaptcha}
+                    '.btn-captcha-refresh, .captcha-img': {'click' : refreshCaptcha, 'keydown': refreshCaptchaKeyHandler}
                 }
             });
         }
@@ -158,8 +158,7 @@ function signUp(e) {
 /**
  * Get new captcha images
  */
-function refreshCaptcha(e) {
-    e.preventDefault();
+function refreshCaptcha() {
     jDialog.dialog.find('.captcha-img').each(function(){
         var attrSrc = $(this).attr("src").split("?")[0] + "?param=" + $.now();
         $(this).removeAttr('src');
@@ -175,6 +174,12 @@ function refreshCaptchaJsp() {
         $(this).attr('src', attrSrc);
     });
     $('#form').find('.captcha').val('');
+}
+
+function refreshCaptchaKeyHandler(e) {
+    if (e.keyCode && e.keyCode === enterCode) {
+        refreshCaptcha();
+    }
 }
 
 /**

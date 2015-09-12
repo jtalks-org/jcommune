@@ -490,6 +490,12 @@ div.anchor {
     vertical-align: middle;
 }
 
+#signup-modal-dialog .btn-captcha-refresh {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
 div.signup {
     margin-top: 10px;
     margin-left: 25px;

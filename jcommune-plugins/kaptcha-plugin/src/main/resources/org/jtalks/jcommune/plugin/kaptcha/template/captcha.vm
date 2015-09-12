@@ -19,9 +19,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 ##  Fix for [http://jira.jtalks.org/browse/JC-2094] issue. Query t="date" added because Firefox ignores cache control
 ##  headers if DOM changed by JavaScript and no way to prevent image caching.
     <img class='captcha-img' alt='${altCaptcha}' src='${baseUrl}/plugin/${captchaPluginId}/refreshCaptcha?t=$date.getSystemTime()'/>
-    <button class="btn btn-default" id="refreshCaptchaBtn">
+##    Div can't recieve focus without tabindex attribute.
+    <div class="btn btn-default btn-captcha-refresh" tabindex="0">
       <img class='captcha-refresh' alt='${altRefreshCaptcha}' src='${baseUrl}/resources/images/captcha-refresh.png'/>
-    </button>
+    </div>
   </div>
   <div class='controls'>
     <input type='text' id='${formElementId}' name='userDto.captchas[${formElementId}]'

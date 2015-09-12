@@ -119,7 +119,7 @@ public class KaptchaPluginServiceTest {
         String actual = service.getHtml(request, "1", Locale.ENGLISH);
 
         assertTrue(actual.contains("<img class='captcha-img' "
-                + "alt='Captcha' src='http://localhost/plugin/1/refreshCaptcha'/>"));
+                + "alt='Captcha' src='http://localhost/plugin/1/refreshCaptcha?t="));
         assertTrue(actual.contains("<img class='captcha-refresh' alt='Refresh captcha' "
                 + "src='http://localhost/resources/images/captcha-refresh.png'/>"));
         assertTrue(actual.contains("<input type='text' id='plugin-1' name='userDto.captchas[plugin-1]'"));
