@@ -15,6 +15,7 @@
 
 $(document).ready(function() {
     var postTextArea = $("#postBody");
+
     if (typeof postTextArea.val() != 'undefined') {
         var characterCounter = 0;
         var currentSaveLength = postTextArea.val().length;
@@ -181,181 +182,167 @@ $(document).ready(function() {
             //We need to abort save request in case if user posts message with hot-keys 'ctr+enter' to prevent race condition
             postPressed = true;
         });
-
-        /**
-         * Sends request for deletion draft
-         */
-        function deleteDraft() {
-            var draftId = parseInt($("#draftId").val());
-            if (draftId != 0) {
-                $.ajax({
-                    url: baseUrl + "/drafts/" + draftId + "/delete",
-                    success: function () {
-                        $("#counter").text("");
-                        clearInterval(dateUpdateInterval);
-                    }
-                })
-            }
+    }
+    /**
+     * Sends request for deletion draft
+     */
+    function deleteDraft() {
+        var draftId = parseInt($("#draftId").val());
+        if (draftId != 0) {
+            $.ajax({
+                url: baseUrl + "/drafts/" + draftId + "/delete",
+                success: function () {
+                    $("#counter").text("");
+                    clearInterval(dateUpdateInterval);
+                }
+            })
         }
+    }
 
-        /**
-         * Handler for update label "Saved xx seconds ago" every 5 seconds
-         */
-        function fiveSecondsIntervalHandler() {
-            var counterSpan = $("#counter");
-            if (dateUpdateCounter == 11) {
-                clearInterval(dateUpdateInterval);
-                dateUpdateCounter = 1;
-                counterSpan.text(composeMinuteLabel(dateUpdateCounter));
-                dateUpdateInterval = setInterval(function () {
-                    minuteIntervalHandler();
-                }, 60000);
-                return;
-            } else {
-                dateUpdateCounter += 1;
-                counterSpan.text(composeSecondsLabel(dateUpdateCounter * 5));
-            }
-
-        }
-
-        /**
-         * Handler for update label "Saved xx minutes ago" every minute
-         */
-        function minuteIntervalHandler() {
-            var counterSpan = $("#counter");
-            dateUpdateCounter += 1;
-            if (dateUpdateCounter == 60) {
-                clearInterval(dateUpdateInterval);
-                dateUpdateCounter = 1;
-                counterSpan.text(composeHourLabel(dateUpdateCounter));
-                dateUpdateInterval = setInterval(function () {
-                    hourIntervalHandler();
-                }, 3600000);
-            }
-            else {
-                counterSpan.text(composeMinuteLabel(dateUpdateCounter));
-            }
-        }
-
-        /**
-         * Handler for update label "Saved xx hours ago" every hour
-         */
-        function hourIntervalHandler() {
-            var counterSpan = $("#counter");
-            dateUpdateCounter += 1;
-            if (dateUpdateCounter == 24) {
-                printDate(lastSavingDate);
-                clearInterval(dateUpdateInterval);
-                dateUpdateCounter = 0;
-            } else {
-                counterSpan.text(composeHourLabel(dateUpdateCounter));
-            }
-        }
-
-        /**
-         * Prints saving date
-         *
-         * @param date saving date to print
-         */
-        function printDate(date) {
-            $("#counter").text($labelSaved + " " + date.toLocaleDateString());
-        }
-
-        /**
-         * Gets current UTC time
-         *
-         * @returns {Date} current UTC time
-         */
-        function getUtcCurrentTime() {
-            var now = new Date();
-            return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
-        }
-
-        /**
-         * Starts timer for update label
-         */
-        function startFiveSecondsInterval() {
-            $("#counter").text(composeSecondsLabel(dateUpdateCounter * 5));
+    /**
+     * Handler for update label "Saved xx seconds ago" every 5 seconds
+     */
+    function fiveSecondsIntervalHandler() {
+        var counterSpan = $("#counter");
+        if (dateUpdateCounter == 11) {
+            clearInterval(dateUpdateInterval);
+            dateUpdateCounter = 1;
+            counterSpan.text(composeMinuteLabel(dateUpdateCounter));
             dateUpdateInterval = setInterval(function () {
-                fiveSecondsIntervalHandler();
-            }, 5000);
+                minuteIntervalHandler();
+            }, 60000);
+        } else {
+            dateUpdateCounter += 1;
+            counterSpan.text(composeSecondsLabel(dateUpdateCounter * 5));
         }
+    }
 
-        /**
-         * Highlights textarea and prints error message if validation error occurs
-         * or clears highlight and validation messages
-         */
-        function updateValidationErrors() {
-            $(".control-group").removeClass("error");
-            $("#bodyText-errors").remove();
-            $(".focusToError").remove();
-            $(".help-inline").remove();
-            if (postTextArea.val().length > maxTextLength) {
-                $(".control-group").addClass("error");
-                $(errorSpan).insertAfter(".keymaps-caption.pull-left");
-            }
+    /**
+     * Handler for update label "Saved xx minutes ago" every minute
+     */
+    function minuteIntervalHandler() {
+        var counterSpan = $("#counter");
+        dateUpdateCounter += 1;
+        if (dateUpdateCounter == 60) {
+            clearInterval(dateUpdateInterval);
+            dateUpdateCounter = 1;
+            counterSpan.text(composeHourLabel(dateUpdateCounter));
+            dateUpdateInterval = setInterval(function () {
+                hourIntervalHandler();
+            }, 3600000);
         }
-
-        function composeSecondsLabel(numberSeconds) {
-            if (numberSeconds == 0) {
-                return $labelSavedJustNow;
-            }
-            return $labelSaved + " " + numberSeconds.toString() + " " + $labelSeconds + " " + $labelAgo;
+        else {
+            counterSpan.text(composeMinuteLabel(dateUpdateCounter));
         }
+    }
 
-        function composeMinuteLabel(numberMinutes) {
-            var suffixGroup = numberMinutes % 10;
-            var between2And4Suffix = $labelMinutes24Suffix;
-            if (numberMinutes > 10 && numberMinutes < 20) {
-                between2And4Suffix = $labelMinutesMoreThan4Suffix;
-            }
-            var oneAtTheEndSuffix = $labelMinute1Suffix;
-            if (numberMinutes == 11) {
-                oneAtTheEndSuffix = $label11Suffix;
-
-            } else if (numberMinutes > 20) {
-                oneAtTheEndSuffix = $labelMinutes1AtTheEndSuffix;
-            }
-            switch (suffixGroup) {
-                case 1:
-                    return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
-                        + oneAtTheEndSuffix + " " + $labelAgo;
-                case 2:
-                case 3:
-                case 4:
-                    return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
-                        + between2And4Suffix + " " + $labelAgo;
-                default:
-                    return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
-                        + $labelMinutesMoreThan4Suffix + " " + $labelAgo;
-            }
+    /**
+     * Handler for update label "Saved xx hours ago" every hour
+     */
+    function hourIntervalHandler() {
+        var counterSpan = $("#counter");
+        dateUpdateCounter += 1;
+        if (dateUpdateCounter == 24) {
+            printDate(lastSavingDate);
+            clearInterval(dateUpdateInterval);
+            dateUpdateCounter = 0;
+        } else {
+            counterSpan.text(composeHourLabel(dateUpdateCounter));
         }
+    }
 
-        function composeHourLabel(numberHours) {
-            var suffixGroup = numberHours % 10;
-            var between2And4Suffix = $labelHours24Suffix;
-            if (numberHours > 10 && numberHours < 20) {
-                between2And4Suffix = $labelHoursMoreThan4Suffix;
-            }
-            var oneAtTheEndSuffix = $labelHours1Suffix;
-            if (numberHours == 11) {
-                oneAtTheEndSuffix = $label11HoursSuffix;
-            } else if (numberHours > 20) {
-                oneAtTheEndSuffix = $labelHours1AteTheEndSuffix;
-            }
-            switch (suffixGroup) {
-                case 1:
-                    return $labelSaved + " " + numberHours.toString() + " " + $labelHour
-                        + oneAtTheEndSuffix + " " + $labelAgo;
-                case 2:
-                case 3:
-                case 4:
-                    return $labelSaved + " " + numberHours.toString() + " " + $labelHour
-                        + between2And4Suffix + " " + $labelAgo;
-                default:
-                    return $labelSaved + " " + numberHours.toString() + " " + $labelHour
-                        + $labelHoursMoreThan4Suffix + " " + $labelAgo;
-            }
+    /**
+     * Prints saving date
+     *
+     * @param date saving date to print
+     */
+    function printDate(date) {
+        $("#counter").text($labelSaved + " " + date.toLocaleDateString());
+    }
+    /**
+     * Starts timer for update label
+     */
+    function startFiveSecondsInterval() {
+        $("#counter").text(composeSecondsLabel(dateUpdateCounter * 5));
+        dateUpdateInterval = setInterval(function () {
+            fiveSecondsIntervalHandler();
+        }, 5000);
+    }
+
+    /**
+     * Highlights textarea and prints error message if validation error occurs
+     * or clears highlight and validation messages
+     */
+    function updateValidationErrors() {
+        $(".control-group").removeClass("error");
+        $("#bodyText-errors").remove();
+        $(".focusToError").remove();
+        $(".help-inline").remove();
+        if (postTextArea.val().length > maxTextLength) {
+            $(".control-group").addClass("error");
+            $(errorSpan).insertAfter(".keymaps-caption.pull-left");
+        }
+    }
+
+    function composeSecondsLabel(numberSeconds) {
+        if (numberSeconds == 0) {
+            return $labelSavedJustNow;
+        }
+        return $labelSaved + " " + numberSeconds.toString() + " " + $labelSeconds + " " + $labelAgo;
+    }
+
+    function composeMinuteLabel(numberMinutes) {
+        var suffixGroup = numberMinutes % 10;
+        var between2And4Suffix = $labelMinutes24Suffix;
+        if (numberMinutes > 10 && numberMinutes < 20) {
+            between2And4Suffix = $labelMinutesMoreThan4Suffix;
+        }
+        var oneAtTheEndSuffix = $labelMinute1Suffix;
+        if (numberMinutes == 11) {
+            oneAtTheEndSuffix = $label11Suffix;
+
+        } else if (numberMinutes > 20) {
+            oneAtTheEndSuffix = $labelMinutes1AtTheEndSuffix;
+        }
+        switch (suffixGroup) {
+            case 1:
+                return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
+                  + oneAtTheEndSuffix + " " + $labelAgo;
+            case 2:
+            case 3:
+            case 4:
+                return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
+                  + between2And4Suffix + " " + $labelAgo;
+            default:
+                return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
+                  + $labelMinutesMoreThan4Suffix + " " + $labelAgo;
+        }
+    }
+
+    function composeHourLabel(numberHours) {
+        var suffixGroup = numberHours % 10;
+        var between2And4Suffix = $labelHours24Suffix;
+        if (numberHours > 10 && numberHours < 20) {
+            between2And4Suffix = $labelHoursMoreThan4Suffix;
+        }
+        var oneAtTheEndSuffix = $labelHours1Suffix;
+        if (numberHours == 11) {
+            oneAtTheEndSuffix = $label11HoursSuffix;
+        } else if (numberHours > 20) {
+            oneAtTheEndSuffix = $labelHours1AteTheEndSuffix;
+        }
+        switch (suffixGroup) {
+            case 1:
+                return $labelSaved + " " + numberHours.toString() + " " + $labelHour
+                  + oneAtTheEndSuffix + " " + $labelAgo;
+            case 2:
+            case 3:
+            case 4:
+                return $labelSaved + " " + numberHours.toString() + " " + $labelHour
+                  + between2And4Suffix + " " + $labelAgo;
+            default:
+                return $labelSaved + " " + numberHours.toString() + " " + $labelHour
+                  + $labelHoursMoreThan4Suffix + " " + $labelAgo;
         }
     }
 });
