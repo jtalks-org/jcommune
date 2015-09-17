@@ -71,7 +71,6 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
         assertEquals(type.getTypeName(), result.getTypeName());
         assertEquals(type.getMask(), result.getMask());
         assertEquals(type.getDisplayPattern(), result.getDisplayPattern());
-        assertEquals(type.getValidationPattern(), result.getValidationPattern());
     }
 
     @Test
@@ -99,7 +98,6 @@ public class UserContactsHibernateDaoTest extends AbstractTransactionalTestNGSpr
         assertEquals(type.getTypeName(), result.getTypeName());
         assertEquals(type.getMask(), result.getMask());
         assertEquals(type.getDisplayPattern(), result.getDisplayPattern());
-        assertEquals(type.getValidationPattern(), result.getValidationPattern());
 
     }
 

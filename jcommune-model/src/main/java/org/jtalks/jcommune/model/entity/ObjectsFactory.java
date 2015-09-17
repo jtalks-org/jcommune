@@ -174,7 +174,6 @@ public final class ObjectsFactory {
         type.setIcon("/some/icon");
         type.setMask("12345");
         type.setDisplayPattern("protocol://" + UserContactType.CONTACT_MASK_PLACEHOLDER);
-        type.setValidationPattern("\\d+");
         return type;
     }
 

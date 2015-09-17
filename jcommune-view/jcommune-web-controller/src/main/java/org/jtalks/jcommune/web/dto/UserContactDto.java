@@ -18,7 +18,6 @@ package org.jtalks.jcommune.web.dto;
 import org.apache.commons.lang.StringUtils;
 import org.jtalks.jcommune.model.entity.UserContact;
 import org.jtalks.jcommune.model.entity.UserContactType;
-import org.jtalks.jcommune.web.validation.annotations.ValidUserContact;
 
 import javax.validation.constraints.Size;
 
@@ -34,8 +33,6 @@ public class UserContactDto implements Comparable<UserContactDto> {
 
     @Size(max = UserContact.CONTACT_MAX_LENGTH, message = "{user.contact.illegal_length}")
     private String value;
-
-    private String displayValue;
 
     private UserContactType type;
 
