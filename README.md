@@ -4,6 +4,7 @@ JCommune is a part of [JTalks](http://jtalks.org) ecosystem of projects which re
 
 * [Installation Guide](docs/installation/general-installation-guide.md) is to be read if you want just to try the app or you want to install it locally
 * You can find live production instance: [JavaTalks Forum](http://javatalks.ru)
+* If you want to install plugins, read [plugins page](jcommune-plugins/README.md)
 
 For developers/QA/PMs/Leads:
 * [How to join us](docs/how-to-join-us.md)
@@ -16,7 +17,6 @@ For developers/QA/PMs/Leads:
 ####State of Project
 
 - Questions'n'Answers plugins is under development
-- Plugin API to be worked on soon
 - First the project was connected to Poulpe a lot - everything was administrated via admin panel. Now we think that Poulpe
 should manage only Users and Groups and thus the project is in transition from "configuration in Poulpe" state to
 "configuration in JCommune itself" state.

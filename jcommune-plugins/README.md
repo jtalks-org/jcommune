@@ -1,7 +1,17 @@
 JCommune Plugins
 ---
 
-Plugins are designed to extend the functionality of JCommune forum engine. They can be installed by putting plugin jar file into special folder `JCOMMUNE_PLUGIN_FOLDER` that configured in `$TOMCAT_HOME/conf/Catalina/localhost/jcommune.xml` file. 
+Plugins are designed to extend the functionality of JCommune forum engine. They can be installed by putting plugin jar 
+file into special folder `JCOMMUNE_PLUGIN_FOLDER` that configured in `$TOMCAT_HOME/conf/Catalina/localhost/jcommune.xml`
+file. By default it points to user home dir. So to install a plugin:
+
+- Download it [from Nexus](http://repo.jtalks.org/content/repositories/builds/org/jtalks/jcommune/) 
+ (version should be the same as forum version) or generate its jar file: `mvn package`
+- Copy it from `jcommune-plugins/plugin-name/target/plugin-name*.jar` into `JCOMMUNE_PLUGIN_FOLDER` (by default: `~/`)
+- Log in into forum as admin (by default: admin/admin)
+- Go into Administration -> Plugins and enabled it there.
+
+## Dev Info
 
 Now we provides some velocity macros for plugins:
 
