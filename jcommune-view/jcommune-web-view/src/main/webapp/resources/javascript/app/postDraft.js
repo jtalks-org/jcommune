@@ -59,7 +59,10 @@ $(document).ready(function() {
 
         postTextArea.bind('keyup change', function () {
             updateValidationErrors();
-            isSaved = false;
+            if (currentSaveLength != postTextArea.val().length) {
+                isSaved = false;
+            }
+            console.log("keyup change " + currentSaveLength);
             startTimer();
             if (postTextArea.val().length == 0 && currentSaveLength != 0) {
                 currentSaveLength = 0;
@@ -83,6 +86,7 @@ $(document).ready(function() {
 
         $(".btn-toolbar").mouseup(function () {
             isSaved = false;
+            console.log("toolbar")
             startTimer();
         });
 
@@ -103,6 +107,8 @@ $(document).ready(function() {
         function saveEvent() {
             currentSaveLength = postTextArea.val().length;
             if (currentSaveLength >= minDraftLen && !isSaved && !postPressed) {
+                console.log(isSaved);
+                console.log(postPressed);
                 postPressed = false;
                 saveDraft();
             }
@@ -114,6 +120,7 @@ $(document).ready(function() {
         function saveDraft() {
             //should be set here to prevent race condition
             isSaved = true;
+            console.log(isSaved);
             var content = postTextArea.val();
             var topicId = $("#topicId").val();
             var data = {bodyText: content, topicId: topicId};
@@ -133,11 +140,13 @@ $(document).ready(function() {
                         clearInterval(dateUpdateInterval);
                         startFiveSecondsInterval();
                     } else {
+                        console.log("ne success");
                         isSaved = false;
                         updateValidationErrors();
                     }
                 },
                 error: function (jqHXHR, status, e) {
+                    console.log("error");
                     isSaved = false;
                     if (status == 'timeout' || jqHXHR.status == 0) {
                         if (jqHXHR.status == 0) {
