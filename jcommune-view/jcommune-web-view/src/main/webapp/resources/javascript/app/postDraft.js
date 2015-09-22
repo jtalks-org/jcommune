@@ -21,7 +21,7 @@ $(document).ready(function() {
         var currentSaveLength = postTextArea.val().length;
         var interval = 15000;
         var intervalId;
-        var isSaved = false;
+        var isSaved = true;
         var minDraftLen = 2;
         var lastSavingDate;
         var dateUpdateCounter = 0;
@@ -101,9 +101,9 @@ $(document).ready(function() {
          * Checks if it is necessary to save draft and saves if necessary
          */
         function saveEvent() {
-            postPressed = false;
             currentSaveLength = postTextArea.val().length;
-            if (currentSaveLength >= minDraftLen && !isSaved) {
+            if (currentSaveLength >= minDraftLen && !isSaved && !postPressed) {
+                postPressed = false;
                 saveDraft();
             }
         }
