@@ -56,6 +56,8 @@ public class MentionedUsers {
     private static final String SLASH_CODE_PLACEHOLDER = "14@123435vggv4f";
     private static final String LOWER_THEN_PLACEHOLDER = "gertfgertgf@@@@@#4324234";
     private static final Map<String, String> CHARS_PLACEHOLDERS = new HashMap<>();
+    public static final String OPEN_TAG = "\\[user\\]|\\[user notified=true\\]";
+    public static final String CLOSE_TAG = "\\[\\/user\\]";
 
     static {
         CHARS_PLACEHOLDERS.put("[", OPEN_BRACKET_CODE_PLACEHOLDER);
@@ -185,7 +187,8 @@ public class MentionedUsers {
             Set<String> mentionedUsernames = new HashSet<>();
             while (matcher.find()) {
                 String userBBCode = matcher.group();
-                String mentionedUser = userBBCode.replaceAll("\\[.*?\\]", StringUtils.EMPTY);
+                String mentionedUser = userBBCode.replaceAll(OPEN_TAG, StringUtils.EMPTY)
+                        .replaceAll(CLOSE_TAG, StringUtils.EMPTY);
                 mentionedUsernames.add(replacePlaceholdersWithChars(mentionedUser));
             }
             return mentionedUsernames;
