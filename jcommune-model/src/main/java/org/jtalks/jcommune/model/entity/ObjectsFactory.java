@@ -16,7 +16,9 @@ package org.jtalks.jcommune.model.entity;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.joda.time.DateTime;
-import org.jtalks.common.model.entity.*;
+import org.jtalks.common.model.entity.Group;
+import org.jtalks.common.model.entity.Section;
+import org.jtalks.common.model.entity.User;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -253,5 +255,4 @@ public final class ObjectsFactory {
         post.addComment(new PostComment());
         return post;
     }
-
 }

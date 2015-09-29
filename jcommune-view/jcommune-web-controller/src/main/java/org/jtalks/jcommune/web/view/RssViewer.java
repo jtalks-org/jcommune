@@ -21,6 +21,7 @@ import com.sun.syndication.feed.rss.Description;
 import com.sun.syndication.feed.rss.Item;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.web.util.RssUtils;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,14 +44,14 @@ public class RssViewer extends AbstractRssFeedView {
     /**
      * Set meta data for all RSS feed
      *
-     * @param model   news model
+     * @param newsComponents components of the RSS feed
      * @param feed    news feed
      * @param request http request
      */
     @Override
-    protected void buildFeedMetadata(Map<String, Object> model, Channel feed,
+    protected void buildFeedMetadata(Map<String, Object> newsComponents, Channel feed,
                                      HttpServletRequest request) {
-        Component component = (Component)model.get("forumComponent");
+        Component component = (Component)newsComponents.get("forumComponent");
         String feedTitle = DEFAULT_FEED_TITLE;
         String feedDescription = DEFAULT_FEED_DESCRIPTION;
 
@@ -63,25 +64,25 @@ public class RssViewer extends AbstractRssFeedView {
         feed.setDescription(feedDescription);
         feed.setLink(buildURL(request));
 
-        super.buildFeedMetadata(model, feed, request);
+        super.buildFeedMetadata(newsComponents, feed, request);
     }
 
     /**
      * Set list data item news in RSS feed
      *
-     * @param model    news model
+     * @param newsComponents components of the RSS feed
      * @param request  http request
      * @param response http response
      * @return list items
      * @throws IOException i/o exception
      */
     @Override
-    protected List<Item> buildFeedItems(Map<String, Object> model,
+    protected List<Item> buildFeedItems(Map<String, Object> newsComponents,
                                         HttpServletRequest request, HttpServletResponse response)
         throws IOException {
 
         String url = buildURL(request);
-        List<Topic> listContent = (List<Topic>) model.get("topics");
+        List<Topic> listContent = (List<Topic>) newsComponents.get("topics");
         if (listContent == null) {
             response.sendRedirect(request.getContextPath() + "/errors/404");
             return null;
@@ -108,7 +109,9 @@ public class RssViewer extends AbstractRssFeedView {
         Item item = new Item();
         Description description = new Description();
         description.setType("text");
-        description.setValue(topic.getLastPost().getPostContent());
+        String postContent = topic.getLastPost().getPostContent();
+        postContent = RssUtils.skipInValidXMLChars(postContent);
+        description.setValue(postContent);
 
         Content content = new Content();
         item.setContent(content);
