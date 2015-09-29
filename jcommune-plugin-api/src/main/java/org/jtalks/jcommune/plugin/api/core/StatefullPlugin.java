@@ -52,10 +52,10 @@ public abstract class StatefullPlugin implements Plugin {
             this.applyConfiguration(configuration.getProperties());
             if (configuration.isActive()){
                 state = State.ENABLED;
-                LOGGER.debug("Plugin {} is configured and activated", this.getName());
+                LOGGER.trace("Plugin {} is configured and activated", this.getName());
             } else {
                 state = State.CONFIGURED;
-                LOGGER.debug("Plugin {} is configured", this.getName());
+                LOGGER.trace("Plugin {} is configured", this.getName());
             }
         } catch (PluginConfigurationException | RuntimeException e) {
             state = State.IN_ERROR;
