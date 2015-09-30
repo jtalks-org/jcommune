@@ -419,8 +419,7 @@ public class PostController {
      * @return prepared ModelAndView for preview
      */
     private ModelAndView getPreviewModelAndView(BindingResult result) {
-        String signature = userService.getCurrentUser().getSignature();
-        return new ModelAndView("ajax/postPreview").addObject("signature", signature)
+        return new ModelAndView("ajax/postPreview")
                 .addObject("isInvalid", result.hasFieldErrors("bodyText"))
                 .addObject("errors", result.getFieldErrors("bodyText"));
     }

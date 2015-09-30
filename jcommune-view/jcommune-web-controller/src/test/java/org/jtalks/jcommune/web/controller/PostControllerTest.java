@@ -253,12 +253,9 @@ public class PostControllerTest {
     @Test
     public void testPostPreview() throws Exception {
         BeanPropertyBindingResult BindingResult = mock(BeanPropertyBindingResult.class);
-        when(userService.getCurrentUser()).thenReturn(user);
         ModelAndView mav = controller.preview(getDto(), BindingResult);
-        verify(userService, times(1)).getCurrentUser();
         assertViewName(mav, "ajax/postPreview");
         assertModelAttributeAvailable(mav, "errors");
-        assertModelAttributeAvailable(mav, "signature");
         assertModelAttributeAvailable(mav, "content");
         assertModelAttributeAvailable(mav, "isInvalid");
     }

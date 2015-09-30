@@ -29,7 +29,7 @@
         </c:when>
         <c:otherwise>
             <json:property name="html" escapeXml="false">
-                <jtalks:postContent text="${content}" signature="${signature}"/>
+                <jtalks:postContent text="${content}"/>
             </json:property>
         </c:otherwise>
     </c:choose>
