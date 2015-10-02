@@ -45,7 +45,7 @@
         <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
         <form:input path="topic.title" id="subject" type="text" size="45"
                     maxlength="255" tabindex="100"
-                    class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
+                    class="full-width script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
         <form:errors path="topic.title" id="subjectError" type="text" name="subjectError" size="45"
                      maxlength="255"
                      class="post" cssClass="help-inline focusToError"/>
