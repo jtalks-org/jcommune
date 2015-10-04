@@ -29,9 +29,15 @@ $(function () {
     var captchaContainer = $('.registration-page');
     if (captchaContainer) {
 
-        captchaContainer.find('.captcha-refresh, .captcha-img').click(function (e) {
-            e.preventDefault();
-            refreshCaptchaJsp();
+        // add event handlers
+        captchaContainer.find('.captcha-img, .btn-captcha-refresh').on({
+            click: refreshCaptchaJsp,
+            keypress: function(e) {
+                e.preventDefault();
+                if (isEnterKeyPressed(e)) {
+                    refreshCaptchaJsp();
+                }
+            }
         });
     }
 
@@ -144,7 +150,7 @@ function signUp(e) {
                 maxWidth: 400,
                 maxHeight: 600,
                 tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '.btn-captcha-refresh',
-                                '.captcha', '#signup-submit-button', 'button.close'],
+                    '.captcha', '#signup-submit-button', 'button.close'],
                 handlers: {
                     '#signup-submit-button': {'click': submitFunc},
                     '.btn-captcha-refresh, .captcha-img': {'click' : refreshCaptcha, 'keydown': refreshCaptchaKeyHandler}
@@ -176,8 +182,12 @@ function refreshCaptchaJsp() {
     $('#form').find('.captcha').val('');
 }
 
+function isEnterKeyPressed(e) {
+    return e.keyCode && e.keyCode === enterCode;
+}
+
 function refreshCaptchaKeyHandler(e) {
-    if (e.keyCode && e.keyCode === enterCode) {
+    if (isEnterKeyPressed(e)) {
         refreshCaptcha();
     }
 }
@@ -189,7 +199,7 @@ function composeQuery(signupDialog) {
     var query = 'userDto.username=' + encodeURIComponent(signupDialog.find('#username').val()) +
         '&userDto.password=' + encodeURIComponent(signupDialog.find('#password').val()) +
         '&passwordConfirm=' + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
-        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val()) + 
+        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val()) +
         '&honeypotCaptcha=' +encodeURIComponent(signupDialog.find('#honeypotCaptcha').val());
     signupDialog.find('.captcha').each(function() {
         query += '&userDto.captchas[' + $(this).attr('id') + ']=' + encodeURIComponent($(this).val());

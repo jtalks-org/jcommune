@@ -46,7 +46,7 @@ public class PluginClassLoader  extends URLClassLoader {
      */
     public PluginClassLoader (String folder) {
         super(resolvePluginLocations(folder), StatefullPlugin.class.getClassLoader());
-        LOGGER.debug("Plugin class loader created for folder {}");
+        LOGGER.debug("Plugin class loader created for folder {}", folder);
     }
 
     private static URL[] resolvePluginLocations(String folder) {
