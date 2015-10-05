@@ -65,8 +65,8 @@ $(function () {
             bodyContent: bodyContent,
             footerContent: footerContent,
             maxWidth: 350,
-            tabNavigation: ['#userName', '#password', '#rememberme-area input', '#restore-passwd a',
-                '#signin-submit-button'],
+            tabNavigation: ['#userName', '#password', '#rememberme-area input', '#dialog-signup-link', '#restore-passwd a',
+                '#signin-submit-button', 'button.close'],
             handlers: {
                 '#signin-modal-dialog': {'submit': sendLoginPost},
                 '#dialog-signup-link': {'click': function(e){
