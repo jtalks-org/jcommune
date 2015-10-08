@@ -36,8 +36,11 @@ $(document).ready(function () {
         if (currentData != newData) return '';
     });
 
-    $(document).on('click', allowed_transitions, function (event) {
-        $(window).off('beforeunload');
+    $.each(allowed_transitions, function(element) {
+        $(element).click(function(event){
+            $(window).off('beforeunload');
+            event.stopPropagation()
+        });
     });
     
     $(document).on('submit', allowed_transitions, function (event) {
