@@ -14,17 +14,18 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.nontransactional.LocationService;
-import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
-import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
-import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
+import org.jtalks.jcommune.service.*;
+import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
+import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.web.validation.editors.DateTimeEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,7 @@ import java.util.concurrent.TimeUnit;
  * @author Max Malakhov
  * @author Evgeniy Naumenko
  * @author Eugeny Batov
+ * @author Dmitry S. Dolzhenko
  * @see Topic
  */
 @Controller
@@ -71,6 +73,7 @@ public class TopicController {
 
     private TopicModificationService topicModificationService;
     private TopicFetchService topicFetchService;
+    private TopicDraftService topicDraftService;
     private PostService postService;
     private BranchService branchService;
     private LastReadPostService lastReadPostService;
@@ -118,6 +121,7 @@ public class TopicController {
                            LocationService locationService,
                            SessionRegistry sessionRegistry,
                            TopicFetchService topicFetchService,
+                           TopicDraftService topicDraftService,
                            EntityToDtoConverter converter) {
         this.topicModificationService = topicModificationService;
         this.postService = postService;
@@ -128,6 +132,7 @@ public class TopicController {
         this.locationService = locationService;
         this.sessionRegistry = sessionRegistry;
         this.topicFetchService = topicFetchService;
+        this.topicDraftService = topicDraftService;
         this.converter = converter;
     }
 
@@ -140,11 +145,14 @@ public class TopicController {
      */
     @RequestMapping(value = "/topics/new", method = RequestMethod.GET)
     public ModelAndView showNewTopicPage(@RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+
+        TopicDraft draft = ObjectUtils.defaultIfNull(
+                topicDraftService.getDraft(), new TopicDraft());
+        TopicDto dto = new TopicDto(draft);
+
         Branch branch = branchService.get(branchId);
-        Topic topic = new Topic();
-        topic.setBranch(branch);
-        topic.setPoll(new Poll());
-        TopicDto dto = new TopicDto(topic);
+        dto.getTopic().setBranch(branch);
+
         return new ModelAndView(TOPIC_VIEW)
                 .addObject(TOPIC_DTO, dto)
                 .addObject(BRANCH_ID, branchId)
@@ -198,6 +206,38 @@ public class TopicController {
                     UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
             throw e;
         }
+    }
+
+    /**
+     * Saves new draft or update if it already exists
+     *
+     * @param topicDraft draft topic
+     * @param result validation result
+     * @return response in JSON format
+     */
+    @RequestMapping(value = "/topics/draft", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResponse saveDraft(@Valid @RequestBody TopicDraft topicDraft,
+                                  BindingResult result) throws NotFoundException {
+        if (result.hasErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL);
+        }
+
+        topicDraft = topicDraftService.saveOrUpdateDraft(topicDraft);
+
+        return new JsonResponse(JsonResponseStatus.SUCCESS, topicDraft.getId());
+    }
+
+    /**
+     * Deletes a draft topic of the current user if it exists
+     *
+     * @return response in JSON format
+     */
+    @RequestMapping(value = "/topics/draft", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JsonResponse deleteDraft() {
+        topicDraftService.deleteDraft();
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
     /**

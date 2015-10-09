@@ -62,6 +62,8 @@ public class QuestionsAndAnswersControllerTest {
     @Mock
     private PluginBranchService branchService;
     @Mock
+    private PluginTopicDraftService topicDraftService;
+    @Mock
     private PluginLastReadPostService lastReadPostService;
     @Mock
     private TypeAwarePluginTopicService topicService;
@@ -93,6 +95,7 @@ public class QuestionsAndAnswersControllerTest {
     public void init() {
         initMocks(this);
         when(controller.getPluginBranchService()).thenReturn(branchService);
+        when(controller.getPluginTopicDraftService()).thenReturn(topicDraftService);
         when(controller.getPluginLastReadPostService()).thenReturn(lastReadPostService);
         when(controller.getTypeAwarePluginTopicService()).thenReturn(topicService);
         when(controller.getPluginPostService()).thenReturn(postService);

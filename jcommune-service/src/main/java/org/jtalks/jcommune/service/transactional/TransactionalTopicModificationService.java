@@ -70,6 +70,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
     private BranchLastPostService branchLastPostService;
     private LastReadPostService lastReadPostService;
     private TopicFetchService topicFetchService;
+    private TopicDraftService topicDraftService;
     private PluginLoader pluginLoader;
 
     /**
@@ -100,6 +101,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
                                                  LastReadPostService lastReadPostService,
                                                  PostDao postDao,
                                                  TopicFetchService topicFetchService,
+                                                 TopicDraftService topicDraftService,
                                                  PluginLoader pluginLoader) {
         this.dao = dao;
         this.securityService = securityService;
@@ -114,6 +116,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
         this.lastReadPostService = lastReadPostService;
         this.postDao = postDao;
         this.topicFetchService = topicFetchService;
+        this.topicDraftService = topicDraftService;
         this.pluginLoader = pluginLoader;
     }
 
@@ -213,6 +216,8 @@ public class TransactionalTopicModificationService implements TopicModificationS
         userService.notifyAndMarkNewlyMentionedUsers(topic.getFirstPost());
 
         lastReadPostService.markTopicAsRead(topic);
+
+        topicDraftService.deleteDraft();
 
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), topic.getBranch().getId(), currentUser.getUsername()});
