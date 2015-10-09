@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.entity.*;
@@ -56,6 +57,14 @@ public final class PersistedObjectsFactory {
         branch.addTopic(newTopic);
         persist(branch);
         return newTopic;
+    }
+
+    public static TopicDraft getDefaultTopicDraft() {
+        JCUser user = persist(ObjectsFactory.getDefaultUser());
+        TopicDraft newTopicDraft = new TopicDraft(user,
+                RandomStringUtils.random(5), RandomStringUtils.random(15));
+        persist(newTopicDraft);
+        return newTopicDraft;
     }
 
     public static void createAndSaveViewTopicsBranchesEntity(Long branchId, String sid, Boolean granting) {
