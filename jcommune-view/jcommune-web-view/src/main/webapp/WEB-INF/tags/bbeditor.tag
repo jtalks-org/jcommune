@@ -107,7 +107,7 @@
 
     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
        title="<spring:message code='label.answer.font_code'/>">
-      <spring:message code="label.answer.font_code"/>
+      <spring:message code="label.answer.font_code.button"/>
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" id='select_code'>
@@ -133,7 +133,7 @@
   <div class='btn-group'>
     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
        title="<spring:message code="label.answer.indent"/>">
-      <spring:message code="label.answer.indent"/>
+      <spring:message code="label.answer.indent.button"/>
       <span class="caret"></span>
     </a>
     <ul class="dropdown-menu" id='select_indent'>
