@@ -125,6 +125,18 @@ public class MentionedUsersTest {
         assertTrue(extractedUserNames.contains("[userWithBrackets]"), "MentionedUsers should extract username with brackets");
     }
 
+
+    @Test
+    public void extractMentionedUserShouldReturnMentionedUserWithSquareBracketsInBBCodesU() {
+        String textWithUsersMentioning = "second [user][user][userWithBrackets][/user][/user]";
+
+        MentionedUsers mentionedUsers = MentionedUsers.parse(textWithUsersMentioning);
+        Set<String> extractedUserNames = mentionedUsers.extractAllMentionedUsers(textWithUsersMentioning);
+
+        assertTrue(extractedUserNames.contains("[user][userWithBrackets][/user]"), "MentionedUsers should extract username with brackets");
+    }
+
+
     /**
      * When data is sent to the server for the preview, there is a hack that coverts some special symbols into
      * unrecognizable character sequence. This replacement was implemented as a temporal solution, but still is there,
