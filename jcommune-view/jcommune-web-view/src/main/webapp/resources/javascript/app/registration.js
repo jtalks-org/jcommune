@@ -33,7 +33,6 @@ $(function () {
         captchaContainer.find('.captcha-img, .btn-captcha-refresh').on({
             click: refreshCaptchaJsp,
             keypress: function(e) {
-                e.preventDefault();
                 if (isEnterKeyPressed(e)) {
                     refreshCaptchaJsp();
                 }
