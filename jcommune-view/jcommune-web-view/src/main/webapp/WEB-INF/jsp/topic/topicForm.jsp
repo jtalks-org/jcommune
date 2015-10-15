@@ -74,7 +74,7 @@
         <form:errors path="topic.announcement"/>
       </div>
     </jtalks:hasPermission>
-    <jtalks:bbeditor labelForAction="label.save"
+    <jtalks:bbeditor labelForAction="${pollEditing ? 'label.save' : 'label.send'}"
                      postText="${topicDto.bodyText}"
                      bodyParameterName="bodyText"
                      back="${pageContext.request.contextPath}/branches/${branchId}"/>

@@ -56,7 +56,7 @@
     </div>
 
     <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
-           value="<spring:message code="label.save"/>"/>
+           value="<spring:message code="label.send"/>"/>
   </form:form>
 
   <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
