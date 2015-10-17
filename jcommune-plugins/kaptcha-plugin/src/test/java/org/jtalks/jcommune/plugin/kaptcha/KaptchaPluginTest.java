@@ -58,7 +58,7 @@ public class KaptchaPluginTest {
                 "  </div>" + newLine +
                 "  <div class='controls'>" + newLine +
                 "    <input type='text' id='plugin-1' name='userDto.captchas[plugin-1]'" + newLine +
-                "      placeholder='Captcha text' class='input-xlarge captcha'/>" + newLine +
+                "      placeholder='Captcha text' class='reg_input captcha'/>" + newLine +
                 "  </div>" + newLine +
                 "</div>";
 

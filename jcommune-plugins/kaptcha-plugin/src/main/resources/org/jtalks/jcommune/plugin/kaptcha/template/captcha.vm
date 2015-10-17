@@ -26,6 +26,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   </div>
   <div class='controls'>
     <input type='text' id='${formElementId}' name='userDto.captchas[${formElementId}]'
-      placeholder='${captchaLabel}' class='input-xlarge captcha'/>
+      placeholder='${captchaLabel}' class='reg_input captcha'/>
   </div>
 </div>
