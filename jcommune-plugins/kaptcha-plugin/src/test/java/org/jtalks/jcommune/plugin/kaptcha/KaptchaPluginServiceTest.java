@@ -123,7 +123,7 @@ public class KaptchaPluginServiceTest {
         assertTrue(actual.contains("<img class='captcha-refresh' alt='Refresh captcha' "
                 + "src='http://localhost/resources/images/captcha-refresh.png'/>"));
         assertTrue(actual.contains("<input type='text' id='plugin-1' name='userDto.captchas[plugin-1]'"));
-        assertTrue(actual.contains("placeholder='Captcha text' class='input-xlarge captcha'/>"));
+        assertTrue(actual.contains("placeholder='Captcha text' class='reg_input captcha'/>"));
     }
 
     @Test
