@@ -19,7 +19,6 @@ import org.jtalks.common.model.entity.Entity;
 import org.jtalks.jcommune.model.validation.annotations.AtLeastOneFieldIsNotNull;
 import org.jtalks.jcommune.model.validation.annotations.TopicDraftNumberOfPollItems;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -32,26 +31,23 @@ import javax.validation.constraints.Size;
 }, message = "{topicDraft.fields.not_null}")
 public class TopicDraft extends Entity {
 
-    @Size(min = Topic.MIN_NAME_SIZE, max = Topic.MAX_NAME_SIZE,
+    @Size(min = 1, max = Topic.MAX_NAME_SIZE,
             message = "{javax.validation.constraints.Size.message}")
     private String title;
 
-    @Size(min = Post.MIN_LENGTH, max = Post.MAX_LENGTH,
+    @Size(min = 1, max = Post.MAX_LENGTH,
             message = "{javax.validation.constraints.Size.message}")
     private String content;
 
-    @NotNull
-    private JCUser topicStarter;
-
-    @NotNull
-    private DateTime lastSaved;
-
-    @Size(min = Poll.MIN_TITLE_LENGTH, max = Poll.MAX_TITLE_LENGTH,
+    @Size(min = 1, max = Poll.MAX_TITLE_LENGTH,
             message = "{javax.validation.constraints.Size.message}")
     private String pollTitle;
 
-    @TopicDraftNumberOfPollItems
+    @TopicDraftNumberOfPollItems(min = 1, max = Poll.MAX_ITEMS_NUMBER)
     private String pollItemsValue;
+
+    private JCUser topicStarter;
+    private DateTime lastSaved;
 
     public TopicDraft() {
     }

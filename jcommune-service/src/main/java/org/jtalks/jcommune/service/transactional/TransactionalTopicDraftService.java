@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.TopicDraft;
 import org.jtalks.jcommune.plugin.api.service.PluginTopicDraftService;
 import org.jtalks.jcommune.service.TopicDraftService;
 import org.jtalks.jcommune.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * The implementation of TopicDraftService interface.
@@ -49,6 +50,7 @@ public class TransactionalTopicDraftService implements TopicDraftService, Plugin
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("isAuthenticated()")
     public TopicDraft saveOrUpdateDraft(TopicDraft draft) {
         JCUser user = userService.getCurrentUser();
 

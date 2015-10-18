@@ -70,6 +70,7 @@ public class TopicController {
     public static final String POST_DTO = "postDto";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     public static final String POLL = "poll";
+    private static final String TOPIC_DRAFT = "topicDraft";
 
     private TopicModificationService topicModificationService;
     private TopicFetchService topicFetchService;
@@ -146,15 +147,16 @@ public class TopicController {
     @RequestMapping(value = "/topics/new", method = RequestMethod.GET)
     public ModelAndView showNewTopicPage(@RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
 
-        TopicDraft draft = ObjectUtils.defaultIfNull(
+        TopicDraft topicDraft = ObjectUtils.defaultIfNull(
                 topicDraftService.getDraft(), new TopicDraft());
-        TopicDto dto = new TopicDto(draft);
+        TopicDto dto = new TopicDto(topicDraft);
 
         Branch branch = branchService.get(branchId);
         dto.getTopic().setBranch(branch);
 
         return new ModelAndView(TOPIC_VIEW)
                 .addObject(TOPIC_DTO, dto)
+                .addObject(TOPIC_DRAFT, topicDraft)
                 .addObject(BRANCH_ID, branchId)
                 .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
@@ -175,9 +177,13 @@ public class TopicController {
                                     @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
         if (result.hasErrors()) {
+            TopicDraft topicDraft = ObjectUtils.defaultIfNull(
+                    topicDraftService.getDraft(), new TopicDraft());
+
             return new ModelAndView(TOPIC_VIEW)
                     .addObject(BRANCH_ID, branchId)
                     .addObject(TOPIC_DTO, topicDto)
+                    .addObject(TOPIC_DRAFT, topicDraft)
                     .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
         }

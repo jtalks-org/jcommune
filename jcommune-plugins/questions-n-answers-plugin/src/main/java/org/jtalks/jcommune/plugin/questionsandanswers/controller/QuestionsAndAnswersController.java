@@ -74,6 +74,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     private static final String QUESTION_TEMPLATE_PATH = TEMPLATE_PATH + "question.vm";
     private static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String TOPIC_DTO = "topicDto";
+    private static final String TOPIC_DRAFT = "topicDraft";
     private static final String POST_DTO = "postDto";
     private static final String EDIT_MODE = "edit";
     private static final String RESULT = "result";
@@ -124,6 +125,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Map<String, Object> data = getDefaultModel(request);
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(dto.getTopic()));
         data.put(TOPIC_DTO, dto);
+        data.put(TOPIC_DRAFT, draft);
         data.put(EDIT_MODE, false);
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;

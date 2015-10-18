@@ -14,15 +14,12 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.joda.time.DateTimeUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.validation.*;
 import java.util.Set;
 
 import static org.testng.Assert.assertEquals;
@@ -41,7 +38,7 @@ public class TopicDraftTest {
     }
 
     @Test
-    public void validationOfFilledDraftShouldPassSuccessfully() {
+    public void validationOfFilledDraftShouldPass() {
         TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
 
         Set<ConstraintViolation<TopicDraft>> constraintViolations = validator.validate(draft);
@@ -64,7 +61,7 @@ public class TopicDraftTest {
     }
 
     @Test
-    public void validationOfDraftWithoutTitleShouldPassSuccessfully() {
+    public void validationOfDraftWithoutTitleShouldPass() {
         TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
 
         draft.setTitle(null);
@@ -75,7 +72,18 @@ public class TopicDraftTest {
     }
 
     @Test
-    public void validationOfDraftWithoutContentShouldPassSuccessfully() {
+    public void validationOfDraftWithTooLongTitleShouldFail() {
+        TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
+
+        draft.setTitle(RandomStringUtils.random(121));
+
+        Set<ConstraintViolation<TopicDraft>> constraintViolations = validator.validate(draft);
+
+        assertEquals(constraintViolations.size(), 1);
+    }
+
+    @Test
+    public void validationOfDraftWithoutContentShouldPass() {
         TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
 
         draft.setContent(null);
@@ -86,7 +94,18 @@ public class TopicDraftTest {
     }
 
     @Test
-    public void validationOfDraftWithoutPollTitleShouldPassSuccessfully() {
+    public void validationOfDraftWithTooLongContentShouldFail() {
+        TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
+
+        draft.setContent(RandomStringUtils.random(20001));
+
+        Set<ConstraintViolation<TopicDraft>> constraintViolations = validator.validate(draft);
+
+        assertEquals(constraintViolations.size(), 1);
+    }
+
+    @Test
+    public void validationOfDraftWithoutPollTitleShouldPass() {
         TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
 
         draft.setPollTitle(null);
@@ -97,7 +116,18 @@ public class TopicDraftTest {
     }
 
     @Test
-    public void validationOfDraftWithoutPollItemsValueShouldPassSuccessFull() {
+    public void validationOfDraftWithTooLongPollTitleShouldFail() {
+        TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
+
+        draft.setPollTitle(RandomStringUtils.random(121));
+
+        Set<ConstraintViolation<TopicDraft>> constraintViolations = validator.validate(draft);
+
+        assertEquals(constraintViolations.size(), 1);
+    }
+
+    @Test
+    public void validationOfDraftWithoutPollItemsValueShouldPass() {
         TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
 
         draft.setPollItemsValue(null);
@@ -108,32 +138,14 @@ public class TopicDraftTest {
     }
 
     @Test
-    public void validationOfDraftWithWrongNumberOfPollItemsShouldFail() {
+    public void validationOfDraftWithTooManyOfPollItemsShouldFail() {
         TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
 
-        draft.setPollItemsValue(RandomStringUtils.random(15));
-
-        Set<ConstraintViolation<TopicDraft>> constraintViolations = validator.validate(draft);
-
-        assertEquals(constraintViolations.size(), 1);
-    }
-
-    @Test
-    public void validationOfDraftWithoutTopicStarterShouldFail() {
-        TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
-
-        draft.setTopicStarter(null);
-
-        Set<ConstraintViolation<TopicDraft>> constraintViolations = validator.validate(draft);
-
-        assertEquals(constraintViolations.size(), 1);
-    }
-
-    @Test
-    public void validationOfDraftWithoutLastSavedDateShouldFail() {
-        TopicDraft draft = ObjectsFactory.getDefaultTopicDraft();
-
-        draft.setLastSaved(null);
+        String pollItemsValue = "";
+        for (int i = 0; i < 51; i++) {
+            pollItemsValue += RandomStringUtils.random(15) + "\n";
+        }
+        draft.setPollItemsValue(pollItemsValue);
 
         Set<ConstraintViolation<TopicDraft>> constraintViolations = validator.validate(draft);
 

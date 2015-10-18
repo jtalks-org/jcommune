@@ -45,6 +45,7 @@ public class CodeReviewController {
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String SUBMIT_URL = "submitUrl";
     private static final String TOPIC_DTO = "topicDto";
+    private static final String TOPIC_DRAFT = "topicDraft";
     private static final String REDIRECT_URL = "redirect:/topics/";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -97,6 +98,7 @@ public class CodeReviewController {
 
         return new ModelAndView(CODE_REVIEW_VIEW)
                 .addObject(TOPIC_DTO, dto)
+                .addObject(TOPIC_DRAFT, draft)
                 .addObject(BRANCH_ID, branchId)
                 .addObject(SUBMIT_URL, "/reviews/new?branchId=" + branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
