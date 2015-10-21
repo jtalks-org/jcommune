@@ -45,10 +45,6 @@
                        back="${pageContext.request.contextPath}/topics/${topicId}"/>
     </form:form>
 
-    <a href="${pageContext.request.contextPath}/topics/${topicId}" tabindex="500" class="back-btn">
-      <i class="icon-arrow-left"></i>
-      <spring:message code="label.back"/>
-    </a>
   </div>
 </div>
 </body>
