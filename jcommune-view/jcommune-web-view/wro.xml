@@ -111,9 +111,11 @@
     <js>/resources/javascript/lib/purl.js</js>
   </group>
   <group name="postDraft">
+    <js>/resources/javascript/app/draft.js</js>
     <js>/resources/javascript/app/postDraft.js</js>
   </group>
   <group name="topicDraft">
+    <js>/resources/javascript/app/draft.js</js>
     <js>/resources/javascript/app/topicDraft.js</js>
   </group>
 </groups>

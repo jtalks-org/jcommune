@@ -267,10 +267,12 @@ in the future.
     </c:if>
 
     <c:if test="${fn:contains(uriString, 'topics') and not fn:contains(uriString, 'new')}">
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/draft.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/postDraft.js"></script>
     </c:if>
 
     <c:if test="${(fn:contains(uriString, 'topics') or fn:contains(uriString, 'reviews')) and fn:contains(uriString, 'new')}">
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/draft.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/topicDraft.js"></script>
     </c:if>
   </c:otherwise>

@@ -349,7 +349,7 @@
   <input id="topicId" type="hidden" value="${topic.id}"/>
   <input id="draftId" type="hidden" value="${postDto.id}"/>
   <c:if test="${postDto.id != 0}">
-    <input id="savedMilis" type="hidden" value="${postDto.creationDate.millis}"/>
+    <input id="savedMillis" type="hidden" value="${postDto.creationDate.millis}"/>
     <input id="differenceMillis" type="hidden" value="${postDto.differenceMillis}">
   </c:if>
   <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'

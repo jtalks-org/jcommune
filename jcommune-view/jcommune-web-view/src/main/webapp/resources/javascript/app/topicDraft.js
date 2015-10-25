@@ -13,12 +13,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-$(function () {
+(function(draft) {
     'use strict';
 
-    var SECOND = 1000,
-        MINUTE = 60 * SECOND,
-        HOUR = 60 * MINUTE;
+    var SAVE_INTERVAL = 15 * 1000;
 
     var MIN_TITLE_LENGTH = 1,
         MAX_TITLE_LENGTH = 120,
@@ -50,9 +48,8 @@ $(function () {
         POLL_ITEM_LENGTH_ERROR = $pollItemLength
             .replace('{min}', MIN_POLL_ITEM_LENGTH).replace('{max}', MAX_POLL_ITEM_LENGTH);
 
-
     /**
-     * Class for access to topic draft API
+     * Class for access to topic draft API.
      *
      * @constructor
      */
@@ -90,263 +87,7 @@ $(function () {
     };
 
     /**
-     * Helper for executing functions at specified interval
-     *
-     * @param {Function} fn the called function
-     * @param {Number} delay the interval in milliseconds
-     * @constructor
-     */
-    function IntervalTimer(fn, delay) {
-        this._fn = fn;
-        this._delay = delay;
-        this._timeoutID = null;
-    }
-
-    /**
-     * Starts timer. But if it already has been starter, silently ends.
-     */
-    IntervalTimer.prototype.start = function () {
-        var self = this;
-
-        if (this._timeoutID === null) {
-            this._timeoutID = setTimeout(callback, self._delay);
-        }
-
-        function callback() {
-            self._fn();
-            self._timeoutID = setTimeout(callback, self._delay);
-        }
-    };
-
-    /**
-     * Stops timer. But if it already has been stopped, silently ends.
-     */
-    IntervalTimer.prototype.stop = function () {
-        clearTimeout(this._timeoutID);
-        this._timeoutID = null;
-    };
-
-    /**
-     * Restarts timer by calling methods stop and start alternately.
-     */
-    IntervalTimer.prototype.restart = function () {
-        this.stop();
-        this.start();
-    };
-
-
-    /**
-     * Class for work with counter that show time from last save of draft.
-     *
-     * @constructor
-     */
-    function Counter() {
-        this._el = $("<span id='topicDraftCounter' class='topic-draft-counter pull-right'></span>");
-        this._interval = 5 * SECOND;
-        this._savingTimer = new IntervalTimer(this._tick.bind(this), this._interval);
-        this._time = 0;
-    }
-
-    /**
-     * Launches new counting.
-     *
-     * @param time the time (in milliseconds) that has passed from last saving (by default it is 0)
-     */
-    Counter.prototype.start = function (time) {
-        this._time = time || 0;
-        this._el.text(this._composeLabel(this._time));
-        this._savingTimer.start();
-    };
-
-    /**
-     * Stops counting and cleans label of this counter.
-     */
-    Counter.prototype.stop = function () {
-        this._time = 0;
-        this._el.text('');
-        this._savingTimer.stop();
-    };
-
-    /**
-     * Restart counting.
-     */
-    Counter.prototype.restart = function () {
-        this.stop();
-        this.start();
-    };
-
-    /**
-     * Returns reference to the DOM element that contains label of this counter.
-     *
-     * @returns {jQuery}
-     */
-    Counter.prototype.getElement = function () {
-        return this._el;
-    };
-
-    /**
-     * Is launched by timer at specified interval and updates label of this counter.
-     *
-     * @private
-     */
-    Counter.prototype._tick = function () {
-        this._time += this._interval;
-        this._el.text(this._composeLabel(this._time));
-    };
-
-    /**
-     * Composes label for this counter based on passed time.
-     *
-     * @param time passed time in milliseconds
-     * @private
-     */
-    Counter.prototype._composeLabel = function (time) {
-        if (time < MINUTE) {
-            return this._composeSecondsLabel(Math.floor(time / SECOND));
-        } else if (time >= MINUTE && time < HOUR) {
-            return this._composeMinutesLabel(Math.floor(time / MINUTE));
-        } else if (time >= HOUR && time < 24 * HOUR) {
-            return this._composeHoursLabel(Math.floor(time / HOUR));
-        } else {
-            return this._composeDateLabel(time);
-        }
-    };
-
-    /**
-     * If value of the seconds lower than 5, composes label as "Saved just now", otherwise
-     * as "Save N seconds ago".
-     *
-     * @param {Number} seconds passed time in seconds
-     * @returns {string} composed label
-     * @private
-     */
-    Counter.prototype._composeSecondsLabel = function (seconds) {
-        if (seconds < 5) {
-            return $labelSavedJustNow;
-        }
-        return $labelSaved + " " + seconds.toString() + " " + $labelSeconds + " " + $labelAgo;
-    };
-
-    /**
-     * Composes label as "Saved N minutes ago".
-     *
-     * @param {Number} minutes passed time in minutes
-     * @returns {string} composed label
-     * @private
-     */
-    Counter.prototype._composeMinutesLabel = function (minutes) {
-        var suffixGroup = minutes % 10;
-        var between2And4Suffix = $labelMinutes24Suffix;
-        if (minutes > 10 && minutes < 20) {
-            between2And4Suffix = $labelMinutesMoreThan4Suffix;
-        }
-        var oneAtTheEndSuffix = $labelMinute1Suffix;
-        if (minutes == 11) {
-            oneAtTheEndSuffix = $label11Suffix;
-
-        } else if (minutes > 20) {
-            oneAtTheEndSuffix = $labelMinutes1AtTheEndSuffix;
-        }
-        switch (suffixGroup) {
-            case 1:
-                return $labelSaved + " " + minutes.toString() + " " + $labelMinute
-                    + oneAtTheEndSuffix + " " + $labelAgo;
-            case 2:
-            case 3:
-            case 4:
-                return $labelSaved + " " + minutes.toString() + " " + $labelMinute
-                    + between2And4Suffix + " " + $labelAgo;
-            default:
-                return $labelSaved + " " + minutes.toString() + " " + $labelMinute
-                    + $labelMinutesMoreThan4Suffix + " " + $labelAgo;
-        }
-    };
-
-    /**
-     * Composes label as "Saved N hours ago".
-     *
-     * @param {Number} hours passed time in hours
-     * @returns {string} composed label
-     * @private
-     */
-    Counter.prototype._composeHoursLabel = function (hours) {
-        var suffixGroup = hours % 10;
-        var between2And4Suffix = $labelHours24Suffix;
-        if (hours > 10 && hours < 20) {
-            between2And4Suffix = $labelHoursMoreThan4Suffix;
-        }
-        var oneAtTheEndSuffix = $labelHours1Suffix;
-        if (hours == 11) {
-            oneAtTheEndSuffix = $label11HoursSuffix;
-        } else if (hours > 20) {
-            oneAtTheEndSuffix = $labelHours1AteTheEndSuffix;
-        }
-        switch (suffixGroup) {
-            case 1:
-                return $labelSaved + " " + hours.toString() + " " + $labelHour
-                    + oneAtTheEndSuffix + " " + $labelAgo;
-            case 2:
-            case 3:
-            case 4:
-                return $labelSaved + " " + hours.toString() + " " + $labelHour
-                    + between2And4Suffix + " " + $labelAgo;
-            default:
-                return $labelSaved + " " + hours.toString() + " " + $labelHour
-                    + $labelHoursMoreThan4Suffix + " " + $labelAgo;
-        }
-    };
-
-    /**
-     * Composes label as "Saved DATE".
-     *
-     * @param {Number} milliseconds passed time in milliseconds
-     * @returns {string} composed label
-     * @private
-     */
-    Counter.prototype._composeDateLabel = function (milliseconds) {
-        return $labelSaved + " " + new Date(milliseconds).toLocaleDateString();
-    };
-
-
-    /**
-     * Class for showing alert messages.
-     *
-     * @constructor
-     */
-    function AlertMessagePopup() {
-        this._element = $('' +
-            '<div class="alert alert-error">' +
-            '<span class="close">&times;</span>' +
-            '<span id="alertMessagePopup"></span>' +
-            '</div>');
-        this._message = $('#alertMessagePopup', this._element);
-
-        $('.close', this._element).on('click', this.hide.bind(this));
-
-        this.hide();
-    }
-
-    AlertMessagePopup.prototype.show = function (message) {
-        this._message.text(message);
-        this._element.show();
-    };
-
-    AlertMessagePopup.prototype.hide = function () {
-        this._element.hide();
-    };
-
-    /**
-     * Returns reference to the DOM element that contains showed message.
-     *
-     * @returns {jQuery}
-     */
-    AlertMessagePopup.prototype.getElement = function () {
-        return this._element;
-    };
-
-
-    /**
-     * Class for work with current draft topic
+     * Class for work with current draft topic.
      *
      * @constructor
      */
@@ -363,11 +104,9 @@ $(function () {
         this._pollTitle = $('#pollTitle');
         this._pollItemsValue = $('#pollItems');
 
-        this._lastSavedDraftState = this._getDraftData();
+        this._lastSavedDraftState = this._getDraftState();
 
-        this._savingTimer = new IntervalTimer(this.save.bind(this), 15 * SECOND);
-
-        var defaultError = $("<span class='help-inline focusToError'></span>").hide();
+        this._savingTimer = new draft.IntervalTimer(this.save.bind(this), SAVE_INTERVAL);
 
         /*
          * Construct elements for displaying errors. If on the current page already
@@ -376,56 +115,44 @@ $(function () {
         this._errors = {
             title: {
                 group: this._title.parents('.control-group'),
-                error: (function() {
-                    var error = $('#topic\\.title\\.errors');
-
-                    return error.length ? error
-                                        : defaultError.clone().insertAfter(self._title)
-                })()
+                error: error('#topic\\.title\\.errors')
             },
             content: {
                 group: this._content.parents('.control-group'),
-                error: (function() {
-                    var error = $('#bodyText\\.errors');
-
-                    return error.length ? error
-                                        : defaultError.clone().insertAfter(self._content);
-                })()
+                error: error('#bodyText\\.errors')
             },
             pollTitle: {
                 group: this._pollTitle.parents('.control-group'),
-                error: (function() {
-                    var error = $('#topic\\.poll\\.title\\.errors');
-
-                    return error.length ? error
-                                        : defaultError.clone().insertAfter(self._pollTitle);
-                })()
+                error: error('#topic\\.poll\\.title\\.errors')
             },
             pollItemsValue: {
                 group: this._pollItemsValue.parents('.control-group'),
-                error: (function() {
-                    var error = $('#topic\\.poll\\.pollItems');
-
-                    return error.length ? error
-                                        : defaultError.clone().insertAfter(self._pollItemsValue)
-                })()
+                error: error('#topic\\.poll\\.pollItems')
             }
         };
+
+        function error(selector) {
+            var error = $(selector),
+                defaultError = $("<span class='help-inline focusToError'></span>").hide();
+
+            return error.length ? error
+                                : defaultError.clone().insertAfter(self._title)
+        }
 
         this._addEventListener('blur', this._onBlur.bind(this));
         this._addEventListener('keyup', this._onKeyUp.bind(this));
     }
 
     /**
-     * Checks whether there is enough data in draft topic and it is valid, and if it so,
-     * tries to save it, otherwise just returns failed promise.
+     * Checks whether there is enough data in topic and it is valid, and if it so,
+     * tries to save it's draft, otherwise just returns failed promise.
      *
      * @param {boolean} [async] whether request is async (be default it is true)
      * @returns {jQuery.Deferred}
      */
     TopicDraft.prototype.save = function (async) {
         var self = this,
-            draft = this._getDraftData();
+            draft = this._getDraftState();
 
         async = async !== false;
 
@@ -461,29 +188,29 @@ $(function () {
 
         function enoughData(draft) {
             return (draft['title'] && draft['title'].length > 0) ||
-                (draft['content'] && draft['content'].length > 0) ||
-                (draft['pollTitle'] && draft['pollTitle'].length > 0) ||
-                (draft['pollItemsValue'] && draft['pollItemsValue'].length > 0);
+                   (draft['content'] && draft['content'].length > 0) ||
+                   (draft['pollTitle'] && draft['pollTitle'].length > 0) ||
+                   (draft['pollItemsValue'] && draft['pollItemsValue'].length > 0);
         }
     };
 
     /**
-     * Determines whether this draft was changed from last saving.
+     * Determines whether the topic was changed from last saving.
      *
      * @returns {boolean} whether this draft was changed
      */
     TopicDraft.prototype.wasChanged = function () {
-        var currentState = this._getDraftData(),
+        var currentState = this._getDraftState(),
             previousState = this._lastSavedDraftState;
 
         return currentState['title'] !== previousState['title'] ||
                currentState['content'] !== previousState['content'] ||
                currentState['pollTitle'] !== previousState['pollTitle'] ||
-               currentState['pollItemsValue'] != previousState['pollItemsValue'];
+               currentState['pollItemsValue'] !== previousState['pollItemsValue'];
     };
 
     /**
-     * Validates content of this draft topic.
+     * Validates content of the topic.
      * Note: it checks only that values is not more than specified maximum.
      *
      * @returns {boolean} whether content is valid
@@ -492,7 +219,7 @@ $(function () {
     TopicDraft.prototype._validate = function () {
         var self = this,
             success = true,
-            draft = this._getDraftData();
+            draft = this._getDraftState();
 
         success &= validateStringField('title', MAX_TITLE_LENGTH, TITLE_ERROR_MESSAGE);
         success &= validateStringField('content', MAX_CONTENT_LENGTH, CONTENT_ERROR_MESSAGE);
@@ -571,16 +298,16 @@ $(function () {
      * @returns {*}
      * @private
      */
-    TopicDraft.prototype._getDraftData = function () {
+    TopicDraft.prototype._getDraftState = function () {
         var draft = {
-            title: this._title.val() ? this._title.val() : undefined,
-            content: this._content.val() ? this._content.val() : undefined
+            title: this._title.val(),
+            content: this._content.val()
         };
 
-        if ((this._pollTitle && this._pollTitle.val()) ||
-            (this._pollItemsValue && this._pollItemsValue.val())) {
-            draft['pollTitle'] = this._pollTitle.val() ? this._pollTitle.val() : undefined;
-            draft['pollItemsValue'] = this._pollItemsValue.val() ? this._pollItemsValue.val() : undefined;
+        if ((this._pollTitle) ||
+            (this._pollItemsValue)) {
+            draft['pollTitle'] = this._pollTitle.val();
+            draft['pollItemsValue'] = this._pollItemsValue.val();
         }
 
         return draft;
@@ -606,8 +333,14 @@ $(function () {
         }
     };
 
-    TopicDraft.prototype._onBlur = function () {
+    TopicDraft.prototype._onBlur = function (event) {
         this._savingTimer.stop();
+
+        // If user emptied content and then left content field, we don't save draft
+        if (this._isEmpty()) {
+            return;
+        }
+
         if (this.wasChanged()) {
             this.save();
         }
@@ -620,7 +353,7 @@ $(function () {
         this._validate();
 
         // Remove draft if user emptied content (for instance by Ctrl-A and Backspace)
-        if ($(event.target).is(this._content) && this._content.val().length == 0) {
+        if (this._isEmpty()) {
             this._api.remove().then(function () {
                 self._savingTimer.stop();
                 self._counter.stop();
@@ -628,31 +361,39 @@ $(function () {
         }
     };
 
+    TopicDraft.prototype._isEmpty = function() {
+        var state = this._getDraftState();
 
-    var postBody = $('#postBody'),
-        subject = $('#subject'),
-        lastSavedTime = $('#topicDraftLastSavedMillis').val();
+        return !state['title'] && !state['content'] &&
+               !state['pollTitle'] && !state['pollItemsValue'];
+    };
 
-    // Check that we are on the right page
-    if (postBody.length > 0 && subject.length > 0) {
-        var api = new TopicDraftApi(),
-            counter = new Counter(),
-            popup = new AlertMessagePopup();
+    $(function() {
+        var postBody = $('#postBody'),
+            subject = $('#subject'),
+            lastSavedTime = $('#topicDraftLastSavedMillis').val();
 
-        counter.getElement().insertAfter(postBody);
-        popup.getElement().insertBefore(subject);
+        // Check that we are on the right page
+        if (postBody.length > 0 && subject.length > 0) {
+            var api = new TopicDraftApi(),
+                counter = new draft.Counter(),
+                popup = new draft.AlertMessagePopup();
 
-        if (lastSavedTime) {
-            counter.start(Date.now() - lastSavedTime);
-        }
+            counter.getElement().insertAfter(postBody);
+            popup.getElement().insertBefore(subject);
 
-        var topicDraft = new TopicDraft(api, counter, popup);
-
-        // Try to save draft when user leaves this page
-        $(window).on('unload', function () {
-            if (topicDraft.wasChanged()) {
-                topicDraft.save(false);
+            if (lastSavedTime) {
+                counter.start(Date.now() - lastSavedTime);
             }
-        });
-    }
-});
+
+            var topicDraft = new TopicDraft(api, counter, popup);
+
+            // Try to save draft when user leaves this page
+            window.addEventListener('beforeunload', function() {
+                if (topicDraft.wasChanged()) {
+                    topicDraft.save(false);
+                }
+            });
+        }
+    });
+})(draft);

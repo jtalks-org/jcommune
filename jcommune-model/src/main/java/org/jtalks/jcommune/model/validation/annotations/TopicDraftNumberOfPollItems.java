@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.model.validation.annotations;
 
-import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.validation.validators.TopicDraftNumberOfPollItemsValidator;
 
 import javax.validation.Constraint;
@@ -55,10 +54,10 @@ public @interface TopicDraftNumberOfPollItems {
     /**
      * Min value for poll items number.
      */
-    int min() default Poll.MIN_ITEMS_NUMBER;
+    int min() default 0;
 
     /**
      * Max value for poll items number.
      */
-    int max() default Poll.MAX_ITEMS_NUMBER;
+    int max() default Integer.MAX_VALUE;
 }

@@ -13,405 +13,255 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-$(document).ready(function () {
-  var SAVE_INTERVAL = 15000;
-  var MIN_DRAFT_LENGTH = 2, MAX_TEXT_LENGTH = 20000;
+(function (draft) {
+    'use strict';
 
-  var Page = {
-    postTextArea: $("#postBody"),
-    validationErrorMsg: $(".control-group"),
-    nOfSavedMillisHiddenInput: $("#savedMilis")
-  };
+    var SAVE_INTERVAL = 15 * 1000;
 
-  function DraftState() {
-    var self = this;
-    self.wereNoChangesAfterLastSave = true;
-    self.previouslySavedText = null;
-  }
+    var MIN_CONTENT_LENGTH = 2,
+        MAX_CONTENT_LENGTH = 20000;
 
-  function ViewModel(page, draftState) {
-    var self = this;
-    var errorSpan = "<div id='bodyText-errors' class='cleared'><span class='help-inline focusToError' data-original-title=''>"
-      + $labelMessageSizeValidation.replace('{min}', MIN_DRAFT_LENGTH).replace('{max}', MAX_TEXT_LENGTH) + "</span></div>";
-    // Public functions
-    self.isDraftApplicable = isDraftApplicable;
-    self.isDraftExists = isDraftExists;
-    self.updateValidationErrors = updateValidationErrors;
-    self.getTextContent = getTextContent;
-    self.isDraftExistedOnServerBeforePageWasLoaded = isDraftExistedOnServerBeforePageWasLoaded;
-    self.isTextChangedSinceLastSave = isTextChangedSinceLastSave;
-    init();
+    var CONTENT_ERROR_MESSAGE = $labelMessageSizeValidation
+        .replace('{min}', MIN_CONTENT_LENGTH).replace('{max}', MAX_CONTENT_LENGTH);
 
-    function init() {
-      if (!isDraftApplicable()) {
-        return;
-      }
-      draftState.previouslySavedText = getTextContent();
-      initTextAreaListeners();
-      initGlobalListeners();
+    /**
+     * Class for access to post draft API.
+     *
+     * @constructor
+     */
+    function PostDraftApi() {}
+
+    /**
+     * Saves or update draft.
+     *
+     * @param draft object with content of draft post
+     * @param async whether request is async (be default it is true)
+     * @returns {$.Deferred}
+     */
+    PostDraftApi.prototype.save = function (draft, async) {
+
+        async = async !== false;
+
+        return $.ajax({
+            url: baseUrl + '/posts/savedraft',
+            type: 'POST',
+            async: async,
+            data: JSON.stringify(draft),
+            contentType: 'application/json'
+        });
+    };
+
+    /**
+     * Deletes draft.
+     *
+     * @param id the draft id
+     * @returns {jQuery.Deferred}
+     */
+    PostDraftApi.prototype.remove = function (id) {
+        return $.ajax({
+            url: baseUrl + '/drafts/' + id + '/delete'
+        });
+    };
+
+    /**
+     * Class for work with current draft post
+     *
+     * @constructor
+     */
+    function PostDraft(api, counter, popup) {
+        var self = this;
+
+        this._api = api;
+        this._counter = counter;
+        this._popup = popup;
+
+        this._topicId = $('#topicId').val();
+        this._draftId = $('#draftId').val();
+
+        this._bodyText = $('#postBody');
+
+        /*
+         * Construct element for displaying error. If on the current page already
+         * there is such element generated on backend, we use it.
+         */
+        var error = $('#bodyText\\.errors'),
+            defaultError = $('<span class="help-inline focusToError"></span>').hide();
+
+        this._bodyTextError = error.length ? error
+                                           : defaultError.clone().insertAfter(self._bodyText);
+
+        this._bodyTextGroup = this._bodyText.parents('.control-group');
+
+        this._lastSavedDraftState = this._getDraftState();
+        this._savingTimer = new draft.IntervalTimer(this.save.bind(this), SAVE_INTERVAL);
+
+        this._bodyText.on('blur', this._onBlur.bind(this));
+        this._bodyText.on('keyup', this._onKeyUp.bind(this));
     }
 
     /**
-     * Checks if the draft was saved before (the indication of when that was happen last time is shown on the page).
-     * @returns {boolean}
+     * Checks whether there is enough data in post and it is valid, and if it so,
+     * tries to save it's draft, otherwise just returns failed promise.
+     *
+     * @param {boolean} [async] whether request is async (be default it is true)
+     * @returns {jQuery.Deferred}
      */
-    function isDraftExists() { return !isNaN(page.nOfSavedMillisHiddenInput.val()); }
+    PostDraft.prototype.save = function (async) {
+        var self = this,
+            draft = this._getDraftState();
 
-    function isDraftExistedOnServerBeforePageWasLoaded() { return parseInt($("#draftId").val()) !== 0; }
+        async = async !== false;
 
-    /**
-     * Determines if there is a text area that can
-     * @returns {boolean}
-     */
-    function isDraftApplicable() {
-      return typeof page.postTextArea.val() !== 'undefined';
-    }
+        if (enoughData(draft) && this._validate()) {
+            return this._api.save(draft, async)
+                .done(function (response) {
+                    self._draftId = response.result;
 
-    function getTextContent() { return page.postTextArea.val(); }
+                    self._counter.restart();
+                    self._savingTimer.stop();
+                    self._popup.hide();
 
-    function isTextChangedSinceLastSave() {
-      var currentTextContent = getTextContent();
-      if(!draftState.wereNoChangesAfterLastSave) {
-        return true;
-      } else if (draftState.previouslySavedText.length !== currentTextContent.length) {
-        return true;
-      } else if(draftState.previouslySavedText !== currentTextContent) {
-        return true;
-      }
-      return false;
-    }
-
-    /**
-     * Highlights textarea and prints error message if validation error occurs
-     * or clears highlight and validation messages
-     */
-    function updateValidationErrors() {
-      page.validationErrorMsg.removeClass("error");
-      $("#bodyText-errors").remove();
-      $(".focusToError").remove();
-      $(".help-inline").remove();
-      if (getTextLength() > MAX_TEXT_LENGTH) {
-        page.validationErrorMsg.addClass("error");
-        $(errorSpan).insertAfter(".keymaps-caption.pull-left");
-      }
-    }
-    function getTextLength() { return getTextContent().length; }
-    function initTextAreaListeners() {
-      page.postTextArea.bind('keyup change', function () {
-        updateValidationErrors();
-        if (pageObject.isTextChangedSinceLastSave()) {
-          draftState.wereNoChangesAfterLastSave = false;
-        }
-        startTimer();
-        if (getTextLength() == 0 && draftState.previouslySavedText.length !== 0) {
-          draftState.previouslySavedText = '';
-          deleteDraft();
-        }
-      });
-
-      page.postTextArea.blur(function () {
-        if (!postPressed) {
-          saveEvent();
+                    self._lastSavedDraftState = draft;
+                })
+                .fail(function (xhr, status) {
+                    if (status == 'timeout' || xhr.status == 0) {
+                        if (xhr.status == 0) {
+                            // Need it because firefox makes no difference between refused connection and
+                            // aborted request
+                            setTimeout(function () {
+                                self._popup.show($labelConnectionLost);
+                            }, 3000);
+                        } else {
+                            self._popup.show($labelConnectionLost);
+                        }
+                    } else if (xhr.status == 403) {
+                        self._popup.show($labelNotLoggedInError);
+                    }
+                });
         } else {
-          postPressed = false;
+            return $.Deferred(function (deferred) {
+                deferred.fail();
+            });
         }
-      });
-    }
 
-    function initGlobalListeners() {
-      $(window).on('unload', function () {
-        saveEvent();
-      });
-      $(".btn-toolbar").mouseup(function () {
-        draftState.wereNoChangesAfterLastSave = false;
-        startTimer();
-      });
-    }
-  }
-
-  var draftState = new DraftState();
-  var pageObject = new ViewModel(Page, draftState);
-
-  if (pageObject.isDraftApplicable()) {
-    var intervalId;
-    var lastSavingDate;
-    var dateUpdateCounter = 0;
-    var dateUpdateInterval;
-    var prevSavedMilis = 0;
-    var postPressed = false;
-
-    $("<span id='counter' class='keymaps-caption pull-right'></span>").insertAfter("#editorBbCodeDiv");
-    if (pageObject.isDraftExists() && pageObject.isDraftExistedOnServerBeforePageWasLoaded()) {
-      prevSavedMilis = parseInt(Page.nOfSavedMillisHiddenInput.val());
-      var differenceMillis = parseInt($("#differenceMillis").val());
-      var difSeconds = Math.floor(differenceMillis / 1000);
-      if (difSeconds <= 60) {
-        dateUpdateCounter = Math.floor(difSeconds / 5);
-        startFiveSecondsInterval();
-      } else if (difSeconds > 60 && difSeconds <= 3600) {
-        dateUpdateCounter = Math.floor(difSeconds / 60);
-        $("#counter").text(composeMinuteLabel(dateUpdateCounter));
-        dateUpdateInterval = setInterval(function () {
-          minuteIntervalHandler();
-        }, 60000);
-      } else if (difSeconds > 3600 && difSeconds <= 86400) {
-        dateUpdateCounter = Math.floor(difSeconds / 3600);
-        $("#counter").text(composeHourLabel(dateUpdateCounter));
-        dateUpdateInterval = setInterval(function () {
-          hourIntervalHandler();
-        }, 3600000);
-      } else {
-        printDate(new Date(prevSavedMilis));
-      }
-    }
+        function enoughData(draft) {
+            return (draft['bodyText'] && draft['bodyText'].length > 0);
+        }
+    };
 
     /**
-     * Starts timer of saving draft
+     * Determines whether the post was changed from last saving.
+     *
+     * @returns {boolean} whether this draft was changed
      */
-    function startTimer() {
-      if (Page.postTextArea.val().length >= MIN_DRAFT_LENGTH && !intervalId) {
-        intervalId = setInterval(function () {
-          saveEvent();
-        }, SAVE_INTERVAL);
-      }
-    }
+    PostDraft.prototype.wasChanged = function () {
+        var currentState = this._getDraftState(),
+            previousState = this._lastSavedDraftState;
+
+        return currentState['bodyText'] !== previousState['bodyText'];
+    };
 
     /**
-     * Checks if it is necessary to save draft and saves if necessary
+     * Validates content of the post.
+     * Note: it checks only that values is not more than specified maximum.
+     *
+     * @returns {boolean} whether content is valid
+     * @private
      */
-    function saveEvent() {
-      var text = pageObject.getTextContent();
-      var textLength = text.length;
-      if (textLength >= MIN_DRAFT_LENGTH
-        && !postPressed
-        && pageObject.isTextChangedSinceLastSave()) {
-        draftState.previouslySavedText = text;
-        postPressed = false;
-        saveDraft();
-      }
-    }
+    PostDraft.prototype._validate = function () {
+        var self = this,
+            draft = this._getDraftState();
+
+        if (draft['bodyText'] && (draft['bodyText'].length > MAX_CONTENT_LENGTH)) {
+            self._showError(CONTENT_ERROR_MESSAGE);
+            return false;
+        } else {
+            self._hideError();
+            return true;
+        }
+    };
 
     /**
-     * Sends request for saving draft
+     * Shows error message and highlight it.
+     *
+     * @param message the message
+     * @private
      */
-    function saveDraft() {
-      //should be set here to prevent race condition
-      draftState.wereNoChangesAfterLastSave = true;
-      var topicId = $("#topicId").val();
-      var data = {bodyText: pageObject.getTextContent(), topicId: topicId};
-      pendingSaveRequest = $.ajax({
-        url: baseUrl + "/posts/savedraft",
-        type: 'POST',
-        contentType: "application/json",
-        timeout: 15000,
-        async: false,
-        data: JSON.stringify(data),
-        success: function (resp) {
-          removeConnectionErrorAlert();
-          if (resp.status == 'SUCCESS') {
-            $("#draftId").val(resp.result);
-            lastSavingDate = new Date();
-            dateUpdateCounter = 0;
-            clearInterval(dateUpdateInterval);
-            startFiveSecondsInterval();
-          } else {
-            draftState.wereNoChangesAfterLastSave = false;
-            pageObject.updateValidationErrors();
-          }
-        },
-        error: function (jqHXHR, status, e) {
-          draftState.wereNoChangesAfterLastSave = false;
-          if (status == 'timeout' || jqHXHR.status == 0) {
-            if (jqHXHR.status == 0) {
-              //Need it because firefox makes no difference between refused connection and
-              //aborted request
-              setTimeout(function () {
-                showConnectionErrorPopUp($labelConnectionLost);
-              }, 3000);
-            } else {
-              showConnectionErrorPopUp($labelConnectionLost);
+    PostDraft.prototype._showError = function (message) {
+        this._bodyTextError.text(message).show();
+        this._bodyTextGroup.addClass('error');
+    };
+
+    /**
+     * Hides error message.
+     *
+     * @private
+     */
+    PostDraft.prototype._hideError = function () {
+        this._bodyTextError.text('').hide();
+        this._bodyTextGroup.removeClass('error');
+    };
+
+    /**
+     * Collects data from fields and returns it as an object.
+     *
+     * @returns {*}
+     * @private
+     */
+    PostDraft.prototype._getDraftState = function () {
+        return {
+            bodyText: this._bodyText.val(),
+            topicId: this._topicId
+        };
+    };
+
+    PostDraft.prototype._onBlur = function () {
+        this._savingTimer.stop();
+        if (this.wasChanged()) {
+            this.save();
+        }
+    };
+
+    PostDraft.prototype._onKeyUp = function (event) {
+        var self = this;
+
+        this._savingTimer.start();
+        this._validate();
+
+        // Remove draft if user emptied content (for instance by Ctrl-A and Backspace)
+        if ($(event.target).is(this._bodyText) && this._bodyText.val().length == 0) {
+            this._api.remove(this._draftId).then(function () {
+                self._savingTimer.stop();
+                self._counter.stop();
+            });
+        }
+    };
+
+    $(function () {
+        var postBody = $('#postBody'),
+            lastSavedTime = $('#savedMillis').val();
+
+        // Check that we are on the right page
+        if (postBody.length > 0) {
+            var api = new PostDraftApi(),
+                counter = new draft.Counter(),
+                popup = new draft.AlertMessagePopup();
+
+            counter.getElement().insertAfter(postBody);
+            popup.getElement().insertBefore(postBody);
+
+            if (lastSavedTime) {
+                counter.start(Date.now() - lastSavedTime);
             }
 
-          } else if (jqHXHR.status == 403) {
-            showConnectionErrorPopUp($labelNotLoggedInError);
-          }
+            var postDraft = new PostDraft(api, counter, popup);
+
+            // Try to save draft when user leaves this page
+            window.addEventListener('beforeunload', function() {
+                if (postDraft.wasChanged()) {
+                    postDraft.save(false);
+                }
+            });
         }
-      });
-    }
-
-    function removeConnectionErrorAlert() {
-      $("#connectionErrorAlert").remove();
-    }
-
-    function showConnectionErrorPopUp(text) {
-      removeConnectionErrorAlert();
-
-      // for some reason standard "close" handler cause refresh of the page
-      var closeButton = $("<a>").addClass('close').html("&times;").click(removeConnectionErrorAlert);
-      var alert = $("<div>").attr("id", "connectionErrorAlert").addClass("alert alert-error")
-        .append(closeButton)
-        .append(document.createTextNode(text));
-
-      $("form.submit-form .btn-toolbar").after(alert);
-    }
-
-    $("#post").mousedown(function (e) {
-      //We need to abort save request in case if user posts message to prevent race condition
-      postPressed = true;
     });
-
-    $(".submit-form").submit(function (e) {
-      //We need to abort save request in case if user posts message with hot-keys 'ctr+enter' to prevent race condition
-      postPressed = true;
-    });
-  }
-  /**
-   * Sends request for deletion draft
-   */
-  function deleteDraft() {
-    var draftId = parseInt($("#draftId").val());
-    if (draftId != 0) {
-      $.ajax({
-        url: baseUrl + "/drafts/" + draftId + "/delete",
-        success: function () {
-          $("#counter").text("");
-          clearInterval(dateUpdateInterval);
-        }
-      })
-    }
-  }
-
-  /**
-   * Handler for update label "Saved xx seconds ago" every 5 seconds
-   */
-  function fiveSecondsIntervalHandler() {
-    var counterSpan = $("#counter");
-    if (dateUpdateCounter == 11) {
-      clearInterval(dateUpdateInterval);
-      dateUpdateCounter = 1;
-      counterSpan.text(composeMinuteLabel(dateUpdateCounter));
-      dateUpdateInterval = setInterval(function () {
-        minuteIntervalHandler();
-      }, 60000);
-    } else {
-      dateUpdateCounter += 1;
-      counterSpan.text(composeSecondsLabel(dateUpdateCounter * 5));
-    }
-  }
-
-  /**
-   * Handler for update label "Saved xx minutes ago" every minute
-   */
-  function minuteIntervalHandler() {
-    var counterSpan = $("#counter");
-    dateUpdateCounter += 1;
-    if (dateUpdateCounter === 60) {
-      clearInterval(dateUpdateInterval);
-      dateUpdateCounter = 1;
-      counterSpan.text(composeHourLabel(dateUpdateCounter));
-      dateUpdateInterval = setInterval(function () {
-        hourIntervalHandler();
-      }, 3600000);
-    }
-    else {
-      counterSpan.text(composeMinuteLabel(dateUpdateCounter));
-    }
-  }
-
-  /**
-   * Handler for update label "Saved xx hours ago" every hour
-   */
-  function hourIntervalHandler() {
-    var counterSpan = $("#counter");
-    dateUpdateCounter += 1;
-    if (dateUpdateCounter === 24) {
-      printDate(lastSavingDate);
-      clearInterval(dateUpdateInterval);
-      dateUpdateCounter = 0;
-    } else {
-      counterSpan.text(composeHourLabel(dateUpdateCounter));
-    }
-  }
-
-  /**
-   * Prints saving date
-   *
-   * @param date saving date to print
-   */
-  function printDate(date) {
-    $("#counter").text($labelSaved + " " + date.toLocaleDateString());
-  }
-
-  /**
-   * Starts timer for update label
-   */
-  function startFiveSecondsInterval() {
-    $("#counter").text(composeSecondsLabel(dateUpdateCounter * 5));
-    dateUpdateInterval = setInterval(function () {
-      fiveSecondsIntervalHandler();
-    }, 5000);
-  }
-
-  function composeSecondsLabel(numberSeconds) {
-    if (numberSeconds == 0) {
-      return $labelSavedJustNow;
-    }
-    return $labelSaved + " " + numberSeconds.toString() + " " + $labelSeconds + " " + $labelAgo;
-  }
-
-  function composeMinuteLabel(numberMinutes) {
-    var suffixGroup = numberMinutes % 10;
-    var between2And4Suffix = $labelMinutes24Suffix;
-    if (numberMinutes > 10 && numberMinutes < 20) {
-      between2And4Suffix = $labelMinutesMoreThan4Suffix;
-    }
-    var oneAtTheEndSuffix = $labelMinute1Suffix;
-    if (numberMinutes == 11) {
-      oneAtTheEndSuffix = $label11Suffix;
-
-    } else if (numberMinutes > 20) {
-      oneAtTheEndSuffix = $labelMinutes1AtTheEndSuffix;
-    }
-    switch (suffixGroup) {
-      case 1:
-        return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
-          + oneAtTheEndSuffix + " " + $labelAgo;
-      case 2:
-      case 3:
-      case 4:
-        return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
-          + between2And4Suffix + " " + $labelAgo;
-      default:
-        return $labelSaved + " " + numberMinutes.toString() + " " + $labelMinute
-          + $labelMinutesMoreThan4Suffix + " " + $labelAgo;
-    }
-  }
-
-  function composeHourLabel(numberHours) {
-    var suffixGroup = numberHours % 10;
-    var between2And4Suffix = $labelHours24Suffix;
-    if (numberHours > 10 && numberHours < 20) {
-      between2And4Suffix = $labelHoursMoreThan4Suffix;
-    }
-    var oneAtTheEndSuffix = $labelHours1Suffix;
-    if (numberHours == 11) {
-      oneAtTheEndSuffix = $label11HoursSuffix;
-    } else if (numberHours > 20) {
-      oneAtTheEndSuffix = $labelHours1AteTheEndSuffix;
-    }
-    switch (suffixGroup) {
-      case 1:
-        return $labelSaved + " " + numberHours.toString() + " " + $labelHour
-          + oneAtTheEndSuffix + " " + $labelAgo;
-      case 2:
-      case 3:
-      case 4:
-        return $labelSaved + " " + numberHours.toString() + " " + $labelHour
-          + between2And4Suffix + " " + $labelAgo;
-      default:
-        return $labelSaved + " " + numberHours.toString() + " " + $labelHour
-          + $labelHoursMoreThan4Suffix + " " + $labelAgo;
-    }
-  }
-
-});
+})(draft);

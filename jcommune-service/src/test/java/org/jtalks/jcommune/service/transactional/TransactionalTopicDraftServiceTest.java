@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jtalks.jcommune.model.dao.TopicDraftDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.TopicDraft;
@@ -26,6 +27,7 @@ import org.testng.annotations.Test;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -88,6 +90,24 @@ public class TransactionalTopicDraftServiceTest {
         topicDraftService.saveOrUpdateDraft(topicDraft);
 
         verify(topicDraftDao).saveOrUpdate(topicDraft);
+    }
+
+    @Test
+    public void saveOrUpdateDraftShouldNotRewritePollFieldsWithNullValues() {
+        TopicDraft topicDraftWithPoll = createTopicDraft();
+        topicDraftWithPoll.setPollTitle(RandomStringUtils.random(5));
+        topicDraftWithPoll.setPollItemsValue(RandomStringUtils.random(5));
+
+        when(topicDraftDao.getForUser(currentUser)).thenReturn(topicDraftWithPoll);
+
+        TopicDraft topicDraftWithoutPoll = createTopicDraft();
+        topicDraftWithoutPoll.setPollTitle(null);
+        topicDraftWithoutPoll.setPollItemsValue(null);
+
+        topicDraftService.saveOrUpdateDraft(topicDraftWithoutPoll);
+
+        assertNotNull(topicDraftWithPoll.getPollTitle());
+        assertNotNull(topicDraftWithPoll.getPollItemsValue());
     }
 
     @Test

@@ -41,6 +41,7 @@ public class TransactionalTopicDraftService implements TopicDraftService, Plugin
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("isAuthenticated()")
     public TopicDraft getDraft() {
         JCUser user = userService.getCurrentUser();
         return topicDraftDao.getForUser(user);
@@ -61,8 +62,13 @@ public class TransactionalTopicDraftService implements TopicDraftService, Plugin
         } else {
             currentDraft.setContent(draft.getContent());
             currentDraft.setTitle(draft.getTitle());
-            currentDraft.setPollTitle(draft.getPollTitle());
-            currentDraft.setPollItemsValue(draft.getPollItemsValue());
+
+            /* When we save draft that does not contain pollTitle and pollItemsValue (e.g. code review),
+               we should not overwrite already existing values of these fields. */
+            if (draft.getPollTitle() != null || draft.getPollItemsValue() != null) {
+                currentDraft.setPollTitle(draft.getPollTitle());
+                currentDraft.setPollItemsValue(draft.getPollItemsValue());
+            }
         }
 
         currentDraft.updateLastSavedTime();
@@ -75,6 +81,7 @@ public class TransactionalTopicDraftService implements TopicDraftService, Plugin
      * {@inheritDoc}
      */
     @Override
+    @PreAuthorize("isAuthenticated()")
     public void deleteDraft() {
         JCUser user = userService.getCurrentUser();
         topicDraftDao.deleteByUser(user);

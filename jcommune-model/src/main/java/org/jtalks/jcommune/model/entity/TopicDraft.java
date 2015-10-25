@@ -31,19 +31,19 @@ import javax.validation.constraints.Size;
 }, message = "{topicDraft.fields.not_null}")
 public class TopicDraft extends Entity {
 
-    @Size(min = 1, max = Topic.MAX_NAME_SIZE,
+    @Size(max = Topic.MAX_NAME_SIZE,
             message = "{javax.validation.constraints.Size.message}")
     private String title;
 
-    @Size(min = 1, max = Post.MAX_LENGTH,
+    @Size(max = Post.MAX_LENGTH,
             message = "{javax.validation.constraints.Size.message}")
     private String content;
 
-    @Size(min = 1, max = Poll.MAX_TITLE_LENGTH,
+    @Size(max = Poll.MAX_TITLE_LENGTH,
             message = "{javax.validation.constraints.Size.message}")
     private String pollTitle;
 
-    @TopicDraftNumberOfPollItems(min = 1, max = Poll.MAX_ITEMS_NUMBER)
+    @TopicDraftNumberOfPollItems(max = Poll.MAX_ITEMS_NUMBER)
     private String pollItemsValue;
 
     private JCUser topicStarter;
