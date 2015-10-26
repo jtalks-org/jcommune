@@ -32,7 +32,7 @@
 
 <div class="container form-login-related registration-page">
   <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
-             modelAttribute="newUser" method="POST" class='form-vertical'>
+             modelAttribute="newUser" method="POST" class='form-vertical' tabindex="-1">
     <fieldset>
       <legend><spring:message code="label.fillmessage"/></legend>
       <div class="control-group">

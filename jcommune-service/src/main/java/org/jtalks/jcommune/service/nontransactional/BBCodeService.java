@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.plugin.api.service.PluginBbCodeService;
@@ -73,11 +74,24 @@ public class BBCodeService implements PluginBbCodeService {
         for (TextProcessor preprocessor : preprocessors) {
             bbEncodedText = preprocessor.process(bbEncodedText);
         }
-        bbEncodedText = processor.process(bbEncodedText);
+        if (isUserbbCode(bbEncodedText)){
+            bbEncodedText = processUserbbCode(bbEncodedText);
+        } else {
+            bbEncodedText = processor.process(bbEncodedText);
+        }
         for (TextPostProcessor postpreprocessor : postprocessors) {
             bbEncodedText = postpreprocessor.postProcess(bbEncodedText);
         }
         return bbEncodedText;
+    }
+
+    /**
+     * if it's [user]-tag processing, use method
+     * "processUserbbCode"
+     * @param bbEncodedText line with bb-codes
+     */
+    private boolean isUserbbCode(String bbEncodedText) {
+        return bbEncodedText.startsWith("[user=/") && bbEncodedText.endsWith("[/user]");
     }
 
     /** @param preprocessors objects that process input text from users post before the actual bb-converting is
@@ -104,5 +118,25 @@ public class BBCodeService implements PluginBbCodeService {
      */
     public String stripBBCodes(String bbCode) {
         return stripBBCodesProcessor.process(bbCode);
+    }
+
+    /**
+     * In case when bb code contains tag [user], text processing execute with help
+     * this method because KefirrBB does not work properly
+     * with eg "[user=/jcommune/users/16][user]user[/user][/user]" i.e user name contains tag [user]
+     * @param bbEncodedText line with nested [user] bb-codes
+     * @return formatted text with link
+     */
+    private String processUserbbCode(String bbEncodedText) {
+        String openTag = "<a  href=\"";
+        String closeTag = "</a>";
+        String classInfo = "\" class=\"mentioned-user\" >";
+
+        String[] array = StringUtils.substringsBetween(bbEncodedText, "[", "]");
+        String userLink = array[0];
+        String userName = bbEncodedText.substring(userLink.length() + 2, bbEncodedText.length() - 7);
+        String result = openTag + userLink.substring(5, userLink.length()) + classInfo + userName + closeTag;
+
+        return result;
     }
 }
