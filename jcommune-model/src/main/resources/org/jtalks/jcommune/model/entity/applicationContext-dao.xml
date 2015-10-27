@@ -47,9 +47,6 @@
   <bean id="topicDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.TopicHibernateDao"/>
 
-  <bean id="topicDraftDao" parent="genericDao"
-        class="org.jtalks.jcommune.model.dao.hibernate.TopicDraftHibernateDao"/>
-
   <bean id="postDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.PostHibernateDao"/>
 
@@ -191,7 +188,6 @@
         <value>/org/jtalks/jcommune/model/entity/Group.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Post.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Topic.hbm.xml</value>
-        <value>/org/jtalks/jcommune/model/entity/TopicDraft.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Branch.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/PrivateMessage.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Section.hbm.xml</value>

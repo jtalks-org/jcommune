@@ -121,27 +121,18 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #set($postClass = "")
       #set($postEditUrl = "")
       #set($postDeleteUrl = "")
-      #macro(voteTooltips $voteUpTooltipText $voteDownTooltipText)
-        #if(!${currentUser.anonymous})
-          #set($voteUpTooltip = $voteUpTooltipText)
-          #set($voteDownTooltip = $voteDownTooltipText)
-        #else
-          #set($voteUpTooltip = $messages.getString('label.vote.error.not.registered'))
-          #set($voteDownTooltip = $messages.getString('label.vote.error.not.registered'))
-        #end
-      #end
       #if($isFirstPost)
         #set($postClass = "question")
         #set($postEditUrl = "${request.contextPath}/topics/question/${question.id.longValue()}/edit")
         #set($postDeleteUrl = "${request.contextPath}/topics/${question.id.longValue()}")
-        #voteTooltips($messages.getString('label.question.voteUp.tooltip'),
-                      $messages.getString('label.question.voteDown.tooltip'))
+        #set($voteUpTooltip = $messages.getString('label.question.voteUp.tooltip'))
+        #set($voteDownTooltip = $messages.getString('label.question.voteDown.tooltip'))
       #else
         #set($postEditUrl = "${request.contextPath}/topics/question/post/${post.id.longValue()}/edit")
         #set($postDeleteUrl = "${request.contextPath}/topics/question/post/${post.id.longValue()}")
         #set($postClass = "answer")
-        #voteTooltips($messages.getString('label.answer.voteUp.tooltip'),
-                      $messages.getString('label.answer.voteDown.tooltip'))
+        #set($voteUpTooltip = $messages.getString('label.answer.voteUp.tooltip'))
+        #set($voteDownTooltip = $messages.getString('label.answer.voteDown.tooltip'))
       #end
       #if($velocityCount == 2)
         <div id="answerCounter">

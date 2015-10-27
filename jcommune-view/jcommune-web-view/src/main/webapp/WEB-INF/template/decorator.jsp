@@ -114,11 +114,7 @@ in the future.
     </c:if>
     <c:if test="${fn:contains(uriString, 'topics') and not fn:contains(uriString, 'new')}">
       <script type="text/javascript"
-              src="${pageContext.request.contextPath}/resources/wro/postDraft.js?${project.version}"></script>
-    </c:if>
-    <c:if test="${(fn:contains(uriString, 'topics') or fn:contains(uriString, 'reviews')) and fn:contains(uriString, 'new')}">
-      <script type="text/javascript"
-              src="${pageContext.request.contextPath}/resources/wro/topicDraft.js?${project.version}"></script>
+              src="${pageContext.request.contextPath}/resources/wro/draft.js?${project.version}"></script>
     </c:if>
   </c:when>
 
@@ -270,9 +266,6 @@ in the future.
       <script src="${pageContext.request.contextPath}/resources/javascript/app/postDraft.js"></script>
     </c:if>
 
-    <c:if test="${(fn:contains(uriString, 'topics') or fn:contains(uriString, 'reviews')) and fn:contains(uriString, 'new')}">
-      <script src="${pageContext.request.contextPath}/resources/javascript/app/topicDraft.js"></script>
-    </c:if>
   </c:otherwise>
 </c:choose>
 

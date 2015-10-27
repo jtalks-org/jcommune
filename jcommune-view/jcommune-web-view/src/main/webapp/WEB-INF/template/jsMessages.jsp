@@ -178,6 +178,3 @@ $label11HoursSuffix = '<spring:message code="label.11.hours.suffix" htmlEscape="
 $labelMinutes1AtTheEndSuffix = '<spring:message code="label.minute.one.at.the.end.suffix" htmlEscape="true" text=""/>';
 $labelHours1AteTheEndSuffix = '<spring:message code="label.hour.one.at.the.end.suffix" htmlEscape="true" text=""/>';
 $labelNotLoggedInError = '<spring:message code="label.not.logged.in.error" htmlEscape="true" text=""/>';
-
-$pollItemsSize = '<spring:message code="poll.items.size" htmlEscape="true" text=""/>';
-$pollItemLength = '<spring:message code="poll.item.length" htmlEscape="true" text=""/>';

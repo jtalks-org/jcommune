@@ -40,7 +40,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       <form action="${request.contextPath}/topics/question/new?branchId=${topicDto.topic.branch.id}"
            method="POST" id="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
     #end
-      <input id="topicDraftLastSavedMillis" type="hidden" value="${topicDraft.lastSaved.millis}"/>
       <div class='control-group hide-on-preview'>
         <div class='controls'>
           #if(!${topicDto.topic.title})

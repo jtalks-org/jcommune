@@ -15,18 +15,11 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.service.bb2htmlprocessors.BBCodeListPreprocessor;
-import org.kefirsf.bb.TextProcessor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static java.util.Collections.list;
-import static java.util.Collections.singletonList;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Evgeniy Naumenko
@@ -46,15 +39,6 @@ public class BBCodeServiceTest {
     public void testQuote() {
         String result = service.quote(SOURCE, USER);
         assertEquals(result, "[quote=\"name\"]source[/quote]");
-    }
-
-    @Test
-    public void testUserbbProcessorReturnCorrectLinkWhenUserNameContainsUserTag() {
-        TextProcessor textProcessor = mock(TextProcessor.class);
-        when(textProcessor.process("[user][user]e-c[/user][/user]")).thenReturn("[user=/jcommune/users/16][user]e-c[/user][/user]");
-        service.setPreprocessors(singletonList(textProcessor));
-        String result = service.convertBbToHtml("[user][user]e-c[/user][/user]");
-        assertEquals(result,"<a  href=\"/jcommune/users/16\" class=\"mentioned-user\" >[user]e-c[/user]</a>");
     }
 
     @Test(dataProvider = "validBBCodes")
