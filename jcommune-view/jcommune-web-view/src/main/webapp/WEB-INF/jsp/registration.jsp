@@ -39,7 +39,7 @@
         <span class="reg_info"><spring:message code="label.tip.username"/></span>
 
         <div class="controls">
-          <form:input path="userDto.username" class="reg_input" type="text"/>
+          <form:input path="userDto.username" class="reg_input" type="text" autofocus="autofocus" />
           <br/>
           <form:errors path="userDto.username" cssClass="help-inline"/>
         </div>

@@ -170,5 +170,17 @@ $(document).ready(function () {
             return dialog.outerWidth() / 2 * (-1)
         });
     });
+
+    /*
+    The first element, which have attribute "autofocus", visible, not hidden, focusable, not in focus
+    receives focus during initial page load.
+    Made to support the set focus on the element with attribute "autofocus" in browsers that do not support HTML5.
+
+    Note: there is a strange behavior when opening background tabs in Opera 12.
+     */
+    $('[autofocus]')
+        .filter(':visible:not(:hidden):focusable:not(:focus)')
+        .eq(0)
+        .focus();
 });
 

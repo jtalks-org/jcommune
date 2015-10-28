@@ -40,7 +40,8 @@
         <label for="userName" class="control-label"><spring:message code="label.username"/> </label>
 
         <div class="controls">
-            <form:input class="reg_input" type="text" path="userName" id="dialog-userName" value="${param.username}"/>
+            <form:input class="reg_input" type="text" path="userName" id="dialog-userName" value="${param.username}"
+                    autofocus="autofocus" />
             <%-- Needed to highlight username input when login error occured--%>
             <c:if test="${not empty param.login_error}">
                 <span class="help-inline"/>

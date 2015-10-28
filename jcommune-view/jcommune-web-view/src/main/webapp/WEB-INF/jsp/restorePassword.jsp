@@ -41,7 +41,7 @@
         </label>
 
         <div class='controls'>
-          <form:input path="userEmail" type="text" size="20"/>
+          <form:input path="userEmail" type="text" size="20" autofocus="autofocus" />
             <br>
           <form:errors path="userEmail" cssClass="help-inline"/>
           <c:if test="${not empty message}">
