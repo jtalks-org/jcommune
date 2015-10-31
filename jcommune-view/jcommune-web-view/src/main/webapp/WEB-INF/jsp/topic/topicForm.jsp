@@ -40,7 +40,6 @@
   </div>
   <form:form action="${pageContext.request.contextPath}${submitUrl}"
              method="POST" modelAttribute="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
-    <input id="topicDraftLastSavedMillis" type="hidden" value="${topicDraft.lastSaved.millis}"/>
     <div class='control-group hide-on-preview'>
       <div class='controls'>
         <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
@@ -75,7 +74,7 @@
         <form:errors path="topic.announcement"/>
       </div>
     </jtalks:hasPermission>
-    <jtalks:bbeditor labelForAction="${pollEditing ? 'label.save' : 'label.send'}"
+    <jtalks:bbeditor labelForAction="label.save"
                      postText="${topicDto.bodyText}"
                      bodyParameterName="bodyText"
                      back="${pageContext.request.contextPath}/branches/${branchId}"/>
@@ -139,6 +138,9 @@
     </c:if>
   </form:form>
 
-
+  <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
+    <i class="icon-arrow-left"></i>
+    <spring:message code="label.back"/>
+  </a>
 </div>
 </body>

@@ -598,12 +598,6 @@ div.signup {
     font-style: italic;
 }
 
-.topic-draft-counter {
-    color: rgba(0, 0, 0, 0.6);
-    font-size: 10px;
-    font-style: italic;
-}
-
 .cursor-hand {
     cursor: hand;
     cursor: pointer;

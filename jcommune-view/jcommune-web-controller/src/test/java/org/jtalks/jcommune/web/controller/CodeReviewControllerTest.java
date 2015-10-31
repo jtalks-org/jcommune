@@ -52,8 +52,6 @@ public class CodeReviewControllerTest {
     @Mock
     private TopicModificationService topicModificationService;
     @Mock
-    private TopicDraftService topicDraftService;
-    @Mock
     private LastReadPostService lastReadPostService;
     @Mock
     private UserService userService;
@@ -70,7 +68,6 @@ public class CodeReviewControllerTest {
                 branchService,
                 breadcrumbBuilder,
                 topicModificationService,
-                topicDraftService,
                 lastReadPostService,
                 userService,
                 postService);
@@ -101,24 +98,6 @@ public class CodeReviewControllerTest {
         String submitUrl = assertAndReturnModelAttributeOfType(mav, "submitUrl", String.class);
         assertEquals(submitUrl, "/reviews/new?branchId=" + branchId);
         assertModelAttributeAvailable(mav, "breadcrumbList");
-    }
-
-    @Test
-    public void showNewCodeReviewPageShouldShowDraft() throws NotFoundException {
-        Topic expectedTopic = createTopic();
-        TopicDraft expectedDraft = new TopicDraft(user, expectedTopic.getTitle(), expectedTopic.getBodyText());
-        when(topicDraftService.getDraft()).thenReturn(expectedDraft);
-
-        when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
-
-        ModelAndView mav = controller.showNewCodeReviewPage(BRANCH_ID);
-
-        TopicDto topicDto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
-
-        Topic topic = topicDto.getTopic();
-        assertEquals(topic.getTitle(), expectedDraft.getTitle());
-        assertEquals(topicDto.getBodyText(), expectedDraft.getContent());
     }
 
     @Test

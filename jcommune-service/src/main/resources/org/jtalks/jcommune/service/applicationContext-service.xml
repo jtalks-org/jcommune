@@ -231,7 +231,6 @@
     <constructor-arg ref="lastReadPostService"/>
     <constructor-arg ref="postDao"/>
     <constructor-arg ref="topicFetchService"/>
-    <constructor-arg ref="topicDraftService"/>
     <constructor-arg ref="pluginLoader"/>
   </bean>
 
@@ -317,12 +316,6 @@
     <constructor-arg ref="simplePageDao"/>
     <constructor-arg ref="groupDao"/>
     <constructor-arg ref="securityService"/>
-  </bean>
-
-  <bean id="topicDraftService"
-        class="org.jtalks.jcommune.service.transactional.TransactionalTopicDraftService">
-    <constructor-arg ref="userService"/>
-    <constructor-arg ref="topicDraftDao"/>
   </bean>
 
   <bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>
@@ -452,11 +445,6 @@
   <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginPostService"
         factory-method="getInstance">
     <property name="postService" ref="postService"/>
-  </bean>
-
-  <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginTopicDraftService"
-        factory-method="getInstance">
-    <property name="topicDraftService" ref="topicDraftService"/>
   </bean>
 
   <bean class="org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService"

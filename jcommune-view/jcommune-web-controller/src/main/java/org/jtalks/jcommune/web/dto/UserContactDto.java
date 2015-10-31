@@ -99,7 +99,7 @@ public class UserContactDto implements Comparable<UserContactDto> {
      * @return actual ready-to-display contact
      */
     public String getDisplayValue() {
-        String replacement = StringUtils.defaultIfEmpty(value, "");
+        String replacement = StringUtils.defaultIfBlank(value, "");
         return type.getDisplayValue(replacement);
     }
 

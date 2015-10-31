@@ -110,10 +110,7 @@
     <js>/resources/javascript/app/permissionService.js</js>
     <js>/resources/javascript/lib/purl.js</js>
   </group>
-  <group name="postDraft">
+  <group name="draft">
     <js>/resources/javascript/app/postDraft.js</js>
-  </group>
-  <group name="topicDraft">
-    <js>/resources/javascript/app/topicDraft.js</js>
   </group>
 </groups>

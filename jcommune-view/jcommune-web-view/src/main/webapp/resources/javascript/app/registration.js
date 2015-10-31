@@ -33,6 +33,7 @@ $(function () {
         captchaContainer.find('.captcha-img, .btn-captcha-refresh').on({
             click: refreshCaptchaJsp,
             keypress: function(e) {
+                e.preventDefault();
                 if (isEnterKeyPressed(e)) {
                     refreshCaptchaJsp();
                 }
@@ -76,13 +77,8 @@ function signUp(e) {
             Utils.createFormElement($labelPassword, 'password', 'password', null, widthStyle) +
             Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password', null, widthStyle) +
             Utils.createFormElement($lableHoneypotCaptcha, 'honeypotCaptcha', 'text', 'hide-element', widthStyle);
-        var widthStyleForPlugin = widthStyle.split(":");
         for (var pluginId in params) {
-            bodyContent += $(params[pluginId])
-                .find("input[id^='plugin']")
-                .css(widthStyleForPlugin[0], widthStyleForPlugin[1])
-                .end()
-                .prop("outerHTML");
+            bodyContent += params[pluginId];
         }
 
         var footerContent = '<button id="signup-submit-button" class="btn btn-primary btn-block" name="commit"> \

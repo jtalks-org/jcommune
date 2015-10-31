@@ -33,7 +33,6 @@
 
   <form:form action="${pageContext.request.contextPath}${submitUrl}"
              method="POST" modelAttribute="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
-    <input id="topicDraftLastSavedMillis" type="hidden" value="${topicDraft.lastSaved.millis}"/>
     <div class='control-group hide-on-preview'>
       <div class='controls'>
         <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
@@ -57,7 +56,7 @@
     </div>
 
     <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
-           value="<spring:message code="label.send"/>"/>
+           value="<spring:message code="label.save"/>"/>
   </form:form>
 
   <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>

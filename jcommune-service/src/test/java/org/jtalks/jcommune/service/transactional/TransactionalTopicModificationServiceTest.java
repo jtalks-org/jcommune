@@ -85,8 +85,6 @@ public class TransactionalTopicModificationServiceTest {
     @Mock
     private TopicFetchService topicFetchService;
     @Mock
-    private TopicDraftService topicDraftService;
-    @Mock
     private SecurityContextFacade securityContextFacade;
     @Mock
     private PermissionEvaluator permissionEvaluator;
@@ -123,7 +121,6 @@ public class TransactionalTopicModificationServiceTest {
                 lastReadPostService,
                 postDao,
                 topicFetchService,
-                topicDraftService,
                 pluginLoader);
 
         user = new JCUser("username", "email@mail.com", "password");
@@ -271,19 +268,6 @@ public class TransactionalTopicModificationServiceTest {
         Topic createdTopic = topicService.createTopic(topicWithUserNotification, answerBodyWithUserMentioning);
 
         verify(userService).notifyAndMarkNewlyMentionedUsers(createdTopic.getFirstPost());
-    }
-
-    @Test
-    public void createTopicShouldDeleteDraft() throws NotFoundException {
-        Branch branch = createBranch();
-        user.setAutosubscribe(false);
-        createTopicStubs(branch);
-        String bodyText = "topic content";
-        Topic topic = createTopic();
-
-        topicService.createTopic(topic, bodyText);
-
-        verify(topicDraftService).deleteDraft();
     }
 
     @Test
