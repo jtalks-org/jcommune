@@ -104,6 +104,19 @@ public class TransactionalUserContactsServiceTest {
     }
 
     @Test
+    public void saveEditedContactsShouldDeleteContactWithEmptyValue() throws NotFoundException {
+
+        List<UserContactContainer> contacts = new ArrayList<>(addContactsToUser(user, 1, 1));
+        contacts.get(0).setValue(null);
+
+        prepareContactsMocks();
+        when(userContactsDao.isExist(anyLong())).thenReturn(true);
+
+        JCUser resultUser = userContactsService.saveEditedUserContacts(user.getId(), contacts);
+        assertEquals(resultUser.getContacts().size(), 0,"Contact with empty value was not removed");
+    }
+
+    @Test
     public void saveEditedContactsShouldAddNewContacts() throws NotFoundException {
         long contactTypeId1 = 1;
         long typeIdForNewContact = 2;
