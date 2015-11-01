@@ -66,21 +66,23 @@ public class TransactionalUserContactsService
         List<UserContact> tmpContactList = Lists.newArrayList(user.getContacts());
         // Remove deleted contacts
         for (UserContact contact : tmpContactList) {
-            if (!contactExistInList(contact, contacts)) {
+            if (!contactExistInListWithNotEmptyValue(contact, contacts)) {
                 user.removeContact(contact);
             }
         }
         // Add new and edit existing contacts
         for (UserContactContainer contactContainer: contacts) {
-            UserContactType actualType = get(contactContainer.getTypeId());
-            UserContact contact = contactContainer.getId() == null ? null
-                    : this.getDao().getContactById(contactContainer.getId());
-            if (contact != null && contact.getOwner().getId() == user.getId()) {
-                contact.setValue(contactContainer.getValue());
-                contact.setType(actualType);
-            } else {
-                contact = new UserContact(contactContainer.getValue(), actualType);
-                user.addContact(contact);
+            if (contactContainer.getValue() != null) {
+                UserContactType actualType = get(contactContainer.getTypeId());
+                UserContact contact = contactContainer.getId() == null ? null
+                        : this.getDao().getContactById(contactContainer.getId());
+                if (contact != null && contact.getOwner().getId() == user.getId()) {
+                    contact.setValue(contactContainer.getValue());
+                    contact.setType(actualType);
+                } else {
+                    contact = new UserContact(contactContainer.getValue(), actualType);
+                    user.addContact(contact);
+                }
             }
         }
         return user;
@@ -92,9 +94,9 @@ public class TransactionalUserContactsService
      * @param contacts list of edited contacts
      * @return contact exist in list
      */
-    private boolean contactExistInList(UserContact userContact, List<UserContactContainer> contacts) {
+    private boolean contactExistInListWithNotEmptyValue(UserContact userContact, List<UserContactContainer> contacts) {
         for (UserContactContainer contact : contacts) {
-            if (contact.getId() != null && userContact.getId() == contact.getId()) {
+            if (contact.getId() != null && contact.getValue() != null && userContact.getId() == contact.getId()) {
                 return true;
             }
         }
