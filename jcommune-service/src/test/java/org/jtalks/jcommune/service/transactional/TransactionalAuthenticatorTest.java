@@ -47,7 +47,9 @@ import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -63,6 +65,7 @@ import org.jtalks.jcommune.model.dto.LoginUserDto;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.*;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Andrey Pogorelov
@@ -420,6 +423,67 @@ public class TransactionalAuthenticatorTest {
 
         verify(authenticatorSpy).registerByPlugin(refEq(expected), eq(true), any(BindingResult.class));
         verify(authenticatorSpy).storeRegisteredUser(refEq(expected));
+    }
+
+    @Test
+    public void userMustHaveInitialFieldValuesWhenDefaultRegistrationFailWithValidationError() throws Exception {
+        Validator customValidator = new Validator() {
+            @Override
+            public boolean supports(Class<?> clazz) {
+                return true;
+            }
+
+            @Override
+            public void validate(Object target, Errors errors) {
+                errors.rejectValue("userDto.email", "", "An email format should be like mail@mail.ru");
+            }
+        };
+        RegisterUserDto registerUserDto = createRegisterUserDto("username", "password", "email", null);
+        EncryptionService realEncryptionService = new EncryptionService(new Md5PasswordEncoder());
+        ReflectionTestUtils.setField(authenticator, "encryptionService", realEncryptionService);
+        ReflectionTestUtils.setField(authenticator, "validator", customValidator);
+        when(pluginService.getRegistrationPlugins()).thenReturn(Collections.EMPTY_MAP);
+
+        authenticator.register(registerUserDto);
+        RegisterUserDto expectedRegisterUserDto = createRegisterUserDto("username", "password", "email", null);
+
+        assertReflectionEquals(expectedRegisterUserDto, registerUserDto);
+    }
+
+    @Test
+    public void userMustHaveInitialFieldValuesWhenPluginRegistrationFailWithValidationError() throws Exception {
+        RegisterUserDto registerUserDto = createRegisterUserDto("username", "password", "email", null);
+        EncryptionService realEncryptionService = new EncryptionService(new Md5PasswordEncoder());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("userDto.email", "An email format should be like mail@mail.ru");
+        ReflectionTestUtils.setField(authenticator, "encryptionService", realEncryptionService);
+        when(registrationPlugin.getState()).thenReturn(Plugin.State.ENABLED);
+        when(registrationPlugin.validateUser(registerUserDto.getUserDto(), 1L)).thenReturn(errors);
+        when(pluginService.getRegistrationPlugins())
+                .thenReturn(new ImmutableMap.Builder<Long, RegistrationPlugin>().put(1L, registrationPlugin).build());
+
+        authenticator.register(registerUserDto);
+        RegisterUserDto expectedRegisterUserDto = createRegisterUserDto("username", "password", "email", null);
+
+        assertReflectionEquals(expectedRegisterUserDto, registerUserDto);
+    }
+
+    @Test
+    public void userMustHaveInitialFieldValuesWhenPluginRegistrationFailWithRegistrationError() throws Exception {
+        RegisterUserDto registerUserDto = createRegisterUserDto("username", "password", "email", null);
+        EncryptionService realEncryptionService = new EncryptionService(new Md5PasswordEncoder());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("userDto.email", "An email format should be like mail@mail.ru");
+        ReflectionTestUtils.setField(authenticator, "encryptionService", realEncryptionService);
+        when(registrationPlugin.getState()).thenReturn(Plugin.State.ENABLED);
+        when(registrationPlugin.registerUser(registerUserDto.getUserDto(), 1L)).thenReturn(errors);
+        when(pluginService.getRegistrationPlugins()).thenReturn(
+                new ImmutableMap.Builder<Long, RegistrationPlugin>().put(1L, registrationPlugin).build());
+
+        authenticator.register(registerUserDto);
+        RegisterUserDto expectedRegisterUserDto = createRegisterUserDto("username", "password", "email", null);
+
+        assertReflectionEquals(expectedRegisterUserDto, registerUserDto);
     }
 
     private RegisterUserDto createRegisterUserDto(String username, String password, String email, String honeypotCaptcha) {
