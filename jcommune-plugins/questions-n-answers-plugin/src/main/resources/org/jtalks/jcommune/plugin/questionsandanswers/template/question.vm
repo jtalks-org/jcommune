@@ -256,8 +256,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <input id="topicId" type="hidden" value="${question.id}"/>
     <input id="draftId" type="hidden" value="${postDto.id}"/>
     #if(${postDto.id} != 0)
-        <input id="savedMilis" type="hidden" value="${postDto.creationDate.millis}"/>
-        <input id="differenceMillis" type="hidden" value="${postDto.differenceMillis}"/>
+        <input id="savedMillis" type="hidden" value="${postDto.creationDate.millis}"/>
     #end
     <form id="answerForm" action="${request.contextPath}/topics/question/${question.id}"
           method="POST" class='well anti-multipost submit-form'>
