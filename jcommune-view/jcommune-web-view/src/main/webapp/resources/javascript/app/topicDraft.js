@@ -115,28 +115,28 @@
         this._errors = {
             title: {
                 group: this._title.parents('.control-group'),
-                error: error('#topic\\.title\\.errors')
+                error: error(this._title, '#topic\\.title\\.errors')
             },
             content: {
                 group: this._content.parents('.control-group'),
-                error: error('#bodyText\\.errors')
+                error: error(this._content, '#bodyText\\.errors')
             },
             pollTitle: {
                 group: this._pollTitle.parents('.control-group'),
-                error: error('#topic\\.poll\\.title\\.errors')
+                error: error(this._pollTitle, '#topic\\.poll\\.title\\.errors')
             },
             pollItemsValue: {
                 group: this._pollItemsValue.parents('.control-group'),
-                error: error('#topic\\.poll\\.pollItems')
+                error: error(this._pollItemsValue, '#topic\\.poll\\.pollItems')
             }
         };
 
-        function error(selector) {
+        function error(element, selector) {
             var error = $(selector),
                 defaultError = $("<span class='help-inline focusToError'></span>").hide();
 
             return error.length ? error
-                                : defaultError.clone().insertAfter(self._title)
+                                : defaultError.clone().insertAfter(element)
         }
 
         this._addEventListener('blur', this._onBlur.bind(this));
@@ -238,7 +238,7 @@
         if (draft['pollItemsValue']) {
             var pollItems = draft['pollItemsValue'].split("\n");
 
-            if (pollItems.length >= MAX_ITEMS_NUMBER) {
+            if (pollItems.length > MAX_ITEMS_NUMBER) {
                 this._showError('pollItemsValue', POLL_ITEMS_VALUE_ERROR_MESSAGE);
                 success = false;
             } else {
@@ -247,7 +247,7 @@
 
             if (success) {
                 pollItems.forEach(function(item) {
-                    if (item && (item.length >= MAX_POLL_ITEM_LENGTH)) {
+                    if (item && (item.length > MAX_POLL_ITEM_LENGTH)) {
                         success = false;
                     }
                 });
