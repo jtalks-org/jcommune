@@ -14,6 +14,12 @@
  */
 
 $(document).ready(function () {
+    //avatar uploading handler
+    var fictiveButton = $("#upload").get(0);
+    if (!fictiveButton) {
+        return;
+    }
+
     //save form handler
     $('#saveChanges').click(function () {
         document.editProfileForm.submit();
@@ -69,8 +75,6 @@ $(document).ready(function () {
     else {
         action = $root + '/users/XHRavatarpreview';
     }
-
-    var fictiveButton = $("#upload").get(0);
 
     var uploader = new qq.FileUploaderBasic({
         button: fictiveButton,
