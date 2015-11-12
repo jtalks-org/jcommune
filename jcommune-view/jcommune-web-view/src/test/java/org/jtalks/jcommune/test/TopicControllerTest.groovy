@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.test
 
+import groovy.json.JsonOutput
 import org.jtalks.common.model.permissions.BranchPermission
 import org.jtalks.jcommune.model.utils.Branches
 import org.jtalks.jcommune.model.utils.Groups
@@ -21,6 +22,7 @@ import org.jtalks.jcommune.test.utils.Users
 import org.jtalks.jcommune.test.utils.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpSession
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
@@ -34,9 +36,10 @@ import spock.lang.Specification
 import javax.annotation.Resource
 import javax.servlet.Filter
 
+import static org.hamcrest.Matchers.is
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 /**
  * @author Mikhail Stryzhonok
@@ -98,4 +101,55 @@ class TopicControllerTest extends Specification {
             result.andExpect(status().isMovedTemporarily()).andExpect(redirectedUrl("/topics/1"))
     }
 
+    def 'Creation of draft topic should pass'() {
+        given: 'User with username and password'
+            def user = new User(username: "name", password: "pwd")
+        and: 'Branch created'
+            def branch = branches.create()
+        and: "User registered and has permissions to create topics in current branch"
+            users.create(user).withPermissionOn(branch, BranchPermission.CREATE_POSTS);
+        and: "User logged in"
+            def session = users.signIn(user)
+        when: 'User created draft topic'
+            def result = mockMvc.perform(post("/topics/draft?branchId=" + branch.getId())
+                    .session(session as MockHttpSession)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(JsonOutput.toJson([content: 'content'])))
+        then:
+            result.andExpect(status().isOk())
+                  .andExpect(jsonPath('$.status', is('SUCCESS')))
+    }
+
+    def 'Creation of draft topic by user that has no permission to create posts should fail'() {
+        given: 'User with username and password'
+            def user = new User(username: "name", password: "pwd")
+        and: 'Branch created'
+            def branch = branches.create()
+        and: "User registered and but has no permissions to create topics in current branch"
+            users.create(user)
+        and: "User logged in"
+            def session = users.signIn(user)
+        when: 'User created draft topic'
+            def result = mockMvc.perform(post("/topics/draft?branchId=" + branch.getId())
+                    .session(session as MockHttpSession)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(JsonOutput.toJson([content: 'content'])))
+        then:
+            // TODO: check that AccessDeniedException has been thrown
+            result.andExpect(status().isMovedTemporarily())
+    }
+
+    def 'Deletion of draft topic should pass'() {
+        given: 'User with username and password'
+            def user = new User(username: "name", password: "pwd")
+        and: "User registered and but has no permissions to create topics in current branch"
+            users.create(user)
+        and: "User logged in"
+            def session = users.signIn(user)
+        when: 'User created draft topic'
+            def result = mockMvc.perform(delete("/topics/draft").session(session as MockHttpSession))
+        then:
+            result.andExpect(status().isOk())
+                  .andExpect(jsonPath('$.status', is('SUCCESS')))
+    }
 }

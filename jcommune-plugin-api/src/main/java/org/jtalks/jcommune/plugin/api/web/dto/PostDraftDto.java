@@ -12,31 +12,40 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.plugin.api.service;
+package org.jtalks.jcommune.plugin.api.web.dto;
 
-import org.jtalks.jcommune.model.entity.TopicDraft;
+import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
+import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
 
 /**
  * @author Dmitry S. Dolzhenko
  */
-public interface PluginTopicDraftService {
+public class PostDraftDto {
     /**
-     * Returns the draft topic for current user.
-     *
-     * @return the draft topic or null
+     * Unlike post, draft may contain only one symbol to be saved.
      */
-    TopicDraft getDraft();
+    @BbCodeAwareSize(min = 1, max = Post.MAX_LENGTH)
+    @BbCodeNesting
+    private String bodyText;
+    private long topicId;
 
-    /**
-     * Save or update the draft topic.
-     *
-     * @param draft the draft topic
-     * @param branchId id of the branch in which topic will be created
-     */
-    TopicDraft saveOrUpdateDraft(TopicDraft draft, Long branchId);
+    public PostDraftDto() {
+    }
 
-    /**
-     * Delete the draft topic.
-     */
-    void deleteDraft();
+    public String getBodyText() {
+        return bodyText;
+    }
+
+    public void setBodyText(String bodyText) {
+        this.bodyText = bodyText;
+    }
+
+    public long getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(long topicId) {
+        this.topicId = topicId;
+    }
 }

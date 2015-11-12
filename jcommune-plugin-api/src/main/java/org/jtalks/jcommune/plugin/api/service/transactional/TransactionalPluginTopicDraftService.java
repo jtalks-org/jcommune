@@ -45,8 +45,8 @@ public class TransactionalPluginTopicDraftService implements PluginTopicDraftSer
      * {@inheritDoc}
      */
     @Override
-    public TopicDraft saveOrUpdateDraft(TopicDraft draft) {
-        return topicDraftService.saveOrUpdateDraft(draft);
+    public TopicDraft saveOrUpdateDraft(TopicDraft draft, Long branchId) {
+        return topicDraftService.saveOrUpdateDraft(draft, branchId);
     }
 
     /**

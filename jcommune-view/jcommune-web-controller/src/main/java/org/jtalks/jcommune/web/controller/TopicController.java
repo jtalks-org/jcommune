@@ -224,12 +224,13 @@ public class TopicController {
     @RequestMapping(value = "/topics/draft", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse saveDraft(@Valid @RequestBody TopicDraft topicDraft,
+                                  @RequestParam(BRANCH_ID) Long branchId,
                                   BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
 
-        topicDraft = topicDraftService.saveOrUpdateDraft(topicDraft);
+        topicDraft = topicDraftService.saveOrUpdateDraft(topicDraft, branchId);
 
         return new JsonResponse(JsonResponseStatus.SUCCESS, topicDraft.getId());
     }

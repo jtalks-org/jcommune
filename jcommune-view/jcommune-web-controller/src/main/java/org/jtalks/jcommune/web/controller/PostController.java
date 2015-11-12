@@ -22,6 +22,7 @@ import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
+import org.jtalks.jcommune.plugin.api.web.dto.PostDraftDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
@@ -379,7 +380,7 @@ public class PostController {
     /**
      * Saves new draft or update if it already exist
      *
-     * @param postDto post dto populated in form
+     * @param postDraftDto post draft dto populated in form
      * @param result validation result
      *
      * @return response in JSON format
@@ -388,28 +389,28 @@ public class PostController {
      */
     @RequestMapping(value = "/posts/savedraft", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse saveDraft(@Valid @RequestBody PostDto postDto, BindingResult result) throws NotFoundException {
+    public JsonResponse saveDraft(@Valid @RequestBody PostDraftDto postDraftDto, BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
-        Topic topic = topicFetchService.getTopicSilently(postDto.getTopicId());
-        PostDraft saved = postService.saveOrUpdateDraft(topic, postDto.getBodyText());
+        Topic topic = topicFetchService.getTopicSilently(postDraftDto.getTopicId());
+        PostDraft saved = postService.saveOrUpdateDraft(topic, postDraftDto.getBodyText());
         return new JsonResponse(JsonResponseStatus.SUCCESS, saved.getId());
     }
 
     /**
      * Deletes draft
      *
-     * @param postId id of draft to delete
+     * @param draftId id of draft to delete
      *
      * @return response in JSON format
      *
      * @throws NotFoundException if post with specified id not exist
      */
-    @RequestMapping(value = "drafts/{postId}/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "drafts/{draftId}/delete", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResponse deleteDraft(@PathVariable Long postId) throws NotFoundException {
-        postService.deleteDraft(postId);
+    public JsonResponse deleteDraft(@PathVariable Long draftId) throws NotFoundException {
+        postService.deleteDraft(draftId);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 

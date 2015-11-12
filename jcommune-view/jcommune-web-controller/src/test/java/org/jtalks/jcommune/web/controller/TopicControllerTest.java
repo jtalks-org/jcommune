@@ -229,9 +229,9 @@ public class TopicControllerTest {
     @Test
     public void testSaveDraft() throws Exception {
         TopicDraft savedDraft = createTopicDraft();
-        when(topicDraftService.saveOrUpdateDraft(savedDraft)).thenReturn(savedDraft);
+        when(topicDraftService.saveOrUpdateDraft(savedDraft, BRANCH_ID)).thenReturn(savedDraft);
 
-        JsonResponse response = controller.saveDraft(savedDraft, result);
+        JsonResponse response = controller.saveDraft(savedDraft, BRANCH_ID, result);
 
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
         assertEquals((long) response.getResult(), savedDraft.getId());
@@ -241,7 +241,7 @@ public class TopicControllerTest {
     public void saveDraftShouldReturnFailResponseIfValidationErrorsOccurred() throws Exception {
         when(result.hasErrors()).thenReturn(true);
 
-        JsonResponse response = controller.saveDraft(createTopicDraft(), result);
+        JsonResponse response = controller.saveDraft(createTopicDraft(), BRANCH_ID, result);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
     }

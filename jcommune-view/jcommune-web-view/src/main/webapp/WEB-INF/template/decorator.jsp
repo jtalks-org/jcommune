@@ -112,7 +112,7 @@ in the future.
       <script type="text/javascript"
               src="${pageContext.request.contextPath}/resources/wro/topic.js?${project.version}"></script>
     </c:if>
-    <c:if test="${fn:contains(uriString, 'topics') and not fn:contains(uriString, 'new')}">
+    <c:if test="${fn:contains(uriString, 'topics') and not fn:contains(uriString, 'new') and not fn:contains(uriString, 'edit')}">
       <script type="text/javascript"
               src="${pageContext.request.contextPath}/resources/wro/postDraft.js?${project.version}"></script>
     </c:if>
@@ -266,7 +266,7 @@ in the future.
       <script src="${pageContext.request.contextPath}/resources/javascript/lib/purl.js"></script>
     </c:if>
 
-    <c:if test="${fn:contains(uriString, 'topics') and not fn:contains(uriString, 'new')}">
+    <c:if test="${fn:contains(uriString, 'topics') and not fn:contains(uriString, 'new') and not fn:contains(uriString, 'edit')}">
       <script src="${pageContext.request.contextPath}/resources/javascript/app/draft.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/postDraft.js"></script>
     </c:if>

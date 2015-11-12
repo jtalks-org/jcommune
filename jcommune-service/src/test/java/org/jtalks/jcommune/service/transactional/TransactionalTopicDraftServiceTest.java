@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jtalks.jcommune.model.dao.TopicDraftDao;
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.TopicDraft;
 import org.jtalks.jcommune.service.TopicDraftService;
@@ -75,25 +76,31 @@ public class TransactionalTopicDraftServiceTest {
 
     @Test
     public void saveOrUpdateDraftShouldCreateNewDraftIfUserStillHasNoDraft() {
+        Branch branch = createBranch();
+
         when(topicDraftDao.getForUser(currentUser)).thenReturn(null);
 
-        TopicDraft topicDraft = topicDraftService.saveOrUpdateDraft(createTopicDraft());
+        TopicDraft topicDraft = topicDraftService.saveOrUpdateDraft(createTopicDraft(), branch.getId());
 
         verify(topicDraftDao).saveOrUpdate(topicDraft);
     }
 
     @Test
     public void saveOrUpdateDraftShouldUpdateDraftIfUserAlreadyHasOne() {
+        Branch branch = createBranch();
+
         TopicDraft topicDraft = createTopicDraft();
         when(topicDraftDao.getForUser(currentUser)).thenReturn(topicDraft);
 
-        topicDraftService.saveOrUpdateDraft(topicDraft);
+        topicDraftService.saveOrUpdateDraft(topicDraft, branch.getId());
 
         verify(topicDraftDao).saveOrUpdate(topicDraft);
     }
 
     @Test
     public void saveOrUpdateDraftShouldNotRewritePollFieldsWithNullValues() {
+        Branch branch = createBranch();
+
         TopicDraft topicDraftWithPoll = createTopicDraft();
         topicDraftWithPoll.setPollTitle(RandomStringUtils.random(5));
         topicDraftWithPoll.setPollItemsValue(RandomStringUtils.random(5));
@@ -104,7 +111,7 @@ public class TransactionalTopicDraftServiceTest {
         topicDraftWithoutPoll.setPollTitle(null);
         topicDraftWithoutPoll.setPollItemsValue(null);
 
-        topicDraftService.saveOrUpdateDraft(topicDraftWithoutPoll);
+        topicDraftService.saveOrUpdateDraft(topicDraftWithoutPoll, branch.getId());
 
         assertNotNull(topicDraftWithPoll.getPollTitle());
         assertNotNull(topicDraftWithPoll.getPollItemsValue());
@@ -125,5 +132,12 @@ public class TransactionalTopicDraftServiceTest {
         topicDraft.setId(1L);
 
         return topicDraft;
+    }
+
+    private Branch createBranch() {
+        Branch branch = new Branch("branch name", "branch description");
+        branch.setId(1L);
+        branch.setUuid("uuid");
+        return branch;
     }
 }

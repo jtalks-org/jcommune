@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.*;
-import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
@@ -23,6 +22,8 @@ import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
+import org.jtalks.jcommune.plugin.api.web.dto.PostDraftDto;
+import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
@@ -306,7 +307,7 @@ public class PostControllerTest {
 
     @Test
     public void testSaveDraft() throws Exception {
-        PostDto dto = getDto();
+        PostDraftDto dto = getPostDraftDto();
         Topic topic = new Topic();
         PostDraft  saved = new PostDraft("content", new JCUser("name", null, null));
         saved.setId(1);
@@ -324,14 +325,14 @@ public class PostControllerTest {
     public void saveDraftShouldReturnFailResponseIfValidationErrorsOccurred() throws Exception {
         when(result.hasErrors()).thenReturn(true);
 
-        JsonResponse response = controller.saveDraft(getDto(), result);
+        JsonResponse response = controller.saveDraft(getPostDraftDto(), result);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void saveDraftShouldThrowExceptionIfTopicNotFound() throws Exception {
-        PostDto dto = getDto();
+        PostDraftDto dto = getPostDraftDto();
 
         when(topicFetchService.getTopicSilently(dto.getTopicId())).thenThrow(new NotFoundException());
 
@@ -393,6 +394,13 @@ public class PostControllerTest {
     private PostDto getDto() {
         PostDto dto = new PostDto();
         dto.setId(POST_ID);
+        dto.setBodyText(POST_CONTENT);
+        dto.setTopicId(TOPIC_ID);
+        return dto;
+    }
+
+    private PostDraftDto getPostDraftDto() {
+        PostDraftDto dto = new PostDraftDto();
         dto.setBodyText(POST_CONTENT);
         dto.setTopicId(TOPIC_ID);
         return dto;

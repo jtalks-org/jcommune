@@ -59,14 +59,15 @@
      * Saves or update draft.
      *
      * @param draft object with content of draft topic
+     * @param branchId id of the branch in which topic will be created
      * @param async whether request is async (be default it is true)
      * @returns {$.Deferred}
      */
-    TopicDraftApi.prototype.save = function (draft, async) {
+    TopicDraftApi.prototype.save = function (draft, branchId, async) {
         async = async !== false;
 
         return $.ajax({
-            url: baseUrl + '/topics/draft',
+            url: baseUrl + '/topics/draft?branchId=' + branchId,
             type: 'POST',
             async: async,
             data: JSON.stringify(draft),
@@ -103,6 +104,7 @@
         this._content = $('#postBody');
         this._pollTitle = $('#pollTitle');
         this._pollItemsValue = $('#pollItems');
+        this._branchId = $('#branchId').val();
 
         this._lastSavedDraftState = this._getDraftState();
 
@@ -157,7 +159,7 @@
         async = async !== false;
 
         if (enoughData(draft) && this._validate()) {
-            return this._api.save(draft, async)
+            return this._api.save(draft, this._branchId, async)
                 .done(function () {
                     self._counter.restart();
                     self._savingTimer.stop();

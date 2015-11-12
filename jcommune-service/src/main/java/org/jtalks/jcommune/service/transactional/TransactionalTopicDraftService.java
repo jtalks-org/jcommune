@@ -51,8 +51,9 @@ public class TransactionalTopicDraftService implements TopicDraftService, Plugin
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("isAuthenticated()")
-    public TopicDraft saveOrUpdateDraft(TopicDraft draft) {
+    @PreAuthorize("hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_POSTS')" +
+            " or hasPermission(#branchId, 'BRANCH', 'BranchPermission.CREATE_CODE_REVIEW')")
+    public TopicDraft saveOrUpdateDraft(TopicDraft draft, Long branchId) {
         JCUser user = userService.getCurrentUser();
 
         TopicDraft currentDraft = topicDraftDao.getForUser(user);

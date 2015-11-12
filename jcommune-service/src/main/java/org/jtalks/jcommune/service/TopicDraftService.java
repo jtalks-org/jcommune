@@ -33,8 +33,9 @@ public interface TopicDraftService {
      * Save or update the draft topic.
      *
      * @param draft the draft topic
+     * @param branchId id of the branch in which topic will be created
      */
-    TopicDraft saveOrUpdateDraft(TopicDraft draft);
+    TopicDraft saveOrUpdateDraft(TopicDraft draft, Long branchId);
 
     /**
      * Delete the draft topic.
