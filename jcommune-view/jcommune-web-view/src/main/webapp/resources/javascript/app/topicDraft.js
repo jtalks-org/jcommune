@@ -129,7 +129,7 @@
             },
             pollItemsValue: {
                 group: this._pollItemsValue.parents('.control-group'),
-                error: error(this._pollItemsValue, '#topic\\.poll\\.pollItems')
+                error: error(this._pollItemsValue, '#topic\\.poll\\.pollItems\\.errors')
             }
         };
 
