@@ -40,21 +40,23 @@ $(function () {
         var footerContent = '<input  type="submit" id="signin-submit-button" value="' + $labelSignin + '" class="btn btn-primary" name="commit"/>';
 
         var submitDialog = function (e) {
-            if (e.keyCode == enterCode) {
-                //if focus on username then select password field
-                if ($(e.target).is('#userName')) {
+            if(e.which == enterCode) {
+                /*
+                 Simulate submit when enter pressed on "input" element in the internet explorer.
+
+                 Note: in internet explorer (specifically ie8) when you press "Enter" button on the item "input", does
+                 not cause an event "submit" of the form. If we move focus to the submit button and press "Enter" (when
+                 form fields filled with error), then press "Enter" in the next time on the input element ("username")
+                 will cause this event. But there is one comment: although visually focused will remain "username"
+                 field, but actually - form. Therefore, in the "isPreventSubmitFor($inputElement)" method will be passed
+                 an incorrect value. Consequently, the method will produce incorrect result.
+                 */
+                if($.browser.msie && $(e.target).is(':input')) {
                     e.preventDefault();
-                    if ($.browser.mozilla) {
-                        setTimeout(function () {
-                            jDialog.dialog.find('#password').focus();
-                        }, 0);
-                    }
-                    else {
-                        jDialog.dialog.find('#password').focus();
-                    }
+                    sendLoginPost(e);
                 }
             }
-            if ((e.keyCode || e.charCode) == escCode) {
+            if (e.which == escCode) {
                 jDialog.dialog.find('.close').click();
             }
         };
@@ -75,7 +77,8 @@ $(function () {
                 }}
 
             },
-            dialogKeydown: submitDialog
+            dialogKeydown: submitDialog,
+            preventSubmitInputElements: ['#userName']
         });
     });
 
@@ -111,29 +114,29 @@ $(function () {
 });
 
 function sendEmailConfirmation(recipient) {
-  $.ajax({
-          type: 'GET',
-          url: $root + '/confirm?id='+recipient,
-          success: function () {
-          var message = "";
-             if (resp.status == 'SUCCESS') {
+    $.ajax({
+        type: 'GET',
+        url: $root + '/confirm?id='+recipient,
+        success: function () {
+            var message = "";
+            if (resp.status == 'SUCCESS') {
                 message = $labelEmailConfirmationWasSent;
-              } else {
+            } else {
                 message = $labelError500Detail
-              }
-                jDialog.createDialog({
-                    type: jDialog.alertType,
-                    bodyMessage: $labelEmailConfirmationWasSent
-              });
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
+            }
             jDialog.createDialog({
-               type: jDialog.alertType,
-               bodyMessage: $labelError500Detail
-             });
-          }
-  });
-};
+                type: jDialog.alertType,
+                bodyMessage: $labelEmailConfirmationWasSent
+            });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            jDialog.createDialog({
+                type: jDialog.alertType,
+                bodyMessage: $labelError500Detail
+            });
+        }
+    });
+}
 
 /**
  * Handles submit request from login form by sending POST request, with params
@@ -143,7 +146,14 @@ function sendEmailConfirmation(recipient) {
  * get error message, providing user with opportunity to change login or password
  */
 function sendLoginPost(e) {
+    var $focusedInputElement = $('input:focus');
+    if(isPreventSubmitFor($focusedInputElement)) {
+        navigateToNext($focusedInputElement);
+        return false;
+    }
+
     e.preventDefault();
+
     var rememberMeElement = jDialog.dialog.find('input[name=_spring_security_remember_me]');
     var usernameElement = jDialog.dialog.find('#userName');
     var passwordElement = jDialog.dialog.find('#password');
@@ -211,4 +221,41 @@ function sendLoginPost(e) {
             });
         }
     });
-};
+}
+
+/**
+ * The method checks whether the passed argument is contained in the list of input elements for which
+ * should not be performed the submission. If he is in the list, returns true, otherwise false.
+ * @param $inputElement item being reviewed (jQuery wrapped).
+ * @returns {boolean}
+ */
+function isPreventSubmitFor($inputElement) {
+    var isPreventFormSubmit = false;
+    var preventSubmitInputElements =
+        jDialog.options.preventSubmitInputElements ? jDialog.options.preventSubmitInputElements : [];
+    for(var counter = 0; counter < preventSubmitInputElements.length; ++counter) {
+        var inputItem = preventSubmitInputElements[counter];
+        if($inputElement.is(inputItem)) {
+            isPreventFormSubmit = true;
+            break;
+        }
+    }
+    return isPreventFormSubmit;
+}
+
+/**
+ * The method moves focus to the next element (from the current focused input element), that is contained
+ * in the tabNavigation list.
+ * @param $focusedInputElement current focused input element (jQuery wrapped).
+ */
+function navigateToNext($focusedInputElement) {
+    for(var counter = 0; counter < jDialog.options.tabNavigation.length; ++counter) {
+        var tabNavigationItem = jDialog.options.tabNavigation[counter];
+        if($focusedInputElement.is(tabNavigationItem)) {
+            if(counter < jDialog.options.tabNavigation.length - 1) {
+                jDialog.dialog.find(jDialog.options.tabNavigation[counter + 1]).focus();
+            }
+            break;
+        }
+    }
+}

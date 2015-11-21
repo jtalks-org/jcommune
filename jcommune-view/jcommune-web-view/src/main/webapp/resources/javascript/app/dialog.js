@@ -322,7 +322,8 @@ $(function () {
         var tabNavigation = function (selectors) {
             $.each(selectors, function (idx, v) {
                 var func = function (e) {
-                    if ((e.keyCode || e.charCode) === tabCode) {
+                    //The "jQuery.which" property does not work on the "onkeypress" event in Firefox.
+                    if ((e.which || e.keyCode) === tabCode) {
                         e.preventDefault();
                         // to prevent infinite cycle if all element are not visible or do not exist
                         var skipCount = 0;
@@ -336,12 +337,22 @@ $(function () {
                             }
                             nextElement = jDialog.dialog.find(selectors[currentIndex]);
                             ++skipCount;
-                        } while ((nextElement.length === 0 || !nextElement.is(":visible"))
+                        } while ((nextElement.length === 0 || nextElement.is(":not(:visible)"))
                                  && skipCount <= selectors.length);
                         nextElement.focus();
                     }
                 };
-                $(v).on('keydown', func);
+
+                if($.browser.mozilla) {
+                    /*
+                    In Firefox overriding the "keydown" method with "event.preventDefault()" code inside, stops
+                    working autocomplete when pressing Tab (and another default behavior).
+                    Instead of overriding "keydown", you can use the "keypress" method.
+                     */
+                    $(v).on('keypress', func);
+                } else {
+                    $(v).on('keydown', func);
+                }
             });
         };
 
