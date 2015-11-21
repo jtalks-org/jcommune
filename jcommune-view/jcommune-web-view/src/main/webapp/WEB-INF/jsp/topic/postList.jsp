@@ -347,10 +347,9 @@
 <%--User can answer either if the topic is open, or he has a permission to close/open it--%>
 <c:if test="${(!topic.closed || hasCloseTopicPermission) && !topic.codeReview}">
   <input id="topicId" type="hidden" value="${topic.id}"/>
-  <input id="draftId" type="hidden" value="${postDto.id}"/>
   <c:if test="${postDto.id != 0}">
+    <input id="draftId" type="hidden" value="${postDto.id}"/>
     <input id="savedMillis" type="hidden" value="${postDto.creationDate.millis}"/>
-    <input id="differenceMillis" type="hidden" value="${postDto.differenceMillis}">
   </c:if>
   <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                         permission='BranchPermission.CREATE_POSTS'>

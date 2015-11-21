@@ -118,7 +118,7 @@ public class PostController {
 
     /**
      * Delete post by given id
-     * 
+     *
      * @param postId post
      * @return redirect to post next to deleted one. Redirects to previous post in case if it's last post in topic.
      * @throws NotFoundException when post was not found
@@ -259,8 +259,11 @@ public class PostController {
 
         PostDraft draft = topic.getDraftForUser(currentUser);
         if (draft != null) {
-            postDto = PostDto.getDtoFor(draft);
+            // If we create new dto object instead of using already existing
+            // we lose error messages linked with it
+            postDto.fillFrom(draft);
         }
+
         postDto.setTopicId(topicId);
         Page<Post> postsPage = postService.getPosts(topic, page);
 
