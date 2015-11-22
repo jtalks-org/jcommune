@@ -229,9 +229,9 @@ public class TopicControllerTest {
     @Test
     public void testSaveDraft() throws Exception {
         TopicDraft savedDraft = createTopicDraft();
-        when(topicDraftService.saveOrUpdateDraft(savedDraft, BRANCH_ID)).thenReturn(savedDraft);
+        when(topicDraftService.saveOrUpdateDraft(savedDraft)).thenReturn(savedDraft);
 
-        JsonResponse response = controller.saveDraft(savedDraft, BRANCH_ID, result);
+        JsonResponse response = controller.saveDraft(savedDraft, result);
 
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
         assertEquals((long) response.getResult(), savedDraft.getId());
@@ -241,7 +241,7 @@ public class TopicControllerTest {
     public void saveDraftShouldReturnFailResponseIfValidationErrorsOccurred() throws Exception {
         when(result.hasErrors()).thenReturn(true);
 
-        JsonResponse response = controller.saveDraft(createTopicDraft(), BRANCH_ID, result);
+        JsonResponse response = controller.saveDraft(createTopicDraft(), result);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
     }
@@ -453,7 +453,11 @@ public class TopicControllerTest {
     }
 
     private TopicDraft createTopicDraft() {
-        return new TopicDraft(user, "Topic theme", TOPIC_CONTENT);
+        TopicDraft topicDraft = new TopicDraft(user, "Topic theme", TOPIC_CONTENT);
+        topicDraft.setBranchId(BRANCH_ID);
+        topicDraft.setTopicType(TopicTypeName.DISCUSSION.getName());
+
+        return topicDraft;
     }
 
     private TopicDto getDto() {

@@ -15,13 +15,17 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.TopicDraftDao;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.TopicDraft;
+import org.jtalks.jcommune.model.entity.TopicTypeName;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.service.TopicDraftService;
 import org.jtalks.jcommune.service.UserService;
 import org.mockito.Mock;
+import org.springframework.security.access.PermissionEvaluator;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -41,6 +45,12 @@ public class TransactionalTopicDraftServiceTest {
     private UserService userService;
     @Mock
     private TopicDraftDao topicDraftDao;
+    @Mock
+    private SecurityContextFacade securityContextFacade;
+    @Mock
+    private PermissionEvaluator permissionEvaluator;
+    @Mock
+    private PluginLoader pluginLoader;
 
     private TopicDraftService topicDraftService;
 
@@ -53,7 +63,8 @@ public class TransactionalTopicDraftServiceTest {
         currentUser = new JCUser("current", null, null);
         when(userService.getCurrentUser()).thenReturn(currentUser);
 
-        topicDraftService = new TransactionalTopicDraftService(userService, topicDraftDao);
+        topicDraftService = new TransactionalTopicDraftService(userService,
+                topicDraftDao, securityContextFacade, permissionEvaluator, pluginLoader);
     }
 
     @Test
@@ -76,31 +87,25 @@ public class TransactionalTopicDraftServiceTest {
 
     @Test
     public void saveOrUpdateDraftShouldCreateNewDraftIfUserStillHasNoDraft() {
-        Branch branch = createBranch();
-
         when(topicDraftDao.getForUser(currentUser)).thenReturn(null);
 
-        TopicDraft topicDraft = topicDraftService.saveOrUpdateDraft(createTopicDraft(), branch.getId());
+        TopicDraft topicDraft = topicDraftService.saveOrUpdateDraft(createTopicDraft());
 
         verify(topicDraftDao).saveOrUpdate(topicDraft);
     }
 
     @Test
     public void saveOrUpdateDraftShouldUpdateDraftIfUserAlreadyHasOne() {
-        Branch branch = createBranch();
-
         TopicDraft topicDraft = createTopicDraft();
         when(topicDraftDao.getForUser(currentUser)).thenReturn(topicDraft);
 
-        topicDraftService.saveOrUpdateDraft(topicDraft, branch.getId());
+        topicDraftService.saveOrUpdateDraft(topicDraft);
 
         verify(topicDraftDao).saveOrUpdate(topicDraft);
     }
 
     @Test
     public void saveOrUpdateDraftShouldNotRewritePollFieldsWithNullValues() {
-        Branch branch = createBranch();
-
         TopicDraft topicDraftWithPoll = createTopicDraft();
         topicDraftWithPoll.setPollTitle(RandomStringUtils.random(5));
         topicDraftWithPoll.setPollItemsValue(RandomStringUtils.random(5));
@@ -111,7 +116,7 @@ public class TransactionalTopicDraftServiceTest {
         topicDraftWithoutPoll.setPollTitle(null);
         topicDraftWithoutPoll.setPollItemsValue(null);
 
-        topicDraftService.saveOrUpdateDraft(topicDraftWithoutPoll, branch.getId());
+        topicDraftService.saveOrUpdateDraft(topicDraftWithoutPoll);
 
         assertNotNull(topicDraftWithPoll.getPollTitle());
         assertNotNull(topicDraftWithPoll.getPollItemsValue());
@@ -128,8 +133,12 @@ public class TransactionalTopicDraftServiceTest {
     }
 
     private TopicDraft createTopicDraft() {
+        Branch branch = createBranch();
+
         TopicDraft topicDraft = new TopicDraft(currentUser, "title", "content");
         topicDraft.setId(1L);
+        topicDraft.setBranchId(branch.getId());
+        topicDraft.setTopicType(TopicTypeName.DISCUSSION.getName());
 
         return topicDraft;
     }

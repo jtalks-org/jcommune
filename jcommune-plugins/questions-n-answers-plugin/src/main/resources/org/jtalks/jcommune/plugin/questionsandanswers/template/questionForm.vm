@@ -44,6 +44,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         <input id="topicDraftLastSavedMillis" type="hidden" value="${topicDraft.lastSaved.millis}"/>
       #end
       <input id="branchId" type="hidden" value="${topicDto.topic.branch.id}"/>
+      <input id="topicType" type="hidden" value="${topicDto.topic.type}"/>
       <div class='control-group hide-on-preview'>
         <div class='controls'>
           #if(!${topicDto.topic.title})

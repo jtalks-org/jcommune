@@ -95,6 +95,7 @@ public class CodeReviewController {
 
         Branch branch = branchService.get(branchId);
         dto.getTopic().setBranch(branch);
+        dto.getTopic().setType(TopicTypeName.CODE_REVIEW.getName());
 
         return new ModelAndView(CODE_REVIEW_VIEW)
                 .addObject(TOPIC_DTO, dto)
@@ -118,6 +119,10 @@ public class CodeReviewController {
                                          BindingResult result,
                                          @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
+        Topic topic = topicDto.getTopic();
+        topic.setBranch(branch);
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
+
         if (result.hasErrors()) {
             return new ModelAndView(CODE_REVIEW_VIEW)
                     .addObject(TOPIC_DTO, topicDto)
@@ -125,9 +130,7 @@ public class CodeReviewController {
                     .addObject(SUBMIT_URL, "/reviews/new?branchId=" + branchId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
         }
-        Topic topic = topicDto.getTopic();
-        topic.setBranch(branch);
-        topic.setType(TopicTypeName.CODE_REVIEW.getName());
+
         Topic createdTopic = topicModificationService.createTopic(topic, topicDto.getBodyText());
 
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());

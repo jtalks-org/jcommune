@@ -12,32 +12,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service;
+package org.jtalks.jcommune.plugin.api.filters;
 
-import org.jtalks.jcommune.model.entity.TopicDraft;
+import org.apache.commons.lang.Validate;
+import org.jtalks.jcommune.plugin.api.core.Plugin;
+import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
+
+import java.util.Objects;
 
 /**
- * The interface to manipulate with draft topic of current user
- *
  * @author Dmitry S. Dolzhenko
  */
-public interface TopicDraftService {
-    /**
-     * Returns the draft topic for current user.
-     *
-     * @return the draft topic or null
-     */
-    TopicDraft getDraft();
+public class TopicTypeFilter implements PluginFilter {
 
-    /**
-     * Save or update the draft topic.
-     *
-     * @param draft the draft topic
-     */
-    TopicDraft saveOrUpdateDraft(TopicDraft draft);
+    private final String topicType;
 
-    /**
-     * Delete the draft topic.
-     */
-    void deleteDraft();
+    public TopicTypeFilter(String topicType) {
+        Validate.notEmpty(topicType, "Could not lookup plugin by empty topicType: [" + topicType + "]");
+
+        this.topicType = topicType;
+    }
+
+    @SuppressWarnings("SimplifiableIfStatement")
+    @Override
+    public boolean accept(Plugin plugin) {
+        if (!(plugin instanceof TopicPlugin)) {
+            return false;
+        }
+
+        return Objects.equals(topicType, ((TopicPlugin) plugin).getTopicType());
+    }
 }

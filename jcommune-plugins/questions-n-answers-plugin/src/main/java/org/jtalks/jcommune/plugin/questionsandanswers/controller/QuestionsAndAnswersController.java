@@ -118,6 +118,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
                 getPluginTopicDraftService().getDraft(), new TopicDraft());
 
         TopicDto dto = new TopicDto(draft);
+        dto.getTopic().setType(QuestionsAndAnswersPlugin.TOPIC_TYPE);
 
         Branch branch = getPluginBranchService().get(branchId);
         dto.getTopic().setBranch(branch);
@@ -153,6 +154,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Branch  branch = getPluginBranchService().get(branchId);
         Map<String, Object> data = getDefaultModel(request);
         topicDto.getTopic().setBranch(branch);
+        topicDto.getTopic().setType(QuestionsAndAnswersPlugin.TOPIC_TYPE);
         if (result.hasErrors()) {
             data.put(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
             data.put(TOPIC_DTO, topicDto);
@@ -160,7 +162,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
             return PLUGIN_VIEW_NAME;
         }
-        topicDto.getTopic().setType(QuestionsAndAnswersPlugin.TOPIC_TYPE);
         Topic createdQuestion = getTypeAwarePluginTopicService().createTopic(topicDto.getTopic(),
                 topicDto.getBodyText());
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + createdQuestion.getId();

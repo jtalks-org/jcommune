@@ -61,8 +61,11 @@ public final class PersistedObjectsFactory {
 
     public static TopicDraft getDefaultTopicDraft() {
         JCUser user = persist(ObjectsFactory.getDefaultUser());
+        Branch branch = persist(ObjectsFactory.getDefaultBranch());
         TopicDraft newTopicDraft = new TopicDraft(user,
                 RandomStringUtils.random(5), RandomStringUtils.random(15));
+        newTopicDraft.setTopicType(TopicTypeName.DISCUSSION.getName());
+        newTopicDraft.setBranchId(branch.getId());
         persist(newTopicDraft);
         return newTopicDraft;
     }

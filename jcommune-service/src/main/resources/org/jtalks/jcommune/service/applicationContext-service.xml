@@ -323,6 +323,9 @@
         class="org.jtalks.jcommune.service.transactional.TransactionalTopicDraftService">
     <constructor-arg ref="userService"/>
     <constructor-arg ref="topicDraftDao"/>
+    <constructor-arg ref="securityContextFacade"/>
+    <constructor-arg ref="aclGroupPermissionEvaluator"/>
+    <constructor-arg ref="pluginLoader"/>
   </bean>
 
   <bean id="bbCodeReviewProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.BbCodeReviewProcessor"/>

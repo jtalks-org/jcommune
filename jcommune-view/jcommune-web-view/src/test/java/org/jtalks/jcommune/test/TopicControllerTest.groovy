@@ -16,6 +16,7 @@ package org.jtalks.jcommune.test
 
 import groovy.json.JsonOutput
 import org.jtalks.common.model.permissions.BranchPermission
+import org.jtalks.jcommune.model.entity.TopicTypeName
 import org.jtalks.jcommune.model.utils.Branches
 import org.jtalks.jcommune.model.utils.Groups
 import org.jtalks.jcommune.test.utils.Users
@@ -111,29 +112,38 @@ class TopicControllerTest extends Specification {
         and: "User logged in"
             def session = users.signIn(user)
         when: 'User created draft topic'
-            def result = mockMvc.perform(post("/topics/draft?branchId=" + branch.getId())
+            def result = mockMvc.perform(post("/topics/draft")
                     .session(session as MockHttpSession)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonOutput.toJson([content: 'content'])))
+                    .content(JsonOutput.toJson([
+                        content: 'content',
+                        branchId: branch.getId(),
+                        topicType: TopicTypeName.DISCUSSION.name
+                    ])))
         then:
             result.andExpect(status().isOk())
                   .andExpect(jsonPath('$.status', is('SUCCESS')))
     }
 
-    def 'Creation of draft topic by user that has no permission to create posts should fail'() {
+    def 'Creation of code review draft topic by user that has permission to create only discussion topics should fail'() {
         given: 'User with username and password'
             def user = new User(username: "name", password: "pwd")
         and: 'Branch created'
             def branch = branches.create()
         and: "User registered and but has no permissions to create topics in current branch"
             users.create(user)
+            users.create(user).withPermissionOn(branch, BranchPermission.CREATE_POSTS);
         and: "User logged in"
             def session = users.signIn(user)
         when: 'User created draft topic'
-            def result = mockMvc.perform(post("/topics/draft?branchId=" + branch.getId())
+            def result = mockMvc.perform(post("/topics/draft")
                     .session(session as MockHttpSession)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(JsonOutput.toJson([content: 'content'])))
+                    .content(JsonOutput.toJson([
+                        content: 'content',
+                        branchId: branch.getId(),
+                        topicType: TopicTypeName.CODE_REVIEW.name
+                    ])))
         then:
             // TODO: check that AccessDeniedException has been thrown
             result.andExpect(status().isMovedTemporarily())

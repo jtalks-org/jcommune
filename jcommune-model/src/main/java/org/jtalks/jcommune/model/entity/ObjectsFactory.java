@@ -165,6 +165,8 @@ public final class ObjectsFactory {
 
         draft.setPollTitle(RandomStringUtils.random(5));
         draft.setPollItemsValue(RandomStringUtils.random(5) + "\n" + RandomStringUtils.random(5));
+        draft.setTopicType(TopicTypeName.DISCUSSION.getName());
+        draft.setBranchId(1L);
 
         return draft;
     }

@@ -153,6 +153,7 @@ public class TopicController {
 
         Branch branch = branchService.get(branchId);
         dto.getTopic().setBranch(branch);
+        dto.getTopic().setType(TopicTypeName.DISCUSSION.getName());
 
         return new ModelAndView(TOPIC_VIEW)
                 .addObject(TOPIC_DTO, dto)
@@ -175,7 +176,10 @@ public class TopicController {
     public ModelAndView createTopic(@Valid @ModelAttribute TopicDto topicDto,
                                     BindingResult result,
                                     @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+
         Branch branch = branchService.get(branchId);
+        topicDto.getTopic().setType(TopicTypeName.DISCUSSION.getName());
+
         if (result.hasErrors()) {
             TopicDraft topicDraft = ObjectUtils.defaultIfNull(
                     topicDraftService.getDraft(), new TopicDraft());
@@ -187,10 +191,12 @@ public class TopicController {
                     .addObject(SUBMIT_URL, "/topics/new?branchId=" + branchId)
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
         }
+
         Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
-        topic.setType(TopicTypeName.DISCUSSION.getName());
+
         Topic createdTopic = createTopicWithLockHandling(topic, topicDto);
+
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
     }
 
@@ -224,13 +230,12 @@ public class TopicController {
     @RequestMapping(value = "/topics/draft", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse saveDraft(@Valid @RequestBody TopicDraft topicDraft,
-                                  @RequestParam(BRANCH_ID) Long branchId,
                                   BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
 
-        topicDraft = topicDraftService.saveOrUpdateDraft(topicDraft, branchId);
+        topicDraft = topicDraftService.saveOrUpdateDraft(topicDraft);
 
         return new JsonResponse(JsonResponseStatus.SUCCESS, topicDraft.getId());
     }

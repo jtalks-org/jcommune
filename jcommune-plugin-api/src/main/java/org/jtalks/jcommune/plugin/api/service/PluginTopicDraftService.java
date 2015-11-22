@@ -31,9 +31,8 @@ public interface PluginTopicDraftService {
      * Save or update the draft topic.
      *
      * @param draft the draft topic
-     * @param branchId id of the branch in which topic will be created
      */
-    TopicDraft saveOrUpdateDraft(TopicDraft draft, Long branchId);
+    TopicDraft saveOrUpdateDraft(TopicDraft draft);
 
     /**
      * Delete the draft topic.
