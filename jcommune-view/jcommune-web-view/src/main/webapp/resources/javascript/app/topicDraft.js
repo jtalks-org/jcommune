@@ -212,6 +212,19 @@
     };
 
     /**
+     * Determines whether the field of the topic was changed from the last saving.
+     *
+     * @param fieldName the field name
+     * @returns {boolean} whether the field was changed
+     */
+    TopicDraft.prototype._fieldWasChanged = function (fieldName) {
+        var currentState = this._getDraftState(),
+            previousState = this._lastSavedDraftState;
+
+        return currentState[fieldName] !== previousState[fieldName];
+    };
+
+    /**
      * Validates content of the topic.
      * Note: it checks only that values is not more than specified maximum.
      *
@@ -227,12 +240,18 @@
         success &= validateStringField('content', MAX_CONTENT_LENGTH, CONTENT_ERROR_MESSAGE);
         success &= validateStringField('pollTitle', MAX_POLL_TITLE_LENGTH, POLL_TITLE_ERROR_MESSAGE);
 
+        function hideErrorIfFieldWasChanged(name) {
+            if (self._fieldWasChanged(name)) {
+                self._hideError(name);
+            }
+        }
+
         function validateStringField(name, max, message) {
             if (draft[name] && (draft[name].length > max)) {
                 self._showError(name, message);
                 return false;
             } else {
-                self._hideError(name);
+                hideErrorIfFieldWasChanged(name);
                 return true;
             }
         }
@@ -244,7 +263,7 @@
                 this._showError('pollItemsValue', POLL_ITEMS_VALUE_ERROR_MESSAGE);
                 success = false;
             } else {
-                this._hideError('pollItemsValue');
+                hideErrorIfFieldWasChanged('pollItemsValue');
             }
 
             if (success) {
@@ -257,11 +276,11 @@
                 if (!success) {
                     this._showError('pollItemsValue', POLL_ITEM_LENGTH_ERROR);
                 } else {
-                    this._hideError('pollItemsValue');
+                    hideErrorIfFieldWasChanged('pollItemsValue');
                 }
             }
         } else {
-            this._hideError('pollItemsValue');
+            hideErrorIfFieldWasChanged('pollItemsValue');
         }
 
         return success;
@@ -353,8 +372,10 @@
     TopicDraft.prototype._onKeyUp = function (event) {
         var self = this;
 
-        this._savingTimer.start();
-        this._validate();
+        if (this.wasChanged()) {
+            this._savingTimer.start();
+            this._validate();
+        }
 
         // Remove draft if user emptied content (for instance by Ctrl-A and Backspace)
         if (this._isEmpty()) {

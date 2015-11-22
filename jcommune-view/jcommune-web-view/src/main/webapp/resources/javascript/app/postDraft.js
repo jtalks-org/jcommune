@@ -225,8 +225,10 @@
     PostDraft.prototype._onKeyUp = function (event) {
         var self = this;
 
-        this._savingTimer.start();
-        this._validate();
+        if (this.wasChanged()) {
+            this._savingTimer.start();
+            this._validate();
+        }
 
         // Remove draft if user emptied content (for instance by Ctrl-A and Backspace)
         if ($(event.target).is(this._bodyText) && this._bodyText.val().length == 0) {
