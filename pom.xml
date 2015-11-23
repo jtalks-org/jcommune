@@ -625,7 +625,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <headerBaseDir>${basedir}</headerBaseDir>
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
-    <commonVersion>0.59</commonVersion>
+    <commonVersion>0.60</commonVersion>
     <isJsCompressed>true</isJsCompressed>
   </properties>
 
