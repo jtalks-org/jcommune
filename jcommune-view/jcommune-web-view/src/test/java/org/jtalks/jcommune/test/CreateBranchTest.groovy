@@ -30,9 +30,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.context.WebApplicationContext
 import spock.lang.Specification
 
 
@@ -97,7 +95,7 @@ class CreateBranchTest extends Specification {
           branches.create(branch, session)
         then: 'Validetion error occurs'
           def e = thrown(ValidationException)
-          [errorMessage].equals(e.defaultErrorMessages)
+          [errorMessage] == e.defaultErrorMessages
         and: 'Branch is not created'
           !branchService.isExist(branch.name)
         where:
@@ -116,7 +114,7 @@ class CreateBranchTest extends Specification {
           branches.create(branch, session)
         then: 'Validetion error occurs'
           def e = thrown(ValidationException)
-          [errorMessage].equals(e.defaultErrorMessages)
+          [errorMessage] == e.defaultErrorMessages
         and: 'Branch is not created'
           !branchService.isExist(branch.name)
         where:

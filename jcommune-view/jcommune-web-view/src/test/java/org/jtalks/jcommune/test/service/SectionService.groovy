@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.test.service
 
+import groovy.transform.CompileStatic
 import org.jtalks.jcommune.model.dao.SectionDao
 import org.jtalks.jcommune.test.model.Section
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,12 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired
 /**
  * @author Mikhail Stryzhonok
  */
+@CompileStatic
 class SectionService {
+    @Autowired SectionDao sectionDao;
 
-    @Autowired
-    private SectionDao sectionDao;
-
-    def createSection(Section section) {
+    org.jtalks.common.model.entity.Section createSection(Section section) {
         org.jtalks.common.model.entity.Section commonSection =
                 new org.jtalks.common.model.entity.Section(section.name, section.description)
         sectionDao.saveOrUpdate(commonSection);

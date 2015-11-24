@@ -1,5 +1,6 @@
 package org.jtalks.jcommune.test.utils
 
+import groovy.transform.CompileStatic
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.MockMvc
@@ -8,6 +9,7 @@ import org.springframework.web.context.WebApplicationContext
 
 import javax.servlet.Filter
 
+@CompileStatic
 class MockMvcFactoryBean implements FactoryBean<MockMvc> {
     @Autowired WebApplicationContext applicationContext
     @Autowired List<Filter> filters

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.test.utils
 
+import groovy.transform.CompileStatic
 import org.jtalks.jcommune.test.model.Branch
 import org.jtalks.jcommune.test.model.Section
 import org.jtalks.jcommune.test.service.ComponentService
@@ -32,13 +33,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 /**
  * @author Mikhail Stryzhonok
  */
+@CompileStatic
 class Branches {
     @Autowired MockMvc mockMvc
     @Autowired ComponentService componentService
     @Autowired SectionService sectionService
 
     def create(Branch branch, HttpSession session) {
-        def section = sectionService.createSection(new Section())
+        org.jtalks.common.model.entity.Section section = sectionService.createSection(new Section())
         def branchDto = new BranchDto()
         branchDto.name = branch.name
         branchDto.description = branch.description
