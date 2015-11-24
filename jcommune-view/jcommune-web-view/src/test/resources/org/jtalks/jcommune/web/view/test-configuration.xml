@@ -33,16 +33,14 @@
     <property name="sidFactory" ref="jtalksSidFactory"/>
   </bean>
 
-  <bean class="org.jtalks.jcommune.test.service.GroupsService"/>
-
+  <bean class="org.jtalks.jcommune.test.utils.Branches"/>
   <bean class="org.jtalks.jcommune.test.service.BranchService"/>
-
+  <bean class="org.jtalks.jcommune.test.service.GroupsService"/>
   <bean class="org.jtalks.jcommune.test.service.UserService"/>
-
   <bean class="org.jtalks.jcommune.test.service.ComponentService"/>
-
   <bean class="org.jtalks.jcommune.test.service.SectionService"/>
 
+  <bean id="mockMvc" class="org.jtalks.jcommune.test.utils.MockMvcFactoryBean"/>
   <!--We don't use FlywayWrapper here because we don't need to disable migrations and also FlywayWrapper is MySQL-oriented-->
   <bean id="flyway_jcommune_init" class="com.googlecode.flyway.core.Flyway"
         init-method="init">
@@ -60,7 +58,6 @@
 
   <bean id="modelAndViewUsers" class="org.jtalks.jcommune.test.utils.page.PageUsers"/>
   <bean id="jsonResponseUsers" class="org.jtalks.jcommune.test.utils.popup.PopUpUsers"/>
-  <bean class="org.jtalks.jcommune.test.utils.Branches"/>
 
   <!--We should override localeResolver here to use english messages in tests-->
   <bean id="localeResolver" class="org.jtalks.jcommune.plugin.api.web.locale.JcLocaleResolver"

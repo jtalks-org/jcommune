@@ -33,13 +33,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * @author Mikhail Stryzhonok
  */
 class Branches {
-
-    private MockMvc mockMvc
-
-    @Autowired
-    private ComponentService componentService
-    @Autowired
-    private SectionService sectionService
+    @Autowired MockMvc mockMvc
+    @Autowired ComponentService componentService
+    @Autowired SectionService sectionService
 
     def create(Branch branch, HttpSession session) {
         def section = sectionService.createSection(new Section())
