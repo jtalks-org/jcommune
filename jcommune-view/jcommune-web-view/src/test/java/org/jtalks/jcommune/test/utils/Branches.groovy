@@ -39,7 +39,7 @@ class Branches {
     @Autowired ComponentService componentService
     @Autowired SectionService sectionService
 
-    def create(Branch branch, HttpSession session) {
+    void create(Branch branch, HttpSession session) {
         org.jtalks.common.model.entity.Section section = sectionService.createSection(new Section())
         def branchDto = new BranchDto()
         branchDto.name = branch.name

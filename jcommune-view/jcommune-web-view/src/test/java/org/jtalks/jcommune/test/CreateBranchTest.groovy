@@ -23,6 +23,7 @@ import org.jtalks.jcommune.test.service.ComponentService
 import org.jtalks.jcommune.test.service.GroupsService
 import org.jtalks.jcommune.test.service.UserService
 import org.jtalks.jcommune.test.utils.Branches
+import org.jtalks.jcommune.test.utils.Users
 import org.jtalks.jcommune.test.utils.exceptions.ProcessingException
 import org.jtalks.jcommune.test.utils.exceptions.ValidationException
 import org.springframework.beans.factory.annotation.Autowired
@@ -57,6 +58,7 @@ class CreateBranchTest extends Specification {
     @Autowired Branches branches;
     @Autowired ComponentService componentService
     @Autowired UserService userService
+    @Autowired Users users
     @Autowired BranchService branchService
     @Autowired GroupsService groupsService
     @Autowired MockMvc mockMvc
@@ -73,7 +75,7 @@ class CreateBranchTest extends Specification {
           def user = new User()
           userService.create(user).withPermissionOn(forum, GeneralPermission.ADMIN)
         and: 'User signed in'
-          def session = userService.signIn(mockMvc, user)
+          def session = users.signIn(user)
         when: 'User creates branch'
           def branch = new Branch(name: branchName, description: branchDescription)
           branches.create(branch, session)
@@ -89,11 +91,11 @@ class CreateBranchTest extends Specification {
           def user = new User()
           userService.create(user).withPermissionOn(forum, GeneralPermission.ADMIN)
         and: 'User signed in'
-          def session = userService.signIn(mockMvc, user)
+          def session = users.signIn(user)
         when: 'User creates branch'
           def branch = new Branch(name: branchName)
           branches.create(branch, session)
-        then: 'Validetion error occurs'
+        then: 'Validtion error occurs'
           def e = thrown(ValidationException)
           [errorMessage] == e.defaultErrorMessages
         and: 'Branch is not created'
@@ -108,11 +110,11 @@ class CreateBranchTest extends Specification {
           def user = new User()
           userService.create(user).withPermissionOn(forum, GeneralPermission.ADMIN)
         and: 'User signed in'
-          def session = userService.signIn(mockMvc, user)
+          def session = users.signIn(user)
         when: 'User creates branch'
           def branch = new Branch(description: description)
           branches.create(branch, session)
-        then: 'Validetion error occurs'
+        then: 'Validation error occurs'
           def e = thrown(ValidationException)
           [errorMessage] == e.defaultErrorMessages
         and: 'Branch is not created'
@@ -123,10 +125,8 @@ class CreateBranchTest extends Specification {
     }
 
     def 'create branch should fail if user have no permissions'() {
-        given: 'User created and have no admin permission on forum'
-          def user = new User()
-        and: 'User signed in'
-          def session = userService.signIn(mockMvc, user)
+        given: 'User created, logged in and has no admin permission on forum'
+          def session = users.signUpAndSignIn(new User())
         when: 'User creates branch'
           def branch = new Branch()
           branches.create(branch, session)

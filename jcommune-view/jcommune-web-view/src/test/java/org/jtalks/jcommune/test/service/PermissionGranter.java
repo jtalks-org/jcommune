@@ -14,20 +14,22 @@
  */
 package org.jtalks.jcommune.test.service;
 
+import groovy.transform.CompileStatic;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.service.security.PermissionManager;
 
-import java.util.Arrays;
 import java.util.Collections;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @author Mikhail Stryzhonok
  */
+@CompileStatic
 public class PermissionGranter {
-
     private PermissionManager permissionManager;
     private Group group;
 
@@ -37,7 +39,8 @@ public class PermissionGranter {
     }
 
     public PermissionGranter withPermissionOn(Entity entity, JtalksPermission permission) {
-        PermissionChanges changes = new PermissionChanges(permission, Arrays.asList(group), Collections.EMPTY_LIST);
+        PermissionChanges changes = new PermissionChanges(permission,
+                newArrayList(group), Collections.<Group>emptyList());
         permissionManager.changeGrants(entity, changes);
         return this;
     }

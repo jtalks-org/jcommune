@@ -20,6 +20,7 @@ import org.jtalks.jcommune.test.service.GroupsService
 import org.jtalks.jcommune.test.service.UserService
 import org.jtalks.jcommune.test.utils.Users
 import org.jtalks.jcommune.test.model.User
+import org.springframework.beans.factory.annotation.Autowire
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.mock.web.MockHttpSession
@@ -62,9 +63,7 @@ class TopicControllerTest extends Specification {
     private WebApplicationContext ctx;
     @Autowired
     private BranchService branches;
-    @Autowired
-    @Qualifier("modelAndViewUsers")
-    private Users users;
+    @Autowired Users users;
     @Autowired
     private GroupsService groups;
     @Autowired
@@ -76,9 +75,6 @@ class TopicControllerTest extends Specification {
     List<Filter> filters;
 
     def setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(ctx).addFilters(
-                filters.toArray(new Filter[filters.size()])).build()
-        users.mockMvc = mockMvc
         groups.create()
     }
 
@@ -91,7 +87,7 @@ class TopicControllerTest extends Specification {
             userService.create(user).withPermissionOn(branch, BranchPermission.VIEW_TOPICS)
                     .withPermissionOn(branch, BranchPermission.CREATE_POSTS);
         and: "User logged in"
-            def session = userService.signIn(mockMvc, user)
+            def session = users.signIn(user)
         when: 'User creates topic'
             def result = mockMvc.perform(post("/topics/new").session(session as MockHttpSession)
                     .param("bodyText", "text")

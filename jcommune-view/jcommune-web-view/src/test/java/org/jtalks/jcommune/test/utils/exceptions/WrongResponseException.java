@@ -23,6 +23,7 @@ public class WrongResponseException extends Exception {
     private String actual;
 
     public WrongResponseException(String expected, String actual) {
+        super("Expected a view to be returned: [" + expected + "] but actual result: [" + actual + "]");
         this.expected = expected;
         this.actual = actual;
     }

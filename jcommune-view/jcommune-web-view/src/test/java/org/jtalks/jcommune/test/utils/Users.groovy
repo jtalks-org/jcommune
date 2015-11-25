@@ -28,9 +28,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * @author Mikhail Stryzhonok
  */
 abstract class Users {
-    @Autowired
-    UserDao userDao
-    MockMvc mockMvc
+    @Autowired UserDao userDao
+    @Autowired MockMvc mockMvc
 
     def signUpAndActivate(User user) throws Exception {
         singUp(user)
@@ -39,6 +38,11 @@ abstract class Users {
         mockMvc.perform(get('/user/activate/' + registered.uuid))
 
         return user.username;
+    }
+
+    HttpSession signUpAndSignIn(User user) {
+        signUpAndActivate(user)
+        signIn(user)
     }
 
     def abstract HttpSession signIn(User user)

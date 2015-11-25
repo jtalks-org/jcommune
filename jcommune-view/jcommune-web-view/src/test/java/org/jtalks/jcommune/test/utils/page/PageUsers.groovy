@@ -12,20 +12,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.test.utils.page;
+package org.jtalks.jcommune.test.utils.page
 
+import org.jtalks.jcommune.test.model.User
 import org.jtalks.jcommune.test.utils.Users
-import org.jtalks.jcommune.test.utils.assertions.Assert;
-import org.jtalks.jcommune.test.utils.exceptions.ValidationException;
-import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException;
-import org.jtalks.jcommune.test.model.User;
-import org.jtalks.jcommune.web.controller.UserController;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.validation.BindingResult;
+import org.jtalks.jcommune.test.utils.assertions.Assert
+import org.jtalks.jcommune.web.controller.UserController
+import org.springframework.test.web.servlet.MvcResult
+import org.springframework.validation.BindingResult
 
 import javax.servlet.http.HttpSession
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
 /**
  * @author Mikhail Stryzhonok
@@ -36,7 +34,7 @@ class PageUsers extends Users {
 
     @Override
     def HttpSession signIn(User user) {
-        def result = mockMvc.perform(post('/login')
+        def result = super.mockMvc.perform(post('/login')
                 .param('userName', user.username)
                 .param('password', user.password)
                 .param('referer', '/'))

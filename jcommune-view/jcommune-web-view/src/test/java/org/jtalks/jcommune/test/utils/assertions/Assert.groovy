@@ -51,14 +51,14 @@ class Assert {
         }
     }
 
-    static def assertView(MvcResult mvcResult, String expectedViewName) {
+    static void assertView(MvcResult mvcResult, String expectedViewName) {
         def mav = mvcResult.modelAndView
         if (!expectedViewName.equals(mav.viewName)) {
             throw new WrongResponseException(expectedViewName, mvcResult.modelAndView.viewName)
         }
     }
 
-    static def assertPageResult(MvcResult mvcResult, String bindingResultAttributeName) {
+    static void assertPageResult(MvcResult mvcResult, String bindingResultAttributeName) {
         def mav = mvcResult.modelAndView
         def result = mav.model.get(bindingResultAttributeName) as BindingResult
         if (result.hasErrors()) {

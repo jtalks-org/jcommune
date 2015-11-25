@@ -30,11 +30,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository
-import org.springframework.test.web.servlet.MockMvc
 
 import javax.servlet.http.HttpSession
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
 /**
  * @author Mikhail Stryzhonak
@@ -56,17 +53,7 @@ class UserService {
     @Autowired
     private EncryptionService encryptionService
 
-    def signIn(MockMvc mockMvc, User user) {
-        mockMvc.perform(post('/login')
-                .param('userName', user.username)
-                .param('password', user.password)
-                .param('referer', '/'))
-                .andReturn()
-                .request
-                .session
-    }
-
-    def create(User user) {
+    PermissionGranter create(User user) {
         def group = groupDao.getGroupByName(AdministrationGroup.USER.name)
         def fromDb = userDao.getByUsername(user.username)
         if (fromDb == null) {
@@ -97,13 +84,7 @@ class UserService {
         sessionStrategy.onAuthentication(auth, request, response)
     }
 
-
-
-
-
-
-
-    def boolean isActivated(String username) {
+    boolean isActivated(String username) {
         def user = userDao.getByUsername(username)
         if (user == null) {
             throw new IllegalArgumentException("User with name [${user.username}] not exist")
@@ -111,16 +92,15 @@ class UserService {
         return user.enabled;
     }
 
-    def boolean isExist(String username) {
+    boolean isExist(String username) {
         return userDao.getByUsername(username) != null
     }
 
-    def boolean isNotExist(String username) {
+    boolean isNotExist(String username) {
         return userDao.getByUsername(username) == null
     }
 
-    def boolean isAuthenticated(HttpSession session, User user) {
-
+    static boolean isAuthenticated(HttpSession session, User user) {
         //From Spring Security source code
         def context = session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)
 
