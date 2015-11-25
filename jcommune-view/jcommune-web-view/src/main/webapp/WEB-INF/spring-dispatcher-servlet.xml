@@ -29,6 +29,9 @@
   </context:component-scan>
 
   <mvc:annotation-driven/>
+  <bean class="org.jtalks.jcommune.plugin.api.web.PluginHandlerMapping" factory-method="getInstance">
+    <property name="pluginLoader" ref="pluginLoader"/>
+  </bean>
 
   <!-- Beans -->
   <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -72,11 +75,6 @@
     <!--Russian locale is set by default if nothing has been chosen by user-->
     <property name="defaultLocale" value="ru"/>
     <property name="userReader"  ref="userService"/>
-  </bean>
-
-  <bean id="handlerMapping"
-        class="org.jtalks.jcommune.plugin.api.web.PluginHandlerMapping" factory-method="getInstance">
-    <property name="pluginLoader" ref="pluginLoader"/>
   </bean>
 
   <!-- Interceptors -->

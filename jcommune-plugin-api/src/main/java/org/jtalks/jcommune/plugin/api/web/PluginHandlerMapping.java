@@ -28,7 +28,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.List;
@@ -37,12 +36,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Custom handler mapping. Needed to map plugin handlers separately from application handlers. It's necessary to allow
- * update handlers without application restart.
+ * update handlers without application restart. Default Spring {@code <mvc:annotation-driven />} still needs to be
+ * declared as usually - it will handle usual static controllers.
  *
  * @author Mikhail Stryzhonok
  */
 public class PluginHandlerMapping extends RequestMappingHandlerMapping {
-
     private static final PluginHandlerMapping INSTANCE = new PluginHandlerMapping();
     private final Map<MethodAwareKey, HandlerMethod> pluginHandlerMethods = new ConcurrentHashMap<>();
     private PluginLoader pluginLoader;
@@ -68,8 +67,6 @@ public class PluginHandlerMapping extends RequestMappingHandlerMapping {
     protected void registerHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
         if (PluginController.class.isAssignableFrom(method.getDeclaringClass())) {
             registerPluginHandlerMethod((PluginController)handler, method, mapping);
-        } else {
-            super.registerHandlerMethod(handler, method, mapping);
         }
     }
 
