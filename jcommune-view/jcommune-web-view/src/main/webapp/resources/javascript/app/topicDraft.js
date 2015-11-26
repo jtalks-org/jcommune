@@ -372,9 +372,8 @@
     TopicDraft.prototype._onKeyUp = function (event) {
         var self = this;
 
-        if (this.wasChanged()) {
-            this._savingTimer.start();
-            this._validate();
+        if (!this.wasChanged()) {
+            return;
         }
 
         // Remove draft if user emptied content (for instance by Ctrl-A and Backspace)
@@ -382,7 +381,11 @@
             this._api.remove().then(function () {
                 self._savingTimer.stop();
                 self._counter.stop();
+                self._lastSavedDraftState = self._getDraftState();
             });
+        } else {
+            this._savingTimer.start();
+            this._validate();
         }
     };
 
