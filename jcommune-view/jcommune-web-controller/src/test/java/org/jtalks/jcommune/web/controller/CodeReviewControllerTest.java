@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -27,6 +28,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -50,6 +52,8 @@ public class CodeReviewControllerTest {
     @Mock
     private TopicModificationService topicModificationService;
     @Mock
+    private TopicDraftService topicDraftService;
+    @Mock
     private LastReadPostService lastReadPostService;
     @Mock
     private UserService userService;
@@ -66,6 +70,7 @@ public class CodeReviewControllerTest {
                 branchService,
                 breadcrumbBuilder,
                 topicModificationService,
+                topicDraftService,
                 lastReadPostService,
                 userService,
                 postService);
@@ -73,7 +78,8 @@ public class CodeReviewControllerTest {
 
     @BeforeMethod
     public void prepareTestData() {
-        branch = new Branch("", "description");
+        branch = new Branch("namebranch", "description");
+        branch.setSection(new Section("namesection"));
         branch.setId(BRANCH_ID);
         user = new JCUser("username", "email@mail.com", "password");
     }
@@ -95,6 +101,24 @@ public class CodeReviewControllerTest {
         String submitUrl = assertAndReturnModelAttributeOfType(mav, "submitUrl", String.class);
         assertEquals(submitUrl, "/reviews/new?branchId=" + branchId);
         assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    @Test
+    public void showNewCodeReviewPageShouldShowDraft() throws NotFoundException {
+        Topic expectedTopic = createTopic();
+        TopicDraft expectedDraft = new TopicDraft(user, expectedTopic.getTitle(), expectedTopic.getBodyText());
+        when(topicDraftService.getDraft()).thenReturn(expectedDraft);
+
+        when(branchService.get(BRANCH_ID)).thenReturn(branch);
+        when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
+
+        ModelAndView mav = controller.showNewCodeReviewPage(BRANCH_ID);
+
+        TopicDto topicDto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
+
+        Topic topic = topicDto.getTopic();
+        assertEquals(topic.getTitle(), expectedDraft.getTitle());
+        assertEquals(topicDto.getBodyText(), expectedDraft.getContent());
     }
 
     @Test
@@ -127,12 +151,19 @@ public class CodeReviewControllerTest {
         //set expectations
         when(result.hasErrors()).thenReturn(true);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(breadcrumbBuilder.getForumBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
+        List<Breadcrumb> breadcrumbs = new BreadcrumbBuilder().getNewTopicBreadcrumb(branch);
+        when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(breadcrumbs);
 
         //invoke the object under test
         ModelAndView mav = controller.createCodeReview(getDto(), result, BRANCH_ID);
 
         //check result
+        List<Breadcrumb> breadcrumbsFromModel = (List) mav.getModel().get("breadcrumbList");
+        for (int i = 0; i < breadcrumbs.size(); i++) {
+            assertEquals(breadcrumbs.get(i).getValue(), breadcrumbsFromModel.get(i).getValue());
+        }
+        assertEquals(breadcrumbsFromModel.get(1).getValue(), branch.getSection().getName());
+        assertEquals(breadcrumbsFromModel.get(2).getValue(), branch.getName());
         assertViewName(mav, "codeReviewForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);

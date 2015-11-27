@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
@@ -69,6 +70,8 @@ public class TopicControllerTest {
     @Mock
     private TopicFetchService topicFetchService;
     @Mock
+    private TopicDraftService topicDraftService;
+    @Mock
     private PostService postService;
     @Mock
     private BranchService branchService;
@@ -86,6 +89,8 @@ public class TopicControllerTest {
     private EntityToDtoConverter converter;
 
     private TopicController controller;
+    @Mock
+    private BindingResult result;
 
     @BeforeMethod
     public void initEnvironment() {
@@ -100,12 +105,14 @@ public class TopicControllerTest {
                 locationService,
                 registry,
                 topicFetchService,
+                topicDraftService,
                 converter);
     }
 
     @BeforeMethod
     public void prepareTestData() {
         branch = new Branch("", "description");
+        branch.setSection(new Section("sectionname"));
         branch.setId(BRANCH_ID);
         user = new JCUser("username", "email@mail.com", "password");
     }
@@ -200,16 +207,50 @@ public class TopicControllerTest {
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors()).thenReturn(true);
         when(branchService.get(BRANCH_ID)).thenReturn(branch);
-        when(breadcrumbBuilder.getForumBreadcrumb(branch)).thenReturn(new ArrayList<Breadcrumb>());
+        List<Breadcrumb> breadcrumbs = new BreadcrumbBuilder().getNewTopicBreadcrumb(branch);
+        when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(breadcrumbs);
 
         ModelAndView mav = controller.createTopic(getDto(), result, BRANCH_ID);
 
         verify(branchService).get(BRANCH_ID);
         verify(breadcrumbBuilder).getNewTopicBreadcrumb(branch);
-        //
+
+        List<Breadcrumb> breadcrumbsFromModel = (List) mav.getModel().get("breadcrumbList");
+        for (int i = 0; i < breadcrumbs.size(); i++) {
+            assertEquals(breadcrumbs.get(i).getValue(), breadcrumbsFromModel.get(i).getValue());
+        }
+        assertEquals(breadcrumbsFromModel.get(1).getValue(), branch.getSection().getName());
+        assertEquals(breadcrumbsFromModel.get(2).getValue(), branch.getName());
         assertViewName(mav, "topic/topicForm");
         long branchId = assertAndReturnModelAttributeOfType(mav, "branchId", Long.class);
         assertEquals(branchId, BRANCH_ID);
+    }
+
+    @Test
+    public void testSaveDraft() throws Exception {
+        TopicDraft savedDraft = createTopicDraft();
+        when(topicDraftService.saveOrUpdateDraft(savedDraft)).thenReturn(savedDraft);
+
+        JsonResponse response = controller.saveDraft(savedDraft, result);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+        assertEquals((long) response.getResult(), savedDraft.getId());
+    }
+
+    @Test
+    public void saveDraftShouldReturnFailResponseIfValidationErrorsOccurred() throws Exception {
+        when(result.hasErrors()).thenReturn(true);
+
+        JsonResponse response = controller.saveDraft(createTopicDraft(), result);
+
+        assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
+    }
+
+    @Test
+    public void testDeleteDraft() {
+        controller.deleteDraft();
+
+        verify(topicDraftService).deleteDraft();
     }
 
     @Test
@@ -235,6 +276,22 @@ public class TopicControllerTest {
         assertEquals(branchId, BRANCH_ID,
                 "Topic template should be returned with the same branch id as passed to create new topic.");
         assertModelAttributeAvailable(mav, "breadcrumbList");
+    }
+
+    @Test
+    public void showNewTopicPageShouldShowDraft() throws NotFoundException {
+        Topic expectedTopic = createTopic();
+        TopicDraft expectedDraft = new TopicDraft(user, expectedTopic.getTitle(), expectedTopic.getBodyText());
+
+        when(topicDraftService.getDraft()).thenReturn(expectedDraft);
+
+        ModelAndView mav = controller.showNewTopicPage(BRANCH_ID);
+
+        TopicDto topicDto = assertAndReturnModelAttributeOfType(mav, "topicDto", TopicDto.class);
+
+        Topic topic = topicDto.getTopic();
+        assertEquals(topic.getTitle(), expectedDraft.getTitle());
+        assertEquals(topicDto.getBodyText(), expectedDraft.getContent());
     }
 
     @Test
@@ -393,6 +450,14 @@ public class TopicControllerTest {
         topic.setBranch(branch);
         topic.addPost(new Post(user, TOPIC_CONTENT));
         return topic;
+    }
+
+    private TopicDraft createTopicDraft() {
+        TopicDraft topicDraft = new TopicDraft(user, "Topic theme", TOPIC_CONTENT);
+        topicDraft.setBranchId(BRANCH_ID);
+        topicDraft.setTopicType(TopicTypeName.DISCUSSION.getName());
+
+        return topicDraft;
     }
 
     private TopicDto getDto() {

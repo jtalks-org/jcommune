@@ -275,12 +275,6 @@
     <td class="userinfo">
       <div>
         <p>
-          <spring:message var="onlineTip" code="label.tips.user_online"/>
-          <spring:message var="offlineTip" code="label.tips.user_offline"/>
-          <c:set var="online" value='<i class="icon-online" title="${onlineTip}"></i>'/>
-          <c:set var="offline" value='<i class="icon-offline" title="${offlineTip}"></i>'/>
-          <jtalks:ifContains collection="${usersOnline}" object="${post.userCreated}"
-                             successMessage="${online}" failMessage="${offline}"/>
           <a class='post-userinfo-username'
              href="${pageContext.request.contextPath}/users/${post.userCreated.id}"
              title="<spring:message code='label.tips.view_profile'/>">
@@ -353,10 +347,9 @@
 <%--User can answer either if the topic is open, or he has a permission to close/open it--%>
 <c:if test="${(!topic.closed || hasCloseTopicPermission) && !topic.codeReview}">
   <input id="topicId" type="hidden" value="${topic.id}"/>
-  <input id="draftId" type="hidden" value="${postDto.id}"/>
   <c:if test="${postDto.id != 0}">
-    <input id="savedMilis" type="hidden" value="${postDto.creationDate.millis}"/>
-    <input id="differenceMillis" type="hidden" value="${postDto.differenceMillis}">
+    <input id="draftId" type="hidden" value="${postDto.id}"/>
+    <input id="savedMillis" type="hidden" value="${postDto.creationDate.millis}"/>
   </c:if>
   <jtalks:hasPermission targetId='${topic.branch.id}' targetType='BRANCH'
                         permission='BranchPermission.CREATE_POSTS'>

@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.jcommune.model.entity.*;
-import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
@@ -23,6 +22,8 @@ import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
+import org.jtalks.jcommune.plugin.api.web.dto.PostDraftDto;
+import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
@@ -30,7 +31,6 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -77,8 +77,6 @@ public class PostControllerTest {
     @Mock
     private LocationService locationService;
     @Mock
-    private SessionRegistry sessionRegistry;
-    @Mock
     private EntityToDtoConverter converter;
     @Mock
     private HttpServletRequest request;
@@ -118,7 +116,7 @@ public class PostControllerTest {
 
         controller = new PostController(
                 postService, breadcrumbBuilder, topicFetchService, topicModificationService,
-                bbCodeService, lastReadPostService, userService, locationService, sessionRegistry, converter);
+                bbCodeService, lastReadPostService, userService, locationService, converter);
     }
 
     @Test
@@ -256,12 +254,9 @@ public class PostControllerTest {
     @Test
     public void testPostPreview() throws Exception {
         BeanPropertyBindingResult BindingResult = mock(BeanPropertyBindingResult.class);
-        when(userService.getCurrentUser()).thenReturn(user);
         ModelAndView mav = controller.preview(getDto(), BindingResult);
-        verify(userService, times(1)).getCurrentUser();
         assertViewName(mav, "ajax/postPreview");
         assertModelAttributeAvailable(mav, "errors");
-        assertModelAttributeAvailable(mav, "signature");
         assertModelAttributeAvailable(mav, "content");
         assertModelAttributeAvailable(mav, "isInvalid");
     }
@@ -312,7 +307,7 @@ public class PostControllerTest {
 
     @Test
     public void testSaveDraft() throws Exception {
-        PostDto dto = getDto();
+        PostDraftDto dto = getPostDraftDto();
         Topic topic = new Topic();
         PostDraft  saved = new PostDraft("content", new JCUser("name", null, null));
         saved.setId(1);
@@ -330,14 +325,14 @@ public class PostControllerTest {
     public void saveDraftShouldReturnFailResponseIfValidationErrorsOccurred() throws Exception {
         when(result.hasErrors()).thenReturn(true);
 
-        JsonResponse response = controller.saveDraft(getDto(), result);
+        JsonResponse response = controller.saveDraft(getPostDraftDto(), result);
 
         assertEquals(response.getStatus(), JsonResponseStatus.FAIL);
     }
 
     @Test(expectedExceptions = NotFoundException.class)
     public void saveDraftShouldThrowExceptionIfTopicNotFound() throws Exception {
-        PostDto dto = getDto();
+        PostDraftDto dto = getPostDraftDto();
 
         when(topicFetchService.getTopicSilently(dto.getTopicId())).thenThrow(new NotFoundException());
 
@@ -399,6 +394,13 @@ public class PostControllerTest {
     private PostDto getDto() {
         PostDto dto = new PostDto();
         dto.setId(POST_ID);
+        dto.setBodyText(POST_CONTENT);
+        dto.setTopicId(TOPIC_ID);
+        return dto;
+    }
+
+    private PostDraftDto getPostDraftDto() {
+        PostDraftDto dto = new PostDraftDto();
         dto.setBodyText(POST_CONTENT);
         dto.setTopicId(TOPIC_ID);
         return dto;

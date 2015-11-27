@@ -48,9 +48,9 @@ public class MentionedUsers {
     public static final String USER_WITH_LINK_TO_PROFILE_TEMPLATE = "[user=%s]%s[/user]";
     private static final Logger LOGGER = LoggerFactory.getLogger(MentionedUsers.class);
     private static final Pattern ALL_MENTIONED_USERS_PATTERN =
-            Pattern.compile("\\[user\\].*?\\[/user\\]|\\[user notified=true\\].*?\\[/user\\]");
+            Pattern.compile("\\[user\\].+?(\\[/user\\])+|\\[user notified=true\\].+?(\\[/user\\])+");
     private static final Pattern MENTIONED_AND_NOT_NOTIFIED_USERS_PATTERN =
-            Pattern.compile("\\[user\\].*?\\[/user\\]");
+            Pattern.compile("\\[user\\].+?(\\[/user\\])+");
     private static final String CLOSE_BRACKET_CODE_PLACEHOLDER = "@w0956756wo@";
     private static final String OPEN_BRACKET_CODE_PLACEHOLDER = "@ywdffgg434y@";
     private static final String SLASH_CODE_PLACEHOLDER = "14@123435vggv4f";
@@ -185,7 +185,12 @@ public class MentionedUsers {
             Set<String> mentionedUsernames = new HashSet<>();
             while (matcher.find()) {
                 String userBBCode = matcher.group();
-                String mentionedUser = userBBCode.replaceAll("\\[.*?\\]", StringUtils.EMPTY);
+                String mentionedUser;
+                if (userBBCode.contains("[user notified=true]")) {
+                    mentionedUser = StringUtils.substring(userBBCode, 20, userBBCode.length() - 7);
+                } else {
+                    mentionedUser = StringUtils.substring(userBBCode, 6, userBBCode.length() - 7);
+                }
                 mentionedUsernames.add(replacePlaceholdersWithChars(mentionedUser));
             }
             return mentionedUsernames;

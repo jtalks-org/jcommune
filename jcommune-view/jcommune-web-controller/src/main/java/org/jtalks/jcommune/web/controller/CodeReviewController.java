@@ -14,9 +14,8 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import org.jtalks.jcommune.model.entity.Branch;
-import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.model.entity.TopicTypeName;
+import org.apache.commons.lang3.ObjectUtils;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
@@ -46,12 +45,14 @@ public class CodeReviewController {
     public static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String SUBMIT_URL = "submitUrl";
     private static final String TOPIC_DTO = "topicDto";
+    private static final String TOPIC_DRAFT = "topicDraft";
     private static final String REDIRECT_URL = "redirect:/topics/";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     private BranchService branchService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicModificationService topicModificationService;
+    private TopicDraftService topicDraftService;
     private UserService userService;
 
     /**
@@ -66,12 +67,14 @@ public class CodeReviewController {
     public CodeReviewController(BranchService branchService,
                                 BreadcrumbBuilder breadcrumbBuilder,
                                 TopicModificationService topicModificationService,
+                                TopicDraftService topicDraftService,
                                 LastReadPostService lastReadPostService,
                                 UserService userService,
                                 PostService postService) {
         this.branchService = branchService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicModificationService = topicModificationService;
+        this.topicDraftService = topicDraftService;
         this.userService = userService;
     }
 
@@ -84,12 +87,19 @@ public class CodeReviewController {
      */
     @RequestMapping(value = "/reviews/new", method = RequestMethod.GET)
     public ModelAndView showNewCodeReviewPage(@RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
+
+        TopicDraft draft = ObjectUtils.defaultIfNull(
+                topicDraftService.getDraft(), new TopicDraft());
+
+        TopicDto dto = new TopicDto(draft);
+
         Branch branch = branchService.get(branchId);
-        Topic topic = new Topic();
-        topic.setBranch(branch);
-        TopicDto dto = new TopicDto(topic);
+        dto.getTopic().setBranch(branch);
+        dto.getTopic().setType(TopicTypeName.CODE_REVIEW.getName());
+
         return new ModelAndView(CODE_REVIEW_VIEW)
                 .addObject(TOPIC_DTO, dto)
+                .addObject(TOPIC_DRAFT, draft)
                 .addObject(BRANCH_ID, branchId)
                 .addObject(SUBMIT_URL, "/reviews/new?branchId=" + branchId)
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
@@ -109,16 +119,18 @@ public class CodeReviewController {
                                          BindingResult result,
                                          @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
+        Topic topic = topicDto.getTopic();
+        topic.setBranch(branch);
+        topic.setType(TopicTypeName.CODE_REVIEW.getName());
+
         if (result.hasErrors()) {
             return new ModelAndView(CODE_REVIEW_VIEW)
                     .addObject(TOPIC_DTO, topicDto)
                     .addObject(BRANCH_ID, branchId)
                     .addObject(SUBMIT_URL, "/reviews/new?branchId=" + branchId)
-                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
+                    .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
         }
-        Topic topic = topicDto.getTopic();
-        topic.setBranch(branch);
-        topic.setType(TopicTypeName.CODE_REVIEW.getName());
+
         Topic createdTopic = topicModificationService.createTopic(topic, topicDto.getBodyText());
 
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());

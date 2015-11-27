@@ -22,6 +22,7 @@ import com.google.code.kaptcha.util.Config;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.tools.generic.DateTool;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.velocity.VelocityEngineUtils;
@@ -52,6 +53,8 @@ public class KaptchaPluginService {
     private static final String BASE_URL = "baseUrl";
     private static final String FORM_ELEMENT_ID = "formElementId";
     private static final String PLUGIN_PREFIX = "plugin-";
+    private static final String DATE = "date";
+
     private Producer captchaProducer;
 
     public KaptchaPluginService(int width, int height, int length, String possibleSymbols) {
@@ -131,6 +134,7 @@ public class KaptchaPluginService {
         model.put(CAPTCHA_PLUGIN_ID, pluginId);
         model.put(FORM_ELEMENT_ID, getFormElementId(pluginId));
         model.put(BASE_URL, getDeploymentRootUrl(request));
+        model.put(DATE, new DateTool());
         return VelocityEngineUtils.mergeTemplateIntoString(
                 engine, "org/jtalks/jcommune/plugin/kaptcha/template/captcha.vm", "UTF-8", model);
     }

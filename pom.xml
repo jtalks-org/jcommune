@@ -5,7 +5,7 @@
   <groupId>org.jtalks.jcommune</groupId>
   <artifactId>jcommune</artifactId>
   <packaging>pom</packaging>
-  <version>3.2-SNAPSHOT</version>
+  <version>3.3-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <modules>
     <module>jcommune-model</module>
@@ -278,6 +278,18 @@
         <version>2.2.4</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>com.jayway.jsonpath</groupId>
+        <artifactId>json-path</artifactId>
+        <version>0.8.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.jayway.jsonpath</groupId>
+        <artifactId>json-path-assert</artifactId>
+        <version>0.8.1</version>
+        <scope>test</scope>
+      </dependency>
       <!--This dependency has classes to mock JNDI which we need in some tests.-->
       <dependency>
         <groupId>org.mockejb</groupId>
@@ -337,9 +349,9 @@
         <version>1.2.2</version>
       </dependency>
       <dependency>
-        <groupId>commons-lang</groupId>
-        <artifactId>commons-lang</artifactId>
-        <version>2.6</version>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.4</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -613,7 +625,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <headerBaseDir>${basedir}</headerBaseDir>
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
-    <commonVersion>0.59</commonVersion>
+    <commonVersion>0.60</commonVersion>
     <isJsCompressed>true</isJsCompressed>
   </properties>
 

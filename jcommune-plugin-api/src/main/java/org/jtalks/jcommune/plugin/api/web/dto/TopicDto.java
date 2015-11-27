@@ -14,9 +14,7 @@
  */
 package org.jtalks.jcommune.plugin.api.web.dto;
 
-import org.jtalks.jcommune.model.entity.Poll;
-import org.jtalks.jcommune.model.entity.Post;
-import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeAwareSize;
 import org.jtalks.jcommune.plugin.api.web.validation.annotations.BbCodeNesting;
 
@@ -60,6 +58,26 @@ public class TopicDto {
         if (!topic.getPosts().isEmpty()) {
             bodyText = topic.getBodyText();
         }
+    }
+
+    /**
+     * Create dto from {@link TopicDraft}
+     *
+     * @param topicDraft draft topic for conversion
+     */
+    public TopicDto(TopicDraft topicDraft) {
+        this.topic = new Topic(topicDraft.getTopicStarter(), topicDraft.getTitle());
+        this.setBodyText(topicDraft.getContent());
+
+        String pollTitle = topicDraft.getPollTitle();
+        String pollItemsValue = topicDraft.getPollItemsValue();
+
+        Poll poll = new Poll();
+        if (pollTitle != null || pollItemsValue != null) {
+            poll.setTitle(pollTitle);
+            poll.setPollItemsValue(pollItemsValue);
+        }
+        this.topic.setPoll(poll);
     }
 
     /**

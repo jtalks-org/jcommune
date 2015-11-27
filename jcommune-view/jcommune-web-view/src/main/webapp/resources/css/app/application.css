@@ -486,8 +486,20 @@ div.anchor {
     margin-left: 20px;
 }
 
-#signup-modal-dialog .captcha-images img {
+/*align captcha image with buttons on line, registration page/modal*/
+.captcha-images img  {
     vertical-align: middle;
+}
+
+.captcha-images  {
+    margin-bottom: 7px
+}
+
+/*union of registration page and modal captcha refresh button style*/
+.btn-captcha-refresh {
+    background: none;
+    border: none;
+    box-shadow: none;
 }
 
 div.signup {
@@ -581,6 +593,12 @@ div.signup {
 }
 
 .keymaps-caption {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 10px;
+    font-style: italic;
+}
+
+.topic-draft-counter {
     color: rgba(0, 0, 0, 0.6);
     font-size: 10px;
     font-style: italic;

@@ -324,8 +324,9 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         BindingResult jcErrors = new BeanPropertyBindingResult(registerUserDto, "newUser");
         validator.validate(registerUserDto, jcErrors);
         UserDto userDto = registerUserDto.getUserDto();
-        String encodedPassword = (userDto.getPassword() == null || userDto.getPassword().isEmpty()) ? ""
-                : encryptionService.encryptPassword(userDto.getPassword());
+        String notEncodedPassword = userDto.getPassword();
+        String encodedPassword = (notEncodedPassword == null || notEncodedPassword.isEmpty()) ? ""
+                : encryptionService.encryptPassword(notEncodedPassword);
         userDto.setPassword(encodedPassword);
         registerByPlugin(userDto, true, result);
         mergeValidationErrors(jcErrors, result);
@@ -336,7 +337,12 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             if (!result.hasErrors()) {
                 storeRegisteredUser(userDto);
             }
-        } 
+        }
+
+        if(result.hasErrors()) {
+            userDto.setPassword(notEncodedPassword);
+        }
+
         return result;
     }
 

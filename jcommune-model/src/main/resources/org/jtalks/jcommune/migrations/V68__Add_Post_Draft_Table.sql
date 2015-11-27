@@ -11,5 +11,7 @@ create table POST_DRAFT (
   constraint FK_USER_POST_DRAFT foreign key (USER_ID) references USERS (ID)
 )engine=InnoDb default charset='utf8' collate='utf8_bin';
 
-insert into POST_DRAFT (UUID, TOPIC_ID, USER_ID, CONTENT, LAST_SAVED)
-  SELECT (SELECT UUID() FROM dual), TOPIC_ID, USER_CREATED, POST_CONTENT, POST_DATE from POST where STATE='DRAFT';
+insert ignore into POST_DRAFT (UUID, TOPIC_ID, USER_ID, CONTENT, LAST_SAVED)
+  select (select UUID() from dual), TOPIC_ID, USER_CREATED, POST_CONTENT, POST_DATE from POST where STATE='DRAFT';
+
+delete from POST where STATE='DRAFT';

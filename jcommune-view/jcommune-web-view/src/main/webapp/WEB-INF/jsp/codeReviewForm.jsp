@@ -33,14 +33,16 @@
 
   <form:form action="${pageContext.request.contextPath}${submitUrl}"
              method="POST" modelAttribute="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
+    <input id="topicDraftLastSavedMillis" type="hidden" value="${topicDraft.lastSaved.millis}"/>
+    <input id="branchId" type="hidden" value="${branchId}"/>
+    <input id="topicType" type="hidden" value="${topicDto.topic.type}"/>
     <div class='control-group hide-on-preview'>
       <div class='controls'>
         <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
         <form:input path="topic.title" id="subject" type="text" name="subject" size="45"
                     maxlength="255" tabindex="100"
-                    class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
-        <form:errors path="topic.title" id="subjectError" type="text" name="subjectError" size="45"
-                     maxlength="255"
+                    class="full-width script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
+        <form:errors path="topic.title" type="text" size="45" maxlength="255"
                      class="post" cssClass="help-inline focusToError"/>
       </div>
     </div>
@@ -56,7 +58,7 @@
     </div>
 
     <input id="post" type="submit" class="btn btn-primary" accesskey="s" name="post" tabindex="300"
-           value="<spring:message code="label.save"/>"/>
+           value="<spring:message code="label.send"/>"/>
   </form:form>
 
   <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>

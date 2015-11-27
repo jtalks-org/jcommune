@@ -40,6 +40,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       <form action="${request.contextPath}/topics/question/new?branchId=${topicDto.topic.branch.id}"
            method="POST" id="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
     #end
+      #if(${topicDraft.lastSaved})
+        <input id="topicDraftLastSavedMillis" type="hidden" value="${topicDraft.lastSaved.millis}"/>
+      #end
+      <input id="branchId" type="hidden" value="${topicDto.topic.branch.id}"/>
+      <input id="topicType" type="hidden" value="${topicDto.topic.type}"/>
       <div class='control-group hide-on-preview'>
         <div class='controls'>
           #if(!${topicDto.topic.title})
@@ -50,7 +55,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
           #end
           <input name="topic.title" id="subject" type="text"  size="45"
             maxlength="255" tabindex="100"
-            class="span11 script-confirm-unsaved" placeholder="${messages.getString("label.question")}"
+            class="full-width script-confirm-unsaved" placeholder="${messages.getString("label.question")}"
             value="${esc.html(${topicDto.topic.title})}"/>
           #jtalksBinding(${result} "topic.title")
         </div>

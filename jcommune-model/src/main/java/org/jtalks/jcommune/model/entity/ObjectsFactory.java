@@ -14,9 +14,12 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.apache.commons.lang.math.RandomUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.joda.time.DateTime;
-import org.jtalks.common.model.entity.*;
+import org.jtalks.common.model.entity.Group;
+import org.jtalks.common.model.entity.Section;
+import org.jtalks.common.model.entity.User;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -43,7 +46,7 @@ public final class ObjectsFactory {
     }
 
     public static JCUser getRandomUser() {
-        return getUser("username" + RandomUtils.nextInt(10000), RandomUtils.nextInt(10000) + "username@mail.com");
+        return getUser("username" + RandomUtils.nextInt(0, 10000), RandomUtils.nextInt(0, 10000) + "username@mail.com");
     }
 
     public static JCUser getUser(String username, String email) {
@@ -155,6 +158,19 @@ public final class ObjectsFactory {
         return new Topic(getDefaultUser(), "title", "Discussion");
     }
 
+    public static TopicDraft getDefaultTopicDraft() {
+        TopicDraft draft = new TopicDraft(getDefaultUser(),
+                RandomStringUtils.random(5),
+                RandomStringUtils.random(15));
+
+        draft.setPollTitle(RandomStringUtils.random(5));
+        draft.setPollItemsValue(RandomStringUtils.random(5) + "\n" + RandomStringUtils.random(5));
+        draft.setTopicType(TopicTypeName.DISCUSSION.getName());
+        draft.setBranchId(1L);
+
+        return draft;
+    }
+
     public static Topic getTopic(JCUser author, int numberOfPosts) {
         Topic topic = new Topic(author, "some topic");
         for (int i = 0; i < numberOfPosts; i++) {
@@ -174,7 +190,6 @@ public final class ObjectsFactory {
         type.setIcon("/some/icon");
         type.setMask("12345");
         type.setDisplayPattern("protocol://" + UserContactType.CONTACT_MASK_PLACEHOLDER);
-        type.setValidationPattern("\\d+");
         return type;
     }
 
@@ -241,7 +256,7 @@ public final class ObjectsFactory {
      * @return group with random name and description
      */
     public static Group getRandomGroup() {
-        return new Group("group" + RandomUtils.nextInt(10000), "description" + RandomUtils.nextInt(10000));
+        return new Group("group" + RandomUtils.nextInt(0, 10000), "description" + RandomUtils.nextInt(0, 10000));
     }
 
     public static PostVote getDefaultPostVote() {
@@ -254,5 +269,4 @@ public final class ObjectsFactory {
         post.addComment(new PostComment());
         return post;
     }
-
 }

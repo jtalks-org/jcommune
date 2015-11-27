@@ -4,7 +4,7 @@
   <parent>
     <artifactId>jcommune-view</artifactId>
     <groupId>org.jtalks.jcommune</groupId>
-    <version>3.2-SNAPSHOT</version>
+    <version>3.3-SNAPSHOT</version>
   </parent>
   <artifactId>jcommune-web-controller</artifactId>
   <name>${project.artifactId}</name>
@@ -71,6 +71,10 @@
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>rome</groupId>

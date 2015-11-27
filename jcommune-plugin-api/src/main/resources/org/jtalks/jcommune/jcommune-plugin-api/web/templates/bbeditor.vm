@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #macro(jtalksBinding $result $path)
   ##works through magic
   #if($result.hasFieldErrors($path))
-    <span id="$id" class="help-inline"name="$id" type="text">
+    <span id="${path}.errors" class="help-inline" name="${path}.errors" type="text">
       $result.getFieldError($path).getDefaultMessage()
     </span>
   #end
@@ -103,7 +103,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
       <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
               title="<jcommune:message>label.answer.font_code</jcommune:message>">
-        <jcommune:message>label.answer.font_code</jcommune:message>
+        <jcommune:message>label.answer.font_code.button</jcommune:message>
         <span class="caret"></span>
       </a>
       <ul class="dropdown-menu" id='select_code'>
@@ -129,7 +129,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <div class='btn-group'>
       <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
          title="<jcommune:message>label.answer.indent</jcommune:message>">
-        <jcommune:message>label.answer.indent</jcommune:message>
+        <jcommune:message>label.answer.indent.button</jcommune:message>
       <span class="caret"></span>
       </a>
       <ul class="dropdown-menu" id='select_indent'>

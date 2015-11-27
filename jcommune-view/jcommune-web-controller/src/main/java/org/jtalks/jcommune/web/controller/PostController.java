@@ -22,6 +22,7 @@ import org.jtalks.jcommune.service.dto.EntityToDtoConverter;
 import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
+import org.jtalks.jcommune.plugin.api.web.dto.PostDraftDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
@@ -32,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -74,7 +74,6 @@ public class PostController {
     private BBCodeService bbCodeService;
     private UserService userService;
     private LocationService locationService;
-    private SessionRegistry sessionRegistry;
     private EntityToDtoConverter converter;
 
     /**
@@ -105,8 +104,7 @@ public class PostController {
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
                           TopicFetchService topicFetchService, TopicModificationService topicModificationService,
                           BBCodeService bbCodeService, LastReadPostService lastReadPostService,
-                          UserService userService, LocationService locationService, SessionRegistry sessionRegistry,
-                          EntityToDtoConverter converter) {
+                          UserService userService, LocationService locationService, EntityToDtoConverter converter) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicFetchService = topicFetchService;
@@ -115,13 +113,12 @@ public class PostController {
         this.lastReadPostService = lastReadPostService;
         this.userService = userService;
         this.locationService = locationService;
-        this.sessionRegistry = sessionRegistry;
         this.converter = converter;
     }
 
     /**
      * Delete post by given id
-     * 
+     *
      * @param postId post
      * @return redirect to post next to deleted one. Redirects to previous post in case if it's last post in topic.
      * @throws NotFoundException when post was not found
@@ -262,14 +259,16 @@ public class PostController {
 
         PostDraft draft = topic.getDraftForUser(currentUser);
         if (draft != null) {
-            postDto = PostDto.getDtoFor(draft);
+            // If we create new dto object instead of using already existing
+            // we lose error messages linked with it
+            postDto.fillFrom(draft);
         }
+
         postDto.setTopicId(topicId);
         Page<Post> postsPage = postService.getPosts(topic, page);
 
         return new ModelAndView("topic/postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
-                .addObject("usersOnline", sessionRegistry.getAllPrincipals())
                 .addObject("postsPage", postsPage)
                 .addObject("topic", topic)
                 .addObject(POST_DTO, postDto)
@@ -384,7 +383,7 @@ public class PostController {
     /**
      * Saves new draft or update if it already exist
      *
-     * @param postDto post dto populated in form
+     * @param postDraftDto post draft dto populated in form
      * @param result validation result
      *
      * @return response in JSON format
@@ -393,28 +392,28 @@ public class PostController {
      */
     @RequestMapping(value = "/posts/savedraft", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse saveDraft(@Valid @RequestBody PostDto postDto, BindingResult result) throws NotFoundException {
+    public JsonResponse saveDraft(@Valid @RequestBody PostDraftDto postDraftDto, BindingResult result) throws NotFoundException {
         if (result.hasErrors()) {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
-        Topic topic = topicFetchService.getTopicSilently(postDto.getTopicId());
-        PostDraft saved = postService.saveOrUpdateDraft(topic, postDto.getBodyText());
+        Topic topic = topicFetchService.getTopicSilently(postDraftDto.getTopicId());
+        PostDraft saved = postService.saveOrUpdateDraft(topic, postDraftDto.getBodyText());
         return new JsonResponse(JsonResponseStatus.SUCCESS, saved.getId());
     }
 
     /**
      * Deletes draft
      *
-     * @param postId id of draft to delete
+     * @param draftId id of draft to delete
      *
      * @return response in JSON format
      *
      * @throws NotFoundException if post with specified id not exist
      */
-    @RequestMapping(value = "drafts/{postId}/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "drafts/{draftId}/delete", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResponse deleteDraft(@PathVariable Long postId) throws NotFoundException {
-        postService.deleteDraft(postId);
+    public JsonResponse deleteDraft(@PathVariable Long draftId) throws NotFoundException {
+        postService.deleteDraft(draftId);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
@@ -424,8 +423,7 @@ public class PostController {
      * @return prepared ModelAndView for preview
      */
     private ModelAndView getPreviewModelAndView(BindingResult result) {
-        String signature = userService.getCurrentUser().getSignature();
-        return new ModelAndView("ajax/postPreview").addObject("signature", signature)
+        return new ModelAndView("ajax/postPreview")
                 .addObject("isInvalid", result.hasFieldErrors("bodyText"))
                 .addObject("errors", result.getFieldErrors("bodyText"));
     }

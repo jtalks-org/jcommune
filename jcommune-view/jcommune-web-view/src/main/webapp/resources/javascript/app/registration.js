@@ -29,9 +29,14 @@ $(function () {
     var captchaContainer = $('.registration-page');
     if (captchaContainer) {
 
-        captchaContainer.find('.captcha-refresh, .captcha-img').click(function (e) {
-            e.preventDefault();
-            refreshCaptchaJsp();
+        // add event handlers
+        captchaContainer.find('.captcha-img, .btn-captcha-refresh').on({
+            click: refreshCaptchaJsp,
+            keypress: function(e) {
+                if (isEnterKeyPressed(e)) {
+                    refreshCaptchaJsp();
+                }
+            }
         });
     }
 
@@ -71,8 +76,13 @@ function signUp(e) {
             Utils.createFormElement($labelPassword, 'password', 'password', null, widthStyle) +
             Utils.createFormElement($labelPasswordConfirmation, 'passwordConfirm', 'password', null, widthStyle) +
             Utils.createFormElement($lableHoneypotCaptcha, 'honeypotCaptcha', 'text', 'hide-element', widthStyle);
+        var widthStyleForPlugin = widthStyle.split(":");
         for (var pluginId in params) {
-            bodyContent += params[pluginId];
+            bodyContent += $(params[pluginId])
+                .find("input[id^='plugin']")
+                .css(widthStyleForPlugin[0], widthStyleForPlugin[1])
+                .end()
+                .prop("outerHTML");
         }
 
         var footerContent = '<button id="signup-submit-button" class="btn btn-primary btn-block" name="commit"> \
@@ -143,11 +153,11 @@ function signUp(e) {
                 footerContent: footerContent,
                 maxWidth: 400,
                 maxHeight: 600,
-                tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '.captcha',
-                                '#signup-submit-button', 'button.close'],
+                tabNavigation: ['#username', '#email', '#password', '#passwordConfirm', '.btn-captcha-refresh',
+                    '.captcha', '#signup-submit-button', 'button.close'],
                 handlers: {
                     '#signup-submit-button': {'click': submitFunc},
-                    '.captcha-refresh, .captcha-img': {'click' : refreshCaptcha}
+                    '.btn-captcha-refresh, .captcha-img': {'click' : refreshCaptcha, 'keydown': refreshCaptchaKeyHandler}
                 }
             });
         }
@@ -176,6 +186,16 @@ function refreshCaptchaJsp() {
     $('#form').find('.captcha').val('');
 }
 
+function isEnterKeyPressed(e) {
+    return e.keyCode && e.keyCode === enterCode;
+}
+
+function refreshCaptchaKeyHandler(e) {
+    if (isEnterKeyPressed(e)) {
+        refreshCaptcha();
+    }
+}
+
 /**
  * POST request query
  */
@@ -183,7 +203,7 @@ function composeQuery(signupDialog) {
     var query = 'userDto.username=' + encodeURIComponent(signupDialog.find('#username').val()) +
         '&userDto.password=' + encodeURIComponent(signupDialog.find('#password').val()) +
         '&passwordConfirm=' + encodeURIComponent(signupDialog.find('#passwordConfirm').val()) +
-        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val()) + 
+        '&userDto.email=' + encodeURIComponent(signupDialog.find('#email').val()) +
         '&honeypotCaptcha=' +encodeURIComponent(signupDialog.find('#honeypotCaptcha').val());
     signupDialog.find('.captcha').each(function() {
         query += '&userDto.captchas[' + $(this).attr('id') + ']=' + encodeURIComponent($(this).val());

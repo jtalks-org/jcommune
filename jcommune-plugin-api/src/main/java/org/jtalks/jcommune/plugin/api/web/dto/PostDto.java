@@ -193,4 +193,16 @@ public class PostDto {
         long differenceTime = currentDate.getMillis() - creationDate.getMillis();
         return differenceTime > 0 ? differenceTime : creationDate.getMillis();
     }
+
+    /**
+     * Fills this dto from draft
+     *
+     * @param draft draft to fill dto
+     */
+    public void fillFrom(PostDraft draft) {
+        this.setBodyText(draft.getContent());
+        this.setId(draft.getId());
+        this.setTopicId(draft.getTopic().getId());
+        this.setCreationDate(draft.getLastSaved());
+    }
 }

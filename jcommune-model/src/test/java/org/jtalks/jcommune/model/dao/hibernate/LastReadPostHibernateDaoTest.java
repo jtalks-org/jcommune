@@ -24,6 +24,7 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.LastReadPost;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng
         .AbstractTransactionalTestNGSpringContextTests;
@@ -82,6 +83,16 @@ public class LastReadPostHibernateDaoTest extends AbstractTransactionalTestNGSpr
 
         assertEquals(updatedPost.getPostCreationDate(), newPostDate,
                 "Update doesn't work, because field value didn't change.");
+    }
+
+    @Test(expectedExceptions = DataIntegrityViolationException.class)
+    public void saveOrUpdateShouldFailWhenSavingDuplicate() {
+        LastReadPost post = PersistedObjectsFactory.getDefaultLastReadPost();
+        session.save(post);
+
+        // Create entity with the same user_id and post_id
+        LastReadPost otherPost = new LastReadPost(post.getUser(), post.getTopic(), new DateTime());
+        lastReadPostDao.saveOrUpdate(otherPost);
     }
 
     @Test

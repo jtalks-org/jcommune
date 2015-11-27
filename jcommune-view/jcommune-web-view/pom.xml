@@ -4,7 +4,7 @@
   <parent>
     <artifactId>jcommune-view</artifactId>
     <groupId>org.jtalks.jcommune</groupId>
-    <version>3.2-SNAPSHOT</version>
+    <version>3.3-SNAPSHOT</version>
   </parent>
   <artifactId>jcommune-web-view</artifactId>
   <packaging>war</packaging>
@@ -123,6 +123,14 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.jayway.jsonpath</groupId>
+      <artifactId>json-path</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.jayway.jsonpath</groupId>
+      <artifactId>json-path-assert</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -144,7 +152,7 @@
           </execution>
         </executions>
         <configuration>
-          <targetGroups>main,pm,cr,post,user,plugin,topic,draft</targetGroups>
+          <targetGroups>main,pm,cr,post,user,plugin,topic,topicDraft,postDraft</targetGroups>
           <minimize>true</minimize>
           <destinationFolder>${basedir}/src/main/webapp/resources/wro</destinationFolder>
           <cssDestinationFolder>${basedir}/src/main/webapp/resources/wro</cssDestinationFolder>

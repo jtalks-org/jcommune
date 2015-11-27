@@ -29,7 +29,6 @@ public class UserContactType extends Entity {
     private String icon;
     private String mask;
     private String displayPattern;
-    private String validationPattern;
 
     /**
      * Only for hibernate usage.
@@ -95,20 +94,6 @@ public class UserContactType extends Entity {
      */
     public void setDisplayPattern(String displayPattern) {
         this.displayPattern = displayPattern;
-    }
-
-    /**
-     * @return the validation regexp of contact type
-     */
-    public String getValidationPattern() {
-        return validationPattern;
-    }
-
-    /**
-     * @param validationPattern validation regexp of contact type
-     */
-    public void setValidationPattern(String validationPattern) {
-        this.validationPattern = validationPattern;
     }
 
     /**

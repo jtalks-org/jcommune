@@ -14,6 +14,12 @@
  */
 
 $(document).ready(function () {
+    //avatar uploading handler
+    var fictiveButton = $("#upload").get(0);
+    if (!fictiveButton) {
+        return;
+    }
+
     //save form handler
     $('#saveChanges').click(function () {
         document.editProfileForm.submit();
@@ -71,7 +77,7 @@ $(document).ready(function () {
     }
 
     var uploader = new qq.FileUploaderBasic({
-        button: $("#upload").get(0),
+        button: fictiveButton,
         //server side uploading handler
         action: action,
         //
@@ -124,6 +130,54 @@ $(document).ready(function () {
         }
     });
 
+    /*
+     Hack to hide the tooltip of the element "input[type="file"]"
+
+     For the text of tooltips in the item "input[type=file]" meets the "title" attribute.
+     If it is empty, the tooltip does not appear. But there is a problem is that in different
+     browsers under empty means different (in some it is "", and in others it is " ").
+     Thus, once the tooltip can be removed in two ways:
+     1. replace the "title" attribute of element "input.
+     2. move element "input[type=file]" beyond the wrapper element (in our case it "a id='upload'")
+        to the hover event of the mouse cursor did not begin with the element "input". Further, the event "click"
+        of the element "input" to trigger using the event "click" of the wrapper element and its contained
+        elements.
+     The code below is an implementation of the second option.
+     */
+    uploader._button._options.onChange = function(input){
+        uploader._onInputChange(input);
+        $(fictiveButton).trigger("inputCreated");
+    };
+
+    function getRealButton(){
+        return $(uploader._button.getInput());
+    }
+
+    function realButtonSetup() {
+        getRealButton().css({width: '0', height: '0', top: '0%', right: '-30%', fontFamily: '', fontSize: ''});
+        getRealButton().attr("tabindex", -1);
+    }
+
+    function realButtonClick(){
+        getRealButton().trigger("click");
+    }
+
+    realButtonSetup();
+
+    $(fictiveButton).on("click", function(event){
+        if(event.target === this) {
+            realButtonClick();
+        }
+    });
+    $(fictiveButton).on("click", "i.icon-picture", function(event){
+        event.stopPropagation();
+        realButtonClick();
+    });
+    $(fictiveButton).on("inputCreated", function(){
+        $(this).mouseout();
+        realButtonSetup();
+    });
+    //---
 });
 
 /**
@@ -131,7 +185,7 @@ $(document).ready(function () {
  */
 function showAlt() {
     $(this).replaceWith(this.alt);
-};
+}
 
 /**
  * Remove the component and replace it with alternate text
@@ -141,5 +195,5 @@ function showAlt() {
  */
 function addShowAlt(selector) {
     $(selector).error(showAlt).attr("src", $(selector).src);
-};
+}
 

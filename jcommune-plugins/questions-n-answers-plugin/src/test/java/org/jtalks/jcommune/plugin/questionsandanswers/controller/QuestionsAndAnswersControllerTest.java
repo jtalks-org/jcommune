@@ -16,9 +16,11 @@ package org.jtalks.jcommune.plugin.questionsandanswers.controller;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.jtalks.common.model.entity.Entity;
+import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.service.*;
+import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.dto.json.*;
@@ -56,8 +58,11 @@ import static org.testng.Assert.assertTrue;
  * @author Mikhail Stryzhonok
  */
 public class QuestionsAndAnswersControllerTest {
+
     @Mock
     private PluginBranchService branchService;
+    @Mock
+    private PluginTopicDraftService topicDraftService;
     @Mock
     private PluginLastReadPostService lastReadPostService;
     @Mock
@@ -90,6 +95,7 @@ public class QuestionsAndAnswersControllerTest {
     public void init() {
         initMocks(this);
         when(controller.getPluginBranchService()).thenReturn(branchService);
+        when(controller.getPluginTopicDraftService()).thenReturn(topicDraftService);
         when(controller.getPluginLastReadPostService()).thenReturn(lastReadPostService);
         when(controller.getTypeAwarePluginTopicService()).thenReturn(topicService);
         when(controller.getPluginPostService()).thenReturn(postService);
@@ -150,6 +156,7 @@ public class QuestionsAndAnswersControllerTest {
     @Test
     public void createQuestionValidationErrorsTest() throws Exception {
         Branch branch = new Branch("name", "description");
+        branch.setSection(new Section("namesection"));
         Topic createdQuestion = new Topic();
         createdQuestion.setId(1);
         TopicDto topicDto = new TopicDto(new Topic());
@@ -158,9 +165,13 @@ public class QuestionsAndAnswersControllerTest {
 
         when(result.hasErrors()).thenReturn(true);
         when(branchService.get(anyLong())).thenReturn(branch);
+        List<Breadcrumb> breadcrumbs = new BreadcrumbBuilder().getNewTopicBreadcrumb(branch);
+        when(breadcrumbBuilder.getNewTopicBreadcrumb(branch)).thenReturn(breadcrumbs);
 
         String actual = controller.createQuestion(topicDto, result , model, 1L, request);
 
+        assertEquals(breadcrumbs.get(2).getValue(), branch.getName());
+        assertEquals(breadcrumbs.get(1).getValue(), branch.getSection().getName());
         assertEquals(actual, QuestionsAndAnswersController.PLUGIN_VIEW_NAME);
         assertEquals(model.asMap().get(QuestionsAndAnswersController.CONTENT), content);
     }

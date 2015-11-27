@@ -16,6 +16,7 @@ package org.jtalks.jcommune.plugin.questionsandanswers.controller;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.ByteStreams;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.VelocityException;
@@ -26,11 +27,7 @@ import org.jtalks.jcommune.plugin.api.service.*;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.BbToHtmlConverter;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.PluginLocationServiceImpl;
 import org.jtalks.jcommune.plugin.api.service.nontransactional.PropertiesHolder;
-import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginBranchService;
-import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginCommentService;
-import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginLastReadPostService;
-import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalPluginPostService;
-import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
+import org.jtalks.jcommune.plugin.api.service.transactional.*;
 import org.jtalks.jcommune.plugin.api.web.PluginController;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
@@ -77,6 +74,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     private static final String QUESTION_TEMPLATE_PATH = TEMPLATE_PATH + "question.vm";
     private static final String BREADCRUMB_LIST = "breadcrumbList";
     private static final String TOPIC_DTO = "topicDto";
+    private static final String TOPIC_DRAFT = "topicDraft";
     private static final String POST_DTO = "postDto";
     private static final String EDIT_MODE = "edit";
     private static final String RESULT = "result";
@@ -115,13 +113,20 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             throws NotFoundException {
         VelocityEngine engine = new VelocityEngine(getProperties());
         engine.init();
+
+        TopicDraft draft = ObjectUtils.defaultIfNull(
+                getPluginTopicDraftService().getDraft(), new TopicDraft());
+
+        TopicDto dto = new TopicDto(draft);
+        dto.getTopic().setType(QuestionsAndAnswersPlugin.TOPIC_TYPE);
+
         Branch branch = getPluginBranchService().get(branchId);
-        Topic topic = new Topic();
-        topic.setBranch(branch);
-        TopicDto dto = new TopicDto(topic);
+        dto.getTopic().setBranch(branch);
+
         Map<String, Object> data = getDefaultModel(request);
-        data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+        data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(dto.getTopic()));
         data.put(TOPIC_DTO, dto);
+        data.put(TOPIC_DRAFT, draft);
         data.put(EDIT_MODE, false);
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
@@ -149,14 +154,14 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Branch  branch = getPluginBranchService().get(branchId);
         Map<String, Object> data = getDefaultModel(request);
         topicDto.getTopic().setBranch(branch);
+        topicDto.getTopic().setType(QuestionsAndAnswersPlugin.TOPIC_TYPE);
         if (result.hasErrors()) {
-            data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(branch));
+            data.put(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
             data.put(TOPIC_DTO, topicDto);
             data.put(RESULT, result);
             model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
             return PLUGIN_VIEW_NAME;
         }
-        topicDto.getTopic().setType(QuestionsAndAnswersPlugin.TOPIC_TYPE);
         Topic createdQuestion = getTypeAwarePluginTopicService().createTopic(topicDto.getTopic(),
                 topicDto.getBodyText());
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + createdQuestion.getId();
@@ -381,8 +386,8 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      * @return redirect to the answer or back to answer page if validation failed
      * @throws NotFoundException when question or branch not found
      */
-    @RequestMapping(value = "{id}", method = RequestMethod.POST)
-    public String create(@PathVariable("id") Long questionId, @Valid @ModelAttribute PostDto postDto,
+    @RequestMapping(value = "{questionId}", method = RequestMethod.POST)
+    public String create(@PathVariable("questionId") Long questionId, @Valid @ModelAttribute PostDto postDto,
                                BindingResult result, Model model, HttpServletRequest request) throws NotFoundException {
         postDto.setTopicId(questionId);
         Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
@@ -661,6 +666,15 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      */
     PluginPostService getPluginPostService() {
         return TransactionalPluginPostService.getInstance();
+    }
+
+    /**
+     * Needed for mocking
+     *
+     * @return service for manipulating draft topics
+     */
+    PluginTopicDraftService getPluginTopicDraftService() {
+        return TransactionalPluginTopicDraftService.getInstance();
     }
 
     /**

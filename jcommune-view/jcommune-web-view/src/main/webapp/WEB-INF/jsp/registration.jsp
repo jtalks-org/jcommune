@@ -32,14 +32,14 @@
 
 <div class="container form-login-related registration-page">
   <form:form id="form" name="form" action='${pageContext.request.contextPath}/user/new'
-             modelAttribute="newUser" method="POST" class='form-vertical'>
+             modelAttribute="newUser" method="POST" class='form-vertical' tabindex="-1">
     <fieldset>
       <legend><spring:message code="label.fillmessage"/></legend>
       <div class="control-group">
         <span class="reg_info"><spring:message code="label.tip.username"/></span>
 
         <div class="controls">
-          <form:input path="userDto.username" class="reg_input" type="text"/>
+          <form:input path="userDto.username" class="reg_input" type="text" autofocus="autofocus" />
           <br/>
           <form:errors path="userDto.username" cssClass="help-inline"/>
         </div>

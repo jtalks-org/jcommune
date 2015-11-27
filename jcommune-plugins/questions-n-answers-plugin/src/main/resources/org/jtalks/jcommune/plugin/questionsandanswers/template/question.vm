@@ -121,18 +121,27 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #set($postClass = "")
       #set($postEditUrl = "")
       #set($postDeleteUrl = "")
+      #macro(voteTooltips $voteUpTooltipText $voteDownTooltipText)
+        #if(!${currentUser.anonymous})
+          #set($voteUpTooltip = $voteUpTooltipText)
+          #set($voteDownTooltip = $voteDownTooltipText)
+        #else
+          #set($voteUpTooltip = $messages.getString('label.vote.error.not.registered'))
+          #set($voteDownTooltip = $messages.getString('label.vote.error.not.registered'))
+        #end
+      #end
       #if($isFirstPost)
         #set($postClass = "question")
         #set($postEditUrl = "${request.contextPath}/topics/question/${question.id.longValue()}/edit")
         #set($postDeleteUrl = "${request.contextPath}/topics/${question.id.longValue()}")
-        #set($voteUpTooltip = $messages.getString('label.question.voteUp.tooltip'))
-        #set($voteDownTooltip = $messages.getString('label.question.voteDown.tooltip'))
+        #voteTooltips($messages.getString('label.question.voteUp.tooltip'),
+                      $messages.getString('label.question.voteDown.tooltip'))
       #else
         #set($postEditUrl = "${request.contextPath}/topics/question/post/${post.id.longValue()}/edit")
         #set($postDeleteUrl = "${request.contextPath}/topics/question/post/${post.id.longValue()}")
         #set($postClass = "answer")
-        #set($voteUpTooltip = $messages.getString('label.answer.voteUp.tooltip'))
-        #set($voteDownTooltip = $messages.getString('label.answer.voteDown.tooltip'))
+        #voteTooltips($messages.getString('label.answer.voteUp.tooltip'),
+                      $messages.getString('label.answer.voteDown.tooltip'))
       #end
       #if($velocityCount == 2)
         <div id="answerCounter">
@@ -244,15 +253,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     #if(!${postDto.bodyText})
       #set(${postDto.bodyText} = "")
     #end
+    <input id="topicId" type="hidden" value="${question.id}"/>
+    <input id="draftId" type="hidden" value="${postDto.id}"/>
+    #if(${postDto.id} != 0)
+        <input id="savedMillis" type="hidden" value="${postDto.creationDate.millis}"/>
+    #end
     <form id="answerForm" action="${request.contextPath}/topics/question/${question.id}"
           method="POST" class='well anti-multipost submit-form'>
       <form path="topicId"/>
-      <input id="topicId" type="hidden" value="${question.id}"/>
-      <input id="draftId" type="hidden" value="${postDto.id}"/>
-      #if(${postDto.id} != 0)
-        <input id="savedMilis" type="hidden" value="${postDto.creationDate.millis}"/>
-        <input id="differenceMillis" type="hidden" value="${postDto.differenceMillis}"/>
-      #end
       #bbeditor(${messages.getString($labelAnswerType)} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
     </form>
   #end

@@ -40,14 +40,16 @@
   </div>
   <form:form action="${pageContext.request.contextPath}${submitUrl}"
              method="POST" modelAttribute="topicDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
+    <input id="topicDraftLastSavedMillis" type="hidden" value="${topicDraft.lastSaved.millis}"/>
+    <input id="branchId" type="hidden" value="${branchId}"/>
+    <input id="topicType" type="hidden" value="${topicDto.topic.type}"/>
     <div class='control-group hide-on-preview'>
       <div class='controls'>
         <spring:message code='label.topic.topic_title' var='topicTitlePlaceholder'/>
         <form:input path="topic.title" id="subject" type="text" size="45"
                     maxlength="255" tabindex="100"
-                    class="span11 script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
-        <form:errors path="topic.title" id="subjectError" type="text" name="subjectError" size="45"
-                     maxlength="255"
+                    class="full-width script-confirm-unsaved" placeholder="${topicTitlePlaceholder}"/>
+        <form:errors path="topic.title" type="text" size="45" maxlength="255"
                      class="post" cssClass="help-inline focusToError"/>
       </div>
     </div>
@@ -74,7 +76,7 @@
         <form:errors path="topic.announcement"/>
       </div>
     </jtalks:hasPermission>
-    <jtalks:bbeditor labelForAction="label.save"
+    <jtalks:bbeditor labelForAction="${pollEditing ? 'label.save' : 'label.send'}"
                      postText="${topicDto.bodyText}"
                      bodyParameterName="bodyText"
                      back="${pageContext.request.contextPath}/branches/${branchId}"/>
@@ -138,9 +140,6 @@
     </c:if>
   </form:form>
 
-  <a href="${pageContext.request.contextPath}/branches/${branchId}" tabindex="1000" class='back-btn'>
-    <i class="icon-arrow-left"></i>
-    <spring:message code="label.back"/>
-  </a>
+
 </div>
 </body>
