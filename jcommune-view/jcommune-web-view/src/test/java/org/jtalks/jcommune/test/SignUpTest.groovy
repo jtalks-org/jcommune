@@ -14,11 +14,12 @@
  */
 package org.jtalks.jcommune.test
 
-import org.jtalks.jcommune.model.utils.Groups
+import org.jtalks.jcommune.test.service.GroupsService
+import org.jtalks.jcommune.test.service.UserService
 import org.jtalks.jcommune.test.utils.Users
 import org.jtalks.jcommune.test.utils.exceptions.ValidationException
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
-import org.jtalks.jcommune.test.utils.model.User
+import org.jtalks.jcommune.test.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
@@ -54,11 +55,13 @@ import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric
 abstract class SignUpTest extends Specification {
 
     @Autowired
-    private WebApplicationContext ctx;
+    private WebApplicationContext ctx
 
-    protected Users users;
+    protected Users users
     @Autowired
-    private Groups groups;
+    private GroupsService groups
+    @Autowired
+    private UserService userService
 
     @Resource(name = 'testFilters')
     List<Filter> filters;
@@ -79,16 +82,16 @@ abstract class SignUpTest extends Specification {
         when: 'User send registration request'
             def userName = users.singUp(new User())
         then: 'User created in database'
-            users.isExist(userName)
+            userService.isExist(userName)
     }
 
     def 'test sign up and activation'() {
         when: 'User send registration request and goes to activation link'
             def username = users.signUpAndActivate(new User())
         then: 'User created in database'
-            users.isExist(username)
+            userService.isExist(username)
         and: 'User activated'
-            users.isActivated(username)
+            userService.isActivated(username)
     }
 
     def 'registration should fail if honeypot captcha are filled'() {
@@ -99,7 +102,7 @@ abstract class SignUpTest extends Specification {
             def e = thrown(WrongResponseException)
             isNonDefaultFailParametersEquals(honeypotErrorResponse, e)
         and: 'User not created in database'
-            users.isNotExist(user.username)
+            userService.isNotExist(user.username)
     }
 
     def 'registration should fail if all fields are empty'() {
@@ -112,7 +115,7 @@ abstract class SignUpTest extends Specification {
                                                      'Must not be empty',
                                                      'Password length must be between 1 and 50 characters'])
         and: 'User not created in database'
-            users.isNotExist(username)
+            userService.isNotExist(username)
     }
 
     def 'registration with invalid username should fail'() {
@@ -122,7 +125,7 @@ abstract class SignUpTest extends Specification {
             def e = thrown(ValidationException)
             [errorMessage].equals(e.defaultErrorMessages)
         and: 'User not created in database'
-            users.isNotExist(username)
+            userService.isNotExist(username)
         where:
             username               |errorMessage                                            |caseName
             '   '                  |'Username length must be between 1 and 25 characters'   |'Username as spaces'
@@ -134,7 +137,7 @@ abstract class SignUpTest extends Specification {
         when: 'User send registration request with valid username'
             def name = users.singUp(new User(username: username))
         then: 'User created in database'
-            users.isExist(name)
+            userService.isExist(name)
         where:
             username                                                    |caseName
             randomAlphanumeric(14)                                      |'Length of username between 1 and 25'
@@ -153,7 +156,7 @@ abstract class SignUpTest extends Specification {
             def e = thrown(ValidationException)
             [errorMessage].equals(e.defaultErrorMessages)
         and: 'User not created in database'
-            users.isNotExist(user.username)
+            userService.isNotExist(user.username)
         where:
             email                                   |errorMessage                                   |caseName
             randomAlphanumeric(8) + '@' + 'jtalks'  |'An email format should be like mail@mail.ru'  |'Invalid email format'
@@ -164,7 +167,7 @@ abstract class SignUpTest extends Specification {
         when: 'User send registration request with valid password and confirmation'
             def username = users.singUp(new User(password: password, confirmation: password))
         then: 'User created in database'
-            users.isExist(username)
+            userService.isExist(username)
         where:
             password                |caseName
             randomAlphanumeric(49)  |'Valid password'
@@ -179,7 +182,7 @@ abstract class SignUpTest extends Specification {
             def e = thrown(ValidationException)
             [errorMessage].equals(e.defaultErrorMessages)
         and: 'User not created in database'
-            users.isNotExist(user.username)
+            userService.isNotExist(user.username)
         where:
             password                |errorMessage                                           |caseName
             ''                      |'Password length must be between 1 and 50 characters'  |'Password is empty'
@@ -195,7 +198,7 @@ abstract class SignUpTest extends Specification {
             def e = thrown(ValidationException)
             [errorMessage].equals(e.defaultErrorMessages)
         and: 'User not created in database'
-            users.isNotExist(user.username)
+            userService.isNotExist(user.username)
         where:
             password               |confirmation    |errorMessage                                       | caseName
             randomAlphanumeric(10) |''              |'Password and confirmation password do not match'  | 'Confirmation is empty'

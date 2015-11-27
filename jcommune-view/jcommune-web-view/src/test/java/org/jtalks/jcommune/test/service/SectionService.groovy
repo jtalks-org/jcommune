@@ -12,28 +12,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.test.utils.exceptions;
+package org.jtalks.jcommune.test.service
+
+import groovy.transform.CompileStatic
+import org.jtalks.jcommune.model.dao.SectionDao
+import org.jtalks.jcommune.test.model.Section
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class WrongResponseException extends Exception {
+@CompileStatic
+class SectionService {
+    @Autowired SectionDao sectionDao;
 
-    private String expected;
-    private String actual;
-
-    public WrongResponseException(String expected, String actual) {
-        super("Expected a view to be returned: [" + expected + "] but actual result: [" + actual + "]");
-        this.expected = expected;
-        this.actual = actual;
+    org.jtalks.common.model.entity.Section createSection(Section section) {
+        org.jtalks.common.model.entity.Section commonSection =
+                new org.jtalks.common.model.entity.Section(section.name, section.description)
+        sectionDao.saveOrUpdate(commonSection);
+        sectionDao.flush();
+        return commonSection;
     }
-
-    public Object getExpected() {
-        return expected;
-    }
-
-    public Object getActual() {
-        return actual;
-    }
-
 }

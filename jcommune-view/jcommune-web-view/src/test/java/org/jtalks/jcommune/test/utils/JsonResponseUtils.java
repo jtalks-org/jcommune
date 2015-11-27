@@ -30,12 +30,7 @@ public class JsonResponseUtils {
     private static  ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public static String jsonResponseToString(JsonResponse response) {
-        StringWriter writer = new StringWriter();
-        try {
-            OBJECT_MAPPER.writeValue(writer, response);
-        } finally {
-            return writer.toString();
-        }
+        return pojoToJsonString(response);
     }
 
     public static List<String> fetchErrorMessagesFromJsonString(String jsonString) {
@@ -47,11 +42,34 @@ public class JsonResponseUtils {
             return result;
         }
         JsonNode resultNode = rootNode.get("result");
-        if (resultNode.isArray()) {
+        if (resultNode != null && resultNode.isArray()) {
             for (JsonNode itemNode : resultNode) {
                 result.add(itemNode.get("defaultMessage").getTextValue());
             }
         }
         return result;
+    }
+
+    public static String searchMessageInResult(String jsonString) {
+        JsonNode rootNode;
+        try {
+            rootNode = OBJECT_MAPPER.readValue(jsonString, JsonNode.class);
+        } catch (IOException e) {
+            return null;
+        }
+        JsonNode resultNode = rootNode.get("result");
+        if (resultNode != null && resultNode.isTextual()) {
+            return resultNode.asText();
+        }
+        return null;
+    }
+
+    public static String pojoToJsonString(Object pojo) {
+        StringWriter writer = new StringWriter();
+        try {
+            OBJECT_MAPPER.writeValue(writer, pojo);
+        } finally {
+            return writer.toString();
+        }
     }
 }

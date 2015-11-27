@@ -12,28 +12,33 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.utils;
+package org.jtalks.jcommune.test.service
 
-import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jtalks.jcommune.model.dao.BranchDao
+import org.jtalks.jcommune.model.entity.Branch
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class Branches {
-
-    private static final Branches INSTANCE = new Branches();
+class BranchService {
 
     @Autowired
-    private BranchDao branchDao;
+    private BranchDao branchDao
 
-    public Branch create() {
-        Branch branch = new Branch("Branch name", "Description");
-        branchDao.saveOrUpdate(branch);
-        return branch;
+    def create() {
+        def branch = new Branch("Branch name", "Description")
+        branchDao.saveOrUpdate(branch)
+        return branch
     }
 
-
-
+    def isExist(String name) {
+        def branches = branchDao.getAllBranches()
+        for (def branch : branches) {
+            if (branch.name == name) {
+                return true;
+            }
+        }
+        return false
+    }
 }

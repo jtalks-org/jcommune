@@ -17,23 +17,14 @@ package org.jtalks.jcommune.test.utils.exceptions;
 /**
  * @author Mikhail Stryzhonok
  */
-public class WrongResponseException extends Exception {
+public class ProcessingException extends Exception {
+    private String defaultMessage;
 
-    private String expected;
-    private String actual;
+     public ProcessingException(String defaultMessage) {
+         this.defaultMessage = defaultMessage;
+     }
 
-    public WrongResponseException(String expected, String actual) {
-        super("Expected a view to be returned: [" + expected + "] but actual result: [" + actual + "]");
-        this.expected = expected;
-        this.actual = actual;
+    public String getDefaultMessage() {
+        return defaultMessage;
     }
-
-    public Object getExpected() {
-        return expected;
-    }
-
-    public Object getActual() {
-        return actual;
-    }
-
 }

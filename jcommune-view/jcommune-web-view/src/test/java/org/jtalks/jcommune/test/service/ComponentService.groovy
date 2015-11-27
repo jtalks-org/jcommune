@@ -12,28 +12,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.test.utils.exceptions;
+package org.jtalks.jcommune.test.service
+
+import org.jtalks.common.model.entity.Component
+import org.jtalks.common.model.entity.ComponentType
+import org.jtalks.jcommune.model.dao.ComponentDao
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class WrongResponseException extends Exception {
+class ComponentService {
 
-    private String expected;
-    private String actual;
+    @Autowired
+    private ComponentDao componentDao
 
-    public WrongResponseException(String expected, String actual) {
-        super("Expected a view to be returned: [" + expected + "] but actual result: [" + actual + "]");
-        this.expected = expected;
-        this.actual = actual;
+    def createForumComponent() {
+        def component = new Component("Forum", "Jtalks forum", ComponentType.FORUM)
+        componentDao.saveOrUpdate(component)
+        componentDao.flush()
+        return component
     }
-
-    public Object getExpected() {
-        return expected;
-    }
-
-    public Object getActual() {
-        return actual;
-    }
-
 }

@@ -12,19 +12,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.test.utils.page;
+package org.jtalks.jcommune.test.utils.page
 
-import org.jtalks.jcommune.test.utils.Users;
-import org.jtalks.jcommune.test.utils.exceptions.ValidationException;
-import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException;
-import org.jtalks.jcommune.test.utils.model.User;
-import org.jtalks.jcommune.web.controller.UserController;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.validation.BindingResult;
+import org.jtalks.jcommune.test.model.User
+import org.jtalks.jcommune.test.utils.Users
+import org.jtalks.jcommune.test.utils.assertions.Assert
+import org.jtalks.jcommune.web.controller.UserController
+import org.springframework.test.web.servlet.MvcResult
+import org.springframework.validation.BindingResult
 
 import javax.servlet.http.HttpSession
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
 /**
  * @author Mikhail Stryzhonok
@@ -35,13 +34,13 @@ class PageUsers extends Users {
 
     @Override
     def HttpSession signIn(User user) {
-        def result = mockMvc.perform(post('/login')
+        def result = super.mockMvc.perform(post('/login')
                 .param('userName', user.username)
                 .param('password', user.password)
                 .param('referer', '/'))
                 .andReturn()
 
-        assertView(result, "redirect:/")
+        Assert.assertView(result, "redirect:/")
         return result.request.session
     }
 
@@ -56,28 +55,13 @@ class PageUsers extends Users {
 
         MvcResult result = resultActions.andReturn();
         assertMvcResult(result)
-        assertView(result, UserController.AFTER_REGISTRATION)
+        Assert.assertView(result, UserController.AFTER_REGISTRATION)
         return user.username
     }
 
     @Override
     def void assertMvcResult(MvcResult mvcResult) {
-        def mav = mvcResult.modelAndView
-        def result = mav.model.get(BINDING_RESULT_ATTRIBUTE_NAME) as BindingResult
-        if (result.hasErrors()) {
-            def ex = new ValidationException()
-            for (def error in result.allErrors) {
-                ex.addDefaultErrorMessage(error.defaultMessage)
-            }
-            throw ex
-        }
+        Assert.assertPageResult(mvcResult, BINDING_RESULT_ATTRIBUTE_NAME)
     }
 
-    def void assertView(MvcResult mvcResult, String expectedViewName) {
-        def mav = mvcResult.modelAndView
-        if (!expectedViewName.equals(mav.viewName)) {
-            throw new WrongResponseException(UserController.AFTER_REGISTRATION,
-                    mvcResult.modelAndView.viewName)
-        }
-    }
 }

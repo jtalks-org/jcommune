@@ -12,28 +12,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.test.utils.exceptions;
+package org.jtalks.jcommune.test.service;
+
+import org.jtalks.common.model.entity.Group;
+import org.jtalks.jcommune.model.dao.GroupDao;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class WrongResponseException extends Exception {
+public class GroupsService {
 
-    private String expected;
-    private String actual;
+    @Autowired
+    private GroupDao groupDao;
 
-    public WrongResponseException(String expected, String actual) {
-        super("Expected a view to be returned: [" + expected + "] but actual result: [" + actual + "]");
-        this.expected = expected;
-        this.actual = actual;
+    public void create() {
+        groupDao.saveOrUpdate(new Group(AdministrationGroup.ADMIN.getName()));
+        groupDao.saveOrUpdate(new Group(AdministrationGroup.BANNED_USER.getName()));
+        groupDao.saveOrUpdate(new Group(AdministrationGroup.USER.getName()));
     }
-
-    public Object getExpected() {
-        return expected;
-    }
-
-    public Object getActual() {
-        return actual;
-    }
-
+    
 }
