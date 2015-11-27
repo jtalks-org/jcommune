@@ -16,10 +16,11 @@ package org.jtalks.jcommune.test.utils.popup;
 
 import org.jtalks.jcommune.test.utils.Users;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus
+import org.jtalks.jcommune.test.utils.assertions.Assert;
 import org.jtalks.jcommune.test.utils.exceptions.ValidationException;
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException;
-import org.jtalks.jcommune.test.utils.model.User;
+import org.jtalks.jcommune.test.model.User;
 import org.springframework.test.web.servlet.MvcResult;
 
 import javax.servlet.http.HttpSession;
@@ -46,19 +47,7 @@ class PopUpUsers extends Users {
 
     @Override
     def void assertMvcResult(MvcResult result) {
-        def response = result.response.contentAsString
-        if(!jsonResponseToString(new JsonResponse(JsonResponseStatus.SUCCESS)).equals(response)
-                && response != null) {
-            def defaultErrorMessages = fetchErrorMessagesFromJsonString(response)
-            if (defaultErrorMessages.empty) {
-                throw new WrongResponseException(jsonResponseToString(new JsonResponse(JsonResponseStatus.SUCCESS)),
-                        response)
-            } else {
-                def e = new ValidationException()
-                e.addAllDefaultErrorMessages(defaultErrorMessages)
-                throw e
-            }
-        }
+        Assert.assertJsonResponseResult(result)
     }
 
     @Override
@@ -68,7 +57,7 @@ class PopUpUsers extends Users {
                 .param('userDto.email', user.email)
                 .param('userDto.password', user.password)
                 .param('passwordConfirm', user.confirmation)
-                .param('honeypotCaptcha', user.honeypot)).andReturn();
+                .param('honeypotCaptcha', user.honeypot)).andReturn()
 
         assertMvcResult(result)
         return user.username

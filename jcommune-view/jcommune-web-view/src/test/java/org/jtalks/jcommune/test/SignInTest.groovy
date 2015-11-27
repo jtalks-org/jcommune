@@ -14,10 +14,11 @@
  */
 package org.jtalks.jcommune.test
 
-import org.jtalks.jcommune.model.utils.Groups
+import org.jtalks.jcommune.test.service.GroupsService
+import org.jtalks.jcommune.test.service.UserService
 import org.jtalks.jcommune.test.utils.Users
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
-import org.jtalks.jcommune.test.utils.model.User
+import org.jtalks.jcommune.test.model.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
@@ -36,17 +37,7 @@ import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic
  * @author Mikhail Stryzhonok
  */
 @WebAppConfiguration
-@ContextConfiguration(locations = [
-        'classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml',
-        'classpath:/org/jtalks/jcommune/model/entity/applicationContext-properties.xml',
-        'classpath:/org/jtalks/jcommune/service/applicationContext-service.xml',
-        'classpath:/org/jtalks/jcommune/service/security-service-context.xml',
-        'classpath:/org/jtalks/jcommune/service/email-context.xml',
-        'classpath:/org/jtalks/jcommune/web/applicationContext-controller.xml',
-        'classpath:security-context.xml',
-        'classpath:spring-dispatcher-servlet.xml',
-        'classpath:/org/jtalks/jcommune/web/view/test-configuration.xml'
-])
+@ContextConfiguration(locations = 'classpath:/org/jtalks/jcommune/web/view/test-configuration.xml')
 @TransactionConfiguration(transactionManager = 'transactionManager', defaultRollback = true)
 @Transactional
 abstract class SignInTest extends Specification {
@@ -56,7 +47,9 @@ abstract class SignInTest extends Specification {
 
     protected Users users
     @Autowired
-    private Groups groups
+    private GroupsService groups
+    @Autowired
+    private UserService userService
 
     @Resource(name = 'testFilters')
     List<Filter> filters
@@ -70,7 +63,7 @@ abstract class SignInTest extends Specification {
     def 'Sign in without activation registration should fail'() {
         given: 'User is registered and not activated'
             def user = new User()
-            users.singUp(user)
+            userService.createNotActivated(user)
         when: 'User tries to log in'
             users.signIn(user)
         then: 'Wrong response exception is thrown'
@@ -80,11 +73,11 @@ abstract class SignInTest extends Specification {
     def 'Sign in success scenarios'() {
         given: 'User with username and password registered and activated'
             def user = new User(username: username, password: password)
-            users.create(user)
+            userService.create(user)
         when: caseName
             def session = users.signIn(user)
         then: 'User becomes logged in'
-            users.isAuthenticated(session, user)
+            userService.isAuthenticated(session, user)
         where:
         username            |password               |caseName
         randomAlphabetic(25)| randomAlphabetic(50)  |'Username and password valid'
@@ -93,7 +86,7 @@ abstract class SignInTest extends Specification {
     def 'Sign in fail scenarios'() {
         given: 'User with username and password registered and activated'
             def user = new User(username: usernameForCreation, password: passwordForCreation)
-            users.create(user)
+            userService.create(user)
         when: caseName
             user.username = usernameForSignIn
             user.password = passwordForSignIn

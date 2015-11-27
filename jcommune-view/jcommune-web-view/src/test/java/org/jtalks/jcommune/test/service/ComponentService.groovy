@@ -12,28 +12,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.model.utils;
+package org.jtalks.jcommune.test.service
 
-import org.jtalks.jcommune.model.dao.BranchDao;
-import org.jtalks.jcommune.model.entity.Branch;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jtalks.common.model.entity.Component
+import org.jtalks.common.model.entity.ComponentType
+import org.jtalks.jcommune.model.dao.ComponentDao
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class Branches {
-
-    private static final Branches INSTANCE = new Branches();
+class ComponentService {
 
     @Autowired
-    private BranchDao branchDao;
+    private ComponentDao componentDao
 
-    public Branch create() {
-        Branch branch = new Branch("Branch name", "Description");
-        branchDao.saveOrUpdate(branch);
-        return branch;
+    def createForumComponent() {
+        def component = new Component("Forum", "Jtalks forum", ComponentType.FORUM)
+        componentDao.saveOrUpdate(component)
+        componentDao.flush()
+        return component
     }
-
-
-
 }

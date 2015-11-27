@@ -12,28 +12,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.test.utils.exceptions;
+package org.jtalks.jcommune.test.model
+
+import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic
+
 
 /**
  * @author Mikhail Stryzhonok
  */
-public class WrongResponseException extends Exception {
-
-    private String expected;
-    private String actual;
-
-    public WrongResponseException(String expected, String actual) {
-        super("Expected a view to be returned: [" + expected + "] but actual result: [" + actual + "]");
-        this.expected = expected;
-        this.actual = actual;
-    }
-
-    public Object getExpected() {
-        return expected;
-    }
-
-    public Object getActual() {
-        return actual;
-    }
-
+class User {
+    String username = randomAlphabetic(25)
+    String email = randomAlphabetic(40) + "@sample.ru"
+    String password = randomAlphabetic(50)
+    String confirmation = password
+    String honeypot = ""
 }

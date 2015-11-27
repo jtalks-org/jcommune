@@ -12,18 +12,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.test.utils.model
+package org.jtalks.jcommune.test.model
 
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic
-
 
 /**
  * @author Mikhail Stryzhonok
  */
-class User {
-    String username = randomAlphabetic(25)
-    String email = randomAlphabetic(40) + "@sample.ru"
-    String password = randomAlphabetic(50)
-    String confirmation = password
-    String honeypot = ""
+class Section {
+    String name = randomAlphabetic(80)
+    String description = randomAlphabetic(255)
 }
