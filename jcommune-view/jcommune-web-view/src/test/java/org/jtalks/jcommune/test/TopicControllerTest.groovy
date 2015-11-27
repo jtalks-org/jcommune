@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.entity.Branch
 import org.jtalks.jcommune.model.entity.TopicTypeName
 import org.jtalks.jcommune.test.model.User
 import org.jtalks.jcommune.test.service.GroupsService
-import org.jtalks.jcommune.test.service.UserService
 import org.jtalks.jcommune.test.utils.Branches
 import org.jtalks.jcommune.test.utils.Users
 import org.springframework.beans.factory.annotation.Autowired
@@ -54,8 +53,6 @@ class TopicControllerTest extends Specification {
     @Autowired Users users;
     @Autowired
     private GroupsService groups;
-    @Autowired
-    private UserService userService
 
     @Autowired MockMvc mockMvc;
 
@@ -72,7 +69,7 @@ class TopicControllerTest extends Specification {
         and: 'Branch created'
             Branch branch = branches.created()
         and: "User registered and has permissions to create topics in current branch"
-            userService.create(user).withPermissionOn(branch, BranchPermission.VIEW_TOPICS)
+            users.created(user).withPermissionOn(branch, BranchPermission.VIEW_TOPICS)
                     .withPermissionOn(branch, BranchPermission.CREATE_POSTS);
         and: "User logged in"
             def session = users.signIn(user)
@@ -89,7 +86,7 @@ class TopicControllerTest extends Specification {
         given: 'User registered and has permissions to create topics in current branch'
           def user = new User()
           Branch branch = branches.created()
-          userService.create(user).withPermissionOn(branch, BranchPermission.CREATE_POSTS)
+          users.created(user).withPermissionOn(branch, BranchPermission.CREATE_POSTS)
           def session = users.signIn(user)
         when: 'User created draft topic'
           def result = mockMvc.perform(post("/topics/draft")
@@ -112,7 +109,7 @@ class TopicControllerTest extends Specification {
           def branch = branches.created()
         and: "User registered and but has no permissions to create topics in current branch"
           users.signUpAndActivate(user)
-          userService.create(user).withPermissionOn(branch, BranchPermission.CREATE_POSTS);
+          users.created(user).withPermissionOn(branch, BranchPermission.CREATE_POSTS);
         and: "User logged in"
           def session = users.signIn(user)
         when: 'User created draft topic'

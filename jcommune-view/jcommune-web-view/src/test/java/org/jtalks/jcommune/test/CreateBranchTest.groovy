@@ -20,7 +20,6 @@ import org.jtalks.jcommune.model.entity.Branch
 import org.jtalks.jcommune.test.model.User
 import org.jtalks.jcommune.test.service.ComponentService
 import org.jtalks.jcommune.test.service.GroupsService
-import org.jtalks.jcommune.test.service.UserService
 import org.jtalks.jcommune.test.utils.Branches
 import org.jtalks.jcommune.test.utils.Users
 import org.jtalks.jcommune.test.utils.exceptions.ProcessingException
@@ -44,7 +43,6 @@ import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic
 class CreateBranchTest extends Specification {
     @Autowired Branches branches
     @Autowired ComponentService componentService
-    @Autowired UserService userService
     @Autowired Users users
     @Autowired GroupsService groupsService
 
@@ -58,7 +56,7 @@ class CreateBranchTest extends Specification {
     def 'test create branch success'() {
         given: 'User created and have admin permission on forum'
           def user = new User()
-          userService.create(user).withPermissionOn(forum, GeneralPermission.ADMIN)
+          users.created(user).withPermissionOn(forum, GeneralPermission.ADMIN)
           def session = users.signIn(user)
         when: 'User creates branch'
           def branch = Branches.random()
@@ -70,7 +68,7 @@ class CreateBranchTest extends Specification {
     def 'create branch with invalid name should fail'() {
         given: 'User created and have admin permission on forum'
           def user = new User()
-          userService.create(user).withPermissionOn(forum, GeneralPermission.ADMIN)
+          users.created(user).withPermissionOn(forum, GeneralPermission.ADMIN)
           def session = users.signIn(user)
         when: 'User creates branch'
           Branch branch = Branches.random()
@@ -89,7 +87,7 @@ class CreateBranchTest extends Specification {
     def 'create branch with invalid description must fail'() {
         given: 'User created and have admin permission on forum'
           def user = new User()
-          userService.create(user).withPermissionOn(forum, GeneralPermission.ADMIN)
+          users.created(user).withPermissionOn(forum, GeneralPermission.ADMIN)
           def session = users.signIn(user)
         when: 'User creates branch'
           def branch = Branches.random()

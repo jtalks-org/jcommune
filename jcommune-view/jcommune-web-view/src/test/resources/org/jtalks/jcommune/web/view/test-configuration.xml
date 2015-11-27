@@ -43,7 +43,6 @@
 
   <bean class="org.jtalks.jcommune.test.utils.Branches"/>
   <bean class="org.jtalks.jcommune.test.service.GroupsService"/>
-  <bean class="org.jtalks.jcommune.test.service.UserService"/>
   <bean class="org.jtalks.jcommune.test.service.ComponentService"/>
   <bean class="org.jtalks.jcommune.test.service.SectionService"/>
 
