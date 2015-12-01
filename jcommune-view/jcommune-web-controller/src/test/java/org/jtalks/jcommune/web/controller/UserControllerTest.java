@@ -125,12 +125,21 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testRegistrationPage() throws Exception {
+    public void userMustBeAbleToOpenRegistrationPage_ifHeIsNotLoggedIn() throws Exception {
+        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
         ModelAndView mav = userController.registrationPage(null, null);
 
         assertViewName(mav, "registration");
         RegisterUserDto dto = assertAndReturnModelAttributeOfType(mav, "newUser", RegisterUserDto.class);
         assertNullFields(dto);
+    }
+
+    @Test
+    public void whenOpeningRegistrationPage_userMustBeRedirectedToMainPage_ifHeIsLoggedIn() throws Exception {
+        when(userService.getCurrentUser()).thenReturn(new JCUser("username", null, null));
+        ModelAndView mav = userController.registrationPage(null, null);
+
+        assertViewName(mav, "redirect:/");
     }
 
     @Test

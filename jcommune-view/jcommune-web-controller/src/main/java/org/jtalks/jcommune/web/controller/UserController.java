@@ -182,6 +182,8 @@ public class UserController {
 
     /**
      * Render registration page with bind objects to form.
+     * Also checks if user is already logged in.
+     * If so he is redirected to main page.
      *
      * @param request Servlet request.
      * @param locale To set currently selected language as user's default
@@ -190,10 +192,15 @@ public class UserController {
      */
     @RequestMapping(value = "/user/new", method = RequestMethod.GET)
     public ModelAndView registrationPage(HttpServletRequest request, Locale locale) {
-        Map<String, String> registrationPlugins = getRegistrationPluginsHtml(request, locale);
-        return new ModelAndView(REGISTRATION)
-                .addObject("newUser", new RegisterUserDto())
-                .addObject("registrationPlugins", registrationPlugins);
+        JCUser currentUser = userService.getCurrentUser();
+        if (currentUser.isAnonymous()) {
+            Map<String, String> registrationPlugins = getRegistrationPluginsHtml(request, locale);
+            return new ModelAndView(REGISTRATION)
+                    .addObject("newUser", new RegisterUserDto())
+                    .addObject("registrationPlugins", registrationPlugins);
+        } else {
+            return new ModelAndView("redirect:" + MAIN_PAGE_REFERER);
+        }
     }
 
     /**
@@ -353,7 +360,7 @@ public class UserController {
 
     /**
      * Shows login page. Also checks if user is already logged in.
-     * If so he is redirected to main page.
+     * If so he is redirected to referer page.
      *
      * @param request Current servlet request
      * @return login view name or redirect to main page
