@@ -42,7 +42,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -94,8 +96,6 @@ public class UserController {
     public static final String UNEXPECTED_ERROR = "unexpectedError";
     public static final String HONEYPOT_CAPTCHA_ERROR = "honeypotCaptchaNotNull";
     public static final String LOGIN_DTO = "loginUserDto";
-    public static final int LOGIN_TRIES_AFTER_LOCK = 3;
-    public static final int SLEEP_MILLISECONDS_AFTER_LOCK = 500;
     protected static final String ATTR_USERNAME = "username";
     protected static final String ATTR_LOGIN_ERROR = "login_error";
     public static final String HONEYPOT_FIELD = "honeypotCaptcha";
@@ -106,6 +106,7 @@ public class UserController {
     private final PluginService pluginService;
     private final UserService plainPasswordUserService;
     private final MailService mailService;
+    private final RetryTemplate retryTemplate;
 
     /**
      * @param userService              to delegate business logic invocation
@@ -116,12 +117,13 @@ public class UserController {
      */
     @Autowired
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService,
-                          UserService plainPasswordUserService, MailService mailService) {
+                          UserService plainPasswordUserService, MailService mailService, RetryTemplate retryTemplate) {
         this.userService = userService;
         this.authenticator = authenticator;
         this.pluginService = pluginService;
         this.plainPasswordUserService = plainPasswordUserService;
         this.mailService = mailService;
+        this.retryTemplate = retryTemplate;
     }
 
     /**
@@ -333,14 +335,14 @@ public class UserController {
      */
     @RequestMapping(value = "user/activate/{uuid}")
     public String activateAccount(@PathVariable String uuid, HttpServletRequest request, HttpServletResponse response)
-            throws UnexpectedErrorException, NoConnectionException {
+            throws Exception {
         try {
             userService.activateAccount(uuid);
             JCUser user = userService.getByUuid(uuid);
             MutableHttpRequest wrappedRequest = new MutableHttpRequest(request);
             wrappedRequest.addParameter(AbstractRememberMeServices.DEFAULT_PARAMETER, "true");
             LoginUserDto loginUserDto = new LoginUserDto(user.getUsername(), user.getPassword(), true, getClientIpAddress(request));
-            loginWithLockHandling(loginUserDto, wrappedRequest, response, plainPasswordUserService);
+            retryTemplate.execute(new LoginRetryCallback(loginUserDto, request, response, plainPasswordUserService));
             return "redirect:/";
         } catch (NotFoundException e) {
             return "errors/activationExpired";
@@ -410,13 +412,13 @@ public class UserController {
                                   @RequestParam("password") String password,
                                   @RequestParam(value = "_spring_security_remember_me", defaultValue = "off")
                                   String rememberMe,
-                                  HttpServletRequest request, HttpServletResponse response) {
+                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
         LoginUserDto loginUserDto = new LoginUserDto(username, password, rememberMe.equals(REMEMBER_ME_ON),
                 getClientIpAddress(request));
         AuthenticationStatus authenticationStatus;
         try {
-            authenticationStatus = loginWithLockHandling(loginUserDto, request, response,
-                    userService);
+            authenticationStatus = retryTemplate.execute(new LoginRetryCallback(loginUserDto, request, response,
+                    userService));
         } catch (NoConnectionException e) {
             return getCustomErrorJsonResponse("connectionError");
         } catch (UnexpectedErrorException e) {
@@ -452,7 +454,7 @@ public class UserController {
                               @RequestParam(REFERER_ATTR) String referer,
                               @RequestParam(value = "_spring_security_remember_me", defaultValue = "off")
                               String rememberMe,
-                              HttpServletRequest request, HttpServletResponse response) {
+                              HttpServletRequest request, HttpServletResponse response) throws Exception {
         boolean isAuthenticated;
         loginUserDto.setRememberMe(rememberMe.equals(REMEMBER_ME_ON));
         loginUserDto.setClientIp(getClientIpAddress(request));
@@ -460,8 +462,8 @@ public class UserController {
             referer = MAIN_PAGE_REFERER;
         }
         try {
-            isAuthenticated = loginWithLockHandling(loginUserDto, request, response,
-                    userService).equals(AuthenticationStatus.AUTHENTICATED);
+            isAuthenticated = retryTemplate.execute(new LoginRetryCallback(loginUserDto, request, response,
+                    userService)).equals(AuthenticationStatus.AUTHENTICATED);
         } catch (NoConnectionException e) {
             return new ModelAndView(AUTH_SERVICE_FAIL_URL);
         } catch (UnexpectedErrorException e) {
@@ -476,25 +478,6 @@ public class UserController {
             modelAndView.addObject(ATTR_USERNAME, loginUserDto.getUserName());
             modelAndView.addObject(REFERER_ATTR, referer);
             return modelAndView;
-        }
-    }
-
-    private AuthenticationStatus loginWithLockHandling(LoginUserDto loginUserDto, HttpServletRequest request,
-                                          HttpServletResponse response, UserService userService)
-            throws UnexpectedErrorException, NoConnectionException {
-        for (int i = 0; i < LOGIN_TRIES_AFTER_LOCK; i++) {
-            try {
-                return userService.loginUser(loginUserDto, request, response);
-            } catch (HibernateOptimisticLockingFailureException e) {
-                //we don't handle the exception for several times, just re-reading the content and trying again
-                //after the max times exceeds, only then we give up.
-            }
-        }
-        try {
-            return userService.loginUser(loginUserDto, request, response);
-        } catch (HibernateOptimisticLockingFailureException e) {
-            LOGGER.error("User have been locked {} times. Username: {}", LOGIN_TRIES_AFTER_LOCK, loginUserDto.getUserName());
-            throw e;
         }
     }
 
@@ -528,5 +511,27 @@ public class UserController {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
+    private class LoginRetryCallback implements RetryCallback<AuthenticationStatus, Exception> {
+
+        private LoginUserDto loginUserDto;
+        private HttpServletRequest request;
+        private HttpServletResponse response;
+        private UserService userService;
+
+        private LoginRetryCallback(LoginUserDto loginUserDto, HttpServletRequest request,
+                                   HttpServletResponse response, UserService userService) {
+            this.loginUserDto = loginUserDto;
+            this.request = request;
+            this.response = response;
+            this.userService = userService;
+        }
+
+        @Override
+        public AuthenticationStatus doWithRetry(RetryContext context) throws UnexpectedErrorException, NoConnectionException {
+            return userService.loginUser(loginUserDto, request, response);
+
+        }
     }
 }

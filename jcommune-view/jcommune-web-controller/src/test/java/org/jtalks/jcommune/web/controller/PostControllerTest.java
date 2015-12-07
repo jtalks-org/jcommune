@@ -31,6 +31,8 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.retry.policy.NeverRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -85,6 +87,8 @@ public class PostControllerTest {
     @Mock
     private BindingResult result;
 
+    private RetryTemplate retryTemplate;
+
     public static final long POST_ID = 1;
     public static final long TOPIC_ID = 1L;
     private static final Long BRANCH_ID = 1L;
@@ -110,13 +114,17 @@ public class PostControllerTest {
         post.setTopic(topic);
         topic.getPosts().addAll(asList(post));
 
+        retryTemplate = new RetryTemplate();
+        retryTemplate.setRetryPolicy(new NeverRetryPolicy());
+
         when(postService.get(POST_ID)).thenReturn(post);
         when(topicFetchService.get(TOPIC_ID)).thenReturn(topic);
         when(breadcrumbBuilder.getForumBreadcrumb(topic)).thenReturn(new ArrayList<Breadcrumb>());
 
         controller = new PostController(
                 postService, breadcrumbBuilder, topicFetchService, topicModificationService,
-                bbCodeService, lastReadPostService, userService, locationService, converter);
+                bbCodeService, lastReadPostService, userService, locationService, converter,
+                retryTemplate);
     }
 
     @Test

@@ -235,11 +235,17 @@
         <artifactId>ehcache-jgroupsreplication</artifactId>
         <version>1.5</version>
       </dependency>
-      <!--
-            Used for monitoring. Has conflicts with used version of slf4j
-            since contains built-in slf4l-api-1.5.8 package.
-            Decrease slf4j version to 1.5.8 to use it.
-       -->
+      <dependency>
+        <groupId>org.springframework.retry</groupId>
+        <artifactId>spring-retry</artifactId>
+        <version>1.1.2.RELEASE</version>
+      </dependency>
+
+        <!--
+              Used for monitoring. Has conflicts with used version of slf4j
+              since contains built-in slf4l-api-1.5.8 package.
+              Decrease slf4j version to 1.5.8 to use it.
+         -->
       <!-- dependency>
           <groupId>org.terracotta</groupId>
           <artifactId>ehcache-probe</artifactId>

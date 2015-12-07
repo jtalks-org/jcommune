@@ -23,7 +23,9 @@ import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +55,7 @@ public class CodeReviewController {
     private BreadcrumbBuilder breadcrumbBuilder;
     private TopicModificationService topicModificationService;
     private TopicDraftService topicDraftService;
-    private UserService userService;
+    private RetryTemplate retryTemplate;
 
     /**
      * @param branchService            the object which provides actions on
@@ -68,14 +70,12 @@ public class CodeReviewController {
                                 BreadcrumbBuilder breadcrumbBuilder,
                                 TopicModificationService topicModificationService,
                                 TopicDraftService topicDraftService,
-                                LastReadPostService lastReadPostService,
-                                UserService userService,
-                                PostService postService) {
+                                RetryTemplate retryTemplate) {
         this.branchService = branchService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicModificationService = topicModificationService;
         this.topicDraftService = topicDraftService;
-        this.userService = userService;
+        this.retryTemplate = retryTemplate;
     }
 
     /**
@@ -115,11 +115,11 @@ public class CodeReviewController {
      * @throws NotFoundException when branch not found
      */
     @RequestMapping(value = "/reviews/new", method = RequestMethod.POST)
-    public ModelAndView createCodeReview(@Valid @ModelAttribute TopicDto topicDto,
+    public ModelAndView createCodeReview(@Valid @ModelAttribute final TopicDto topicDto,
                                          BindingResult result,
                                          @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
         Branch branch = branchService.get(branchId);
-        Topic topic = topicDto.getTopic();
+        final Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
         topic.setType(TopicTypeName.CODE_REVIEW.getName());
 
@@ -131,25 +131,14 @@ public class CodeReviewController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
         }
 
-        Topic createdTopic = topicModificationService.createTopic(topic, topicDto.getBodyText());
+        Topic createdTopic = retryTemplate.execute(new RetryCallback<Topic, NotFoundException>() {
+            @Override
+            public Topic doWithRetry(RetryContext context) throws NotFoundException {
+                return topicModificationService.createTopic(topic, topicDto.getBodyText());
+            }
+        });
 
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
-    }
-
-    private Topic createCodeReviewWithLockHandling(Topic topic, TopicDto topicDto) throws NotFoundException {
-        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
-            try {
-                return topicModificationService.createTopic(topic, topicDto.getBodyText());
-            } catch (HibernateOptimisticLockingFailureException e) {
-            }
-        }
-        try {
-            return topicModificationService.createTopic(topic, topicDto.getBodyText());
-        } catch (HibernateOptimisticLockingFailureException e) {
-            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
-                    UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
-            throw e;
-        }
     }
 
 }

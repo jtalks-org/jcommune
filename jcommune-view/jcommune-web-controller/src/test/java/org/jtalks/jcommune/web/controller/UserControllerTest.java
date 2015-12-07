@@ -40,6 +40,8 @@ import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.MutableHttpRequest;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.retry.policy.NeverRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -82,6 +84,7 @@ public class UserControllerTest {
     private RequestContextUtils requestContextUtils;
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private RetryTemplate retryTemplate;
 
     @BeforeMethod
     public void setUp() throws IOException {
@@ -93,11 +96,14 @@ public class UserControllerTest {
         localeResolver = mock(LocaleResolver.class, "en");
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
+        retryTemplate = new RetryTemplate();
+        retryTemplate.setRetryPolicy(new NeverRetryPolicy());
         SecurityContextHolderFacade securityFacade = mock(SecurityContextHolderFacade.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
         when(request.getHeader("X-FORWARDED-FOR")).thenReturn("192.168.1.1");
-        userController = new UserController(userService, authenticator, pluginService, userService,mailService);
+        userController = new UserController(userService, authenticator, pluginService, userService,
+                mailService, retryTemplate);
     }
 
     @Test
