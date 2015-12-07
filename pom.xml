@@ -5,7 +5,7 @@
   <groupId>org.jtalks.jcommune</groupId>
   <artifactId>jcommune</artifactId>
   <packaging>pom</packaging>
-  <version>3.3-SNAPSHOT</version>
+  <version>3.3</version>
   <name>${project.artifactId}</name>
   <modules>
     <module>jcommune-model</module>
@@ -584,7 +584,7 @@
     <connection>scm:git:git@github.com:jtalks-org/jcommune.git</connection>
     <developerConnection>scm:git:git@github.com:jtalks-org/jcommune.git</developerConnection>
     <url>scm:git:git@github.com:jtalks-org/jcommune.git</url>
-    <tag>HEAD</tag>
+    <tag>jcommune-3.3</tag>
   </scm>
   <repositories>
     <repository>
