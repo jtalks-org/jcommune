@@ -32,7 +32,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
@@ -43,7 +45,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Serves topic management web requests
@@ -83,6 +84,7 @@ public class TopicController {
     private LocationService locationService;
     private SessionRegistry sessionRegistry;
     private EntityToDtoConverter converter;
+    private RetryTemplate retryTemplate;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -123,7 +125,8 @@ public class TopicController {
                            SessionRegistry sessionRegistry,
                            TopicFetchService topicFetchService,
                            TopicDraftService topicDraftService,
-                           EntityToDtoConverter converter) {
+                           EntityToDtoConverter converter,
+                           RetryTemplate retryTemplate) {
         this.topicModificationService = topicModificationService;
         this.postService = postService;
         this.branchService = branchService;
@@ -135,6 +138,7 @@ public class TopicController {
         this.topicFetchService = topicFetchService;
         this.topicDraftService = topicDraftService;
         this.converter = converter;
+        this.retryTemplate = retryTemplate;
     }
 
     /**
@@ -173,7 +177,7 @@ public class TopicController {
      * @throws NotFoundException when branch not found
      */
     @RequestMapping(value = "/topics/new", method = RequestMethod.POST)
-    public ModelAndView createTopic(@Valid @ModelAttribute TopicDto topicDto,
+    public ModelAndView createTopic(@Valid @ModelAttribute final TopicDto topicDto,
                                     BindingResult result,
                                     @RequestParam(BRANCH_ID) Long branchId) throws NotFoundException {
 
@@ -192,32 +196,16 @@ public class TopicController {
                     .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
         }
 
-        Topic topic = topicDto.getTopic();
+        final Topic topic = topicDto.getTopic();
         topic.setBranch(branch);
-
-        Topic createdTopic = createTopicWithLockHandling(topic, topicDto);
+        Topic createdTopic = retryTemplate.execute(new RetryCallback<Topic, NotFoundException>() {
+            @Override
+            public Topic doWithRetry(RetryContext context) throws NotFoundException {
+                return topicModificationService.createTopic(topic, topicDto.getBodyText());
+            }
+        });
 
         return new ModelAndView(REDIRECT_URL + createdTopic.getId());
-    }
-
-    private Topic createTopicWithLockHandling(Topic topic, TopicDto topicDto) throws NotFoundException {
-        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
-            try {
-                return topicModificationService.createTopic(topic, topicDto.getBodyText());
-            } catch (HibernateOptimisticLockingFailureException lockingFailureException) {
-                try {
-                    TimeUnit.MILLISECONDS.sleep(UserController.SLEEP_MILLISECONDS_AFTER_LOCK);
-                } catch (InterruptedException e) {
-                }
-            }
-        }
-        try {
-            return topicModificationService.createTopic(topic, topicDto.getBodyText());
-        } catch (HibernateOptimisticLockingFailureException e) {
-            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
-                    UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
-            throw e;
-        }
     }
 
     /**

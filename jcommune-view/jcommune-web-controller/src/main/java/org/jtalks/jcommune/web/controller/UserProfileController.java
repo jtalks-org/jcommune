@@ -35,7 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -88,6 +90,7 @@ public class UserProfileController {
     private PostService postService;
     private UserContactsService contactsService;
     private EntityToDtoConverter converter;
+    private RetryTemplate retryTemplate;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -126,7 +129,8 @@ public class UserProfileController {
                                  PostService postService,
                                  UserContactsService contactsService,
                                  @Qualifier("avatarService") ImageService imageService,
-                                 EntityToDtoConverter converter) {
+                                 EntityToDtoConverter converter,
+                                 RetryTemplate retryTemplate) {
         this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.imageConverter = imageConverter;
@@ -134,6 +138,7 @@ public class UserProfileController {
         this.contactsService = contactsService;
         this.imageService = imageService;
         this.converter = converter;
+        this.retryTemplate = retryTemplate;
     }
 
     /**
@@ -262,7 +267,7 @@ public class UserProfileController {
         }
         long editedUserId = editedProfileDto.getUserProfileDto().getUserId();
         checkPermissionsToEditProfile(editedUserId);
-        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, PROFILE);
+        JCUser user = retryTemplate.execute(new SaveProfileRetryCallback(editedUserId, editedProfileDto, PROFILE));
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId() + "/" + PROFILE);
     }
@@ -287,7 +292,7 @@ public class UserProfileController {
         }
         long editedUserId = editedProfileDto.getUserNotificationsDto().getUserId();
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
-        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, NOTIFICATIONS);
+        JCUser user = retryTemplate.execute(new SaveProfileRetryCallback(editedUserId, editedProfileDto, NOTIFICATIONS));
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId() + "/" + NOTIFICATIONS);
     }
@@ -313,7 +318,7 @@ public class UserProfileController {
         }
         long editedUserId = editedProfileDto.getUserSecurityDto().getUserId();
         checkPermissionForEditNotificationsOrSecurity(editedUserId);
-        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, SECURITY);
+        JCUser user = retryTemplate.execute(new SaveProfileRetryCallback(editedUserId, editedProfileDto, SECURITY));
         if (editedProfileDto.getUserSecurityDto().getNewUserPassword() != null) {
             redirectAttributes.addFlashAttribute(IS_PASSWORD_CHANGED_ATTRIB, true);
         }
@@ -342,7 +347,7 @@ public class UserProfileController {
         }
         long editedUserId = editedProfileDto.getUserId();
         checkPermissionsToEditProfile(editedUserId);
-        JCUser user = saveEditedProfileWithLockHandling(editedUserId, editedProfileDto, CONTACTS);
+        JCUser user = retryTemplate.execute(new SaveProfileRetryCallback(editedUserId, editedProfileDto, CONTACTS));
         //redirect to the view profile page
         return new ModelAndView("redirect:/users/" + user.getId() + "/" + CONTACTS);
     }
@@ -402,31 +407,20 @@ public class UserProfileController {
     @RequestMapping(value = "**/language", method = RequestMethod.GET)
     public String saveUserLanguage(@RequestParam(value = "lang", defaultValue = "en") String lang,
                                    HttpServletResponse response, HttpServletRequest request) throws ServletException {
-        JCUser jcuser = userService.getCurrentUser();
-        Language languageFromRequest = Language.byLocale(new Locale(lang));
+        final JCUser jcuser = userService.getCurrentUser();
+        final Language languageFromRequest = Language.byLocale(new Locale(lang));
         if (!jcuser.isAnonymous()) {
-            changeLanguageWithLockHandling(jcuser, languageFromRequest);
+            retryTemplate.execute(new RetryCallback<Void, RuntimeException>() {
+                @Override
+                public Void doWithRetry(RetryContext context) throws RuntimeException {
+                    userService.changeLanguage(jcuser, languageFromRequest);
+                    return null;
+                }
+            });
         }
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
         localeResolver.setLocale(request, response, languageFromRequest.getLocale());
         return "redirect:" + request.getHeader("Referer");
-    }
-
-    private void changeLanguageWithLockHandling(JCUser user, Language language) {
-        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
-            try {
-                userService.changeLanguage(user, language);
-                return;
-            } catch (HibernateOptimisticLockingFailureException ignored) {
-            }
-        }
-        try {
-            userService.changeLanguage(user, language);
-        } catch (HibernateOptimisticLockingFailureException e) {
-            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
-                    UserController.LOGIN_TRIES_AFTER_LOCK, user.getUsername());
-            throw e;
-        }
     }
 
     /**
@@ -453,21 +447,21 @@ public class UserProfileController {
         }
     }
 
-    private JCUser saveEditedProfileWithLockHandling(long editedUserId, EditUserProfileDto editedProfileDto,
-                                                     String settingsType)
-            throws NotFoundException {
-        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
-            try {
-                return saveUserData(editedUserId, editedProfileDto, settingsType);
-            } catch (HibernateOptimisticLockingFailureException ignored) {
-            }
+    private class SaveProfileRetryCallback implements RetryCallback<JCUser, NotFoundException> {
+
+        private long editedUserId;
+        private EditUserProfileDto editedProfileDto;
+        private String settingsType;
+
+        public SaveProfileRetryCallback(long editedUserId, EditUserProfileDto editedProfileDto, String settingsType) {
+            this.editedUserId = editedUserId;
+            this.editedProfileDto = editedProfileDto;
+            this.settingsType = settingsType;
         }
-        try {
+
+        @Override
+        public JCUser doWithRetry(RetryContext context) throws NotFoundException {
             return saveUserData(editedUserId, editedProfileDto, settingsType);
-        } catch (HibernateOptimisticLockingFailureException e) {
-            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
-                    UserController.LOGIN_TRIES_AFTER_LOCK, editedProfileDto.getUsername());
-            throw e;
         }
     }
 }

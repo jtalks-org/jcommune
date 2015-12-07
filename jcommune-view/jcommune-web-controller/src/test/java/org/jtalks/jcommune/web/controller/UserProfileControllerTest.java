@@ -36,6 +36,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.retry.policy.NeverRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -101,6 +103,8 @@ public class UserProfileControllerTest {
     @Mock
     private EntityToDtoConverter converter;
 
+    private RetryTemplate retryTemplate;
+
     @BeforeClass
     public void mockAvatar() {
         avatar = new Base64Wrapper().encodeB64Bytes(avatarByteArray);
@@ -109,6 +113,8 @@ public class UserProfileControllerTest {
     @BeforeMethod
     public void setUp() {
         initMocks(this);
+        retryTemplate = new RetryTemplate();
+        retryTemplate.setRetryPolicy(new NeverRetryPolicy());
         profileController = new UserProfileController(
                 userService,
                 breadcrumbBuilder,
@@ -116,7 +122,8 @@ public class UserProfileControllerTest {
                 postService,
                 userContactsService,
                 imageService,
-                converter);
+                converter,
+                retryTemplate);
     }
 
     @Test

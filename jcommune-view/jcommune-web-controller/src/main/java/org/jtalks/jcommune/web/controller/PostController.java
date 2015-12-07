@@ -32,7 +32,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -75,6 +77,7 @@ public class PostController {
     private UserService userService;
     private LocationService locationService;
     private EntityToDtoConverter converter;
+    private RetryTemplate retryTemplate;
 
     /**
      * This method turns the trim binder on. Trim binder
@@ -99,12 +102,14 @@ public class PostController {
      * @param userService              to get the current user information
      * @param converter                instance of {@link EntityToDtoConverter} needed to
      *                                 obtain link to the topic
+     * @param retryTemplate            retry mechanism
      */
     @Autowired
     public PostController(PostService postService, BreadcrumbBuilder breadcrumbBuilder,
                           TopicFetchService topicFetchService, TopicModificationService topicModificationService,
                           BBCodeService bbCodeService, LastReadPostService lastReadPostService,
-                          UserService userService, LocationService locationService, EntityToDtoConverter converter) {
+                          UserService userService, LocationService locationService, EntityToDtoConverter converter,
+                          RetryTemplate retryTemplate) {
         this.postService = postService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.topicFetchService = topicFetchService;
@@ -114,6 +119,7 @@ public class PostController {
         this.userService = userService;
         this.locationService = locationService;
         this.converter = converter;
+        this.retryTemplate = retryTemplate;
     }
 
     /**
@@ -124,32 +130,19 @@ public class PostController {
      * @throws NotFoundException when post was not found
      */
     @RequestMapping(method = RequestMethod.DELETE, value = "/posts/{postId}")
-    public ModelAndView delete(@PathVariable(POST_ID) Long postId)
+    public ModelAndView delete(@PathVariable(POST_ID) final Long postId)
             throws NotFoundException {
-        Post post = this.postService.get(postId);
+        final Post post = this.postService.get(postId);
         Post nextPost = post.getTopic().getNeighborPost(post);
-        deletePostWithLockHandling(postId);
-        return new ModelAndView("redirect:/posts/" + nextPost.getId());
-    }
-
-    private Topic deletePostWithLockHandling(Long postId) throws NotFoundException {
-        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
-            try {
+        retryTemplate.execute(new RetryCallback<Object, NotFoundException>() {
+            @Override
+            public Object doWithRetry(RetryContext context) throws NotFoundException {
                 Post post = postService.get(postId);
-				postService.deletePost(post);
-                return post.getTopic();
-            } catch (HibernateOptimisticLockingFailureException e) {
+                postService.deletePost(post);
+                return null;
             }
-        }
-        try {
-            Post post = postService.get(postId);
-            postService.deletePost(post);
-            return post.getTopic();
-        } catch (HibernateOptimisticLockingFailureException e) {
-            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
-                    UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
-            throw e;
-        }
+        });
+        return new ModelAndView("redirect:/posts/" + nextPost.getId());
     }
 
     /**
@@ -224,15 +217,22 @@ public class PostController {
     @RequestMapping(method = RequestMethod.POST, value = "/topics/{topicId}") //
     public ModelAndView create(@RequestParam(value = "page", defaultValue = "1", required = false) String page,
                                @PathVariable(TOPIC_ID) Long topicId,
-                               @Valid @ModelAttribute PostDto postDto,
+                               @Valid @ModelAttribute final PostDto postDto,
                                BindingResult result, RedirectAttributes attr) throws NotFoundException {
         postDto.setTopicId(topicId);
         if (result.hasErrors()) {
             attr.addFlashAttribute("postDto", postDto);
             return new ModelAndView("redirect:/topics/error/" + topicId + "?page=" + page);
         }
-
-        Post newbie = replyToTopicWithLockHandling(postDto, topicId);
+        final Topic topic = topicFetchService.get(topicId);
+        final long branchId = topic.getBranch().getId();
+        Post newbie = retryTemplate.execute(new RetryCallback<Post, NotFoundException>() {
+            @Override
+            public Post doWithRetry(RetryContext context) throws NotFoundException {
+               return topicModificationService.replyToTopic(
+                        postDto.getTopicId(), postDto.getBodyText(), branchId);
+            }
+        });
         lastReadPostService.markTopicAsRead(newbie.getTopic());
         return new ModelAndView(this.redirectToPageWithPost(newbie.getId()));
     }
@@ -274,26 +274,6 @@ public class PostController {
                 .addObject(POST_DTO, postDto)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
-    }
-
-    private Post replyToTopicWithLockHandling(PostDto postDto, Long topicId) throws NotFoundException {
-        Topic topic = topicFetchService.get(topicId);
-        long branchId = topic.getBranch().getId();
-        for (int i = 0; i < UserController.LOGIN_TRIES_AFTER_LOCK; i++) {
-            try {
-                return topicModificationService.replyToTopic(
-                        postDto.getTopicId(), postDto.getBodyText(), branchId);
-            } catch (HibernateOptimisticLockingFailureException e) {
-            }
-        }
-        try {
-            return topicModificationService.replyToTopic(
-                    postDto.getTopicId(), postDto.getBodyText(), branchId);
-        } catch (HibernateOptimisticLockingFailureException e) {
-            LOGGER.error("User has been optimistically locked and can't be reread {} times. Username: {}",
-                    UserController.LOGIN_TRIES_AFTER_LOCK, userService.getCurrentUser().getUsername());
-            throw e;
-        }
     }
 
     /**

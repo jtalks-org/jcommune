@@ -22,6 +22,8 @@ import org.jtalks.jcommune.plugin.api.web.dto.Breadcrumb;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.util.BreadcrumbBuilder;
 import org.mockito.Mock;
+import org.springframework.retry.policy.NeverRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
@@ -56,9 +58,9 @@ public class CodeReviewControllerTest {
     @Mock
     private LastReadPostService lastReadPostService;
     @Mock
-    private UserService userService;
-    @Mock
     private PostService postService;
+
+    private RetryTemplate retryTemplate;
 
 
     private CodeReviewController controller;
@@ -66,14 +68,14 @@ public class CodeReviewControllerTest {
     @BeforeMethod
     public void initEnvironment() {
         initMocks(this);
+        retryTemplate = new RetryTemplate();
+        retryTemplate.setRetryPolicy(new NeverRetryPolicy());
         controller = new CodeReviewController(
                 branchService,
                 breadcrumbBuilder,
                 topicModificationService,
                 topicDraftService,
-                lastReadPostService,
-                userService,
-                postService);
+                retryTemplate);
     }
 
     @BeforeMethod

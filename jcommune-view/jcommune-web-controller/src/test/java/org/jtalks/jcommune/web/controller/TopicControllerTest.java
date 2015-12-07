@@ -31,6 +31,8 @@ import org.mockito.Mock;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.retry.policy.NeverRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -92,9 +94,13 @@ public class TopicControllerTest {
     @Mock
     private BindingResult result;
 
+    private RetryTemplate retryTemplate;
+
     @BeforeMethod
     public void initEnvironment() {
         initMocks(this);
+        retryTemplate = new RetryTemplate();
+        retryTemplate.setRetryPolicy(new NeverRetryPolicy());
         controller = new TopicController(
                 topicModificationService,
                 postService,
@@ -106,7 +112,8 @@ public class TopicControllerTest {
                 registry,
                 topicFetchService,
                 topicDraftService,
-                converter);
+                converter,
+                retryTemplate);
     }
 
     @BeforeMethod

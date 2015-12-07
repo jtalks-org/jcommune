@@ -84,5 +84,19 @@
     </property>
   </bean>
 
+  <bean id="retryPolicy" class="org.springframework.retry.policy.SimpleRetryPolicy">
+    <constructor-arg value="3"/>
+    <constructor-arg >
+      <map>
+        <entry key="org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException"
+               value="true"/>
+      </map>
+    </constructor-arg>
+  </bean>
+
+  <bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
+    <property name="retryPolicy" ref="retryPolicy"/>
+  </bean>
+
 </beans>
 
