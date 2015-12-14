@@ -347,6 +347,22 @@ public class TopicTest {
         assertNull(draft);
     }
 
+    @Test
+    public void getUserPostCountTest() {
+        JCUser user = new JCUser();
+        Topic topic = new Topic();
+        topic.addPost(new Post(user, ""));
+
+        assertEquals(topic.getUserPostCount(user), 1);
+    }
+
+    @Test
+    public void getUserPostCountShouldReturnZeroIfUserNotPosted() {
+        Topic topic = new Topic();
+
+        assertEquals(topic.getUserPostCount(new JCUser()), 0);
+    }
+
     private Topic createTopic() {
 		JCUser topicStarter = new JCUser();
 

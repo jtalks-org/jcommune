@@ -19,6 +19,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #parse("org/jtalks/jcommune/plugin/questionsandanswers/template/comments.vm")
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/bbeditor.vm")
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/userStats.vm")
+
+#macro(initAnswerConfirmationParams $confirmAnswerTitle $confirmAnswerContent)
+  #set($formVisibilityClass = "hide-element")
+  #set($btnVisibilityClass = "")
+  <script>
+    var confirmAnswerTitle = "$confirmAnswerTitle";
+    var confirmAnswerContent = "$confirmAnswerContent";
+  </script>
+#end
+
+
 <head>
   #set($targedId = ${question.branch.id})
   #set($canLeavePosts=false)
@@ -49,6 +60,19 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     var subscribed = ${question.subscribers.contains(${currentUser})};
     var autosubscribeEnabled = ${currentUser.autosubscribe}
   </script>
+
+  #if ($canLeavePosts)
+    #set($formVisibilityClass = "")
+    #set($btnVisibilityClass = "hide-element")
+    ${question.containsOwnerPostsOnly}
+    ${question.topicStarter.id}
+    ${currentUser.id}
+    #if(${question.topicStarter.id} == ${currentUser.id}
+    && ${postPage.getContent().get(0).userCreated.id} == ${currentUser.id})
+      #initAnswerConfirmationParams(${messages.getString("label.confirm.self.answer.title")} ${messages.getString("label.confirm.self.answer.message")})
+    #elseif(${question.getUserPostCount(${currentUser})} > 0)
+      #initAnswerConfirmationParams(${messages.getString("label.confirm.multi.answer.title")} ${messages.getString("label.confirm.multi.answer.message")})    #end
+  #end
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
   <title>
@@ -259,10 +283,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         <input id="savedMillis" type="hidden" value="${postDto.creationDate.millis}"/>
     #end
     <form id="answerForm" action="${request.contextPath}/topics/question/${question.id}"
-          method="POST" class='well anti-multipost submit-form'>
+          method="POST" class='well anti-multipost submit-form $formVisibilityClass'>
       <form path="topicId"/>
       #bbeditor(${messages.getString($labelAnswerType)} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
     </form>
+    <div id="antiMultiAnswers" class="well $btnVisibilityClass">
+      <button id="antiMultiAnswersBtn" class="btn btn-primary">${messages.getString($labelAnswerType)}</button>
+    </div>
   #end
 
   <div id="users-stats" class="well forum-user-stats-container">

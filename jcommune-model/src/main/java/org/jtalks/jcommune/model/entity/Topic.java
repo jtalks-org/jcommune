@@ -728,4 +728,14 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
             removeDraft(draft);
         }
     }
+
+    public int getUserPostCount(JCUser user) {
+        int count = 0;
+        for (Post post : getPosts()) {
+            if (post.getUserCreated().equals(user)) {
+                count ++;
+            }
+        }
+        return count;
+    }
 }

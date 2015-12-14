@@ -134,6 +134,24 @@ $(function () {
             }
         });
     });
+    $("#antiMultiAnswersBtn").click(function (e){
+        var footerContent = ' \
+	            <button id="cancel-answering" class="btn cancel">' + $labelCancel + '</button> \
+	            <button id="continue-answering" class="btn btn-primary">' + $labelOk + '</button>';
+        jDialog.createDialog({
+            type : jDialog.confirmType,
+            title : confirmAnswerTitle,
+            bodyMessage : confirmAnswerContent,
+            maxWidth: 800,
+            firstFocus : false,
+            footerContent: footerContent,
+            tabNavigation: ['#continue-answering','#cancel-answering'],
+            handlers: {
+                '#continue-answering': {'click': showAnswerInputHandler},
+                '#cancel-answering': {'static':'close'}
+            }
+        });
+    });
     updateCommentHandlers()
 });
 
@@ -324,6 +342,18 @@ function showErrorPopUp(postId, message) {
     setTimeout(function() {
         $("#error-message-" + postId).hide();
     }, 2000);
+}
+
+var showAnswerInputHandler = function (e) {
+    e.preventDefault();
+    jDialog.closeDialog();
+    $("#antiMultiAnswers").addClass("hide-element");
+    $("#answerForm").removeClass("hide-element");
+}
+
+function hideAnswerInput() {
+    $("#antiMultiAnswers").removeClass("hide-element");
+    $("#answerForm").addClass("hide-element");
 }
 
 /**
