@@ -27,7 +27,7 @@
         MIN_POLL_TITLE_LENGTH = 3,
         MAX_POLL_TITLE_LENGTH = 120,
 
-        MIN_POLL_ITEM_LENGTH = 2,
+        MIN_POLL_ITEM_LENGTH = 1,
         MAX_POLL_ITEM_LENGTH = 50,
 
         MIN_ITEMS_NUMBER = 2,
