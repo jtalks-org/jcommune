@@ -64,9 +64,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   #if ($canLeavePosts)
     #set($formVisibilityClass = "")
     #set($btnVisibilityClass = "hide-element")
-    ${question.containsOwnerPostsOnly}
-    ${question.topicStarter.id}
-    ${currentUser.id}
     #if(${question.topicStarter.id} == ${currentUser.id}
     && ${postPage.getContent().get(0).userCreated.id} == ${currentUser.id})
       #initAnswerConfirmationParams(${messages.getString("label.confirm.self.answer.title")} ${messages.getString("label.confirm.self.answer.message")})

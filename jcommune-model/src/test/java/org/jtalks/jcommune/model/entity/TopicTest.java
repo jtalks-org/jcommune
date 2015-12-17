@@ -363,6 +363,25 @@ public class TopicTest {
         assertEquals(topic.getUserPostCount(new JCUser()), 0);
     }
 
+    @Test
+    public void getUserPostCountShouldReturnZeroIfOnlyOthersPosted() {
+        Topic topic = new Topic();
+        topic.addPost(new Post(new JCUser(), ""));
+
+        assertEquals(topic.getUserPostCount(new JCUser()), 0);
+    }
+
+    @Test
+    public void getUserPostCountTestMoreThanOneUserPosted() {
+        Topic topic = new Topic();
+        topic.addPost(new Post(new JCUser(), ""));
+        JCUser user = new JCUser();
+        topic.addPost(new Post(user, ""));
+        topic.addPost(new Post(user, ""));
+
+        assertEquals(topic.getUserPostCount(user), 2);
+    }
+
     private Topic createTopic() {
 		JCUser topicStarter = new JCUser();
 
