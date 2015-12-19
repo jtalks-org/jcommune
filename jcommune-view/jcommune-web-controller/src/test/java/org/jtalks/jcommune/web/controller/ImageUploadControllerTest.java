@@ -113,14 +113,14 @@ public class ImageUploadControllerTest {
                 ImageUploadController.HTTP_HEADER_DATETIME_PATTERN,
                 Locale.US);
 
-        Date result = imageUploadController.getIfModifiedSineDate(dateAsString);
+        Date result = imageUploadController.getIfModifiedSinceDate(dateAsString);
 
         assertEquals(result.getTime(), date.getTime());
     }
 
     @Test
     public void testGetIfModifiedSinceDateNullHeader() {
-        Date result = imageUploadController.getIfModifiedSineDate(null);
+        Date result = imageUploadController.getIfModifiedSinceDate(null);
 
         assertEquals(result, new Date(0));
     }

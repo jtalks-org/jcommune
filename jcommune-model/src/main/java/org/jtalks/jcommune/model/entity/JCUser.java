@@ -306,7 +306,7 @@ public class JCUser extends User {
     }
 
     /**
-     * @return last modification time of avatar
+     * @return last modification time of avatar or {@code null} if it's the default avatar that has never changed
      */
     public DateTime getAvatarLastModificationTime() {
         return avatarLastModificationTime;

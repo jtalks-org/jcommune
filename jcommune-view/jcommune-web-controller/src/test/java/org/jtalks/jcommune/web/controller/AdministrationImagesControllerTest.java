@@ -417,8 +417,6 @@ public class AdministrationImagesControllerTest {
         assertEquals(response.getHeader("Pragma"), "public");
         List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
         Assert.assertTrue(cacheControlHeaders.contains("public"));
-        Assert.assertTrue(cacheControlHeaders.contains("must-revalidate"));
-        Assert.assertTrue(cacheControlHeaders.contains("max-age=0"));
         assertNotNull(response.getHeader("Expires"));
         assertNotNull(response.getHeader("Last-Modified"));
     }

@@ -40,16 +40,14 @@ public class ImageControllerUtils {
     public static final String SRC_PREFIX = "srcPrefix";
     public static final String SRC_IMAGE = "srcImage";
 
-
     private ImageService imageService;
     private JSONUtils jsonUtils;
 
     /**
      * @param imageService object for working with uploaded images
-     * @param jsonUtils    object for preparing JSON repsonse
+     * @param jsonUtils    object for preparing JSON response
      */
-    public ImageControllerUtils(ImageService imageService,
-                                JSONUtils jsonUtils) {
+    public ImageControllerUtils(ImageService imageService, JSONUtils jsonUtils) {
         this.imageService = imageService;
         this.jsonUtils = jsonUtils;
     }
@@ -61,9 +59,8 @@ public class ImageControllerUtils {
      * @param responseHeaders response HTTP headers
      * @param responseContent response content
      * @return ResponseEntity with image processing results
-     * @throws java.io.IOException defined in the JsonFactory implementation, caller must implement exception processing
-     * @throws org.jtalks.jcommune.service.exceptions.ImageProcessException
-     *                             if error occurred while image processing
+     * @throws IOException defined in the JsonFactory implementation, caller must implement exception processing
+     * @throws ImageProcessException if error occurred while image processing
      */
     public ResponseEntity<String> prepareResponse(
             MultipartFile file,
@@ -105,8 +102,7 @@ public class ImageControllerUtils {
      * @param responseContent response payload
      * @throws ImageProcessException due to common image processing error
      */
-    public void prepareNormalResponse(byte[] bytes,
-                                      Map<String, String> responseContent) throws ImageProcessException {
+    public void prepareNormalResponse(byte[] bytes, Map<String, String> responseContent) throws ImageProcessException {
         String srcImage = imageService.preProcessAndEncodeInString64(bytes);
         responseContent.put(STATUS, String.valueOf(JsonResponseStatus.SUCCESS));
         responseContent.put(SRC_PREFIX, imageService.getHtmlSrcImagePrefix());

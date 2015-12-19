@@ -16,15 +16,14 @@ package org.jtalks.jcommune.web.controller;
 
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.ObjectsFactory;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
@@ -33,14 +32,17 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.jtalks.jcommune.web.controller.ImageUploadController.HTTP_HEADER_DATETIME_PATTERN;
+import static org.jtalks.jcommune.web.controller.ImageUploadController.IF_MODIFIED_SINCE_HEADER;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.*;
 
@@ -84,33 +86,28 @@ public class AvatarControllerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void uploadAvatarForOperaAndIEShouldReturnPreviewInResponce() 
-            throws IOException, ImageProcessException {
+    public void uploadAvatarForOperaAndIe_mustReturnPreviewInResponse() throws Exception {
         MultipartFile file = new MockMultipartFile("qqfile", validAvatar);
-
-        ResponseEntity<String> actualResponseEntity = avatarController.uploadAvatar(file);
-
+        avatarController.uploadAvatar(file);
         verify(imageControllerUtils).prepareResponse(eq(file), any(HttpHeaders.class), any(HashMap.class));
     }
 
-    @Test
-    public void uploadAvatarForChromeAndFFShouldReturnPreviewInResponce() throws ImageProcessException {
+    @Test @SuppressWarnings("unchecked")
+    public void uploadAvatarForChromeAndFf_mustReturnPreviewInResponse() throws ImageProcessException {
         MockHttpServletResponse response = new MockHttpServletResponse();
-
         avatarController.uploadAvatar(validAvatar, response);
-
-        verify(imageControllerUtils).prepareResponse(eq(validAvatar), eq(response), any(HashMap.class));
+        verify(imageControllerUtils).prepareResponse(eq(validAvatar), eq(response), any(Map.class));
     }
-    
+
     @Test
-    public void renderAvatarShouldReturnModifiedAvatarInResponse() throws IOException, NotFoundException {
+    public void renderAvatarShouldReturnModifiedAvatarInResponse() throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse();
         JCUser user = getUser();
         user.setAvatar(validAvatar);
         user.setAvatarLastModificationTime(new DateTime(1000));
         when(userService.get(anyLong())).thenReturn(user);
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(avatarController.IF_MODIFIED_SINCE_HEADER, new Date(0));
+        request.addHeader(IF_MODIFIED_SINCE_HEADER, new Date(0));
 
         avatarController.renderAvatar(request, response, 0L);
 
@@ -120,33 +117,26 @@ public class AvatarControllerTest {
         assertEquals(response.getHeader("Pragma"), "public");
         List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
         assertTrue(cacheControlHeaders.contains("public"));
-        assertTrue(cacheControlHeaders.contains("must-revalidate"));
-        assertTrue(cacheControlHeaders.contains("max-age=0"));
-        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
         assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
     }
-    
+
     @Test
-    public void renderAvatarShouldNotReturnNotModifiedAvatarInResponse() throws IOException, NotFoundException {
+    public void renderAvatarShouldNotReturnNotModifiedAvatarInResponse() throws Exception {
         JCUser user = getUser();
         user.setAvatar(validAvatar);
         user.setAvatarLastModificationTime(new DateTime(0));
         when(userService.get(anyLong())).thenReturn(user);
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(avatarController.IF_MODIFIED_SINCE_HEADER, new Date(1000));
+        request.addHeader(IF_MODIFIED_SINCE_HEADER, new Date(1000));
 
 
         avatarController.renderAvatar(request, response, 0L);
 
-        assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
         assertNotSame(response.getContentAsByteArray(), validAvatar);
         assertEquals(response.getHeader("Pragma"), "public");
         List<String> cacheControlHeaders = response.getHeaders("Cache-Control");
         assertTrue(cacheControlHeaders.contains("public"));
-        assertTrue(cacheControlHeaders.contains("must-revalidate"));
-        assertTrue(cacheControlHeaders.contains("max-age=0"));
-        assertNotNull(response.getHeader("Expires"));//System.currentTimeMillis() is used
         assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
     }
     
@@ -158,7 +148,8 @@ public class AvatarControllerTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void getDefaultAvatarShouldReturnDefaultAvatarInBase64String() throws IOException, ImageProcessException {
+    @Test
+    public void getDefaultAvatarShouldReturnDefaultAvatarInBase64String() throws Exception {
         String expectedJSON = "{\"team\": \"larks\"}";
         when(imageControllerUtils.getDefaultImage()).thenReturn(validAvatar);
         when(imageControllerUtils.convertImageToIcoInString64(validAvatar)).thenReturn(IMAGE_BYTE_ARRAY_IN_BASE_64_STRING);
@@ -167,5 +158,61 @@ public class AvatarControllerTest {
         String actualJSON = avatarController.getDefaultAvatar();
 
         assertEquals(actualJSON, expectedJSON);
+    }
+
+    @Test
+    public void renderAvatar_mustReturnNotModifiedStatus_ifAvatarWasNeverModified() throws Exception {
+        JCUser user = ObjectsFactory.getRandomUser();
+        user.setAvatarLastModificationTime(null);
+        doReturn(user).when(userService).get(1L);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        avatarController.renderAvatar(new MockHttpServletRequest(), response, 1L);
+
+        assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
+    }
+
+    @Test
+    public void renderAvatar_mustReturnNotModifiedStatus_ifAvatarWasNotChangedSinceLastTime() throws Exception {
+        JCUser user = ObjectsFactory.getRandomUser();
+        doReturn(user).when(userService).get(1L);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(
+                IF_MODIFIED_SINCE_HEADER,
+                user.getAvatarLastModificationTime().toString(HTTP_HEADER_DATETIME_PATTERN));
+        avatarController.renderAvatar(request, response, 1L);
+
+        assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
+    }
+
+    @Test
+    public void renderAvatar_mustReturnModifiedStatus_ifAvatarChangedSinceLastTime() throws Exception {
+        JCUser user = ObjectsFactory.getRandomUser();
+        doReturn(user).when(userService).get(1L);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        String modifiedSinceIsBeforeAvatarModification = user.getAvatarLastModificationTime().minusSeconds(1)
+                .toString(HTTP_HEADER_DATETIME_PATTERN);
+        request.addHeader(IF_MODIFIED_SINCE_HEADER, modifiedSinceIsBeforeAvatarModification);
+        avatarController.renderAvatar(request, response, 1L);
+
+        assertEquals(response.getStatus(), HttpServletResponse.SC_OK);
+    }
+
+    @Test
+    public void renderAvatar_mustCacheFor30Days() throws Exception {
+        JCUser user = ObjectsFactory.getRandomUser();
+        doReturn(user).when(userService).get(1L);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        avatarController.renderAvatar(new MockHttpServletRequest(), response, 1L);
+
+        long actualMaxAge = Long.parseLong(response.getHeaders("Cache-Control").get(1).replace("max-age=", ""));
+        long actualCacheExpiration = Long.parseLong(response.getHeader("Expires"));
+        assertEquals(actualMaxAge, 30L * 24 * 60 * 60);
+        assertTrue(actualCacheExpiration - new DateTime().plusDays(30).getMillis() < 1000);
     }
 }

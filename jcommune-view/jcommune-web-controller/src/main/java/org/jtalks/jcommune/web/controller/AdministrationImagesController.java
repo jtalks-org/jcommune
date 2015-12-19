@@ -186,7 +186,7 @@ public class AdministrationImagesController extends ImageUploadController {
             forumModificationDate = startTime;
         }
 
-        Date ifModifiedDate = getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
+        Date ifModifiedDate = getIfModifiedSinceDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
 
         if (!forumModificationDate.after(ifModifiedDate)) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);

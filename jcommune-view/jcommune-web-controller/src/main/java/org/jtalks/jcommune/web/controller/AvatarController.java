@@ -15,10 +15,11 @@
 
 package org.jtalks.jcommune.web.controller;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.exceptions.ImageProcessException;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.web.util.ImageControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,6 +35,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 /**
  * Controller for processing avatar related request.
@@ -42,10 +46,8 @@ import java.util.Map;
  * @author Anuar Nurmakanov
  * @author Andrei Alikov
  */
-
 @Controller
 public class AvatarController extends ImageUploadController {
-
     private UserService userService;
     private ImageControllerUtils avatarControllerUtils;
 
@@ -114,23 +116,25 @@ public class AvatarController extends ImageUploadController {
     public void renderAvatar(
             HttpServletRequest request,
             HttpServletResponse response,
-            @PathVariable Long id)
-            throws NotFoundException, IOException {
+            @PathVariable Long id) throws NotFoundException, IOException {
         JCUser user = userService.get(id);
 
-        Date ifModifiedDate = getIfModifiedSineDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
-        if (!user.getAvatarLastModificationTime().isAfter(ifModifiedDate.getTime())) {
-            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-        } else {
+        Date ifModifiedDate = super.getIfModifiedSinceDate(request.getHeader(IF_MODIFIED_SINCE_HEADER));
+        // using 0 unix time if avatar has never changed (the date is null). It's easier to work with something
+        // non-null than to check for null all the time.
+        DateTime avatarLastModificationTime = defaultIfNull(user.getAvatarLastModificationTime(), new DateTime(0));
+        // if-modified-since header doesn't include milliseconds, so if it floors the value (millis = 0), then
+        // actual modification date will always be after the if-modified-since and we'll always be returning avatar
+        avatarLastModificationTime = avatarLastModificationTime.withMillisOfSecond(0);
+        if (avatarLastModificationTime.isAfter(ifModifiedDate.getTime())) {
             byte[] avatar = user.getAvatar();
             response.setContentType("image/jpeg");
             response.setContentLength(avatar.length);
             response.getOutputStream().write(avatar);
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         }
-
-        Date avatarLastModificationDate = new Date(
-                user.getAvatarLastModificationTime().getMillis());
-        setupAvatarHeaders(response, avatarLastModificationDate);
+        setupAvatarHeaders(response, new Date(avatarLastModificationTime.getMillis()));
     }
 
     /**
@@ -144,7 +148,7 @@ public class AvatarController extends ImageUploadController {
     @RequestMapping(value = "/defaultAvatar", method = RequestMethod.GET)
     @ResponseBody
     public String getDefaultAvatar() throws ImageProcessException, IOException {
-        Map<String, String> responseContent = new HashMap<String, String>();
+        Map<String, String> responseContent = new HashMap<>();
         avatarControllerUtils.prepareNormalResponse(avatarControllerUtils.getDefaultImage(), responseContent);
         return avatarControllerUtils.getResponceJSONString(responseContent);
     }

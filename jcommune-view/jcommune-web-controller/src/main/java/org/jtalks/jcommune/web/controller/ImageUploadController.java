@@ -42,12 +42,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Base class for handling uploaded images and generating preview for them
  */
 public class ImageUploadController {
-
+    /** We cannot set it to forever since avatars sometimes change, but this is a pretty rare event. */
+    static long AVATAR_CACHE_AGE_SEC = TimeUnit.DAYS.toSeconds(30);
     private MessageSource messageSource;
 
     static final String WRONG_FORMAT_RESOURCE_MESSAGE = "image.wrong.format";
@@ -122,16 +124,11 @@ public class ImageUploadController {
      * @param response                   - HTTP response object where set headers
      * @param avatarLastModificationTime - last modification time of avatar
      */
-    protected void setupAvatarHeaders(HttpServletResponse response,
-                                      Date avatarLastModificationTime) {
+    protected void setupAvatarHeaders(HttpServletResponse response, Date avatarLastModificationTime) {
         response.setHeader("Pragma", "public");
+        response.setDateHeader("Expires", System.currentTimeMillis() + AVATAR_CACHE_AGE_SEC * 1000);
         response.setHeader("Cache-Control", "public");
-        response.addHeader("Cache-Control", "must-revalidate");
-        response.addHeader("Cache-Control", "max-age=0");
-        String formattedDateExpires = DateFormatUtils.format(
-                new Date(System.currentTimeMillis()),
-                HTTP_HEADER_DATETIME_PATTERN, Locale.US);
-        response.setHeader("Expires", formattedDateExpires);
+        response.addHeader("Cache-Control", "max-age=" + AVATAR_CACHE_AGE_SEC);
 
         String formattedDateLastModified = DateFormatUtils.format(
                 avatarLastModificationTime,
@@ -148,7 +145,7 @@ public class ImageUploadController {
      * @return If-Modified-Since header or Jan 1, 1970 if it is not set or
      *         can't be parsed
      */
-    public Date getIfModifiedSineDate(String ifModifiedSinceHeader) {
+    public Date getIfModifiedSinceDate(String ifModifiedSinceHeader) {
         Date ifModifiedSinceDate = new Date(0);
         if (ifModifiedSinceHeader != null) {
             try {
