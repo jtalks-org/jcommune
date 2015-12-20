@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 #macro(initAnswerConfirmationParams $confirmAnswerTitle $confirmAnswerContent)
   #set($formVisibilityClass = "hide-element")
-  #set($btnVisibilityClass = "")
+  #set($antiMultianswerBtnVisibilityClass = "")
   <script>
     var confirmAnswerTitle = "$confirmAnswerTitle";
     var confirmAnswerContent = "$confirmAnswerContent";
@@ -62,10 +62,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   </script>
 
   #if ($canLeavePosts)
+    ## determines if the post editor is show or not - depends on whether user has already left some posts
     #set($formVisibilityClass = "")
-    #set($btnVisibilityClass = "hide-element")
-    #if(${question.topicStarter.id} == ${currentUser.id}
-    && ${postPage.getContent().get(0).userCreated.id} == ${currentUser.id})
+    ## determines if the button that prevents users to leave multiple answers is shown
+    #set($antiMultianswerBtnVisibilityClass = "hide-element")
+    #if(${question.topicStarter.id} == ${currentUser.id})
       #initAnswerConfirmationParams(${messages.getString("label.confirm.self.answer.title")} ${messages.getString("label.confirm.self.answer.message")})
     #elseif(${question.getUserPostCount(${currentUser})} > 0)
       #initAnswerConfirmationParams(${messages.getString("label.confirm.multi.answer.title")} ${messages.getString("label.confirm.multi.answer.message")})    #end
@@ -220,14 +221,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
               <div class="btn-toolbar post-btn-toolbar pull-right">
                   #if($canAnswer || $canEdit || $canDelete)
                     <div class="btn-group question-btn-group">
-                      #if($canAnswer)
-                        <a id="answer"
-                           class="edit_button btn btn-mini"
-                           title="${esc.html(${messages.getString("label.tips.answer")})}">
-                          <i class="icon-pencil"></i>
-                          ${esc.html(${messages.getString($labelAnswerType)})}
-                        </a>
-                      #end
                         #if($canEdit)
                           <a href="$postEditUrl" data-rel=""
                              class="edit_button btn btn-mini" title="${esc.html(${messages.getString("label.tips.edit.$postClass")})}">
@@ -284,7 +277,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       <form path="topicId"/>
       #bbeditor(${messages.getString($labelAnswerType)} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
     </form>
-    <div id="antiMultiAnswers" class="well $btnVisibilityClass">
+    <div id="antiMultiAnswers" class="well $antiMultianswerBtnVisibilityClass">
       <button id="antiMultiAnswersBtn" class="btn btn-primary">${messages.getString($labelAnswerType)}</button>
     </div>
   #end

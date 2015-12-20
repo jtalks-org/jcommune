@@ -90,6 +90,7 @@ $labelLoginError = '<spring:message code="label.login_error" htmlEscape="true"/>
 
 $labelCancel = '<spring:message code="label.cancel" htmlEscape="true"/>';
 $labelOk = '<spring:message code="label.ok" htmlEscape="true"/>';
+$labelYes = '<spring:message code="label.yes" htmlEscape="true"/>';
 $labelTopicMove = '<spring:message code="label.topic.move" htmlEscape="true"/>';
 $labelTopicMoveFull = '<spring:message code="label.topic.move.full" htmlEscape="true"/>';
 

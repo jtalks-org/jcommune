@@ -54,11 +54,6 @@ $(function () {
         }
     });
 
-    $('#answer').click(function(e){
-        e.preventDefault();
-        $('#postBody').focus();
-    });
-
     $("#subscription").click(function (e){
         subscribed = !subscribed;
     });
@@ -137,7 +132,7 @@ $(function () {
     $("#antiMultiAnswersBtn").click(function (e){
         var footerContent = ' \
 	            <button id="cancel-answering" class="btn cancel">' + $labelCancel + '</button> \
-	            <button id="continue-answering" class="btn btn-primary">' + $labelOk + '</button>';
+	            <button id="continue-answering" class="btn btn-primary">' + $labelYes + '</button>';
         jDialog.createDialog({
             type : jDialog.confirmType,
             title : confirmAnswerTitle,
@@ -199,7 +194,7 @@ var deleteCommentHandler = function(e) {
 
     var footerContent = ' \
 	            <button id="remove-review-cancel" class="btn cancel">' + $labelCancel + '</button> \
-	            <button id="remove-review-ok" class="btn btn-primary">' + $labelOk + '</button>';
+	            <button id="remove-review-ok" class="btn btn-primary">' + $labelYes + '</button>';
     jDialog.createDialog({
         type: jDialog.confirmType,
         bodyMessage : $labelDeleteCommentConfirmation,
@@ -714,7 +709,7 @@ function clearValidationErrors(element) {
 function removeCommentHtml(commentId) {
     var commentElement = $("#comment-" + commentId);
     var postId = commentElement.parent().attr("id").split("-")[1];
-    $("#comment-" + commentId).remove();
+    commentElement.remove();
     applyCommentsCssClasses(postId);
     var numberOfComments = $("#comments-" + postId).children().length;
     if (numberOfComments == numberOfCommentsToShow) {
