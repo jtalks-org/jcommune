@@ -51,21 +51,18 @@ $(function () {
         jDialog.alertType = 'alert';
         jDialog.infoType = 'info';
         jDialog.options = {};
-        jDialog.dialog;
 
         jDialog.rootPanelFunc = function () {
-            var dialog = $(' \
+            return $(' \
         <form style="display: none" method="post" class="modal" id="' + jDialog.options.dialogId + '" tabindex="-1"> \
             <div class="modal-header"> \
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> \
-                <h3>' + jDialog.options.title + '</h3> \
+                <b>' + jDialog.options.title + '</b> \
             </div> \
             ' + jDialog.bodyContentFunc() + ' \
             ' + jDialog.footerContentFunc() + ' \
         </form> \
     ');
-
-            return dialog;
         };
 
         jDialog.bodyContentFunc = function () {
@@ -74,7 +71,7 @@ $(function () {
                 case jDialog.alertType :
                 case jDialog.confirmType :
                 {
-                    body += '<div class="dialog-message"><h4>' + jDialog.options.bodyMessage + '</h4></div>';
+                    body += '<div class="dialog-message"><p>' + jDialog.options.bodyMessage + '</p></div>';
                     break;
                 }
                 default :
