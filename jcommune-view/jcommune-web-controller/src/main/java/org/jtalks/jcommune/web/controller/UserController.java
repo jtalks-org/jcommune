@@ -97,8 +97,6 @@ public class UserController {
     public static final String HONEYPOT_CAPTCHA_ERROR = "honeypotCaptchaNotNull";
     public static final String LOGIN_DTO = "loginUserDto";
     protected static final String ATTR_USERNAME = "username";
-    protected static final String ATTR_LOGIN_ERROR = "login_error";
-    public static final String HONEYPOT_FIELD = "honeypotCaptcha";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     private static final String REMEMBER_ME_ON = "on";
     private final UserService userService;
@@ -518,6 +516,12 @@ public class UserController {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
+    @RequestMapping(value = "/users/list", method = RequestMethod.GET)
+    public ModelAndView showUsersSearchPage()
+    {
+        return new ModelAndView("userSearch");
     }
 
     private class LoginRetryCallback implements RetryCallback<AuthenticationStatus, Exception> {

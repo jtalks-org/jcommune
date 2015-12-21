@@ -162,6 +162,11 @@
                   <fmt:message key="label.plugins"/>
                 </a>
               </li>
+              <li>
+                <a id="usersPage" href="${pageContext.request.contextPath}/users/list">
+                  <fmt:message key="label.users"/>
+                </a>
+              </li>
             </ul>
           </li>
         </jtalks:hasPermission>
