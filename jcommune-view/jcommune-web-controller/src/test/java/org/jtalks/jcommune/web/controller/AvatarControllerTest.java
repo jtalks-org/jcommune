@@ -32,10 +32,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.jtalks.jcommune.web.controller.ImageUploadController.HTTP_HEADER_DATETIME_PATTERN;
 import static org.jtalks.jcommune.web.controller.ImageUploadController.IF_MODIFIED_SINCE_HEADER;
@@ -181,7 +178,7 @@ public class AvatarControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(
                 IF_MODIFIED_SINCE_HEADER,
-                user.getAvatarLastModificationTime().toString(HTTP_HEADER_DATETIME_PATTERN));
+                user.getAvatarLastModificationTime().toString(HTTP_HEADER_DATETIME_PATTERN, Locale.US));
         avatarController.renderAvatar(request, response, 1L);
 
         assertEquals(response.getStatus(), HttpServletResponse.SC_NOT_MODIFIED);
@@ -195,7 +192,7 @@ public class AvatarControllerTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockHttpServletRequest request = new MockHttpServletRequest();
         String modifiedSinceIsBeforeAvatarModification = user.getAvatarLastModificationTime().minusSeconds(1)
-                .toString(HTTP_HEADER_DATETIME_PATTERN);
+                .toString(HTTP_HEADER_DATETIME_PATTERN, Locale.US);
         request.addHeader(IF_MODIFIED_SINCE_HEADER, modifiedSinceIsBeforeAvatarModification);
         avatarController.renderAvatar(request, response, 1L);
 
