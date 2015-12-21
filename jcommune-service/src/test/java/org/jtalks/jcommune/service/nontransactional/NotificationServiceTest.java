@@ -28,10 +28,12 @@ import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
+import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Evgeniy Naumenko
@@ -201,14 +203,14 @@ public class NotificationServiceTest {
         topic.getSubscribers().add(currentUser);
         when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topic.getSubscribers());
 
-        Collection<JCUser> topicSubscribers = new ArrayList();
-        topicSubscribers.add(user2);
+        Collection<JCUser> excludeFromNotification = new ArrayList();
+        excludeFromNotification.add(user2);
 
-        service.subscribedEntityChanged(topic, topicSubscribers);
+        service.subscribedEntityChanged(topic, excludeFromNotification);
 
-        verify(mailService, times(1)).sendUpdatesOnSubscription(any(JCUser.class), eq(topic));
+        verify(mailService).sendUpdatesOnSubscription(any(JCUser.class), eq(topic));
         verify(mailService).sendUpdatesOnSubscription(user1, topic);
-        assertEquals(topic.getSubscribers().size(), 2);
+        assertReflectionEquals(Collections.singleton(user1), topic.getSubscribers());
     }
     
     @Test

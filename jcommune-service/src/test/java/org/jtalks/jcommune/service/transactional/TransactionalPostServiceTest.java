@@ -50,6 +50,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -210,7 +212,7 @@ public class TransactionalPostServiceTest {
         assertEquals(topic.getModificationDate(), topic.getFirstPost().getCreationDate());
         verify(topicDao).saveOrUpdate(topic);
         verify(securityService).deleteFromAcl(postForDelete);
-        verify(notificationService).subscribedEntityChanged(topic);
+        verify(notificationService).subscribedEntityChanged(topic, Collections.EMPTY_SET);
     }
 
     @Test
@@ -248,7 +250,7 @@ public class TransactionalPostServiceTest {
         assertEquals(topic.getModificationDate(), topic.getFirstPost().getCreationDate());
         verify(topicDao).saveOrUpdate(topic);
         verify(securityService).deleteFromAcl(postForDelete);
-        verify(notificationService).subscribedEntityChanged(topic);
+        verify(notificationService).subscribedEntityChanged(topic, Collections.EMPTY_SET);
 
     }
 
@@ -293,6 +295,31 @@ public class TransactionalPostServiceTest {
 
         assertEquals(topic.getModificationDate(), postLast.getCreationDate());
         verify(branchLastPostService, Mockito.never()).refreshLastPostInBranch(branch);
+    }
+
+    @Test
+    public void whenOwnerRemovesThePost_thenThereIsNoNotificationToTheSubscribers() {
+        Post post = getPostWithTopicInBranch();
+        Topic topic = post.getTopic();
+        topic.setSubscribers(Collections.singleton(user));  //add the creator of the post to subscribers
+
+        postService.deletePost(post);
+
+        verify(notificationService).subscribedEntityChanged(topic, Collections.EMPTY_SET);
+    }
+
+    @Test
+    public void whenNotPostCreatorRemovesThePost_thenOnlyPostCreatorGetsNotification() {
+        Post post = getPostWithTopicInBranch();
+        Topic topic = post.getTopic();
+        Set<JCUser> subscribers = new HashSet<>();
+        subscribers.add(user);  //post creator
+        subscribers.add(currentUser);   //user, that removes post
+        topic.setSubscribers(subscribers);
+
+        postService.deletePost(post);
+
+        verify(notificationService).subscribedEntityChanged(topic, Collections.singleton(currentUser));
     }
 
     @Test
