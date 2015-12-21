@@ -46,7 +46,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
@@ -139,8 +140,8 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             "(hasPermission(#post.topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OTHERS_POSTS') and " +
             "#post.userCreated.username != principal.username)")
     public void deletePost(Post post) {
-        JCUser user = post.getUserCreated();
-        user.setPostCount(user.getPostCount() - 1);
+        JCUser postCreator = post.getUserCreated();
+        postCreator.setPostCount(postCreator.getPostCount() - 1);
         Topic topic = post.getTopic();
         topic.removePost(post);
         Branch branch = topic.getBranch();
@@ -149,11 +150,18 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
             branch.clearLastPost();
         }
 
-
         // todo: event API?
         topicDao.saveOrUpdate(topic);
         securityService.deleteFromAcl(post);
-        notificationService.subscribedEntityChanged(topic);
+
+        /*
+         implementation of the task JC-2276 (only the creator of the post should
+         be notified when it's removed).
+         */
+        Set<JCUser> excludeFromNotification = new HashSet<>(topic.getSubscribers());
+        excludeFromNotification.remove(postCreator);
+        notificationService.subscribedEntityChanged(topic, excludeFromNotification);
+
         if (deletedPostIsLastPostInBranch) {
             branchLastPostService.refreshLastPostInBranch(branch);
         }

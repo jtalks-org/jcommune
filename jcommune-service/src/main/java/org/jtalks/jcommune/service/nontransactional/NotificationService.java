@@ -85,17 +85,16 @@ public class NotificationService {
     /**
      * Overload for skipping topic subscribers
      *
-     * @param entity
-     * @param topicSubscribers
+     * @param entity changed subscribed entity.
+     * @param excludeFromNotification a collection of subscribers who are excluded from a notification.
      */
-    public void subscribedEntityChanged(SubscriptionAwareEntity entity, Collection<JCUser> topicSubscribers) {
+    public void subscribedEntityChanged(SubscriptionAwareEntity entity, Collection<JCUser> excludeFromNotification) {
         Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
+        subscribers.removeAll(excludeFromNotification);
         filterSubscribers(subscribers, entity);
 
         for (JCUser user : subscribers) {
-            if (!topicSubscribers.contains(user)) {
-                mailService.sendUpdatesOnSubscription(user, entity);
-            }
+            mailService.sendUpdatesOnSubscription(user, entity);
         }
     }
 
