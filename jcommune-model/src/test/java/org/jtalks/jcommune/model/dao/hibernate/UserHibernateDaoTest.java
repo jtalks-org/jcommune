@@ -366,6 +366,82 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 1);
     }
 
+    @Test
+    public void findByUsernameOrEmailShouldSearchByUsername() {
+        JCUser user1 = createUserWithMail("Arthur", "email1@mail.com", true);
+        JCUser user2 = createUserWithMail("Barbara", "email2@mail.com", true);
+        createUserWithMail("Epolit", "email3@mail.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail("ar", 20);
+
+        assertEquals(result.size(), 2);
+        assertTrue(result.contains(user1));
+        assertTrue(result.contains(user2));
+    }
+
+    @Test
+    public void findByUsernameOrEmailShouldSearchByEmail() {
+        JCUser user1 = createUserWithMail("Arthur", "emAIL1@mail.com", true);
+        JCUser user2 = createUserWithMail("Barbara", "email2@mail.com", true);
+        createUserWithMail("Epolit", "post@google.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail("email", 20);
+
+        assertEquals(result.size(), 2);
+        assertTrue(result.contains(user1));
+        assertTrue(result.contains(user2));
+    }
+
+    @Test
+    public void findByUsernameOrEmailShouldSearchDisabledUsers() {
+        JCUser user1 = createUserWithMail("Arthur", "emAIL1@mail.com", true);
+        JCUser user2 = createUserWithMail("Barbara", "email2@mail.com", false);
+
+        List<JCUser> result = dao.findByUsernameOrEmail("email", 20);
+
+        assertEquals(result.size(), 2);
+        assertTrue(result.contains(user1));
+        assertTrue(result.contains(user2));
+    }
+
+    @Test
+    public void findByUsernameShouldNotReturnMoreUsersThanSpecified() {
+        createUserWithMail("user1", "emai1@mail.com", true);
+        createUserWithMail("user2", "email2@mail.com", true);
+        createUserWithMail("user3", "email3@mail.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail("user", 2);
+
+        assertEquals(result.size(), 2);
+    }
+
+    @Test
+    public void findByUsernameOrEmailShouldCorrectlyEscapeSpecialCharacters() {
+        String usernamePattern = "_us%";
+        createUserWithMail("Some_user1", "user1@mail.com", true);
+        createUserWithMail("user2", "user2@mail.com", true);
+        JCUser user = createUserWithMail("Some_us%2r", "user3@mail.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(usernamePattern, 20);
+
+        assertEquals(result.size(), 1);
+        assertTrue(result.contains(user));
+    }
+
+    @Test
+    public void testFindByUsernameOrEmailWihSpecialCharacters() {
+        String usernamePattern = "@/|\"&' <>#${}()";
+        createUserWithMail("Some_user1", "user1@mail.com", true);
+        createUserWithMail("user2", "user2@mail.com", true);
+        JCUser user = createUserWithMail("@/|\"&' <>#${}()", "user3@mail.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(usernamePattern, 20);
+
+        assertEquals(result.size(), 1);
+        assertTrue(result.contains(user));
+    }
+
+
     private JCUser givenJCUserWithUsernameStoredInDb(String username) {
         JCUser expected = new JCUser(username, username + "@mail.com", username + "pass");
         session.save(expected);

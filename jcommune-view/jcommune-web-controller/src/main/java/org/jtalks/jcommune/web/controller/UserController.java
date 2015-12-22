@@ -519,8 +519,12 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users/list", method = RequestMethod.GET)
-    public ModelAndView showUsersSearchPage()
-    {
+    public ModelAndView showUsersSearchPage() {
+        return new ModelAndView("userSearch");
+    }
+
+    @RequestMapping(value = "/users/list", method = RequestMethod.POST)
+    public ModelAndView searchUsers(@RequestParam String searchKey)  {
         return new ModelAndView("userSearch");
     }
 

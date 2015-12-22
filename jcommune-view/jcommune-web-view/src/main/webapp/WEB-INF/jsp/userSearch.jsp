@@ -23,10 +23,12 @@
   <div class="container">
     <h2>Search user</h2>
     <div class="input-append">
-      <input class="span1" id="appendedInputButton" type="text" width="200"/>
-      <button type="submit" class="btn">
-        Search
-      </button>
+      <form method="POST" action='${pageContext.request.contextPath}/users/list'>
+        <input id="searchKey" name="searchKey" type="text"/>
+        <button type="submit" class="btn">
+          Search
+        </button>
+      </form>
     </div>
   </div>
 </body>

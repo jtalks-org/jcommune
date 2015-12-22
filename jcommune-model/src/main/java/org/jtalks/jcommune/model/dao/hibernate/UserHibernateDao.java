@@ -129,4 +129,14 @@ public class UserHibernateDao extends GenericDao<JCUser>
                 .setMaxResults(count)
                 .list();
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<JCUser> findByUsernameOrEmail(String pattern, int count) {
+        pattern = SqlLikeEscaper.escapeControlCharacters(pattern);
+        return session().getNamedQuery("searchByEmailOrUsername")
+                .setParameter("pattern", "%" + pattern.toLowerCase() + "%")
+                .setMaxResults(count)
+                .list();
+    }
 }
