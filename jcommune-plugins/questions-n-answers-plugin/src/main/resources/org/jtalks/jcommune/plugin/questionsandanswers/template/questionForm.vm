@@ -63,10 +63,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
       #bbeditor(${messages.getString("label.ask")} "" "${esc.html(${topicDto.bodyText})}" "bodyText" true ${messages.getString("label.question.details")} ${result})
     </form>
 
-    <a href="${request.contextPath}/branches/${topicDto.topic.branch.id}" tabindex="1000" class='back-btn'>
-      <i class="icon-arrow-left"></i>
-      <jcommune:message>label.back</jcommune:message>
-    </a>
+
 </div>
 <script>
     Utils.focusFirstEl('#subject');
