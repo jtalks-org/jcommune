@@ -63,13 +63,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
   #if ($canLeavePosts)
     ## determines if the post editor is show or not - depends on whether user has already left some posts
+    ## Also we shouldn't hide the area if there is some text already (draft or validation error returned after
+    ## submitting invalid form)
     #set($formVisibilityClass = "")
     ## determines if the button that prevents users to leave multiple answers is shown
     #set($antiMultianswerBtnVisibilityClass = "hide-element")
-    #if(${question.topicStarter.id} == ${currentUser.id})
+    #if(${question.topicStarter.id} == ${currentUser.id} && !${postDto.bodyText})
       #initAnswerConfirmationParams(${messages.getString("label.confirm.self.answer.title")} ${messages.getString("label.confirm.self.answer.message")})
-    #elseif(${question.getUserPostCount(${currentUser})} > 0)
-      #initAnswerConfirmationParams(${messages.getString("label.confirm.multi.answer.title")} ${messages.getString("label.confirm.multi.answer.message")})    #end
+    #elseif(${question.getUserPostCount(${currentUser})} > 0 && !${postDto.bodyText})
+      #initAnswerConfirmationParams(${messages.getString("label.confirm.multi.answer.title")} ${messages.getString("label.confirm.multi.answer.message")})
+    #end
   #end
   <style>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/css/question.css")</style>
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
