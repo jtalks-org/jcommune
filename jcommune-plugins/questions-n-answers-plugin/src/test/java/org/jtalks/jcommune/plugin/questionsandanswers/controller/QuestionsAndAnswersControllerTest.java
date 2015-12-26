@@ -108,8 +108,8 @@ public class QuestionsAndAnswersControllerTest {
         when(userReader.getCurrentUser()).thenReturn(new JCUser("name", "example@mail.ru", "pwd"));
         controller.setApplicationContext(context);
         controller.setBreadcrumbBuilder(breadcrumbBuilder);
-        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(Collections.EMPTY_LIST);
-        when(locationService.getUsersViewing(any(Entity.class))).thenReturn(Collections.EMPTY_LIST);
+        when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(Collections.<Breadcrumb>emptyList());
+        when(locationService.getUsersViewing(any(Entity.class))).thenReturn(Collections.<JCUser>emptyList());
         doReturn(content).when(controller).getMergedTemplate(any(VelocityEngine.class), anyString(),
                 anyString(), anyMap());
         when(userReader.getCurrentUser()).thenReturn(new JCUser("name", "example@mail.ru", "pwd"));
@@ -458,6 +458,21 @@ public class QuestionsAndAnswersControllerTest {
                 + 42L + "#" + answer.getId();
         assertEquals(methodResult, redirectedResult);
         verify(topicService).replyToTopic(42L, answerContent, topic.getBranch().getId());
+    }
+
+
+    @Test
+    public void createAnswerMustReturnDraft_ifValidationFails() throws Exception {
+        Topic topic = createTopic();
+        topic.addDraft(new PostDraft("blah", userReader.getCurrentUser()));
+        when(topicService.get(anyLong(), anyString())).thenReturn(topic);
+        when(result.hasErrors()).thenReturn(true);
+
+        Model model = new ExtendedModelMap();
+        PostDto postDto = new PostDto();
+        controller.create(42L, postDto, result, model, request);
+
+        assertEquals(postDto.getBodyText(), "blah");
     }
 
     private Topic createTopic() {

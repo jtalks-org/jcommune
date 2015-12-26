@@ -355,8 +355,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
      */
     @RequestMapping(value = "post/{id}/edit", method = RequestMethod.POST)
     public String updateAnswer(@Valid @ModelAttribute PostDto postDto, BindingResult result, Model model,
-                                 @PathVariable("id") Long id, HttpServletRequest request)
-            throws NotFoundException {
+                                 @PathVariable("id") Long id, HttpServletRequest request) throws NotFoundException {
         Post answer = getPluginPostService().get(id);
         Map<String, Object> data = getDefaultModel(request);
         if (result.hasErrors()) {
@@ -393,6 +392,14 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Topic topic = getTypeAwarePluginTopicService().get(questionId, QuestionsAndAnswersPlugin.TOPIC_TYPE);
         //We can't provide limitation properly without database-level locking
         if (result.hasErrors() || LIMIT_OF_POSTS_VALUE <= topic.getPostCount() - 1) {
+            JCUser currentUser = getUserReader().getCurrentUser();
+            PostDraft draft = topic.getDraftForUser(currentUser);
+            if (draft != null) {
+                // If we create new dto object instead of using already existing
+                // we lose error messages linked with it
+                postDto.fillFrom(draft);
+            }
+
             Map<String, Object> data = getDefaultModel(request);
             VelocityEngine engine = new VelocityEngine(getProperties());
             engine.init();
