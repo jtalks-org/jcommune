@@ -36,7 +36,7 @@
   <jtalks:pageUrl var="link" value="${uri}" page="1" params="${additionalParams}"/>
   <li>
     <a href="${link}" title="<spring:message code='pagination.first'/>">
-      <i class="icon-chevron-left"></i>
+      <span>&laquo;</span>
     </a>
   </li>
 </c:if>
@@ -66,7 +66,7 @@
   <jtalks:pageUrl var="link" value="${uri}" page="${page.totalPages}" params="${additionalParams}"/>
   <li>
     <a href="${link}" title="<spring:message code='pagination.last'/>">
-      <i class="icon-chevron-right"></i>
+      <span>&raquo;</span>
     </a>
   </li>
 </c:if>
