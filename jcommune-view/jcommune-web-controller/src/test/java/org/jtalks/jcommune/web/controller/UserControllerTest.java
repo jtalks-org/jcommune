@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
@@ -26,6 +27,7 @@ import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
+import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.util.AuthenticationStatus;
@@ -80,11 +82,10 @@ public class UserControllerTest {
     private MailService mailService;
     private PluginService pluginService;
     private Authenticator authenticator;
-    private LocaleResolver localeResolver;
-    private RequestContextUtils requestContextUtils;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private RetryTemplate retryTemplate;
+    private ComponentService componentService;
 
     @BeforeMethod
     public void setUp() throws IOException {
@@ -92,10 +93,9 @@ public class UserControllerTest {
         mailService = mock(MailService.class);
         pluginService = mock(PluginService.class);
         authenticator = mock(Authenticator.class);
-        requestContextUtils = mock(RequestContextUtils.class);
-        localeResolver = mock(LocaleResolver.class, "en");
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
+        componentService = mock(ComponentService.class);
         retryTemplate = new RetryTemplate();
         retryTemplate.setRetryPolicy(new NeverRetryPolicy());
         SecurityContextHolderFacade securityFacade = mock(SecurityContextHolderFacade.class);
@@ -103,7 +103,7 @@ public class UserControllerTest {
         when(securityFacade.getContext()).thenReturn(securityContext);
         when(request.getHeader("X-FORWARDED-FOR")).thenReturn("192.168.1.1");
         userController = new UserController(userService, authenticator, pluginService, userService,
-                mailService, retryTemplate);
+                mailService, retryTemplate, componentService);
     }
 
     @Test
@@ -450,9 +450,8 @@ public class UserControllerTest {
                 .thenReturn(AuthenticationStatus.AUTHENTICATION_FAIL);
         
         LoginUserDto loginUserDto = new LoginUserDto();
-        ModelAndView view = userController.login(loginUserDto, null,  "on", request, null);
+        userController.login(loginUserDto, null,  "on", request, null);
 
-//        assertEquals(view.getViewName(), "login");
         verify(userService).loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
 
@@ -490,6 +489,50 @@ public class UserControllerTest {
 
         JsonResponse response = userController.usernameList(pattern);
         assertEquals(response.getStatus(), JsonResponseStatus.SUCCESS);
+    }
+
+    @Test
+    public void testSearchUsersNullSearchKey() {
+        Component component = new Component();
+        component.setId(1);
+
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
+        ModelAndView mav = userController.searchUsers(null);
+
+        verify(componentService).checkPermissionsForComponent(component.getId());
+        assertEquals(mav.getViewName(), UserController.USER_SEARCH);
+        assertFalse(mav.getModel().containsKey(UserController.USERS_ATTR_NAME));
+    }
+
+    @Test
+    public void testSearchUsersEmptySearchKey() {
+        Component component = new Component();
+        component.setId(1);
+
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
+        ModelAndView mav = userController.searchUsers("");
+
+        verify(componentService).checkPermissionsForComponent(component.getId());
+        assertEquals(mav.getViewName(), UserController.USER_SEARCH);
+        assertFalse(mav.getModel().containsKey(UserController.USERS_ATTR_NAME));
+    }
+
+    @Test
+    public void testSearchUsers() {
+        Component component = new Component();
+        component.setId(1);
+        String searchKey = "key";
+        List<JCUser> users = Lists.asList(new JCUser("user", "email@email.com", "pwd"), new JCUser[0]);
+
+        when(componentService.getComponentOfForum()).thenReturn(component);
+        when(userService.findByUsernameOrEmail(component.getId(), searchKey)).thenReturn(users);
+
+        ModelAndView mav = userController.searchUsers(searchKey);
+
+        assertEquals(mav.getViewName(), UserController.USER_SEARCH);
+        assertEquals(mav.getModel().get(UserController.USERS_ATTR_NAME), users);
     }
 
     private void assertNullFields(RegisterUserDto dto) {

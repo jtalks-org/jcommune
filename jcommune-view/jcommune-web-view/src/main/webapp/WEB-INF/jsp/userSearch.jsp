@@ -15,21 +15,57 @@
 
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
-<head>
-  <title></title>
-</head>
-<body>
-  <div class="container">
-    <h2>Search user</h2>
-    <div class="input-append">
-      <form method="POST" action='${pageContext.request.contextPath}/users/list'>
-        <input id="searchKey" name="searchKey" type="text"/>
-        <button type="submit" class="btn">
-          Search
-        </button>
-      </form>
+  <head>
+    <title>
+      <c:out value="${cmpTitlePrefix}"/>
+      <spring:message code="label.search.user"/>
+    </title>
+  </head>
+  <body>
+    <div class="container">
+      <h2><spring:message code="label.search.user"/></h2>
+
+      <div class="input-append">
+        <form method="GET" action='${pageContext.request.contextPath}/users/list'>
+          <input id="searchKey" name="searchKey" type="text"/>
+          <button type="submit" class="btn">
+            <spring:message code="label.search"/>
+          </button>
+        </form>
+      </div>
+      <c:if test="${users!=null}">
+        <div class="well grid-container">
+          <c:choose>
+            <c:when test="${empty users}">
+              <table class="table grid-table">
+                <tr>
+                  <td>
+                    <spring:message code="label.search.user.empty"/>
+                  </td>
+                </tr>
+              </table>
+            </c:when>
+            <c:otherwise>
+              <table class="table table-bordered grid-table">
+                <c:forEach var="user" items="${users}">
+                  <tr class="grid-row">
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>
+                      <a href="${pageContext.request.contextPath}/users/${user.id}">
+                        <spring:message code="label.profile"/>
+                      </a>
+                    </td>
+                  </tr>
+                </c:forEach>
+              </table>
+            </c:otherwise>
+          </c:choose>
+        </div>
+      </c:if>
     </div>
-  </div>
-</body>
+  </body>
 </html>

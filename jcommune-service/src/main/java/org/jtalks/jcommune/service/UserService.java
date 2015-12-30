@@ -216,4 +216,13 @@ public interface UserService extends EntityService<JCUser> {
      */
     void changeLanguage(JCUser jcUser, Language newLang);
 
+    /**
+     * Searches users with email or username matching specified key
+     *
+     * @param forumComponentId id of forum (for security checking)
+     * @param searchKey key to search users
+     * @return first 20 users with email or username matching key
+     */
+    List<JCUser> findByUsernameOrEmail(long forumComponentId, String searchKey);
+
 }

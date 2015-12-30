@@ -24,6 +24,7 @@ import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
+import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.util.AuthenticationStatus;
@@ -62,6 +63,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
@@ -89,6 +91,7 @@ public class UserController {
     public static final String REG_SERVICE_CONNECTION_ERROR_URL = "redirect:/user/new?reg_error=1";
     public static final String REG_SERVICE_UNEXPECTED_ERROR_URL = "redirect:/user/new?reg_error=2";
     public static final String REG_SERVICE_HONEYPOT_FILLED_ERROR_URL = "redirect:/user/new?reg_error=3";
+    public static final String USER_SEARCH = "userSearch";
     public static final String NULL_REPRESENTATION = "null";
     public static final String MAIN_PAGE_REFERER = "/";
     public static final String CUSTOM_ERROR = "customError";
@@ -96,6 +99,7 @@ public class UserController {
     public static final String UNEXPECTED_ERROR = "unexpectedError";
     public static final String HONEYPOT_CAPTCHA_ERROR = "honeypotCaptchaNotNull";
     public static final String LOGIN_DTO = "loginUserDto";
+    public static final String USERS_ATTR_NAME ="users";
     protected static final String ATTR_USERNAME = "username";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     private static final String REMEMBER_ME_ON = "on";
@@ -105,6 +109,7 @@ public class UserController {
     private final UserService plainPasswordUserService;
     private final MailService mailService;
     private final RetryTemplate retryTemplate;
+    private final ComponentService componentService;
 
     /**
      * @param userService              to delegate business logic invocation
@@ -112,16 +117,19 @@ public class UserController {
      * @param pluginService            for communication with available registration or authentication plugins
      * @param plainPasswordUserService strategy for authenticating by password without hashing
      * @param mailService              to send account confirmation
+     * @param componentService         to check component permissions
      */
     @Autowired
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService,
-                          UserService plainPasswordUserService, MailService mailService, RetryTemplate retryTemplate) {
+                          UserService plainPasswordUserService, MailService mailService,
+                          RetryTemplate retryTemplate, ComponentService componentService) {
         this.userService = userService;
         this.authenticator = authenticator;
         this.pluginService = pluginService;
         this.plainPasswordUserService = plainPasswordUserService;
         this.mailService = mailService;
         this.retryTemplate = retryTemplate;
+        this.componentService = componentService;
     }
 
     /**
@@ -519,13 +527,16 @@ public class UserController {
     }
 
     @RequestMapping(value = "/users/list", method = RequestMethod.GET)
-    public ModelAndView showUsersSearchPage() {
-        return new ModelAndView("userSearch");
-    }
-
-    @RequestMapping(value = "/users/list", method = RequestMethod.POST)
-    public ModelAndView searchUsers(@RequestParam String searchKey)  {
-        return new ModelAndView("userSearch");
+    public ModelAndView searchUsers(@RequestParam(required = false) String searchKey)  {
+        ModelAndView mav = new ModelAndView(USER_SEARCH);
+        long forumId = componentService.getComponentOfForum().getId();
+        if (searchKey == null || searchKey.isEmpty()) {
+            componentService.checkPermissionsForComponent(forumId);
+        } else {
+            List<JCUser> users = userService.findByUsernameOrEmail(forumId, searchKey);
+            mav.addObject(USERS_ATTR_NAME, users);
+        }
+        return mav;
     }
 
     private class LoginRetryCallback implements RetryCallback<AuthenticationStatus, Exception> {

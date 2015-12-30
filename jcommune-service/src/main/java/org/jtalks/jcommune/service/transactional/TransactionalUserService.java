@@ -72,6 +72,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         implements UserService, UserReader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransactionalUserService.class);
+    protected static final int MAX_SEARCH_USER_COUNT=20;
+
     private final PostDao postDao;
     private final Authenticator authenticator;
     private final GroupDao groupDao;
@@ -370,5 +372,11 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     public void changeLanguage(JCUser jcUser, Language newLang) {
         jcUser.setLanguage(newLang);
         this.getDao().saveOrUpdate(jcUser);
+    }
+
+    @Override
+    @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public List<JCUser> findByUsernameOrEmail(long forumComponentId, String searchKey) {
+        return getDao().findByUsernameOrEmail(searchKey, MAX_SEARCH_USER_COUNT);
     }
 }
