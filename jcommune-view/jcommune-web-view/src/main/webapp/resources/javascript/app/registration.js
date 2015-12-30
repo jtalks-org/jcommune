@@ -158,6 +158,11 @@ function signUp(e) {
                 handlers: {
                     '#signup-submit-button': {'click': submitFunc},
                     '.btn-captcha-refresh, .captcha-img': {'click' : refreshCaptcha, 'keydown': refreshCaptchaKeyHandler}
+                },
+                dialogKeydown: function (e) {
+                    if (e.which == escCode) {
+                        jDialog.dialog.find('.close').click();
+                    }
                 }
             });
         }
