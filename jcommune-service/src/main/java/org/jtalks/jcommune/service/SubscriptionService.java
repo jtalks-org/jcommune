@@ -80,4 +80,12 @@ public interface SubscriptionService {
      */
     Collection<JCUser> getAllowedSubscribers(SubscriptionAwareEntity entity);
 
+    /**
+     * Subscribe subscription state for the {@link SubscriptionAwareEntity} given.
+     * Subscription will be applied to the current user logged in.
+     *
+     * @param entityToSubscribe object to subscribe or unsubscribe current user to
+     */
+    void subscribe(SubscriptionAwareEntity entityToSubscribe);
+
 }

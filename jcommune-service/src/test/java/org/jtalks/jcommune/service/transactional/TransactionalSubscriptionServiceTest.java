@@ -26,6 +26,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -150,4 +151,22 @@ public class TransactionalSubscriptionServiceTest {
 
         assertFalse(branch.getSubscribers().contains(user));
     }
+
+    @Test
+    public void testSubscribeIfUserIsNotSubscribedOnSubscriptionAwareEntity(){
+        service.subscribe(topic);
+
+        assertTrue(topic.getSubscribers().contains(user));
+        verify(topicDao).saveOrUpdate(topic);
+    }
+
+    @Test
+    public void testSubscribeIfUserSubscribedOnSubscriptionAwareEntity(){
+        topic.getSubscribers().add(user);
+        service.subscribe(topic);
+
+        assertTrue(topic.getSubscribers().contains(user));
+        verify(topicDao,never()).saveOrUpdate(topic);
+    }
+
 }
