@@ -124,4 +124,13 @@ public class TransactionalSubscriptionService implements SubscriptionService {
             branchDao.saveOrUpdate((Branch) entityToSubscribe);
         }
     }
+
+    @Override
+    public void subscribe(SubscriptionAwareEntity entityToSubscribe) {
+        JCUser current = userService.getCurrentUser();
+        if (!(entityToSubscribe.getSubscribers().contains(current))) {
+            entityToSubscribe.getSubscribers().add(current);
+            saveChanges(entityToSubscribe);
+        }
+    }
 }

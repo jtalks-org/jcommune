@@ -135,11 +135,10 @@ public class TransactionalTopicModificationService implements TopicModificationS
         Post answer = new Post(currentUser, answerBody);
         topic.addPost(answer);
         topic.removeDraftOfUser(currentUser);
-
-        if (currentUser.isAutosubscribe()) {
-            Set<JCUser> topicSubscribers = topic.getSubscribers();
-            topicSubscribers.add(currentUser);
+        if (currentUser.isAutosubscribe()){
+            subscriptionService.subscribe(topic);
         }
+
         postDao.saveOrUpdate(answer);
 
         Branch branch = topic.getBranch();
@@ -149,9 +148,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
 
         securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(answer).flush();
         notificationService.subscribedEntityChanged(topic);
-
         userService.notifyAndMarkNewlyMentionedUsers(answer);
-
         logger.debug("New post in topic. Topic id={}, Post id={}, Post author={}",
                 new Object[]{topicId, answer.getId(), currentUser.getUsername()});
 
@@ -204,21 +201,16 @@ public class TransactionalTopicModificationService implements TopicModificationS
         dao.saveOrUpdate(topic);
         branchDao.saveOrUpdate(branch);
 
-        JCUser user = userService.getCurrentUser();
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(topic).flush();
-        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(user).on(first).flush();
-
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(topic).flush();
+        securityService.createAclBuilder().grant(GeneralPermission.WRITE).to(currentUser).on(first).flush();
         notificationService.sendNotificationAboutTopicCreated(topic);
-
-        subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
+        if (currentUser.isAutosubscribe()){
+            subscriptionService.subscribe(topic);
+        }
         createPoll(topicDto.getPoll(), topic);
-
         userService.notifyAndMarkNewlyMentionedUsers(topic.getFirstPost());
-
         lastReadPostService.markTopicAsRead(topic);
-
         topicDraftService.deleteDraft();
-
         logger.debug("Created new topic id={}, branch id={}, author={}",
                 new Object[]{topic.getId(), topic.getBranch().getId(), currentUser.getUsername()});
         return topic;
@@ -310,26 +302,10 @@ public class TransactionalTopicModificationService implements TopicModificationS
             topic.getPoll().setEndingDate(poll.getEndingDate());
         }
         dao.saveOrUpdate(topic);
-        JCUser currentUser = userService.getCurrentUser();
-        subscribeOnTopicIfNotificationsEnabled(topic, currentUser);
         logger.debug("Topic id={} updated", topic.getId());
     }
 
-    /**
-     * Subscribes topic starter on created topic if notifications enabled("Notify me about the answer" checkbox).
-     * Subscribes and unsubscribes do if autoSubscribe enabled/disabled.
-     *
-     * @param topic       topic to subscription
-     * @param currentUser current user
-     */
-    private void subscribeOnTopicIfNotificationsEnabled(Topic topic, JCUser currentUser) {
-        boolean subscribed = topic.userSubscribed(currentUser);
-        if (currentUser.isAutosubscribe() ^ subscribed) {
-            subscriptionService.toggleTopicSubscription(topic);
-        }
-    }
-
-    /**
+     /**
      * {@inheritDoc}
      */
     @PreAuthorize("(hasPermission(#topic.branch.id, 'BRANCH', 'BranchPermission.DELETE_OWN_POSTS') and " +
