@@ -39,25 +39,11 @@ jQuery(document).ready(function () {
             $(".ui-menu-item").removeClass("custom-selected-item");
             $("#ui-active-menuitem").parent().addClass("custom-selected-item");
             $("#ui-active-menuitem").removeClass("ui-corner-all");
+        },
+        change: function(e, ui) {
+            validateRecipient();
         }
     }).autocomplete("widget").addClass("suggestion-list");
-
-    var mousedownHappened = false;
-    var mousedownTarget;
-
-    $("input, a").mousedown(function(e) {
-        mousedownHappened = true;
-        mousedownTarget = $(this);
-    });
-
-    recipientField.focusout(function() {
-        validateRecipient();
-        //needed because there are problems with click event after blur or focusout
-        if (mousedownHappened) {
-            mousedownHappened = false;
-            mousedownTarget.click();
-        }
-    });
 
     function validateRecipient() {
         clearError();
