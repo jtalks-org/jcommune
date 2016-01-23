@@ -238,9 +238,8 @@ public class TransactionalUserServiceTest {
         when(encryptionService.encryptPassword(null)).thenReturn(null);
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
         when(userDao.get(USER_ID)).thenReturn(user);
-        String newPassword = null;
         JCUser editedUser = userService.saveEditedUserSecurity(USER_ID,
-                new UserSecurityContainer(PASSWORD, newPassword));
+                new UserSecurityContainer(PASSWORD, null));
 
         assertEquals(editedUser.getPassword(), user.getPassword());
     }
@@ -581,6 +580,18 @@ public class TransactionalUserServiceTest {
                 return argument == user && Language.RUSSIAN.equals(argUser.getLanguage());
             }
         }));
+    }
+
+    @Test
+    public void testFindByUsernameOrEmail() {
+        String searchKey = "key";
+        List<JCUser> users = Lists.newArrayList(user("user1"), user("user2"), user("user3"));
+
+        when(userDao.findByUsernameOrEmail(searchKey, TransactionalUserService.MAX_SEARCH_USER_COUNT)).thenReturn(users);
+
+        List<JCUser> result = userService.findByUsernameOrEmail(1L, searchKey);
+
+        assertEquals(result, users);
     }
     
     public static <T> Set<T> asSet(T... values) {

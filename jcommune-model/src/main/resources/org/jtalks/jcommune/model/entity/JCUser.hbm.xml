@@ -91,4 +91,9 @@
             where lower(username) like (:pattern) escape '|' and enabled = 1 order by lower(username)]]>
   </query>
 
+  <query name="searchByEmailOrUsername">
+    <![CDATA[FROM JCUser WHERE LOWER(username) LIKE (:pattern) ESCAPE '|'
+                         OR LOWER(email) LIKE (:pattern) ESCAPE '|' ORDER BY LOWER(username) ]]>
+  </query>
+
 </hibernate-mapping>
