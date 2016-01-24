@@ -18,7 +18,10 @@ $(document).ready(function () {
     //Sets timezone cookie for the server to show all the dates in a client timezone
     document.cookie = "GMT=" + new Date().getTimezoneOffset() + "; path=/";
     // Initializes image previewing
-    $('a.pretty-photo').prettyPhoto();
+    $('a.pretty-photo').prettyPhoto({
+        deeplinking: false,
+        social_tools:false
+    });
     // popups for individual post links
     $('a.postLink').each(function () {
         $(this).click(function (e) {
