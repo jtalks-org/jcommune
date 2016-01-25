@@ -1217,24 +1217,18 @@ pre.prettyprint {
     line-height: 1.2em !important;
 }
 
-.grid-container {
-    display: inline-block;
-    padding: 0px 7px;
-}
 
 .grid-table {
     margin-top: 5px;
     margin-bottom: 5px;
+    color: #000
 }
 
 .grid-table td {
     border-top: 0;
+    border-bottom: 1px solid #ddd;;
 }
 
-.grid-row:nth-child(odd) {
-    background-color: #ffffff;
-}
-
-.grid-row:nth-child(even) {
-    background-color: #f5f5f5;
+.grid-row {
+    background-color: #ffffff !important;
 }

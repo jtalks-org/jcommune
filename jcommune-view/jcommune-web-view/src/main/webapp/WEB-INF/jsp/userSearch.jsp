@@ -30,14 +30,14 @@
 
       <div class="input-append">
         <form method="GET" action='${pageContext.request.contextPath}/users/list'>
-          <input id="searchKey" name="searchKey" type="text"/>
+          <input id="searchKey" name="searchKey" type="text" value="${param.searchKey}"/>
           <button type="submit" class="btn">
             <spring:message code="label.search"/>
           </button>
         </form>
       </div>
       <c:if test="${users!=null}">
-        <div class="well grid-container">
+        <div>
           <c:choose>
             <c:when test="${empty users}">
               <table class="table grid-table">

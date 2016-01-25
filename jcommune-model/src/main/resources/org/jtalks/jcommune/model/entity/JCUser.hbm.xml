@@ -93,7 +93,12 @@
 
   <query name="searchByEmailOrUsername">
     <![CDATA[FROM JCUser WHERE LOWER(username) LIKE (:pattern) ESCAPE '|'
-                         OR LOWER(email) LIKE (:pattern) ESCAPE '|' ORDER BY LOWER(username) ]]>
+                         OR LOWER(email) LIKE (:pattern) ESCAPE '|' ORDER BY
+                         CASE
+                         WHEN LOWER(username) LIKE (:primaryPattern) ESCAPE '|' OR LOWER(email) LIKE (:primaryPattern) ESCAPE '|' THEN 1
+                         WHEN LOWER(username) LIKE (:secondaryPattern) ESCAPE '|' OR LOWER(email) LIKE (:secondaryPattern) ESCAPE '|' THEN 2
+                         WHEN LOWER(username) LIKE (:thirdaryPattern) ESCAPE '|' OR LOWER(email) LIKE (:thirdaryPattern) ESCAPE '|' THEN 3
+                         END]]>
   </query>
 
 </hibernate-mapping>
