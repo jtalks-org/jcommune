@@ -196,6 +196,17 @@ public class Branch extends org.jtalks.common.model.entity.Branch
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends SubscriptionAwareEntity> String getUnsubscribeLinkForSubscribersOf(Class<T> clazz) {
+        if (Branch.class == clazz) {
+            return String.format("/branches/%s/unsubscribe", getId());
+        }
+        return null;
+    }
+
+    /**
      * Set count of topics in this branch.
      *
      * @param topicsCount count of posts in this branch

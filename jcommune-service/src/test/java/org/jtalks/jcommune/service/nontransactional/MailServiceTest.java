@@ -282,39 +282,7 @@ public class MailServiceTest {
         service.sendReceivedPrivateMessageNotification(user, new PrivateMessage(null, null, null, null));
     }
 
-    @Test
-    public void testSendTopicMovedMail() throws Exception {
-        enableEmailNotifications();
-        service.sendTopicMovedMail(user, topic);
 
-        this.checkMailCredentials();
-        assertTrue(this.getMimeMailBody().contains(USERNAME));
-        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topicId));
-        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/" + branchId
-                + "/unsubscribe"));
-    }
-
-    @Test
-    public void topicMovedMailShouldNotBeSentIfNotificationsAreDisabled() throws Exception {
-        disableEmailNotifications();
-        service.sendTopicMovedMail(user, topic);
-        verify(sender, never()).send(any(MimeMessage.class));
-    }
-
-    @Test
-    public void testSendTopicMovedMailFailed() throws Exception {
-        enableEmailNotifications();
-        Exception fail = new MailSendException("");
-        doThrow(fail).when(sender).send(Matchers.<SimpleMailMessage>any());
-
-        service.sendTopicMovedMail(user, topic);
-        
-        this.checkMailCredentials();
-        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/topics/" + topicId));
-        assertTrue(this.getMimeMailBody().contains("http://coolsite.com:1234/forum/branches/" + branchId
-                + "/unsubscribe"));
-    }
-    
     @Test
     public void sendUserMentionedNotificationShouldSentIt() throws Exception {
         enableEmailNotifications();
@@ -369,24 +337,6 @@ public class MailServiceTest {
     }
 
     @Test
-    public void testSendRemovingTopicMail() throws Exception {
-        enableEmailNotifications();
-
-        service.sendRemovingTopicMail(user, topic);
-
-        this.checkMailCredentials();
-
-        String subjectTemplate =
-                messageSource.getMessage("removeTopic.subject",  new Object[]{}, user.getLanguage().getLocale());
-
-        String bodyTemplate =
-                messageSource.getMessage("removeTopic.content",  new Object[]{}, user.getLanguage().getLocale());
-
-        assertEquals(this.getMimeMailSubject(), subjectTemplate);
-        assertTrue(this.getMimeMailBody().contains(bodyTemplate));
-    }
-
-    @Test
     public void testSendRemovingTopicMailCurrentUserAware() throws Exception{
         enableEmailNotifications();
 
@@ -404,15 +354,6 @@ public class MailServiceTest {
     }
 
     @Test
-    public void removingTopicMailShouldNotBeSentWhenForumNotificationsAreDisabled() throws Exception {
-        disableEmailNotifications();
-
-        service.sendRemovingTopicMail(user, topic);
-
-        verify(sender, never()).send(any(MimeMessage.class));
-    }
-
-    @Test
     public void removingTopicMailCurrentUserAwareShouldNotBeSentWhenForumNotificationsAreDisabled()
             throws Exception {
         disableEmailNotifications();
@@ -420,24 +361,6 @@ public class MailServiceTest {
         service.sendRemovingTopicMail(user, topic, "admin");
 
         verify(sender, never()).send(any(MimeMessage.class));
-    }
-
-    @Test
-    public void testSendRemovingTopicWithCodeReviewMail() throws Exception {
-        enableEmailNotifications();
-        topic.setType(TopicTypeName.CODE_REVIEW.getName());
-        service.sendRemovingTopicMail(user, topic);
-
-        this.checkMailCredentials();
-
-        String subjectTemplate =
-                messageSource.getMessage("removeCodeReview.subject",  new Object[]{}, user.getLanguage().getLocale());
-
-        String bodyTemplate =
-                messageSource.getMessage("removeCodeReview.content",  new Object[]{}, user.getLanguage().getLocale());
-
-        assertEquals(this.getMimeMailSubject(), subjectTemplate);
-        assertTrue(this.getMimeMailBody().contains(bodyTemplate));
     }
 
     @Test

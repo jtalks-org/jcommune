@@ -21,7 +21,7 @@ import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Implements database-backed durable subscriptions on forum object's updates.
@@ -111,7 +111,18 @@ public class TransactionalSubscriptionService implements SubscriptionService {
         if (entity instanceof Topic) {
             return this.topicDao.getAllowedSubscribers(entity);
         } else if (entity instanceof Post) {
-            return this.topicDao.getAllowedSubscribers(((Post)entity).getTopic());
+            Post post = (Post) entity;
+            Collection<JCUser> subscribers = topicDao.getAllowedSubscribers(post.getTopic());
+            /* Can't return Collections.emptyList() or Arrays.asList(...)
+                may be problems with removing elements
+            */
+            if (subscribers.contains(post.getUserCreated())) {
+                List<JCUser> arrayList = new ArrayList<>(1);
+                arrayList.add(post.getUserCreated());
+                return arrayList;
+            } else {
+                return new ArrayList<>();
+            }
         } else{
             return this.branchDao.getAllowedSubscribers(entity);
         }

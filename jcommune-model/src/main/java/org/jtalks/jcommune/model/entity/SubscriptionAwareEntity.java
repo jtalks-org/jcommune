@@ -37,4 +37,17 @@ public interface SubscriptionAwareEntity {
      * @return URL suffix
      */
     String getUrlSuffix();
+
+    /**
+     * Gets link for unsubscription form updates of entity for subscribes of entity of specified class.
+     * Sometimes if entity updates we need to send notifications to subscribers of parent entity (if topic
+     * moved we need to notify target branch subscribers) so in this case we should show different urls
+     * for subscribers of branch and subscribers of topic
+     *
+     * @param clazz class of entity user subscribed to
+     * @param <T> subclass of {@link org.jtalks.jcommune.model.entity.SubscriptionAwareEntity}
+     *
+     * @return link for unsubscription
+     */
+    <T extends SubscriptionAwareEntity> String getUnsubscribeLinkForSubscribersOf(Class<T> clazz);
 }

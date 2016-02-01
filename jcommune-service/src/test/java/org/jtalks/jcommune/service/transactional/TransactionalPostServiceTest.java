@@ -212,7 +212,7 @@ public class TransactionalPostServiceTest {
         assertEquals(topic.getModificationDate(), topic.getFirstPost().getCreationDate());
         verify(topicDao).saveOrUpdate(topic);
         verify(securityService).deleteFromAcl(postForDelete);
-        verify(notificationService).subscribedEntityChanged(topic, Collections.EMPTY_SET);
+        verify(notificationService).subscribedEntityChanged(postForDelete);
     }
 
     @Test
@@ -250,7 +250,7 @@ public class TransactionalPostServiceTest {
         assertEquals(topic.getModificationDate(), topic.getFirstPost().getCreationDate());
         verify(topicDao).saveOrUpdate(topic);
         verify(securityService).deleteFromAcl(postForDelete);
-        verify(notificationService).subscribedEntityChanged(topic, Collections.EMPTY_SET);
+        verify(notificationService).subscribedEntityChanged(postForDelete);
 
     }
 
@@ -305,7 +305,7 @@ public class TransactionalPostServiceTest {
 
         postService.deletePost(post);
 
-        verify(notificationService).subscribedEntityChanged(topic, Collections.EMPTY_SET);
+        verify(notificationService).subscribedEntityChanged(post);
     }
 
     @Test
@@ -319,7 +319,7 @@ public class TransactionalPostServiceTest {
 
         postService.deletePost(post);
 
-        verify(notificationService).subscribedEntityChanged(topic, Collections.singleton(currentUser));
+        verify(notificationService).subscribedEntityChanged(post);
     }
 
     @Test

@@ -26,14 +26,11 @@ import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
-import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
  * @author Evgeniy Naumenko
@@ -148,69 +145,163 @@ public class NotificationServiceTest {
 
     @Test
     public void testTopicMovedWithBranchSubscribers() {
+        branch.setSubscribers(new HashSet<JCUser>());
+        branch.getSubscribers().add(user2);
+        branch.getSubscribers().add(user3);
+
+        when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
+
+        service.sendNotificationAboutTopicMoved(topic);
+
+        verify(mailService).sendTopicMovedMail(user2, topic, currentUser.getUsername(), Branch.class);
+        verify(mailService).sendTopicMovedMail(user3, topic, currentUser.getUsername(), Branch.class);
+    }
+
+    @Test
+    public void testTopicMovedCurrentUserIsBranchSubscriber() {
+        branch.setSubscribers(new HashSet<JCUser>());
         branch.getSubscribers().add(currentUser);
         branch.getSubscribers().add(user2);
-        branch.getSubscribers().add(user3);
+
+        when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
 
         service.sendNotificationAboutTopicMoved(topic);
 
-        verify(mailService).sendTopicMovedMail(user2, topic, "current");
-        verify(mailService).sendTopicMovedMail(user3, topic, "current");
+        verify(mailService, never()).sendTopicMovedMail(currentUser, topic, currentUser.getUsername(), Branch.class);
+        verify(mailService).sendTopicMovedMail(user2, topic, currentUser.getUsername(), Branch.class);
     }
 
     @Test
-    public void testTopicMovedTopicStarterIsNotASubscriber() {
-        branch.getSubscribers().add(currentUser);
-        branch.getSubscribers().add(user2);
-        branch.getSubscribers().add(user3);
-
-        service.sendNotificationAboutTopicMoved(topic);
-
-        verify(mailService, times(2)).sendTopicMovedMail(any(JCUser.class), eq(topic), eq("current"));
-        verify(mailService).sendTopicMovedMail(user2, topic, "current");
-        verify(mailService).sendTopicMovedMail(user3, topic, "current");
-        assertEquals(branch.getSubscribers().size(), 3);
-    }
-
-    @Test
-    public void testTopicMovedWhenUserIsSubscribedForBranchAndTopic() {
-        branch.getSubscribers().add(user2);
-        branch.getSubscribers().add(user3);
-
-        service.sendNotificationAboutTopicMoved(topic);
-
-        Collection<JCUser> topicSubscribers = new ArrayList();
-        topicSubscribers.add(user2);
-
-        when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topicSubscribers);
-
-        verify(mailService, times(1)).sendTopicMovedMail(user3, topic, "current");
-    }
-
-    @Test
-    public void testSendNotificationAboutRemovingTopic() {
-        Collection<JCUser> subscribers = new ArrayList();
-        subscribers.add(user1);
-        subscribers.add(user2);
-        service.sendNotificationAboutRemovingTopic(topic, subscribers);
-        verify(mailService).sendRemovingTopicMail(user2, topic, "current");
-    }
-
-    @Test
-    public void testTopicChangedWithFilterByTopicSubscribers() throws MailingFailedException {
+    public void testTopicMovedWithTopicSubscribers() {
+        topic.setSubscribers(new HashSet<JCUser>());
         topic.getSubscribers().add(user1);
         topic.getSubscribers().add(user2);
-        topic.getSubscribers().add(currentUser);
+
         when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topic.getSubscribers());
 
-        Collection<JCUser> excludeFromNotification = new ArrayList();
-        excludeFromNotification.add(user2);
+        service.sendNotificationAboutTopicMoved(topic);
 
-        service.subscribedEntityChanged(topic, excludeFromNotification);
+        verify(mailService).sendTopicMovedMail(user1, topic, currentUser.getUsername(), Topic.class);
+        verify(mailService).sendTopicMovedMail(user2, topic, currentUser.getUsername(), Topic.class);
+    }
 
-        verify(mailService).sendUpdatesOnSubscription(any(JCUser.class), eq(topic));
-        verify(mailService).sendUpdatesOnSubscription(user1, topic);
-        assertReflectionEquals(Collections.singleton(user1), topic.getSubscribers());
+    @Test
+    public void testTopicMovedCurrentUserIsTopicSubscriber() {
+        topic.setSubscribers(new HashSet<JCUser>());
+        topic.getSubscribers().add(user1);
+        topic.getSubscribers().add(currentUser);
+
+        when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topic.getSubscribers());
+
+        service.sendNotificationAboutTopicMoved(topic);
+
+        verify(mailService, never()).sendTopicMovedMail(currentUser, topic, currentUser.getUsername(), Topic.class);
+        verify(mailService).sendTopicMovedMail(user1, topic, currentUser.getUsername(), Topic.class);
+    }
+
+    @Test
+    public void testTopicMovedUserSubscribedToBranchAndTopic() {
+        branch.setSubscribers(new HashSet<JCUser>());
+        branch.getSubscribers().add(user1);
+        topic.getSubscribers().add(user1);
+        branch.getSubscribers().add(user2);
+
+        when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
+        when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topic.getSubscribers());
+
+        service.sendNotificationAboutTopicMoved(topic);
+
+        verify(mailService).sendTopicMovedMail(user1, topic, currentUser.getUsername(), Topic.class);
+        verify(mailService, never()).sendTopicMovedMail(user1, topic, currentUser.getUsername(), Branch.class);
+        verify(mailService, never()).sendTopicMovedMail(user2, topic, currentUser.getUsername(), Topic.class);
+        verify(mailService).sendTopicMovedMail(user2, topic, currentUser.getUsername(), Branch.class);
+
+    }
+
+    @Test
+    public void testTopicMovedNoSubscribers() {
+        service.sendNotificationAboutTopicMoved(topic);
+
+        verifyZeroInteractions(mailService);
+    }
+
+
+    @Test
+    public void testTopicRemovedTopicSubscribers() {
+        topic.setSubscribers(new HashSet<JCUser>());
+        topic.getSubscribers().add(user1);
+        topic.getSubscribers().add(user2);
+
+        when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topic.getSubscribers());
+
+        service.sendNotificationAboutRemovingTopic(topic);
+
+        verify(mailService).sendRemovingTopicMail(user1, topic, currentUser.getUsername());
+        verify(mailService).sendRemovingTopicMail(user2, topic, currentUser.getUsername());
+    }
+
+    @Test
+    public void testTopicRemovedCurrentUserIsTopicSubscriber() {
+        topic.setSubscribers(new HashSet<JCUser>());
+        topic.getSubscribers().add(currentUser);
+        topic.getSubscribers().add(user1);
+
+        when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topic.getSubscribers());
+
+        service.sendNotificationAboutRemovingTopic(topic);
+
+        verify(mailService, never()).sendRemovingTopicMail(currentUser, topic, currentUser.getUsername());
+        verify(mailService).sendRemovingTopicMail(user1, topic, currentUser.getUsername());
+    }
+
+    @Test
+    public void testTopicRemovedBranchSubscribers() {
+        branch.setSubscribers(new HashSet<JCUser>());
+        branch.getSubscribers().add(user1);
+        branch.getSubscribers().add(user2);
+
+        when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
+
+        service.sendNotificationAboutRemovingTopic(topic);
+
+        verify(mailService).sendUpdatesOnSubscription(user1, branch);
+        verify(mailService).sendUpdatesOnSubscription(user2, branch);
+    }
+
+    @Test
+    public void testTopicRemovedCurrentUserIsBranchSubscriber() {
+        branch.setSubscribers(new HashSet<JCUser>());
+        branch.getSubscribers().add(currentUser);
+        branch.getSubscribers().add(user1);
+
+        when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
+
+        service.sendNotificationAboutRemovingTopic(topic);
+
+        verify(mailService, never()).sendUpdatesOnSubscription(currentUser, branch);
+        verify(mailService).sendUpdatesOnSubscription(user1, branch);
+
+    }
+
+    @Test
+    public void testTopicRemovedUserSubscribedToBranchAndTopic() {
+        branch.setSubscribers(new HashSet<JCUser>());
+        branch.getSubscribers().add(user1);
+        branch.getSubscribers().add(user2);
+        topic.getSubscribers().add(user2);
+        topic.getSubscribers().add(user3);
+
+        when(subscriptionService.getAllowedSubscribers(branch)).thenReturn(branch.getSubscribers());
+        when(subscriptionService.getAllowedSubscribers(topic)).thenReturn(topic.getSubscribers());
+
+        service.sendNotificationAboutRemovingTopic(topic);
+
+        verify(mailService).sendUpdatesOnSubscription(user1, branch);
+        verify(mailService, never()).sendRemovingTopicMail(user1, topic, currentUser.getUsername());
+        verify(mailService, never()).sendRemovingTopicMail(user2, topic, currentUser.getUsername());
+        verify(mailService).sendUpdatesOnSubscription(user2, branch);
+        verify(mailService).sendRemovingTopicMail(user3, topic, currentUser.getUsername());
+        verify(mailService, never()).sendUpdatesOnSubscription(user3, branch);
     }
     
     @Test

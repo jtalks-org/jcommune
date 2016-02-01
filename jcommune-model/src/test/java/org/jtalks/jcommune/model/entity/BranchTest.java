@@ -20,9 +20,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 
 /**
@@ -38,7 +36,7 @@ public class BranchTest {
     @BeforeMethod
     public void setUp() {
         branch = new Branch("test branch", "test branch");
-        List<Topic> topics = new ArrayList<Topic>();
+        List<Topic> topics = new ArrayList<>();
         first = new Topic(null, null);
         second = new Topic(null, null);
         third = new Topic(null, null);
@@ -124,5 +122,22 @@ public class BranchTest {
         boolean isLastPost = branch.isLastPost(checkedPost);
         
         assertFalse(isLastPost);  
+    }
+
+    @Test
+    public void getUnsubscribeLinkForSubscribersOfBranch() {
+        branch.setId(1);
+
+        assertEquals(branch.getUnsubscribeLinkForSubscribersOf(Branch.class), "/branches/1/unsubscribe");
+    }
+
+    @Test
+    public void getUnsubscribeLinkForSubscribersOfTopic() {
+        assertNull(branch.getUnsubscribeLinkForSubscribersOf(Topic.class));
+    }
+
+    @Test
+    public void getUnsubscribeLinkForSubscribersOfPost() {
+        assertNull(branch.getUnsubscribeLinkForSubscribersOf(Post.class));
     }
 }

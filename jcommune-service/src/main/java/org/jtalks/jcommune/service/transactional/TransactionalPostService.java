@@ -46,8 +46,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 
 /**
  * Post service class. This class contains method needed to manipulate with Post persistent entity.
@@ -155,12 +153,9 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         securityService.deleteFromAcl(post);
 
         /*
-         implementation of the task JC-2276 (only the creator of the post should
-         be notified when it's removed).
+         only the creator of the post should be notified when it's removed.
          */
-        Set<JCUser> excludeFromNotification = new HashSet<>(topic.getSubscribers());
-        excludeFromNotification.remove(postCreator);
-        notificationService.subscribedEntityChanged(topic, excludeFromNotification);
+        notificationService.subscribedEntityChanged(post);
 
         if (deletedPostIsLastPostInBranch) {
             branchLastPostService.refreshLastPostInBranch(branch);
@@ -265,7 +260,10 @@ public class TransactionalPostService extends AbstractTransactionalEntityService
         }
         targetPost.addComment(comment);
         getDao().saveOrUpdate(targetPost);
-        notificationService.subscribedEntityChanged(targetPost);
+        /**
+         * Notify subscribers of topic if comment added
+         */
+        notificationService.subscribedEntityChanged(targetPost.getTopic());
 
         return comment;
     }

@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
+import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SubscriptionAwareEntity;
 import org.jtalks.jcommune.model.entity.Topic;
@@ -26,9 +27,7 @@ import org.jtalks.jcommune.service.SubscriptionService;
 import org.jtalks.jcommune.service.UserService;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Send email notifications to the users subscribed.
@@ -83,22 +82,6 @@ public class NotificationService {
     }
 
     /**
-     * Overload for skipping topic subscribers
-     *
-     * @param entity changed subscribed entity.
-     * @param excludeFromNotification a collection of subscribers who are excluded from a notification.
-     */
-    public void subscribedEntityChanged(SubscriptionAwareEntity entity, Collection<JCUser> excludeFromNotification) {
-        Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(entity);
-        subscribers.removeAll(excludeFromNotification);
-        filterSubscribers(subscribers, entity);
-
-        for (JCUser user : subscribers) {
-            mailService.sendUpdatesOnSubscription(user, entity);
-        }
-    }
-
-    /**
      * Notifies topic starter by email that his or her topic
      * was moved to another sections and also notifies all branch
      * subscribers
@@ -113,16 +96,16 @@ public class NotificationService {
         this.filterSubscribers(topicSubscribers, topic);
 
         for (JCUser subscriber : topicSubscribers) {
-            mailService.sendTopicMovedMail(subscriber, topic, curUser);
+            mailService.sendTopicMovedMail(subscriber, topic, curUser, Topic.class);
         }
 
         //send notification to branch subscribers
-        Set<JCUser> branchSubscribers = new HashSet<>(topic.getBranch().getSubscribers());
-
+        Collection<JCUser> branchSubscribers = subscriptionService.getAllowedSubscribers(topic.getBranch());
+        branchSubscribers.removeAll(topicSubscribers);
         this.filterSubscribers(branchSubscribers, topic.getBranch());
         for (JCUser subscriber : branchSubscribers) {
             if (!topicSubscribers.contains(subscriber)) {
-                mailService.sendTopicMovedMail(subscriber, topic, curUser);
+                mailService.sendTopicMovedMail(subscriber, topic, curUser, Branch.class);
             }
         }
     }
@@ -149,9 +132,12 @@ public class NotificationService {
      * Send notification to subscribers about removing topic or code review.
      *
      * @param topic       Current topic
-     * @param subscribers Collection of subscribers
      */
-    public void sendNotificationAboutRemovingTopic(Topic topic, Collection<JCUser> subscribers) {
+    public void sendNotificationAboutRemovingTopic(Topic topic) {
+        subscribedEntityChanged(topic.getBranch());
+        Collection<JCUser> subscribers = subscriptionService.getAllowedSubscribers(topic);
+        Collection<JCUser> branchSubscribers = subscriptionService.getAllowedSubscribers(topic.getBranch());
+        subscribers.removeAll(branchSubscribers);
         String curUser = userService.getCurrentUser().getUsername();
         this.filterSubscribers(subscribers, topic);
         for (JCUser subscriber : subscribers) {

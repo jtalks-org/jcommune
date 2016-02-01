@@ -570,6 +570,20 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends SubscriptionAwareEntity> String getUnsubscribeLinkForSubscribersOf(Class<T> clazz) {
+
+        if (Branch.class == clazz) {
+            return getBranch().getUnsubscribeLinkForSubscribersOf(clazz);
+        } else {
+            //In case of post unsubscribe from topic too
+            return String.format("/topics/%s/unsubscribe", getId());
+        }
+    }
+
+    /**
      * @return True if topic is closed
      */
     public boolean isClosed() {

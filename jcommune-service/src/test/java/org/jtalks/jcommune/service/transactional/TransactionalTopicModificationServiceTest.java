@@ -301,7 +301,7 @@ public class TransactionalTopicModificationServiceTest {
     }
 
     @Test
-    private void updateLastPostInBranchByCreateTopic() throws NotFoundException {
+    public void updateLastPostInBranchByCreateTopic() throws NotFoundException {
         Branch branch = createBranch();
         createTopicStubs(branch);
         Topic tmp = createTopic();
@@ -335,7 +335,6 @@ public class TransactionalTopicModificationServiceTest {
 
     @Test
     public void testDeleteTopic() throws NotFoundException {
-        Collection<JCUser> subscribers = new ArrayList<>();
         Topic topic = new Topic(user, "title");
         topic.setId(TOPIC_ID);
         Post firstPost = new Post(user, ANSWER_BODY);
@@ -352,9 +351,7 @@ public class TransactionalTopicModificationServiceTest {
         assertEquals(user.getPostCount(), 0);
         verify(branchDao).saveOrUpdate(branch);
         verify(securityService).deleteFromAcl(Topic.class, TOPIC_ID);
-        verify(notificationService).subscribedEntityChanged(branch, new ArrayList());
-        verify(notificationService).sendNotificationAboutRemovingTopic(topic, subscribers);
-        verify(subscriptionService).getAllowedSubscribers(topic);
+        verify(notificationService).sendNotificationAboutRemovingTopic(topic);
     }
 
 

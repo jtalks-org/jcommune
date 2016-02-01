@@ -391,4 +391,12 @@ public class Post extends Entity implements SubscriptionAwareEntity {
         return URL_SUFFIX + getId();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends SubscriptionAwareEntity> String getUnsubscribeLinkForSubscribersOf(Class<T> clazz) {
+        return getTopic().getUnsubscribeLinkForSubscribersOf(clazz);
+    }
+
 }

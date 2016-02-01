@@ -382,6 +382,35 @@ public class TopicTest {
         assertEquals(topic.getUserPostCount(user), 2);
     }
 
+    @Test
+    public void testGetUnsubscribeLinkForSubscribersOfPost()
+    {
+        Topic topic = new Topic();
+        topic.setId(1);
+
+        assertEquals(topic.getUnsubscribeLinkForSubscribersOf(Post.class), "/topics/1/unsubscribe");
+    }
+
+    @Test
+    public void testGetUnsubscribeLinkForSubscribersOfTopic()
+    {
+        Topic topic = new Topic();
+        topic.setId(1);
+
+        assertEquals(topic.getUnsubscribeLinkForSubscribersOf(Topic.class), "/topics/1/unsubscribe");
+    }
+
+    @Test
+    public void testGetUnsubscribeLinkForSubscribersOfBranch() {
+        Topic topic = new Topic();
+        Branch branch = new Branch();
+        branch.setId(1);
+        topic.setBranch(branch);
+
+        assertEquals(topic.getUnsubscribeLinkForSubscribersOf(Branch.class), "/branches/1/unsubscribe");
+    }
+
+
     private Topic createTopic() {
 		JCUser topicStarter = new JCUser();
 

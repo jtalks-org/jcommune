@@ -321,4 +321,39 @@ public class PostTest {
 
         assertEquals(size, result.size());
     }
+
+
+    @Test
+    public void testGetUnsubscribeLinkForSubscribersOfPost()
+    {
+        Topic topic = new Topic();
+        topic.setId(1);
+        Post post = new Post();
+        post.setTopic(topic);
+
+        assertEquals(post.getUnsubscribeLinkForSubscribersOf(Post.class), "/topics/1/unsubscribe");
+    }
+
+    @Test
+    public void testGetUnsubscribeLinkForSubscribersOfTopic()
+    {
+        Topic topic = new Topic();
+        topic.setId(1);
+        Post post = new Post();
+        post.setTopic(topic);
+
+        assertEquals(post.getUnsubscribeLinkForSubscribersOf(Topic.class), "/topics/1/unsubscribe");
+    }
+
+    @Test
+    public void testGetUnsubscribeLinkForSubscribersOfBranch() {
+        Topic topic = new Topic();
+        Post post = new Post();
+        post.setTopic(topic);
+        Branch branch = new Branch();
+        branch.setId(1);
+        topic.setBranch(branch);
+
+        assertEquals(post.getUnsubscribeLinkForSubscribersOf(Branch.class), "/branches/1/unsubscribe");
+    }
 }

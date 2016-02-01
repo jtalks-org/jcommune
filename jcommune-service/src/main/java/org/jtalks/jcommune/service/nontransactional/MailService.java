@@ -146,7 +146,8 @@ public class MailService {
             Map<String, Object> model = new HashMap<>();
             model.put(LINK, url);
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-            model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(entity));
+            model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl()
+                    + entity.getUnsubscribeLinkForSubscribersOf(entity.getClass()));
 
             sendEmailOnForumUpdates(recipient, model, locale, (Entity) entity,
                     "subscriptionNotification.subject", "subscriptionNotification.vm");
@@ -226,33 +227,10 @@ public class MailService {
      *
      * @param recipient user to send notification
      * @param topic     relocated topic
-     */
-    public void sendTopicMovedMail(JCUser recipient, Topic topic) {
-        String urlSuffix = getTopicUrlSuffix(topic);
-        String url = this.getDeploymentRootUrl() + urlSuffix;
-        Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<>();
-        model.put(NAME, recipient.getUsername());
-        model.put(LINK, url);
-        model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(topic.getBranch()));
-        model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
-        model.put(RECIPIENT_LOCALE, locale);
-        try {
-            this.sendEmail(recipient.getEmail(), messageSource.getMessage("moveTopic.subject",
-                    new Object[]{}, locale), model, "moveTopic.vm");
-        } catch (MailingFailedException e) {
-            LOGGER.error("Failed to sent activation mail for user: " + recipient.getUsername());
-        }
-    }
-
-    /**
-     * Sends email to topic starter that his or her topic was moved
-     *
-     * @param recipient user to send notification
-     * @param topic     relocated topic
      * @param curUser   User that moved topic
      */
-    public void sendTopicMovedMail(JCUser recipient, Topic topic, String curUser) {
+    public <T extends SubscriptionAwareEntity> void sendTopicMovedMail(
+            JCUser recipient, Topic topic, String curUser, Class<T> subsсriptionTargetClass) {
         String urlSuffix = getTopicUrlSuffix(topic);
         String url = this.getDeploymentRootUrl() + urlSuffix;
         Locale locale = recipient.getLanguage().getLocale();
@@ -260,7 +238,8 @@ public class MailService {
         model.put(NAME, recipient.getUsername());
         model.put(CUR_USER, curUser);
         model.put(LINK, url);
-        model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(topic.getBranch()));
+        model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl()
+                + topic.getUnsubscribeLinkForSubscribersOf(subsсriptionTargetClass));
         model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
         model.put(RECIPIENT_LOCALE, locale);
         try {
@@ -415,39 +394,6 @@ public class MailService {
      *
      * @param recipient Recipient for which send notification
      * @param topic     Current topic
-     */
-    public void sendRemovingTopicMail(JCUser recipient, Topic topic) {
-        Locale locale = recipient.getLanguage().getLocale();
-        Map<String, Object> model = new HashMap<>();
-        model.put(USER, recipient);
-        model.put(RECIPIENT_LOCALE, locale);
-        model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(topic.getBranch()));
-        model.put(TOPIC, topic);
-
-        try {
-
-            String subjectTemplate = REMOVE_TOPIC_SUBJECT_TEMPLATE;
-            String messageBodyTemplate = REMOVE_TOPIC_MESSAGE_BODY_TEMPLATE;
-
-            if (topic.isCodeReview()) {
-                subjectTemplate = REMOVE_CODE_REVIEW_SUBJECT_TEMPLATE;
-                messageBodyTemplate = REMOVE_CODE_REVIEW_MESSAGE_BODY_TEMPLATE;
-            }
-
-            String subject = messageSource.getMessage(subjectTemplate, new Object[]{}, locale);
-            this.sendEmail(recipient.getEmail(), subject, model, messageBodyTemplate);
-
-        } catch (MailingFailedException e) {
-            LOGGER.error("Failed to sent mail about removing topic or code review for user: "
-                    + recipient.getUsername());
-        }
-    }
-
-    /**
-     * Set mail about removing topic.
-     *
-     * @param recipient Recipient for which send notification
-     * @param topic     Current topic
      * @param curUser   User that removed the topic
      */
     public void sendRemovingTopicMail(JCUser recipient, Topic topic, String curUser) {
@@ -456,7 +402,8 @@ public class MailService {
         model.put(USER, recipient);
         model.put(RECIPIENT_LOCALE, locale);
         model.put(CUR_USER, curUser);
-        model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + getUnsubscribeBranchLink(topic.getBranch()));
+        //Topic not exist more and user not subscribed to branch, so simply redirect to branch
+        model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl() + "/branches/" + topic.getBranch().getId());
         model.put(TOPIC, topic);
 
         try {
@@ -492,27 +439,13 @@ public class MailService {
             Map<String, Object> model = new HashMap<>();
             model.put(LINK, url);
             model.put(LINK_UNSUBSCRIBE, this.getDeploymentRootUrl()
-                    + getUnsubscribeBranchLink(topic.getBranch()));
+                    + topic.getBranch().getUnsubscribeLinkForSubscribersOf(Branch.class));
             model.put(LINK_LABEL, getDeploymentRootUrlWithoutPort() + urlSuffix);
             sendEmailOnForumUpdates(subscriber, model, locale, topic.getBranch(),
                     "subscriptionNotification.subject", "branchSubscriptionNotification.vm");
         } catch (MailingFailedException e) {
             LOGGER.error("Failed to sent mail about creation topic for user: " + subscriber.getUsername());
         }
-    }
-
-    private String getUnsubscribeBranchLink(SubscriptionAwareEntity entity) {
-        String result = "/branches/{0}/unsubscribe";
-        if (entity instanceof Branch) {
-            return result.replace("{0}", "" + ((Branch) entity).getId());
-        }
-        if (entity instanceof Topic) {
-            return result.replace("/branches/{0}", "/topics/" + ((Topic) entity).getId());
-        }
-        if (entity instanceof Post) {
-            return result.replace("/branches/{0}", "/topics/" + ((Post) entity).getTopic().getId());
-        }
-        return null;
     }
 
     /**
