@@ -324,7 +324,7 @@ public class PostTest {
 
 
     @Test
-    public void testGetUnsubscribeLinkForSubscribersOfPost()
+    public void getUnsubscribeLinkForSubscribersOfPostShouldReturnTopicUnsubscribeLink()
     {
         Topic topic = new Topic();
         topic.setId(1);
@@ -334,8 +334,22 @@ public class PostTest {
         assertEquals(post.getUnsubscribeLinkForSubscribersOf(Post.class), "/topics/1/unsubscribe");
     }
 
+
     @Test
-    public void testGetUnsubscribeLinkForSubscribersOfTopic()
+    public void getUnsubscribeLinkForSubscribersOfPostSubclassShouldReturnTopicUnsubscribeLink()
+    {
+        class PostSubClass extends Post {
+        }
+        Topic topic = new Topic();
+        topic.setId(1);
+        Post post = new Post();
+        post.setTopic(topic);
+
+        assertEquals(post.getUnsubscribeLinkForSubscribersOf(PostSubClass.class), "/topics/1/unsubscribe");
+    }
+
+    @Test
+    public void getUnsubscribeLinkForSubscribersOfTopicShouldReturnTopicUnsubscribeLink()
     {
         Topic topic = new Topic();
         topic.setId(1);
@@ -346,7 +360,21 @@ public class PostTest {
     }
 
     @Test
-    public void testGetUnsubscribeLinkForSubscribersOfBranch() {
+    public void getUnsubscribeLinkForSubscribersOfTopicSubclassShouldReturnTopicUnsubscribeLink()
+    {
+        class TopicSubClass extends Topic {
+
+        }
+        Topic topic = new Topic();
+        topic.setId(1);
+        Post post = new Post();
+        post.setTopic(topic);
+
+        assertEquals(post.getUnsubscribeLinkForSubscribersOf(TopicSubClass.class), "/topics/1/unsubscribe");
+    }
+
+    @Test
+    public void getUnsubscribeLinkForSubscribersOfBranchShouldReturnBranchUnsubscribeLink() {
         Topic topic = new Topic();
         Post post = new Post();
         post.setTopic(topic);
@@ -355,5 +383,20 @@ public class PostTest {
         topic.setBranch(branch);
 
         assertEquals(post.getUnsubscribeLinkForSubscribersOf(Branch.class), "/branches/1/unsubscribe");
+    }
+
+    @Test
+    public void getUnsubscribeLinkForSubscribersOfBranchSubClassShouldReturnBranchUnsubscribeLink() {
+        class BranchSubClass extends Branch {
+
+        }
+        Topic topic = new Topic();
+        Post post = new Post();
+        post.setTopic(topic);
+        Branch branch = new Branch();
+        branch.setId(1);
+        topic.setBranch(branch);
+
+        assertEquals(post.getUnsubscribeLinkForSubscribersOf(BranchSubClass.class), "/branches/1/unsubscribe");
     }
 }

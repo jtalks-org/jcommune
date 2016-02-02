@@ -14,11 +14,11 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
@@ -125,19 +125,32 @@ public class BranchTest {
     }
 
     @Test
-    public void getUnsubscribeLinkForSubscribersOfBranch() {
+    public void getUnsubscribeLinkForSubscribersOfBranchShouldReturnBranchUnsubscribeLink() {
         branch.setId(1);
 
         assertEquals(branch.getUnsubscribeLinkForSubscribersOf(Branch.class), "/branches/1/unsubscribe");
     }
 
+
+    /**
+     * Case for hibernate proxies
+     */
     @Test
-    public void getUnsubscribeLinkForSubscribersOfTopic() {
+    public void getUnsubscribeLinkForSubscribersOfBranchSubclassShouldReturnBranchUnsubscribeLink() {
+        class BranchSubClass extends Branch {
+        }
+        branch.setId(1);
+
+        assertEquals(branch.getUnsubscribeLinkForSubscribersOf(BranchSubClass.class), "/branches/1/unsubscribe");
+    }
+
+    @Test
+    public void getUnsubscribeLinkForSubscribersOfTopicShouldReturnNull() {
         assertNull(branch.getUnsubscribeLinkForSubscribersOf(Topic.class));
     }
 
     @Test
-    public void getUnsubscribeLinkForSubscribersOfPost() {
+    public void getUnsubscribeLinkForSubscribersOfPostShouldReturnNull() {
         assertNull(branch.getUnsubscribeLinkForSubscribersOf(Post.class));
     }
 }

@@ -14,10 +14,12 @@
  */
 package org.jtalks.jcommune.model.entity;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.testng.annotations.Test;
-
-import java.util.*;
 
 import static org.testng.Assert.*;
 
@@ -383,7 +385,7 @@ public class TopicTest {
     }
 
     @Test
-    public void testGetUnsubscribeLinkForSubscribersOfPost()
+    public void testGetUnsubscribeLinkForSubscribersOfPostShouldReturnTopicUnsubscribeLink()
     {
         Topic topic = new Topic();
         topic.setId(1);
@@ -391,8 +393,24 @@ public class TopicTest {
         assertEquals(topic.getUnsubscribeLinkForSubscribersOf(Post.class), "/topics/1/unsubscribe");
     }
 
+    /**
+     * Case for hibernate proxies
+     */
     @Test
-    public void testGetUnsubscribeLinkForSubscribersOfTopic()
+    public void getUnsubscribeLinkForSubscribersOfPostSubclassShouldReturnTopicUnsubscribeLink()
+    {
+        class PostSubClass extends Post {
+        }
+        Topic topic = new Topic();
+        topic.setId(1);
+
+        assertEquals(topic.getUnsubscribeLinkForSubscribersOf(PostSubClass.class), "/topics/1/unsubscribe");
+    }
+
+
+
+    @Test
+    public void getUnsubscribeLinkForSubscribersOfTopicShouldReturnTopicUnsubscribeLink()
     {
         Topic topic = new Topic();
         topic.setId(1);
@@ -400,14 +418,44 @@ public class TopicTest {
         assertEquals(topic.getUnsubscribeLinkForSubscribersOf(Topic.class), "/topics/1/unsubscribe");
     }
 
+
+    /**
+     * Case for hibernate proxies
+     */
     @Test
-    public void testGetUnsubscribeLinkForSubscribersOfBranch() {
+    public void getUnsubscribeLinkForSubscribersOfTopicSubclassShouldReturnTopicUnsubscribeLink() {
+        class TopicSubClass extends Topic {
+        }
+        Topic topic = new Topic();
+        topic.setId(1);
+
+        assertEquals(topic.getUnsubscribeLinkForSubscribersOf(TopicSubClass.class), "/topics/1/unsubscribe");
+    }
+
+
+    @Test
+    public void getUnsubscribeLinkForSubscribersOfBranchShouldReturnBranchUnsubscribeLink() {
         Topic topic = new Topic();
         Branch branch = new Branch();
         branch.setId(1);
         topic.setBranch(branch);
 
         assertEquals(topic.getUnsubscribeLinkForSubscribersOf(Branch.class), "/branches/1/unsubscribe");
+    }
+
+    /**
+     * Case for hibernate proxies
+     */
+    @Test
+    public void getUnsubscribeLinkForSubscribersOfBranchSubclassShouldReturnBranchUnsubscribeLink() {
+        class BranchSubClass extends Branch {
+        }
+        Topic topic = new Topic();
+        Branch branch = new Branch();
+        branch.setId(1);
+        topic.setBranch(branch);
+
+        assertEquals(topic.getUnsubscribeLinkForSubscribersOf(BranchSubClass.class), "/branches/1/unsubscribe");
     }
 
 

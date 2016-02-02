@@ -14,13 +14,13 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import ch.lambdaj.Lambda;
-import org.apache.commons.lang.Validate;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import ch.lambdaj.Lambda;
+import org.apache.commons.lang.Validate;
 
 /**
  * Forum branch that contains topics related to branch theme.
@@ -200,7 +200,7 @@ public class Branch extends org.jtalks.common.model.entity.Branch
      */
     @Override
     public <T extends SubscriptionAwareEntity> String getUnsubscribeLinkForSubscribersOf(Class<T> clazz) {
-        if (Branch.class == clazz) {
+        if (Branch.class.isAssignableFrom(clazz)) {
             return String.format("/branches/%s/unsubscribe", getId());
         }
         return null;

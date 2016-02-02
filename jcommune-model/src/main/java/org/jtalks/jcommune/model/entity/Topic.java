@@ -14,14 +14,6 @@
  */
 package org.jtalks.jcommune.model.entity;
 
-import org.apache.solr.analysis.*;
-import org.hibernate.search.annotations.*;
-import org.joda.time.DateTime;
-import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.validation.annotations.NotBlankSized;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +21,28 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.solr.analysis.LowerCaseFilterFactory;
+import org.apache.solr.analysis.SnowballPorterFilterFactory;
+import org.apache.solr.analysis.StandardFilterFactory;
+import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.apache.solr.analysis.StopFilterFactory;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.AnalyzerDefs;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Fields;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Parameter;
+import org.hibernate.search.annotations.TokenFilterDef;
+import org.hibernate.search.annotations.TokenizerDef;
+import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.Entity;
+import org.jtalks.jcommune.model.validation.annotations.NotBlankSized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents the topic of the forum.
@@ -575,7 +589,7 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
     @Override
     public <T extends SubscriptionAwareEntity> String getUnsubscribeLinkForSubscribersOf(Class<T> clazz) {
 
-        if (Branch.class == clazz) {
+        if (Branch.class.isAssignableFrom(clazz)) {
             return getBranch().getUnsubscribeLinkForSubscribersOf(clazz);
         } else {
             //In case of post unsubscribe from topic too
