@@ -442,6 +442,189 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
 
+    @Test
+    public void findByUsernameOrEmailTestPrimaryOrderUsername() {
+        String keyWord = "keyword@email.com";
+        JCUser user4 = createUserWithMail("1" + keyWord , "user4@email.com", true);
+        JCUser user3 = createUserWithMail("1" + keyWord + "1", "user3@email.com", true);
+        JCUser user2 = createUserWithMail(keyWord + "1", "user2@email.com", true);
+        JCUser user1 = createUserWithMail(keyWord, "user1@email.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user2);
+        assertEquals(result.get(2), user3);
+        assertEquals(result.get(3), user4);
+    }
+
+    @Test
+    public void findByUsernameOrEmailTestPrimaryOrderEmail() {
+        String keyWord = "keyword@email.com";
+        JCUser user4 = createUserWithMail("user4", "a" + keyWord, true);
+        JCUser user3 = createUserWithMail("user3", "a" + keyWord + "a", true);
+        JCUser user2 = createUserWithMail("user2", keyWord + "a", true);
+        JCUser user1 = createUserWithMail("user1", keyWord, true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user2);
+        assertEquals(result.get(2), user3);
+        assertEquals(result.get(3), user4);
+    }
+
+    @Test
+    public void findByUsernameOrEmailTestPrimaryOrderMixed() {
+        String keyWord = "keyword@email.com";
+        JCUser user4 = createUserWithMail("a" + keyWord, "user4@email.com", true);
+        JCUser user3 = createUserWithMail("user3", "a" + keyWord + "a", true);
+        JCUser user2 = createUserWithMail(keyWord + "a", "user2@email.com", true);
+        JCUser user1 = createUserWithMail("user1", keyWord, true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user2);
+        assertEquals(result.get(2), user3);
+        assertEquals(result.get(3), user4);
+    }
+
+    @Test
+    public void testSecondaryOrderExactMatch() {
+        String keyWord = "keyword@email.com";
+        JCUser user2 = createUserWithMail("user2", keyWord, true);
+        JCUser user1 = createUserWithMail(keyWord, "user1@email.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user2);
+    }
+
+    @Test
+    public void testSecondaryOrderStartFromKeyWord() {
+        String keyWord = "keyword";
+        JCUser user2 = createUserWithMail("user2", keyWord + "@email.com", true);
+        JCUser user1 = createUserWithMail(keyWord + "1", "user1@email.com", true);
+        JCUser user3 = createUserWithMail(keyWord + "11", keyWord + "1@email.com", true);
+
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user3);
+        assertEquals(result.get(1), user1);
+        assertEquals(result.get(2), user2);
+    }
+
+    @Test
+    public void testThirdaryOrderUsernameStartsFromKeyWord() {
+        String keyWord = "keyword";
+        JCUser user2 = createUserWithMail(keyWord + "z", "user2@email.com", true);
+        JCUser user1 = createUserWithMail(keyWord + "a", "user1@email.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user2);
+
+    }
+
+    @Test
+    public void testThirdaryOrderEmailStartsFromKeyWord() {
+        String keyWord = "keyword";
+        JCUser user3 = createUserWithMail("bbbb", keyWord + "3@email.com", true);
+        JCUser user2 = createUserWithMail("zzzz", keyWord + "1@email.com", true);
+        JCUser user1 = createUserWithMail("aaaa", keyWord + "2@email.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user3);
+        assertEquals(result.get(2), user2);
+
+    }
+
+    @Test
+    public void testSecondaryOrderKeywordInTheMiddle() {
+        String keyWord = "keyword";
+        JCUser user3 = createUserWithMail("1" + keyWord + "1", "user1@email.com", true);
+        JCUser user2 = createUserWithMail("user2", "a" + keyWord + "@email.com", true);
+        JCUser user1 = createUserWithMail("1" + keyWord + "11", "a" + keyWord + "1@email.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user3);
+        assertEquals(result.get(2), user2);
+
+    }
+
+    @Test
+    public void testThirdaryOrderUsernameWithKeywordItTheMiddle() {
+        String keyWord = "keyword";
+        JCUser user2 = createUserWithMail("z" + keyWord + "aa", "user2@email.com", true);
+        JCUser user1 = createUserWithMail("a" + keyWord + "aa", "user1@email.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user2);
+    }
+
+    @Test
+    public void testThirdaryOrderEmailWithKeyWordInTheMiddle() {
+        String keyWord = "keyword";
+        JCUser user2 = createUserWithMail("zuser", "11" + keyWord + "@email.com", true);
+        JCUser user1 = createUserWithMail("auser", "1" + keyWord + "@email.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user2);
+    }
+
+    @Test
+    public void testSecondaryOrderKeywordAtTheEnd() {
+        String keyWord = "keyword";
+        JCUser user3 = createUserWithMail("user3", "user3@email." + keyWord, true);
+        JCUser user2 = createUserWithMail("user2" + keyWord, "user2@email.com", true);
+        JCUser user1 = createUserWithMail("1" + keyWord, "user1@email." + keyWord, true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user2);
+        assertEquals(result.get(2), user3);
+
+    }
+
+    @Test
+    public void testThirdaryOrderKeyWordAtTheEndOfUsername() {
+        String keyWord = "keyword";
+        JCUser user2 = createUserWithMail("z" + keyWord, "user2@email.com", true);
+        JCUser user1 = createUserWithMail("a" + keyWord, "user1@email.com", true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user2);
+
+    }
+
+    @Test
+    public void testThirdaryOrderEmailWithKeywordInTheEnd() {
+        String keyWord = "keyword";
+        JCUser user2 = createUserWithMail("zuser", "user2@email." + keyWord, true);
+        JCUser user1 = createUserWithMail("auser", "user1@email." + keyWord, true);
+
+        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+
+        assertEquals(result.get(0), user1);
+        assertEquals(result.get(1), user2);
+    }
+
+
     private JCUser givenJCUserWithUsernameStoredInDb(String username) {
         JCUser expected = new JCUser(username, username + "@mail.com", username + "pass");
         session.save(expected);

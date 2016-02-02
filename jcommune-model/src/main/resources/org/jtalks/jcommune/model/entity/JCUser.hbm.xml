@@ -95,10 +95,17 @@
     <![CDATA[FROM JCUser WHERE LOWER(username) LIKE (:pattern) ESCAPE '|'
                          OR LOWER(email) LIKE (:pattern) ESCAPE '|' ORDER BY
                          CASE
-                         WHEN LOWER(username) LIKE (:primaryPattern) ESCAPE '|' OR LOWER(email) LIKE (:primaryPattern) ESCAPE '|' THEN 1
-                         WHEN LOWER(username) LIKE (:secondaryPattern) ESCAPE '|' OR LOWER(email) LIKE (:secondaryPattern) ESCAPE '|' THEN 2
-                         WHEN LOWER(username) LIKE (:thirdaryPattern) ESCAPE '|' OR LOWER(email) LIKE (:thirdaryPattern) ESCAPE '|' THEN 3
-                         END]]>
+                          WHEN LOWER(username)=:exactMatch OR LOWER(email)=:exactMatch THEN 0
+                          WHEN LOWER(username) LIKE (:primaryPattern) ESCAPE '|' OR LOWER(email) LIKE (:primaryPattern) ESCAPE '|' THEN 1
+                          WHEN LOWER(username) LIKE (:thirdaryPattern) ESCAPE '|' OR LOWER(email) LIKE (:thirdaryPattern) ESCAPE '|' THEN 3
+                          WHEN LOWER(username) LIKE (:secondaryPattern) ESCAPE '|' OR LOWER(email) LIKE (:secondaryPattern) ESCAPE '|' THEN 2
+                         END,
+                         CASE
+                          WHEN LOWER(username) LIKE (:pattern) ESCAPE '|' AND LOWER(email) LIKE (:pattern) ESCAPE '|' THEN 0
+                          WHEN LOWER(username) LIKE (:pattern) ESCAPE '|' THEN 1
+                          WHEN LOWER(email) LIKE (:pattern) ESCAPE '|' THEN 2
+                         END,
+                         LOWER(USERNAME) ]]>
   </query>
 
 </hibernate-mapping>

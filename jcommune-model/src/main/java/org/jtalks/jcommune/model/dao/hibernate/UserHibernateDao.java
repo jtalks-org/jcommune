@@ -136,6 +136,7 @@ public class UserHibernateDao extends GenericDao<JCUser>
         pattern = SqlLikeEscaper.escapeControlCharacters(pattern);
         return session().getNamedQuery("searchByEmailOrUsername")
                 .setParameter("pattern", "%" + pattern.toLowerCase() + "%")
+                .setParameter("exactMatch", pattern.toLowerCase())
                 .setParameter("primaryPattern", pattern.toLowerCase() + "%")
                 .setParameter("secondaryPattern", "%" + pattern.toLowerCase() + "%")
                 .setParameter("thirdaryPattern", "%" + pattern.toLowerCase())
