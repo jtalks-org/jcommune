@@ -14,10 +14,17 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
@@ -25,20 +32,20 @@ import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.plugin.api.core.ExtendedPlugin;
 import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
-import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
-import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.util.MutableHttpRequest;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -49,26 +56,16 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.support.RequestContextUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import org.jtalks.jcommune.model.dto.LoginUserDto;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.ModelAndViewAssert.*;
 import static org.testng.Assert.*;
-import static org.testng.Assert.assertEquals;
 
 /**
  * @author Evgeniy Naumenko
@@ -533,6 +530,20 @@ public class UserControllerTest {
 
         assertEquals(mav.getViewName(), UserController.USER_SEARCH);
         assertEquals(mav.getModel().get(UserController.USERS_ATTR_NAME), users);
+    }
+
+    @Test
+    public void searchusersShouldTrimSearchKey()
+    {
+        Component component = new Component();
+        component.setId(1);
+        String searchKey = "  key  ";
+
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
+        userController.searchUsers(searchKey);
+
+        verify(userService).findByUsernameOrEmail(component.getId(), searchKey.trim());
     }
 
     private void assertNullFields(RegisterUserDto dto) {

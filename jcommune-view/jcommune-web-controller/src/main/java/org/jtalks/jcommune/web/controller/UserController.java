@@ -14,7 +14,18 @@
  */
 package org.jtalks.jcommune.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang.StringUtils;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
@@ -22,20 +33,20 @@ import org.jtalks.jcommune.plugin.api.core.ExtendedPlugin;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.PluginService;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
-import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.nontransactional.MailService;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.web.dto.RestorePasswordDto;
-import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.web.interceptors.RefererKeepInterceptor;
 import org.jtalks.jcommune.web.util.MutableHttpRequest;
 import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
@@ -53,20 +64,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import org.jtalks.jcommune.model.dto.LoginUserDto;
 
 
 
@@ -530,10 +537,10 @@ public class UserController {
     public ModelAndView searchUsers(@RequestParam(required = false) String searchKey)  {
         ModelAndView mav = new ModelAndView(USER_SEARCH);
         long forumId = componentService.getComponentOfForum().getId();
-        if (searchKey == null || searchKey.isEmpty()) {
+        if (StringUtils.isBlank(searchKey)) {
             componentService.checkPermissionsForComponent(forumId);
         } else {
-            List<JCUser> users = userService.findByUsernameOrEmail(forumId, searchKey);
+            List<JCUser> users = userService.findByUsernameOrEmail(forumId, searchKey.trim());
             mav.addObject(USERS_ATTR_NAME, users);
         }
         return mav;

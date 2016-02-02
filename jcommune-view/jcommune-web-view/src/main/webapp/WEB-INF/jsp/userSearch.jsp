@@ -52,8 +52,8 @@
               <table class="table table-bordered grid-table">
                 <c:forEach var="user" items="${users}">
                   <tr class="grid-row">
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
+                    <td><c:out value="${user.username}"/></td>
+                    <td><c:out value="${user.email}"/></td>
                     <td>
                       <a href="${pageContext.request.contextPath}/users/${user.id}">
                         <spring:message code="label.profile"/>
