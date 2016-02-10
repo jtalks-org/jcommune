@@ -9,7 +9,7 @@ JCommune is a part of [JTalks](http://jtalks.org) ecosystem of projects which re
 For developers/QA/PMs/Leads:
 * [How to join us](docs/how-to-join-us.md)
 * [Sonar](http://sonar.jtalks.org/dashboard/index/1)
-* [Deployment Pipeline](http://ci.jtalks.org/view/JCommune.%20Pipeline)
+* [Deployment Pipeline](http://ci.jtalks.org/view/JC.%20Pipeline/)
 * [Stack of Technologies](http://wiki.jtalks.org/display/jtalks/Stack+of+technologies)
 * [Commit Conventions](docs/commit-conventions.md)
 * [Code Conventions](http://wiki.jtalks.org/display/jtalks/Code+Conventions)
