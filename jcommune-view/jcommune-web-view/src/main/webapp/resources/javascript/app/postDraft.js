@@ -96,7 +96,7 @@
         this._savingTimer = new draft.IntervalTimer(this.save.bind(this), SAVE_INTERVAL);
 
         this._bodyText.on('blur', this._onBlur.bind(this));
-        this._bodyText.on('keyup', this._onKeyUp.bind(this));
+        this._bodyText.on('input', this._onInput.bind(this));
     }
 
     /**
@@ -222,12 +222,8 @@
         }
     };
 
-    PostDraft.prototype._onKeyUp = function (event) {
+    PostDraft.prototype._onInput = function (event) {
         var self = this;
-
-        if (!this.wasChanged()) {
-            return;
-        }
 
         // Remove draft if user emptied content (for instance by Ctrl-A and Backspace)
         if ($(event.target).is(this._bodyText) && this._bodyText.val().length == 0) {

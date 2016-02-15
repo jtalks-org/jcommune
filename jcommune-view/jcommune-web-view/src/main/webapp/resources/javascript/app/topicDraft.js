@@ -92,9 +92,6 @@
      * @constructor
      */
     function TopicDraft(api, counter, popup) {
-
-        var self = this;
-
         this._api = api;
         this._counter = counter;
         this._popup = popup;
@@ -142,7 +139,7 @@
         }
 
         this._addEventListener('blur', this._onBlur.bind(this));
-        this._addEventListener('keyup', this._onKeyUp.bind(this));
+        this._addEventListener('input', this._onInput.bind(this));
     }
 
     /**
@@ -240,10 +237,8 @@
         success &= validateStringField('content', MAX_CONTENT_LENGTH, CONTENT_ERROR_MESSAGE);
         success &= validateStringField('pollTitle', MAX_POLL_TITLE_LENGTH, POLL_TITLE_ERROR_MESSAGE);
 
-        function hideErrorIfFieldWasChanged(name) {
-            if (self._fieldWasChanged(name)) {
-                self._hideError(name);
-            }
+        function hideFieldError(name) {
+            self._hideError(name);
         }
 
         function validateStringField(name, max, message) {
@@ -251,7 +246,7 @@
                 self._showError(name, message);
                 return false;
             } else {
-                hideErrorIfFieldWasChanged(name);
+                hideFieldError(name);
                 return true;
             }
         }
@@ -263,7 +258,7 @@
                 this._showError('pollItemsValue', POLL_ITEMS_VALUE_ERROR_MESSAGE);
                 success = false;
             } else {
-                hideErrorIfFieldWasChanged('pollItemsValue');
+                hideFieldError('pollItemsValue');
             }
 
             if (success) {
@@ -276,11 +271,11 @@
                 if (!success) {
                     this._showError('pollItemsValue', POLL_ITEM_LENGTH_ERROR);
                 } else {
-                    hideErrorIfFieldWasChanged('pollItemsValue');
+                    hideFieldError('pollItemsValue');
                 }
             }
         } else {
-            hideErrorIfFieldWasChanged('pollItemsValue');
+            hideFieldError('pollItemsValue');
         }
 
         return success;
@@ -369,12 +364,8 @@
         }
     };
 
-    TopicDraft.prototype._onKeyUp = function (event) {
+    TopicDraft.prototype._onInput = function (event) {
         var self = this;
-
-        if (!this.wasChanged()) {
-            return;
-        }
 
         // Remove draft if user emptied content (for instance by Ctrl-A and Backspace)
         if (this._isEmpty()) {
