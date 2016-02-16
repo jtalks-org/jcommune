@@ -82,7 +82,7 @@ public class TransactionalTypeAwarePluginTopicService implements TypeAwarePlugin
      */
     public Topic get(Long id, String type) throws NotFoundException {
         Topic topic =  topicFetchService.get(id);
-        if (!topic.getType().equalsIgnoreCase(type)) {
+        if (!topic.getType().equals(type)) {
             throw new NotFoundException();
         }
         return topic;

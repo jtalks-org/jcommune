@@ -17,7 +17,6 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.*;
-import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.LocationService;
@@ -90,8 +89,6 @@ public class TopicControllerTest {
     private LastReadPostService lastReadPostService;
     @Mock
     private EntityToDtoConverter converter;
-    @Mock
-    private TransactionalTypeAwarePluginTopicService pluginTopicService;
 
     private TopicController controller;
     @Mock
@@ -107,7 +104,6 @@ public class TopicControllerTest {
         controller = new TopicController(
                 topicModificationService,
                 postService,
-                pluginTopicService,
                 branchService,
                 lastReadPostService,
                 userService,
