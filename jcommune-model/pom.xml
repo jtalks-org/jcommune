@@ -4,7 +4,7 @@
   <parent>
     <artifactId>jcommune</artifactId>
     <groupId>org.jtalks.jcommune</groupId>
-    <version>3.4</version>
+    <version>3.5-SNAPSHOT</version>
   </parent>
   <artifactId>jcommune-model</artifactId>
   <name>${project.artifactId}</name>
