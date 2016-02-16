@@ -228,6 +228,7 @@ var editSubmitHandler = function(e) {
         success: function(data) {
             if(data.status == 'SUCCESS') {
                 $("#body-" + commentId).text(data.result);
+                $("#editable-" + commentId).text(data.result);
                 enableViewMode(commentId);
             } else if (data.reason == 'VALIDATION') {
                 enableEditMode(commentId);
@@ -255,7 +256,12 @@ var editCancelHandler = function(e) {
     }
 
     hideVisibleEditPrompts();
+
     var commentId = $(this).attr("data-comment-id");
+
+    var textarea = $('#editable-' + commentId); // cancel text change
+    textarea.val(textarea.text());
+
     enableViewMode(commentId);
 }
 
