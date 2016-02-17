@@ -285,6 +285,10 @@
     margin: 0 auto;
 }
 
+#search-form {
+    margin-right: -30px;
+}
+
 .search-clear {
     margin-top: 5px !important;
     font-weight: bold;
