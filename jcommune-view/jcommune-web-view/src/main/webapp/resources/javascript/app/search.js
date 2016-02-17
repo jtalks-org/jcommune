@@ -27,8 +27,12 @@ Search.searchClearSelector = '#searchClear';
 */
 Search.adjustClearButton = function() {
 	var text = $(Search.searchInputSelector).val();
-	$(Search.searchClearSelector).toggle(text != '');
-}
+	if (text != '') {
+		$(Search.searchClearSelector).css({'visibility': 'visible'});
+	} else {
+		$(Search.searchClearSelector).css({'visibility': 'hidden'});
+	}
+};
  
 $().ready(function() {
 	
@@ -41,7 +45,7 @@ $().ready(function() {
 	
 	$(Search.searchClearSelector).click(function() {
 		$(Search.searchInputSelector).val('');
-		$(Search.searchClearSelector).hide();
+		Search.adjustClearButton();
 		$(Search.searchInputSelector).focusout();
 	});
 });
