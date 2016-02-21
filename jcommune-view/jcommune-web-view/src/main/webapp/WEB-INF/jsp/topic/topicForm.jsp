@@ -128,7 +128,11 @@
                       readonly="true" placeholder="${datePlaceholder}"
                       class="cursor-pointer script-confirm-unsaved space-left-small"/>
           <c:if test="${topicId eq null}">
-            &nbsp;<i class="icon-trash cursor-pointer" id="deleteEndingDate"></i>
+            &nbsp;
+            <a class="icon-trash cursor-pointer"
+               id="deleteEndingDate"
+               title="<fmt:message key='label.poll.deleteEndingDate'/>">
+            </a>
           </c:if>
           <br>
           <form:errors path="topic.poll.endingDate" cssClass="help-inline"/>
