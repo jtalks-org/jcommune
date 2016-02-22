@@ -599,17 +599,21 @@
       <url>http://repo.jtalks.org/content/groups/public</url>
       <snapshots>
         <checksumPolicy>fail</checksumPolicy>
-        <updatePolicy>always</updatePolicy>
-        <enabled>true</enabled>
       </snapshots>
     </repository>
     <repository>
       <id>opencast-public</id>
       <url>http://repository.opencastproject.org/nexus/content/repositories/public/</url>
+      <releases>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
     </repository>
     <repository>
       <id>terracotta-releases</id>
       <url>http://www.terracotta.org/download/reflector/releases</url>
+      <releases>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
     </repository>
   </repositories>
   <distributionManagement>
