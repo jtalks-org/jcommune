@@ -100,27 +100,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
          title="<jcommune:message>label.answer.insert_link</jcommune:message>">
         <i class="icon-link"></i>
       </a>
-
-      <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
-              title="<jcommune:message>label.answer.font_code</jcommune:message>">
+      <a id='select_code' class="btn" href="#fake"
+         title="<jcommune:message>label.answer.font_code</jcommune:message>">
         <jcommune:message>label.answer.font_code.button</jcommune:message>
-        <span class="caret"></span>
       </a>
-      <ul class="dropdown-menu" id='select_code'>
-        <li data-value="cpp"><a href="#fake">C/C++</a></li>
-        <li data-value="csharp"><a href="#fake">C#</a></li>
-        <li data-value="java"><a href="#fake">Java</a></li>
-        <li data-value="php"><a href="#fake">PHP</a></li>
-        <li data-value="python"><a href="#fake">Python</a></li>
-        <li data-value="pascal"><a href="#fake">Pascal</a></li>
-        <li data-value="bash"><a href="#fake">Bash</a></li>
-        <li data-value="js"><a href="#fake">JavaScript</a></li>
-        <li data-value="html"><a href="#fake">HTML</a></li>
-        <li data-value="css"><a href="#fake">CSS</a></li>
-        <li data-value="sql"><a href="#fake">SQL</a></li>
-        <li data-value="xml"><a href="#fake">XML</a></li>
-      </ul>
-
       <a id="format_quote" class="btn" accesskey="q" href="#fake"
         title="<jcommune:message>label.answer.quote</jcommune:message>">
         <i class="icon-quote"></i>

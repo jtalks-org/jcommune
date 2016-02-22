@@ -261,10 +261,9 @@ function doSize(selectedElement) {
     }
 }
 
-function doCode(selectedElement) {
+function doCode() {
     if (!editorVisible) {
-		var code = $(selectedElement).parent().attr('data-value');
-        addTag('[code=' + code + ']', '[/code]');
+		addTag('[code]', '[/code]');
     }
 }
 
@@ -754,6 +753,7 @@ $(document).ready(function() {
         format_right: function(){doClick('right');},
         format_list: function(){doClick('InsertUnorderedList');},
         format_listeq: function(){doClick('listElement');},
+        select_code: function(){doCode();},
         format_quote: function(){doQuote();}
     }
 
@@ -766,10 +766,6 @@ $(document).ready(function() {
 
     $('#select_size a').click(function() {
             doSize(this);
-    });
-
-    $('#select_code a').click(function() {
-            doCode(this);
     });
 
     $('#select_indent a').click(function() {

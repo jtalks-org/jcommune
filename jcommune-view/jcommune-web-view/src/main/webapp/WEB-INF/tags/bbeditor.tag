@@ -105,25 +105,10 @@
       <i class="icon-link"></i>
     </a>
 
-    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#fake"
+    <a id='select_code' class="btn" href="#fake"
        title="<spring:message code='label.answer.font_code'/>">
       <spring:message code="label.answer.font_code.button"/>
-      <span class="caret"></span>
     </a>
-    <ul class="dropdown-menu" id='select_code'>
-      <li data-value="cpp"><a href="#fake">C/C++</a></li>
-      <li data-value="csharp"><a href="#fake">C#</a></li>
-      <li data-value="java"><a href="#fake">Java</a></li>
-      <li data-value="php"><a href="#fake">PHP</a></li>
-      <li data-value="python"><a href="#fake">Python</a></li>
-      <li data-value="pascal"><a href="#fake">Pascal</a></li>
-      <li data-value="bash"><a href="#fake">Bash</a></li>
-      <li data-value="js"><a href="#fake">JavaScript</a></li>
-      <li data-value="html"><a href="#fake">HTML</a></li>
-      <li data-value="css"><a href="#fake">CSS</a></li>
-      <li data-value="sql"><a href="#fake">SQL</a></li>
-      <li data-value="xml"><a href="#fake">XML</a></li>
-    </ul>
 
     <a id="format_quote" class="btn" accesskey="q" href="#fake"
        title="<spring:message code='label.answer.quote'/>">

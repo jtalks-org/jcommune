@@ -313,7 +313,7 @@ get XSS attacks.</p>-->
 
     <!-- Code block -->
     <code name="code">
-        <pattern ignoreCase="true">[code=<var name="lang"/>]<var name="code" scope="escapeXml"/>[/code]</pattern>
+        <pattern ignoreCase="true">[code<var name="lang"/>]<var name="code" scope="escapeXml"/>[/code]</pattern>
         <template><var name="code"/></template>
     </code>
 
