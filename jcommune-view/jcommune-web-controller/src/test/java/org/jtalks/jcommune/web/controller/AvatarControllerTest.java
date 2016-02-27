@@ -33,6 +33,7 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static org.jtalks.jcommune.web.controller.ImageUploadController.HTTP_HEADER_DATETIME_PATTERN;
 import static org.jtalks.jcommune.web.controller.ImageUploadController.IF_MODIFIED_SINCE_HEADER;
@@ -66,7 +67,7 @@ public class AvatarControllerTest {
     //
     private AvatarController avatarController;
 
-    private byte[] validAvatar = new byte[] {-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
+    private byte[] validAvatar = new byte[]{-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0,
             0, 0, 4, 0, 0, 0, 4, 1, 0, 0, 0, 0, -127, -118, -93, -45, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 1,
             -118, 0, 0, 1, -118, 1, 51, -105, 48, 88, 0, 0, 0, 32, 99, 72, 82, 77, 0, 0, 122, 37, 0, 0,
             -128, -125, 0, 0, -7, -1, 0, 0, -128, -23, 0, 0, 117, 48, 0, 0, -22, 96, 0, 0, 58, -104, 0, 0,
@@ -89,7 +90,8 @@ public class AvatarControllerTest {
         verify(imageControllerUtils).prepareResponse(eq(file), any(HttpHeaders.class), any(HashMap.class));
     }
 
-    @Test @SuppressWarnings("unchecked")
+    @Test
+    @SuppressWarnings("unchecked")
     public void uploadAvatarForChromeAndFf_mustReturnPreviewInResponse() throws ImageProcessException {
         MockHttpServletResponse response = new MockHttpServletResponse();
         avatarController.uploadAvatar(validAvatar, response);
@@ -136,7 +138,7 @@ public class AvatarControllerTest {
         assertTrue(cacheControlHeaders.contains("public"));
         assertNotNull(response.getHeader("Last-Modified"));// depends on current timezone
     }
-    
+
     private JCUser getUser() {
         JCUser newUser = new JCUser(USER_NAME, EMAIL, PASSWORD);
         newUser.setFirstName(FIRST_NAME);
@@ -210,6 +212,6 @@ public class AvatarControllerTest {
         long actualMaxAge = Long.parseLong(response.getHeaders("Cache-Control").get(1).replace("max-age=", ""));
         long actualCacheExpiration = Long.parseLong(response.getHeader("Expires"));
         assertEquals(actualMaxAge, 30L * 24 * 60 * 60);
-        assertTrue(actualCacheExpiration - new DateTime().plusDays(30).getMillis() < 1000);
+        assertTrue(actualCacheExpiration - (System.currentTimeMillis() + TimeUnit.DAYS.toSeconds(30) * 1000) < 1000);
     }
 }
