@@ -47,7 +47,7 @@
       <i class="icon-strike"></i>
     </a>
     <a id="format_highlight" class="btn" accesskey="h" href="#fake"
-       title='<spring:message code='label.answer.highlight'/>'>
+       title="<spring:message code='label.answer.highlight'/>">
       <spring:message code='label.answer.highlight.button'/>
     </a>
   </div>

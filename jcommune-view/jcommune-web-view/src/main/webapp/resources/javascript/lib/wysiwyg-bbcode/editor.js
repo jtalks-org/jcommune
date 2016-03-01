@@ -468,10 +468,11 @@ function addTag(t1, t2, selection) {
         sel_start = element.selectionStart;
         sel_end = element.selectionEnd;
 
-        if (element.value == "" && $.browser.opera) {
-            // for Opera browser null value (textarea empty) for selectionStart and selectionEnd is '20'
-            sel_start = sel_start - 20;
-            sel_end = sel_end - 20;
+        if (element.value == "") {
+            // some browsers could have selectionStart and selectionEnd that is not equal to 0 for empty textarea
+            // e.g. opera 12 has 15. So it's better to assign 0 in order not to have problems in the future
+            sel_start = 0;
+            sel_end = 0;
         }
 
         insertText(element, t1, sel_start);
