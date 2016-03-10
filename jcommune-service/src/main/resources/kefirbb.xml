@@ -143,6 +143,7 @@ get XSS attacks.</p>-->
 
         <!-- Images -->
         <coderef name="img1"/>
+        <coderef name="img2"/>
 
         <!-- links -->
         <coderef name="url1"/>
@@ -254,6 +255,11 @@ get XSS attacks.</p>-->
         <template><![CDATA[<a title="" href="]]><var name="addr"/><![CDATA[" class="pretty-photo"><img class="thumbnail" alt="" src="]]><var name="addr"/><![CDATA[" onError="imgError(this)" /></a>]]></template>
     </code>
 
+    <code name="img2" priority="2">
+        <pattern ignoreCase="true">[img]<var name="addr" regex=""/>[/img]</pattern>
+        <template><![CDATA[<a title="" href="/a" class="pretty-photo"><img class="thumbnail-default" alt="" src="/a" onError="imgError(this)" /></a>]]></template>
+    </code>
+
     <!-- Links. http, https, mailto protocols -->
     <scope name="url" parent="basic">
         <coderef name="bold"/>
@@ -270,6 +276,7 @@ get XSS attacks.</p>-->
         <coderef name="indent"/>
         <coderef name="list"/>
         <coderef name="img1"/>
+        <coderef name="img2"/>
     </scope>
 
     <!-- HTTP -->
