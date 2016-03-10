@@ -23,27 +23,28 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.api.service.UserReader;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -53,7 +54,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
-import org.jtalks.jcommune.model.dto.LoginUserDto;
 
 /**
  * User service class. This class contains method needed to manipulate with User persistent entity.
@@ -378,5 +378,30 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public List<JCUser> findByUsernameOrEmail(long forumComponentId, String searchKey) {
         return getDao().findByUsernameOrEmail(searchKey, MAX_SEARCH_USER_COUNT);
+    }
+
+    @Override
+    @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public List<Long> getUserGroupIDs(long forumComponentId, long userID) throws NotFoundException {
+        JCUser jcUser = getDao().get(userID);
+        return jcUser.getGroupsIDs();
+    }
+
+    @Override
+    @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void addUserToGroup(long forumComponentId, long userID, long groupID) throws NotFoundException {
+        JCUser jcUser = getDao().get(userID);
+        jcUser.addGroup(groupDao.get(groupID));
+
+        this.getDao().saveOrUpdate(jcUser);
+    }
+
+    @Override
+    @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
+    public void deleteUserFromGroup(long forumComponentId, long userID, long groupID) throws NotFoundException {
+        JCUser jcUser = getDao().get(userID);
+        jcUser.deleteGroup(groupDao.get(groupID));
+
+        this.getDao().saveOrUpdate(jcUser);
     }
 }

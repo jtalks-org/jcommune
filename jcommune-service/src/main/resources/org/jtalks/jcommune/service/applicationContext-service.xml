@@ -485,6 +485,12 @@
       <constructor-arg ref="pluginLoader"/>
   </bean>
 
+  <bean id="groupService" class="org.jtalks.jcommune.service.transactional.TransactionalGroupService">
+    <constructor-arg index="0" ref="groupDao"/>
+    <constructor-arg index="1" ref="aclManager"/>
+    <constructor-arg index="2" ref="userDao"/>
+  </bean>
+
   <beans profile="performance">
     <!-- JETM implementation using bean -->
     <bean id="etmMonitor" class="etm.core.monitor.NestedMonitor" init-method="start" destroy-method="stop"/>

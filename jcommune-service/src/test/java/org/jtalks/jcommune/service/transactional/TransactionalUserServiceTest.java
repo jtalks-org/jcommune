@@ -24,24 +24,26 @@ import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.UserService;
-import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -60,13 +62,16 @@ import java.util.Set;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
-import org.jtalks.jcommune.model.dto.LoginUserDto;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.collection.IsCollectionContaining.hasItems;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import org.mockito.ArgumentMatcher;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.matches;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.argThat;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.*;
@@ -576,7 +581,7 @@ public class TransactionalUserServiceTest {
         verify(userDao).saveOrUpdate(argThat(new ArgumentMatcher<JCUser>() {
             @Override
             public boolean matches(Object argument) {
-                JCUser argUser = (JCUser)argument;
+                JCUser argUser = (JCUser) argument;
                 return argument == user && Language.RUSSIAN.equals(argUser.getLanguage());
             }
         }));
@@ -593,7 +598,47 @@ public class TransactionalUserServiceTest {
 
         assertEquals(result, users);
     }
-    
+
+    @Test
+    public void testGetUserGroupIDs() throws NotFoundException {
+        Long[] expectedGroupIDs = {4l, 5l, 6l};
+
+        JCUser jcUser = createUserWithGroups(expectedGroupIDs);
+        when(userDao.get(anyLong())).thenReturn(jcUser);
+
+        assertThat(userService.getUserGroupIDs(0l, 1l), hasItems(expectedGroupIDs));
+    }
+
+    @Test
+    public void testAddUserToGroup() throws NotFoundException {
+        JCUser jcUser = createUserWithGroups(4l, 5l, 6l);
+        Group group = new Group();
+
+        when(userDao.get(anyLong())).thenReturn(jcUser);
+        when(groupDao.get(anyLong())).thenReturn(group);
+
+        userService.addUserToGroup(0l, 1l, 2l);
+
+        assertThat(group.getUsers().contains(jcUser), is(true));
+        assertThat(jcUser.getGroups().contains(group), is(true));
+    }
+
+    @Test
+    public void testDeleteUserFromGroup() throws NotFoundException {
+        long groupForDeleteID = 5l;
+
+        JCUser jcUser = createUserWithGroups(4l, groupForDeleteID, 6l);
+        Group group = new Group();
+        group.setId(groupForDeleteID);
+
+        when(userDao.get(anyLong())).thenReturn(jcUser);
+        when(groupDao.get(anyLong())).thenReturn(group);
+
+        userService.deleteUserFromGroup(0l, 1l, groupForDeleteID);
+
+        assertThat(jcUser.getGroups().contains(group), is(false));
+    }
+
     public static <T> Set<T> asSet(T... values) {
         return new HashSet<>(asList(values));
     }
@@ -622,5 +667,15 @@ public class TransactionalUserServiceTest {
         post.setId(new Random(10000).nextLong());
         post.setTopic(new Topic());
         return post;
+    }
+
+    private JCUser createUserWithGroups(Long... expectedGroupIDs) {
+        JCUser jcUser = new JCUser("user", "email@email.com", "pwd");
+        for (int i = 0; i < expectedGroupIDs.length; i++) {
+            Group group = new Group("group" + i);
+            group.setId(expectedGroupIDs[i]);
+            jcUser.getGroups().add(group);
+        }
+        return jcUser;
     }
 }

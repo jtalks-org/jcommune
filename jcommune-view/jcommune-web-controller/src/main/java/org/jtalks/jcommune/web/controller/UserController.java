@@ -14,17 +14,9 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang.StringUtils;
+import org.jtalks.common.model.entity.Group;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -38,10 +30,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
-import org.jtalks.jcommune.service.Authenticator;
-import org.jtalks.jcommune.service.ComponentService;
-import org.jtalks.jcommune.service.PluginService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -64,16 +53,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 
 
@@ -107,6 +99,7 @@ public class UserController {
     public static final String HONEYPOT_CAPTCHA_ERROR = "honeypotCaptchaNotNull";
     public static final String LOGIN_DTO = "loginUserDto";
     public static final String USERS_ATTR_NAME ="users";
+    public static final String GROUPS_ATTR_NAME ="groups";
     protected static final String ATTR_USERNAME = "username";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
     private static final String REMEMBER_ME_ON = "on";
@@ -117,6 +110,7 @@ public class UserController {
     private final MailService mailService;
     private final RetryTemplate retryTemplate;
     private final ComponentService componentService;
+    private final GroupService groupService;
 
     /**
      * @param userService              to delegate business logic invocation
@@ -129,7 +123,8 @@ public class UserController {
     @Autowired
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService,
                           UserService plainPasswordUserService, MailService mailService,
-                          RetryTemplate retryTemplate, ComponentService componentService) {
+                          RetryTemplate retryTemplate, ComponentService componentService,
+                          GroupService groupService) {
         this.userService = userService;
         this.authenticator = authenticator;
         this.pluginService = pluginService;
@@ -137,6 +132,7 @@ public class UserController {
         this.mailService = mailService;
         this.retryTemplate = retryTemplate;
         this.componentService = componentService;
+        this.groupService = groupService;
     }
 
     /**
@@ -523,7 +519,7 @@ public class UserController {
 
     @RequestMapping(value = "/confirm", method=RequestMethod.GET)
     @ResponseBody
-    public JsonResponse sendEmailConfirmation(@RequestParam("id")long id){
+    public JsonResponse sendEmailConfirmation(@RequestParam("id") long id){
         try {
             JCUser recipient = userService.get(id);
             mailService.sendAccountActivationMail(recipient);
@@ -531,6 +527,45 @@ public class UserController {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/user/{userID}/groups", method=RequestMethod.GET)
+    public JsonResponse userGroups(@PathVariable("userID") long userID){
+        try {
+            long forumId = componentService.getComponentOfForum().getId();
+            List<Long> groupsIDs = userService.getUserGroupIDs(forumId, userID);
+
+            return new JsonResponse(JsonResponseStatus.SUCCESS, groupsIDs);
+        } catch (Exception e) {
+            return new JsonResponse(JsonResponseStatus.FAIL);
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/user/{userID}/groups/{groupID}", method=RequestMethod.POST)
+    public JsonResponse addUserToGroup(@PathVariable long userID, @PathVariable long groupID){
+        try {
+            long forumId = componentService.getComponentOfForum().getId();
+            userService.addUserToGroup(forumId, userID, groupID);
+
+            return new JsonResponse(JsonResponseStatus.SUCCESS);
+        } catch (Exception e) {
+            return new JsonResponse(JsonResponseStatus.FAIL);
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/user/{userID}/groups/{groupID}", method=RequestMethod.DELETE)
+    public JsonResponse deleteUserFromGroup(@PathVariable long userID, @PathVariable long groupID){
+        try {
+            long forumId = componentService.getComponentOfForum().getId();
+            userService.deleteUserFromGroup(forumId, userID, groupID);
+
+            return new JsonResponse(JsonResponseStatus.SUCCESS);
+        } catch (Exception e) {
+            return new JsonResponse(JsonResponseStatus.FAIL);
+        }
     }
 
     @RequestMapping(value = "/users/list", method = RequestMethod.GET)
@@ -542,6 +577,9 @@ public class UserController {
         } else {
             List<JCUser> users = userService.findByUsernameOrEmail(forumId, searchKey.trim());
             mav.addObject(USERS_ATTR_NAME, users);
+
+            List<Group> groups = groupService.getAll();
+            mav.addObject(GROUPS_ATTR_NAME, groups);
         }
         return mav;
     }

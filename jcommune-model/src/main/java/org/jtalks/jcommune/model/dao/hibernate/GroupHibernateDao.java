@@ -20,7 +20,6 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Group;
-
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dao.utils.SqlLikeEscaper;
@@ -36,6 +35,9 @@ import java.util.List;
  * @author Leonid Kazancev
  */
 public class GroupHibernateDao extends GenericDao<Group> implements GroupDao {
+    private static final String FIND_GROUP_BY_NAME = "findGroupByName", FIND_ALL_GROUPS = "findAllGroups";
+    private static final String FIND_EXACTLY_BY_NAME = "findGroupExactlyByName";
+
     /**
      * @param sessionFactory The SessionFactory.
      */
@@ -111,5 +113,32 @@ public class GroupHibernateDao extends GenericDao<Group> implements GroupDao {
     public List<Group> getGroupsByIds(List<Long> ids) {
         return (List<Group>)session().getNamedQuery("getGroupsByIds")
                 .setParameterList("ids", ids).list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Group> getByNameContains(String name) {
+        Validate.notNull(name, "User Group name can't be null");
+        if (org.apache.commons.lang3.StringUtils.isBlank(name)) {
+            return this.getAll();
+        }
+        Query query = session().getNamedQuery(FIND_GROUP_BY_NAME);
+        query.setString("name", SqlLikeEscaper.escapeControlCharacters(name));
+        return query.list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Group> getByName(String name) {
+        Validate.notNull(name, "User Group name can't be null");
+        Query query = session().getNamedQuery(FIND_EXACTLY_BY_NAME);
+        // we should use lower case to search ignoring case
+        query.setString("name", name);
+        return query.list();
     }
 }

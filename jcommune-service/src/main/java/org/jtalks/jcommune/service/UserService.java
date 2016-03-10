@@ -15,23 +15,23 @@
 package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.User;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
-import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import org.jtalks.jcommune.model.dto.LoginUserDto;
 
 /**
  * This interface should have methods which give us more abilities in manipulating User persistent entity.
@@ -225,4 +225,9 @@ public interface UserService extends EntityService<JCUser> {
      */
     List<JCUser> findByUsernameOrEmail(long forumComponentId, String searchKey);
 
+    List<Long> getUserGroupIDs(long forumComponentId, long userID) throws NotFoundException;
+
+    void addUserToGroup(long forumId, long userID, long groupID) throws NotFoundException;
+
+    void deleteUserFromGroup(long forumId, long userID, long groupID) throws NotFoundException;
 }

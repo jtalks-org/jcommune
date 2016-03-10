@@ -45,6 +45,8 @@
     <security:intercept-url pattern="/users/new" method="GET" access="permitAll()"/>
     <security:intercept-url pattern="/user" method="GET" access="isAuthenticated()"/>
     <security:intercept-url pattern="/user/" method="GET" access="isAuthenticated()"/>
+    <security:intercept-url pattern="/user/*/groups" method="GET" access="isAuthenticated()"/>
+    <security:intercept-url pattern="/user/*/groups/*" method="GET" access="isAuthenticated()"/>
     <security:intercept-url pattern="/users/**" access="isAuthenticated()"/>
     <security:intercept-url pattern="/user/activate/**" access="permitAll()"/>
 

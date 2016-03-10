@@ -1232,3 +1232,14 @@ pre.prettyprint {
 .grid-row {
     background-color: #ffffff !important;
 }
+
+.groups-button {
+    color: #0088cc;
+    cursor: pointer;
+}
+
+.groups-button:hover {
+    color: #005580;
+    text-decoration: underline;
+    cursor: pointer;
+}

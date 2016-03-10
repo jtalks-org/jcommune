@@ -144,6 +144,8 @@ in the future.
           type="text/css" media="all"/>
     <link rel="stylesheet" type="text/css" media="all"
           href="${pageContext.request.contextPath}/resources/css/lib/jquery-ui.css"/>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="${pageContext.request.contextPath}/resources/css/lib/chosen.css"/>
 
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery-1.7.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/jquery/jquery.truncate.js"></script>
@@ -178,6 +180,7 @@ in the future.
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/html5placeholder.jquery.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/lib/json2.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/javascript/lib/chosen.jquery.js"></script>
 
     <script src="${pageContext.request.contextPath}/resources/javascript/app/keymaps.js"></script>
     <script src="${pageContext.request.contextPath}/resources/javascript/app/dialog.js"></script>
@@ -243,6 +246,10 @@ in the future.
       <script src="${pageContext.request.contextPath}/resources/javascript/app/userProfileEffects.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/contextMenu.js"></script>
       <script src="${pageContext.request.contextPath}/resources/javascript/app/codeHighlighting.js"></script>
+    </c:if>
+
+    <c:if test="${fn:contains(uriString, 'users')}">
+      <script src="${pageContext.request.contextPath}/resources/javascript/app/userSearch.js"></script>
     </c:if>
 
     <c:if test="${fn:contains(uriString, 'plugins')}">

@@ -22,7 +22,9 @@ import org.jtalks.common.model.entity.User;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -349,6 +351,32 @@ public class JCUser extends User {
         getGroups().add(group);
         group.getUsers().add(this);
         return this;
+    }
+
+    /**
+     * Delete a user from the group and remove group from the user.
+     *
+     * @param group a group for delete
+     * @return this
+     */
+    public JCUser deleteGroup(Group group) {
+        getGroups().remove(group);
+        group.getUsers().remove(this);
+        return this;
+    }
+
+    /**
+     * Get only IDs for user groups
+     *
+     * @return group IDs
+     */
+    public List<Long> getGroupsIDs() {
+        List<Long> groupIDs = new ArrayList<Long>();
+        List<Group> groups = getGroups();
+        for (Group group : groups) {
+            groupIDs.add(group.getId());
+        }
+        return groupIDs;
     }
 
     /**

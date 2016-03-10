@@ -17,7 +17,6 @@ package org.jtalks.jcommune.model.dao;
 import org.jtalks.common.model.entity.Group;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Data access object for manipulating groups
@@ -32,4 +31,29 @@ public interface GroupDao extends org.jtalks.common.model.dao.GroupDao {
      * @return the list of found groups
      */
     List<Group> getGroupsByIds(List<Long> ids);
+
+    /**
+     * Get the list of all groups.
+     *
+     * @return list of groups
+     */
+    List<Group> getAll();
+
+    /**
+     * Get the list of all groups which names contains the specified name.
+     *
+     * @param name group name
+     * @return list of groups
+     * @throws IllegalArgumentException if name is null
+     */
+    List<Group> getByNameContains(String name);
+
+    /**
+     * Get the list of all groups which name matches ignoring case the specified name.
+     *
+     * @param name group name
+     * @return list of groups
+     * @throws IllegalArgumentException if name is null
+     */
+    List<Group> getByName(String name);
 }

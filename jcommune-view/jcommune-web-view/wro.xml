@@ -18,6 +18,7 @@
   <group name="libs">
     <css>/resources/css/lib/jquery.contextMenu.css</css>
     <css>/resources/css/lib/jquery-ui.css</css>
+    <css>/resources/css/lib/chosen.css</css>
 
     <js>/resources/javascript/lib/jquery/jquery-1.7.min.js</js>
     <js>/resources/javascript/lib/jquery/jquery.truncate.js</js>
@@ -88,6 +89,10 @@
     <js>/resources/javascript/app/contextMenu.js</js>
     <js>/resources/javascript/app/codeHighlighting.js</js>
     <js>/resources/javascript/app/registration.js</js>
+  </group>
+
+  <group name="users">
+    <js>/resources/javascript/app/userSearch.js</js>
   </group>
 
   <group name="plugin">

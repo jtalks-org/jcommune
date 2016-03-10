@@ -14,12 +14,6 @@
  */
 package org.jtalks.jcommune.web.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.jtalks.common.model.entity.Component;
@@ -37,10 +31,7 @@ import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
-import org.jtalks.jcommune.service.Authenticator;
-import org.jtalks.jcommune.service.ComponentService;
-import org.jtalks.jcommune.service.PluginService;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
@@ -60,6 +51,12 @@ import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -83,6 +80,7 @@ public class UserControllerTest {
     private HttpServletResponse response;
     private RetryTemplate retryTemplate;
     private ComponentService componentService;
+    private GroupService groupService;
 
     @BeforeMethod
     public void setUp() throws IOException {
@@ -93,6 +91,7 @@ public class UserControllerTest {
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
         componentService = mock(ComponentService.class);
+        groupService = mock(GroupService.class);
         retryTemplate = new RetryTemplate();
         retryTemplate.setRetryPolicy(new NeverRetryPolicy());
         SecurityContextHolderFacade securityFacade = mock(SecurityContextHolderFacade.class);
@@ -100,7 +99,7 @@ public class UserControllerTest {
         when(securityFacade.getContext()).thenReturn(securityContext);
         when(request.getHeader("X-FORWARDED-FOR")).thenReturn("192.168.1.1");
         userController = new UserController(userService, authenticator, pluginService, userService,
-                mailService, retryTemplate, componentService);
+                mailService, retryTemplate, componentService, groupService);
     }
 
     @Test
@@ -447,7 +446,7 @@ public class UserControllerTest {
                 .thenReturn(AuthenticationStatus.AUTHENTICATION_FAIL);
         
         LoginUserDto loginUserDto = new LoginUserDto();
-        userController.login(loginUserDto, null,  "on", request, null);
+        userController.login(loginUserDto, null, "on", request, null);
 
         verify(userService).loginUser(any(LoginUserDto.class), any(HttpServletRequest.class), any(HttpServletResponse.class));
     }
@@ -471,7 +470,7 @@ public class UserControllerTest {
                 .thenThrow(new UnexpectedErrorException());
         
         LoginUserDto loginUserDto = new LoginUserDto();
-        ModelAndView view = userController.login(loginUserDto, null,  "on", request, null);
+        ModelAndView view = userController.login(loginUserDto, null, "on", request, null);
 
         assertEquals(view.getViewName(), UserController.AUTH_SERVICE_FAIL_URL);
         verify(userService).loginUser(eq(loginUserDto),
@@ -490,8 +489,7 @@ public class UserControllerTest {
 
     @Test
     public void testSearchUsersNullSearchKey() {
-        Component component = new Component();
-        component.setId(1);
+        Component component = createDefaultComponent();
 
         when(componentService.getComponentOfForum()).thenReturn(component);
 
@@ -502,10 +500,15 @@ public class UserControllerTest {
         assertFalse(mav.getModel().containsKey(UserController.USERS_ATTR_NAME));
     }
 
-    @Test
-    public void testSearchUsersEmptySearchKey() {
+    private Component createDefaultComponent() {
         Component component = new Component();
         component.setId(1);
+        return component;
+    }
+
+    @Test
+    public void testSearchUsersEmptySearchKey() {
+        Component component = createDefaultComponent();
 
         when(componentService.getComponentOfForum()).thenReturn(component);
 
@@ -518,8 +521,7 @@ public class UserControllerTest {
 
     @Test
     public void testSearchUsers() {
-        Component component = new Component();
-        component.setId(1);
+        Component component = createDefaultComponent();
         String searchKey = "key";
         List<JCUser> users = Lists.asList(new JCUser("user", "email@email.com", "pwd"), new JCUser[0]);
 
@@ -533,10 +535,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void searchusersShouldTrimSearchKey()
-    {
-        Component component = new Component();
-        component.setId(1);
+    public void searchUsersShouldTrimSearchKey() {
+        Component component = createDefaultComponent();
         String searchKey = "  key  ";
 
         when(componentService.getComponentOfForum()).thenReturn(component);
@@ -544,6 +544,46 @@ public class UserControllerTest {
         userController.searchUsers(searchKey);
 
         verify(userService).findByUsernameOrEmail(component.getId(), searchKey.trim());
+    }
+
+    @Test
+    public void getUserGroups() throws NotFoundException {
+        long userID = 1l;
+        Component component = createDefaultComponent();
+
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
+        userController.userGroups(userID);
+
+        verify(userService).getUserGroupIDs(component.getId(), userID);
+    }
+
+    @Test
+     public void addUserToGroup() throws Exception {
+        long userID = 1l;
+        long groupID = 2l;
+
+        Component component = createDefaultComponent();
+
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
+        userController.addUserToGroup(userID, groupID);
+
+        verify(userService).addUserToGroup(component.getId(), userID, groupID);
+    }
+
+    @Test
+    public void deleteUserFromGroup() throws Exception {
+        long userID = 1l;
+        long groupID = 2l;
+
+        Component component = createDefaultComponent();
+
+        when(componentService.getComponentOfForum()).thenReturn(component);
+
+        userController.deleteUserFromGroup(userID, groupID);
+
+        verify(userService).deleteUserFromGroup(component.getId(), userID, groupID);
     }
 
     private void assertNullFields(RegisterUserDto dto) {

@@ -36,6 +36,12 @@
           </button>
         </form>
       </div>
+
+      <div class="alert alert-error" style="display: none">
+        <span class="close">&times;</span>
+        <span id="alertMessagePopup"></span>
+      </div>
+
       <c:if test="${users!=null}">
         <div>
           <c:choose>
@@ -58,6 +64,20 @@
                       <a href="${pageContext.request.contextPath}/users/${user.id}">
                         <spring:message code="label.profile"/>
                       </a>
+                    </td>
+                    <td>
+                      <span class="groups-button" onclick="return window.userSearch.toggleUserGroups(event, ${user.id});">
+                        <spring:message code="label.user.groups"/>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="grid-row" style="display: none;" id="user-groups-table-${user.id}" >
+                    <td colspan="4">
+                      <select data-placeholder="Choose a groups..." class="user-groups-select" data-user-id="${user.id}" multiple="multiple" style="width: 100%">
+                        <c:forEach var="group" items="${groups}">
+                          <option value="${group.id}">${group.name}</option>
+                        </c:forEach>
+                      </select>
                     </td>
                   </tr>
                 </c:forEach>
