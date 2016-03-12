@@ -103,6 +103,11 @@ in the future.
               src="${pageContext.request.contextPath}/resources/wro/user.js?${project.version}"></script>
     </c:if>
 
+    <c:if test="${fn:contains(uriString, 'users')}">
+      <script type="text/javascript"
+              src="${pageContext.request.contextPath}/resources/wro/users.js?${project.version}"></script>
+    </c:if>
+
     <c:if test="${fn:contains(uriString, 'plugins')}">
       <script type="text/javascript"
               src="${pageContext.request.contextPath}/resources/wro/plugin.js?${project.version}"></script>
