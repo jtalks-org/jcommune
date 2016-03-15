@@ -22,7 +22,8 @@ import org.jtalks.jcommune.service.nontransactional.EncryptionService
 import org.jtalks.jcommune.service.security.AdministrationGroup
 import org.jtalks.jcommune.service.security.PermissionManager
 import org.jtalks.jcommune.test.model.User
-import org.jtalks.jcommune.test.service.PermissionGranter;
+import org.jtalks.jcommune.test.service.GroupsManager
+import org.jtalks.jcommune.test.service.PermissionGranter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
@@ -31,10 +32,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MvcResult
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
@@ -72,7 +73,7 @@ abstract class Users {
         def group = groupDao.getGroupByName(AdministrationGroup.USER.name)
         def fromDb = userDao.getByUsername(user.username)
         if (fromDb == null) {
-            fromDb = new JCUser(user.username, 'sample@example.com', encryptionService.encryptPassword(user.password))
+            fromDb = new JCUser(user.username, user.email, encryptionService.encryptPassword(user.password))
             fromDb.enabled = true
             fromDb.addGroup(group)
             userDao.saveOrUpdate(fromDb)
@@ -82,6 +83,18 @@ abstract class Users {
         setAuthentication(new JCUser(user.username, 'sample@example.com', user.password))
         return new PermissionGranter(permissionManager, group);
     }
+
+    GroupsManager createdWithoutAccess(User user) {
+        def fromDb = userDao.getByUsername(user.username)
+        if (fromDb == null) {
+            fromDb = new JCUser(user.username, user.email, encryptionService.encryptPassword(user.password))
+            fromDb.enabled = true
+            userDao.saveOrUpdate(fromDb)
+            userDao.flush()
+        }
+        return new GroupsManager(fromDb, groupDao, userDao);
+    }
+
     def createdButNotActivated(User user) {
         def toCreate = new JCUser(user.username, 'sample@example.com', encryptionService.encryptPassword(user.password))
         userDao.saveOrUpdate(toCreate)
@@ -112,6 +125,10 @@ abstract class Users {
 
     boolean isNotExist(String username) {
         return userDao.getByUsername(username) == null
+    }
+
+    long userIdByUsername(String username) {
+        return userDao.getByUsername(username).getId();
     }
 
     static boolean isAuthenticated(HttpSession session, User user) {
