@@ -26,6 +26,9 @@ public class JsonResponse {
     private JsonResponseStatus status;
     private Object result;
 
+    private JsonResponse() {
+    }
+
     /**
      * Creates new instance
      *

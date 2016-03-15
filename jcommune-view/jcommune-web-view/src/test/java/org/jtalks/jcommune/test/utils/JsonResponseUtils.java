@@ -44,7 +44,10 @@ public class JsonResponseUtils {
         JsonNode resultNode = rootNode.get("result");
         if (resultNode != null && resultNode.isArray()) {
             for (JsonNode itemNode : resultNode) {
-                result.add(itemNode.get("defaultMessage").getTextValue());
+                JsonNode defaultMessage = itemNode.get("defaultMessage");
+                if (defaultMessage != null) {
+                    result.add(defaultMessage.getTextValue());
+                }
             }
         }
         return result;
@@ -70,6 +73,14 @@ public class JsonResponseUtils {
             OBJECT_MAPPER.writeValue(writer, pojo);
         } finally {
             return writer.toString();
+        }
+    }
+
+    public static JsonResponse parse(String jsonResponceResult) {
+        try {
+            return OBJECT_MAPPER.readValue(jsonResponceResult, JsonResponse.class);
+        } catch (IOException e) {
+            return null;
         }
     }
 }
