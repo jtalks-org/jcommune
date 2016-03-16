@@ -36,7 +36,7 @@ public class GroupsService {
         groupDao.saveOrUpdate(new Group(AdministrationGroup.USER.getName()));
     }
 
-    public List<Long> getIDsByName(List<String> groups) {
+    public List<Long> getIdsByName(List<String> groups) {
         List<Long> result = new ArrayList<>();
         for (String groupName : groups) {
             result.add(getIdByName(groupName));

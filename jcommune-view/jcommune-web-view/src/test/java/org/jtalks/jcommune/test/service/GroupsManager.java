@@ -1,6 +1,5 @@
 package org.jtalks.jcommune.test.service;
 
-import groovy.transform.CompileStatic;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -10,7 +9,6 @@ import java.util.List;
 /**
  * @author skythet
  */
-@CompileStatic
 public class GroupsManager {
     private JCUser user;
     private GroupDao groupDao;

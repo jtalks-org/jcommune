@@ -14,27 +14,20 @@
  */
 package org.jtalks.jcommune.test
 
-import org.jtalks.common.model.entity.Component
-import org.jtalks.common.model.permissions.GeneralPermission
 import org.jtalks.jcommune.service.security.AdministrationGroup
 import org.jtalks.jcommune.test.model.User
-import org.jtalks.jcommune.test.service.ComponentService
 import org.jtalks.jcommune.test.service.GroupsService
 import org.jtalks.jcommune.test.utils.Users
+import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
-import org.springframework.mock.web.MockHttpSession
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
-import org.springframework.test.web.servlet.MockMvc
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
-import static org.hamcrest.Matchers.hasItems
+import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.is
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 /**
  * @author skythet
@@ -44,153 +37,118 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 class UserControllerTest extends Specification {
-    @Autowired ComponentService componentService
     @Autowired Users users
     @Autowired GroupsService groupsService
 
-    @Autowired MockMvc mockMvc
-
-    private Component forum
-    private User adminUser;
-
     def setup() {
         groupsService.create()
-        forum = componentService.createForumComponent()
-
-        adminUser = new User()
-        users.created(adminUser).withPermissionOn(forum, GeneralPermission.ADMIN)
     }
 
-    def 'test show user groups'() {
+    def 'test must return all the groups of a user'() {
         given: 'Admin login'
-            def session = users.signIn(adminUser)
+            def session = users.signInAsAdmin()
             def expectedGroups = [AdministrationGroup.BANNED_USER.getName(), AdministrationGroup.USER.getName()]
         and: 'User created with groups BANNED_USER and USER'
             def user = new User()
             users.createdWithoutAccess(user).withGroups(expectedGroups);
         when: 'User fetch groups'
-            def result = mockMvc.perform(get('/user/' + users.userIdByUsername(user.username) + '/groups')
-                .session(session as MockHttpSession)
-                .contentType(MediaType.APPLICATION_JSON)
-            )
-        then: 'Fetched groups list'
-            result.andExpect(status().isOk())
-                .andExpect(jsonPath('$.status', is('SUCCESS')))
-                .andExpect(jsonPath('$.result', hasItems(groupsService.getIDsByName(expectedGroups) as int[])))
+            List<Long> receivedGroups = users.fetchGroups(session, user);
+        then: 'Fetched all user groups'
+            assertThat(receivedGroups, is(groupsService.getIdsByName(expectedGroups)))
     }
 
-    def 'try fetch user groups without access'() {
+    def 'test without access must return fail result'() {
         given: 'User created without access and login'
             def user = new User()
             users.createdWithoutAccess(user);
             def session = users.signIn(user)
         when: 'User fetch groups without access'
-            def result = mockMvc.perform(get('/user/' + users.userIdByUsername(user.username) + '/groups')
-                .session(session as MockHttpSession)
-                .contentType(MediaType.APPLICATION_JSON)
-            )
+            users.fetchGroups(session, user);
         then:
-            result.andExpect(status().isOk())
-                .andExpect(jsonPath('$.status', is('FAIL')))
+            thrown(WrongResponseException)
     }
 
-    def 'try fetch user groups without authorization'() {
+    def 'test without authorization should be redirection'() {
         given: 'User created without access and not login'
             def user = new User()
             users.createdWithoutAccess(user);
         when: 'User fetch groups without login'
-            def result = mockMvc.perform(get('/user/' + users.userIdByUsername(user.username) + '/groups'))
+            users.fetchGroups(session, user);
         then:
-            result.andExpect(status().isMovedTemporarily()).andExpect(redirectedUrl("http://localhost/login"))
+            thrown(MissingPropertyException)
     }
 
     def 'test add group to user'() {
         given: 'Admin login'
-            def session = users.signIn(adminUser)
+            def session = users.signInAsAdmin()
             def userGroups = [AdministrationGroup.BANNED_USER.getName(), AdministrationGroup.USER.getName()]
-            def groupIDForAdd = groupsService.getIdByName(AdministrationGroup.ADMIN.getName())
+            def groupID = groupsService.getIdByName(AdministrationGroup.ADMIN.getName())
         and: 'User created with groups BANNED_USER and USER'
             def user = new User()
             users.createdWithoutAccess(user).withGroups(userGroups);
         when: 'User add to group'
-            def result = mockMvc.perform(post('/user/' + users.userIdByUsername(user.username) + '/groups/' + groupIDForAdd)
-                .session(session as MockHttpSession)
-                .contentType(MediaType.APPLICATION_JSON)
-            )
-        then:
-            result.andExpect(status().isOk())
-                .andExpect(jsonPath('$.status', is('SUCCESS')))
+            users.addUserToGroup(session, user, groupID);
+        then: 'User added to group'
+            users.assertUserInGroup(user, groupID)
     }
 
-    def 'try add group to user without access'() {
+    def 'test add group to user without access'() {
         given: 'User created without access and login'
             def user = new User()
             users.createdWithoutAccess(user);
             def session = users.signIn(user)
-            def groupIDForAdd = groupsService.getIdByName(AdministrationGroup.ADMIN.getName())
+            def groupID = groupsService.getIdByName(AdministrationGroup.ADMIN.getName())
         when: 'Add group to user'
-            def result = mockMvc.perform(post('/user/' + users.userIdByUsername(user.username) + '/groups/' + groupIDForAdd)
-                .session(session as MockHttpSession)
-                .contentType(MediaType.APPLICATION_JSON)
-            )
+            users.addUserToGroup(session, user, groupID);
         then:
-            result.andExpect(status().isOk())
-                .andExpect(jsonPath('$.status', is('FAIL')))
+            thrown(WrongResponseException)
     }
 
-    def 'try add group to user without authorization'() {
+    def 'test add group to user without authorization'() {
         given: 'User created without access and not login'
             def user = new User()
             users.createdWithoutAccess(user);
-            def groupIDForAdd = groupsService.getIdByName(AdministrationGroup.ADMIN.getName())
+            def groupID = groupsService.getIdByName(AdministrationGroup.ADMIN.getName())
         when: 'Add group to user'
-            def result = mockMvc.perform(post('/user/' + users.userIdByUsername(user.username) + '/groups/' + groupIDForAdd))
+            users.addUserToGroup(session, user, groupID);
         then:
-            result.andExpect(status().isMovedTemporarily()).andExpect(redirectedUrl("http://localhost/login"))
+            thrown(MissingPropertyException)
     }
 
     def 'test delete user from group'() {
         given: 'Admin login'
-            def session = users.signIn(adminUser)
+            def session = users.signInAsAdmin()
             def userGroups = [AdministrationGroup.BANNED_USER.getName(), AdministrationGroup.USER.getName()]
-            def groupIDForDelete = groupsService.getIdByName(AdministrationGroup.BANNED_USER.getName())
+            def groupID = groupsService.getIdByName(AdministrationGroup.BANNED_USER.getName())
         and: 'User created with groups BANNED_USER and USER'
             def user = new User()
             users.createdWithoutAccess(user).withGroups(userGroups);
         when: 'Delete group from user'
-            def result = mockMvc.perform(delete('/user/' + users.userIdByUsername(user.username) + '/groups/' + groupIDForDelete)
-                .session(session as MockHttpSession)
-                .contentType(MediaType.APPLICATION_JSON)
-        )
+            users.deleteUserFromGroup(session, user, groupID);
         then:
-            result.andExpect(status().isOk())
-                .andExpect(jsonPath('$.status', is('SUCCESS')))
+            users.assertUserNotMemerOfGroup(user, groupID)
     }
 
-    def 'try delete group from user without access'() {
+    def 'test delete group from user without access'() {
         given: 'User created without access and login'
             def user = new User()
             users.createdWithoutAccess(user);
             def session = users.signIn(user)
-            def groupIDForDelete = groupsService.getIdByName(AdministrationGroup.ADMIN.getName())
+            def groupID = groupsService.getIdByName(AdministrationGroup.ADMIN.getName())
         when: 'Delete group from user'
-            def result = mockMvc.perform(post('/user/' + users.userIdByUsername(user.username) + '/groups/' + groupIDForDelete)
-                .session(session as MockHttpSession)
-                .contentType(MediaType.APPLICATION_JSON)
-        )
+            users.deleteUserFromGroup(session, user, groupID);
         then:
-            result.andExpect(status().isOk())
-                .andExpect(jsonPath('$.status', is('FAIL')))
+            thrown(WrongResponseException)
     }
 
-    def 'try delete group from user without authorization'() {
+    def 'test delete group from user without authorization'() {
         given: 'User created without access and not login'
             def user = new User()
             users.createdWithoutAccess(user);
-            def groupIDForDelete = groupsService.getIdByName(AdministrationGroup.ADMIN.getName())
+            def groupID = groupsService.getIdByName(AdministrationGroup.ADMIN.getName())
         when: 'Delete group from user'
-            def result = mockMvc.perform(post('/user/' + users.userIdByUsername(user.username) + '/groups/' + groupIDForDelete))
+            users.deleteUserFromGroup(session, user, groupID);
         then:
-            result.andExpect(status().isMovedTemporarily()).andExpect(redirectedUrl("http://localhost/login"))
+            thrown(MissingPropertyException)
     }
 }
