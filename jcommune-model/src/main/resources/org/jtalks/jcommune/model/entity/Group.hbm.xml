@@ -56,7 +56,7 @@
   </query>
 
   <query name="findAllGroups">
-    <![CDATA[from Group]]>
+    <![CDATA[from Group order by name]]>
   </query>
 
   <query name="findGroupsOfUser">

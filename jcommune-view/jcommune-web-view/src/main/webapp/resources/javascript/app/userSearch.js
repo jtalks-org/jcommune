@@ -68,14 +68,23 @@ userSearch.groupDeleted = function(userID, groupID) {
 };
 
 userSearch.toggleUserGroups = function(event, userID) {
-    $('#user-groups-table-' + userID).toggle(0, function() {
-        if($(this).is(":visible")) {
-            userSearch.showUserGroups(userID);
-        }
-    });
+    var userGroupsTable = $('#user-groups-table-' + userID);
+    if (!userGroupsTable.is(":visible")) {
+        userSearch.showUserGroups(userID, function() {
+            var chosenContainer = userGroupsTable.find('.chosen-container');
+            chosenContainer.css({width: '100%'});
+            chosenContainer.find('.search-field input').css({width: '100%'});
+            userGroupsTable.toggle(); // show only after fetch
+        });
+    } else {
+        userGroupsTable.toggle();
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
 };
 
-userSearch.showUserGroups = function(userID) {
+userSearch.showUserGroups = function(userID, callback) {
     $.get($root + "/user/" + userID + "/groups", function (result) {
         var multiSelect = $("#user-groups-table-" + userID + " .user-groups-select");
         multiSelect.val(result.result);
@@ -83,6 +92,7 @@ userSearch.showUserGroups = function(userID) {
         // trigger changed event if chosen already applied
         if (multiSelect.next('.chosen-container').length) {
             multiSelect.trigger("chosen:updated");
+            callback();
             return;
         }
 
@@ -99,6 +109,8 @@ userSearch.showUserGroups = function(userID) {
                 userSearch.groupDeleted(userID, params.deselected);
             }
         });
+
+        callback();
     }).fail(userSearch.connectionErrorCallback);
 };
 

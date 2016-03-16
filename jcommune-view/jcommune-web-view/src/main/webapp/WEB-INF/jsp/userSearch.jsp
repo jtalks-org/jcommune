@@ -66,14 +66,14 @@
                       </a>
                     </td>
                     <td>
-                      <span class="groups-button" onclick="return window.userSearch.toggleUserGroups(event, ${user.id});">
+                      <a href="#"  onclick="return window.userSearch.toggleUserGroups(event, ${user.id});">
                         <spring:message code="label.user.groups"/>
-                      </span>
+                      </a>
                     </td>
                   </tr>
                   <tr class="grid-row" style="display: none;" id="user-groups-table-${user.id}" >
                     <td colspan="4">
-                      <select data-placeholder="Choose a groups..." class="user-groups-select" data-user-id="${user.id}" multiple="multiple" style="width: 100%">
+                      <select data-placeholder="<spring:message code="label.user.groups.select.placeHolder" />" class="user-groups-select" data-user-id="${user.id}" multiple="multiple" style="width: 100%">
                         <c:forEach var="group" items="${groups}">
                           <option value="${group.id}">${group.name}</option>
                         </c:forEach>
