@@ -256,7 +256,7 @@ get XSS attacks.</p>-->
     </code>
 
     <code name="img2" priority="2">
-        <pattern ignoreCase="true">[img]<var name="addr" regex=""/>[/img]</pattern>
+        <pattern ignoreCase="true">[img][/img]</pattern>
         <template><![CDATA[<a title="" href="/a" class="pretty-photo"><img class="thumbnail-default" alt="" src="/a" onError="imgError(this)" /></a>]]></template>
     </code>
 
