@@ -254,8 +254,8 @@ var editCancelHandler = function(e) {
         return;
     }
 
-    hideVisibleEditPrompts();
     var commentId = $(this).attr("data-comment-id");
+    hideVisibleEditPromptById(commentId);
     enableViewMode(commentId);
 }
 
@@ -472,6 +472,13 @@ $(document).keyup(function(e){
 
 function hideVisibleEditPrompts() {
     $(".edit:visible").each(function() {
+        $(this).hide();
+        $(this).prev().show();
+    });
+}
+
+function hideVisibleEditPromptById(id) {
+    $("#edit-"+id+":visible").each(function() {
         $(this).hide();
         $(this).prev().show();
     });
