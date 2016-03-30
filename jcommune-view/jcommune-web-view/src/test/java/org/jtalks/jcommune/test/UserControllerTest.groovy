@@ -44,7 +44,7 @@ class UserControllerTest extends Specification {
         groupsService.create()
     }
 
-    def 'test must return all the groups of a user'() {
+    def 'must return all the groups of a user'() {
         given: 'Admin login'
             def session = users.signInAsAdmin()
             def expectedGroups = [AdministrationGroup.BANNED_USER.getName(), AdministrationGroup.USER.getName()]
@@ -57,7 +57,7 @@ class UserControllerTest extends Specification {
             assertThat(receivedGroups, is(groupsService.getIdsByName(expectedGroups)))
     }
 
-    def 'test without access must return fail result'() {
+    def 'must return fail result if user dont have access'() {
         given: 'User created without access and login'
             def user = new User()
             users.createdWithoutAccess(user);
@@ -68,7 +68,7 @@ class UserControllerTest extends Specification {
             thrown(WrongResponseException)
     }
 
-    def 'test without authorization should be redirection'() {
+    def 'must not be able to fetch user groups if you are not admin'() {
         given: 'User created without access and not login'
             def user = new User()
             users.createdWithoutAccess(user);
@@ -78,7 +78,7 @@ class UserControllerTest extends Specification {
             thrown(MissingPropertyException)
     }
 
-    def 'test add group to user'() {
+    def 'add group to user'() {
         given: 'Admin login'
             def session = users.signInAsAdmin()
             def userGroups = [AdministrationGroup.BANNED_USER.getName(), AdministrationGroup.USER.getName()]
@@ -92,7 +92,7 @@ class UserControllerTest extends Specification {
             users.assertUserInGroup(user, groupID)
     }
 
-    def 'test add group to user without access'() {
+    def 'user must be redirected to login page if he tries to access groups without authentication'() {
         given: 'User created without access and login'
             def user = new User()
             users.createdWithoutAccess(user);
@@ -104,7 +104,7 @@ class UserControllerTest extends Specification {
             thrown(WrongResponseException)
     }
 
-    def 'test add group to user without authorization'() {
+    def 'must not be able to add group to user without authorization'() {
         given: 'User created without access and not login'
             def user = new User()
             users.createdWithoutAccess(user);
@@ -115,7 +115,7 @@ class UserControllerTest extends Specification {
             thrown(MissingPropertyException)
     }
 
-    def 'test delete user from group'() {
+    def 'delete user from group'() {
         given: 'Admin login'
             def session = users.signInAsAdmin()
             def userGroups = [AdministrationGroup.BANNED_USER.getName(), AdministrationGroup.USER.getName()]
@@ -129,7 +129,7 @@ class UserControllerTest extends Specification {
             users.assertUserNotMemerOfGroup(user, groupID)
     }
 
-    def 'test delete group from user without access'() {
+    def 'must not be able to delete group from user without access'() {
         given: 'User created without access and login'
             def user = new User()
             users.createdWithoutAccess(user);
@@ -141,7 +141,7 @@ class UserControllerTest extends Specification {
             thrown(WrongResponseException)
     }
 
-    def 'test delete group from user without authorization'() {
+    def 'must not be able to delete group from user without authorization'() {
         given: 'User created without access and not login'
             def user = new User()
             users.createdWithoutAccess(user);
