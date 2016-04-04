@@ -248,22 +248,21 @@ var editSubmitHandler = function(e) {
             });
         }
     });
-}
+};
 
 var editCancelHandler = function(e) {
     if (e.which != 1) {
         return;
     }
 
-    hideVisibleEditPrompts();
-
     var commentId = $(this).attr("data-comment-id");
 
     var textarea = $('#editable-' + commentId); // cancel text change
     textarea.val(textarea.text());
 
+    hideVisibleEditPromptById(commentId);
     enableViewMode(commentId);
-}
+};
 
 var voteUpHandler = function voteUp(e) {
     if (e.which != 1) {
@@ -478,6 +477,13 @@ $(document).keyup(function(e){
 
 function hideVisibleEditPrompts() {
     $(".edit:visible").each(function() {
+        $(this).hide();
+        $(this).prev().show();
+    });
+}
+
+function hideVisibleEditPromptById(id) {
+    $("#edit-"+id+":visible").each(function() {
         $(this).hide();
         $(this).prev().show();
     });
