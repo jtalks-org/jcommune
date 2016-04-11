@@ -19,6 +19,9 @@ import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Mikhail Stryzhonok
  */
@@ -32,5 +35,16 @@ public class GroupsService {
         groupDao.saveOrUpdate(new Group(AdministrationGroup.BANNED_USER.getName()));
         groupDao.saveOrUpdate(new Group(AdministrationGroup.USER.getName()));
     }
-    
+
+    public List<Long> getIdsByName(List<String> groups) {
+        List<Long> result = new ArrayList<>();
+        for (String groupName : groups) {
+            result.add(getIdByName(groupName));
+        }
+        return result;
+    }
+
+    public Long getIdByName(String groupName) {
+        return groupDao.getGroupByName(groupName).getId();
+    }
 }

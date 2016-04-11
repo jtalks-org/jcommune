@@ -14,29 +14,40 @@
  */
 package org.jtalks.jcommune.test.utils
 
+import org.jtalks.common.model.permissions.GeneralPermission
 import org.jtalks.common.service.security.SecurityContextHolderFacade
 import org.jtalks.jcommune.model.dao.GroupDao
 import org.jtalks.jcommune.model.dao.UserDao
 import org.jtalks.jcommune.model.entity.JCUser
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus
 import org.jtalks.jcommune.service.nontransactional.EncryptionService
 import org.jtalks.jcommune.service.security.AdministrationGroup
 import org.jtalks.jcommune.service.security.PermissionManager
 import org.jtalks.jcommune.test.model.User
-import org.jtalks.jcommune.test.service.PermissionGranter;
+import org.jtalks.jcommune.test.service.ComponentService
+import org.jtalks.jcommune.test.service.GroupsManager
+import org.jtalks.jcommune.test.service.PermissionGranter
+import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
+import org.springframework.mock.web.MockHttpSession
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MvcResult
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSession
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.hamcrest.MatcherAssert.assertThat
+import static org.hamcrest.Matchers.hasItem
+import static org.hamcrest.Matchers.not
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 
 /**
  * @author Mikhail Stryzhonok
@@ -50,6 +61,7 @@ abstract class Users {
     @Autowired EncryptionService encryptionService
     @Autowired UserDao userDao
     @Autowired MockMvc mockMvc
+    @Autowired ComponentService componentService
 
     String signUpAndActivate(User user) throws Exception {
         singUp(user)
@@ -71,8 +83,8 @@ abstract class Users {
     PermissionGranter created(User user) {
         def group = groupDao.getGroupByName(AdministrationGroup.USER.name)
         def fromDb = userDao.getByUsername(user.username)
-        if (fromDb == null) {
-            fromDb = new JCUser(user.username, 'sample@example.com', encryptionService.encryptPassword(user.password))
+        if (!fromDb) {
+            fromDb = new JCUser(user.username, user.email, encryptionService.encryptPassword(user.password))
             fromDb.enabled = true
             fromDb.addGroup(group)
             userDao.saveOrUpdate(fromDb)
@@ -82,6 +94,18 @@ abstract class Users {
         setAuthentication(new JCUser(user.username, 'sample@example.com', user.password))
         return new PermissionGranter(permissionManager, group);
     }
+
+    GroupsManager createdWithoutAccess(User user) {
+        def fromDb = userDao.getByUsername(user.username)
+        if (!fromDb) {
+            fromDb = new JCUser(user.username, user.email, encryptionService.encryptPassword(user.password))
+            fromDb.enabled = true
+            userDao.saveOrUpdate(fromDb)
+            userDao.flush()
+        }
+        return new GroupsManager(fromDb, groupDao, userDao);
+    }
+
     def createdButNotActivated(User user) {
         def toCreate = new JCUser(user.username, 'sample@example.com', encryptionService.encryptPassword(user.password))
         userDao.saveOrUpdate(toCreate)
@@ -114,6 +138,10 @@ abstract class Users {
         return userDao.getByUsername(username) == null
     }
 
+    long userIdByUsername(String username) {
+        return userDao.getByUsername(username).getId();
+    }
+
     static boolean isAuthenticated(HttpSession session, User user) {
         //From Spring Security source code
         def context = session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY)
@@ -124,5 +152,56 @@ abstract class Users {
 
         def auth = (context as SecurityContext).authentication
         return auth != null && auth.authenticated && ((auth.principal as JCUser).username.equals(user.username))
+    }
+
+    long[] fetchGroups(HttpSession session, User user) {
+        def result = mockMvc.perform(get('/user/' + userIdByUsername(user.username) + '/groups')
+            .session(session as MockHttpSession)
+            .contentType(MediaType.APPLICATION_JSON)
+        ).andReturn();
+
+        return readJsonResponce(result).result as long[];
+    }
+
+    def addUserToGroup(HttpSession session, User user, long groupID) {
+        def result = mockMvc.perform(post('/user/' + userIdByUsername(user.username) + '/groups/' + groupID)
+                .session(session as MockHttpSession)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andReturn()
+        readJsonResponce(result)
+    }
+
+    def deleteUserFromGroup(HttpSession session, User user, long groupID) {
+        def result = mockMvc.perform(delete('/user/' + userIdByUsername(user.username) + '/groups/' + groupID)
+                .session(session as MockHttpSession)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andReturn()
+        readJsonResponce(result)
+    }
+
+    private static JsonResponse readJsonResponce(MvcResult result) {
+        def jsonResponse = JsonResponseUtils.parse(result.response.getContentAsString())
+        if (jsonResponse.status != JsonResponseStatus.SUCCESS) {
+            throw new WrongResponseException(JsonResponseStatus.SUCCESS.name(), jsonResponse.status.name())
+        }
+        jsonResponse
+    }
+
+    void assertUserInGroup(User user, long groupID) {
+        def userGroups = userDao.getByEmail(user.email).groups
+        def group = groupDao.get(groupID)
+        assertThat(userGroups, hasItem(group))
+    }
+
+    void assertUserNotMemerOfGroup(User user, long groupID) {
+        def userGroups = userDao.getByEmail(user.email).groups
+        def group = groupDao.get(groupID)
+        assertThat(userGroups, not(hasItem(group)))
+    }
+
+    def signInAsAdmin() {
+        def adminUser = new User()
+        created(adminUser).withPermissionOn(componentService.createForumComponent(), GeneralPermission.ADMIN)
+        signIn(adminUser)
     }
 }
