@@ -41,7 +41,7 @@ userSearch.connectionErrorCallback = function(xhr, status) {
     } else if (xhr.status == 403 || xhr.status == 302) {
         userSearch.popup.show($labelNotLoggedInGenericError);
     } else if (xhr.status == 500) {
-        userSearch.popup.show($labelConnectionLostGenericError);
+        userSearch.popup.show($labelError500Detail);
     }
 };
 
