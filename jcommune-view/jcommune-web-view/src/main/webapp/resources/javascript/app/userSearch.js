@@ -38,8 +38,10 @@ userSearch.connectionErrorCallback = function(xhr, status) {
         } else {
             userSearch.popup.show($labelConnectionLostGenericError);
         }
-    } else if (xhr.status == 403) {
-        userSearch.popup.show($labelNotLoggedInError);
+    } else if (xhr.status == 403 || xhr.status == 302) {
+        userSearch.popup.show($labelNotLoggedInGenericError);
+    } else if (xhr.status == 500) {
+        userSearch.popup.show($labelError500Detail);
     }
 };
 
@@ -97,7 +99,8 @@ userSearch.showUserGroups = function(userID, callback) {
         }
 
         var groupsSelectChosen = multiSelect.chosen({
-            allow_single_deselect: true
+            allow_single_deselect: true,
+            no_results_text: $labelUserGroupsNoMatches
         });
 
         // event for adding group

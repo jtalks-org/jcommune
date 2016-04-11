@@ -184,5 +184,8 @@ $pollItemsSize = '<spring:message code="poll.items.size" htmlEscape="true" text=
 $pollItemLength = '<spring:message code="poll.item.length" htmlEscape="true" text=""/>';
 
 $labelConnectionLostGenericError = "<spring:message code="label.connection.lost.genericError" htmlEscape="false"/>";
+$labelNotLoggedInGenericError = '<spring:message code="label.not.logged.in.genericError" htmlEscape="true" text=""/>'
+
 $labelUserGroupAddError = '<spring:message code="label.user.group.add.error" htmlEscape="true"/>';
 $labelUserGroupDeleteError = '<spring:message code="label.user.group.delete.error" htmlEscape="true"/>';
+$labelUserGroupsNoMatches = '<spring:message code="label.user.groups.no.matches" htmlEscape="true"/>';
