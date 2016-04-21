@@ -62,7 +62,7 @@
 
 .table .post-content-td {
     vertical-align: top;
-    word-break: break-word;
+    word-wrap: break-word;
 }
 
 .post-content-td {
@@ -107,7 +107,7 @@
 }
 
 .forum-sections-moderators-container {
-    font-size: 11px
+    font-size: 11px;
 }
 
 .forum-sections-stats-container {
