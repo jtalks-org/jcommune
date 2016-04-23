@@ -93,7 +93,7 @@ Utils.htmlEncode = function (s) {
  */
 Utils.focusFirstEl = function (target) {
     $(target).focus();
-}
+};
 
 /**
  * Replaces all \n characters by <br> tags. Used for review comments.
@@ -102,7 +102,7 @@ Utils.focusFirstEl = function (target) {
  */
 Utils.lf2br = function (s) {
     return s.replace(/\n/g, "<br>");
-}
+};
 
 /**
  * Replaces all \<br> tags by \n characters. Used for review comments.
@@ -111,22 +111,21 @@ Utils.lf2br = function (s) {
  */
 Utils.br2lf = function (s) {
     return s.replace(/<br>/gi, "\n");
-}
+};
 
 /**
  * Create form field with given label(placeholder), id, type, class and style.
  */
-Utils.createFormElement = function (label, id, type, cls, style) {
-    var elementHtml = ' \
+Utils.createFormElement = function (label, id, type, cls, style, text) {
+    return ' \
         <div class="control-group"> \
             <div class="controls"> \
-                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge ' + cls + '" style="'+ style +'"  /> \
+                ' + (text || "") + '\
+                <input type="' + type + '" id="' + id + '" name="' + id + '" placeholder="' + label + '" class="input-xlarge ' + cls + '" style="' + style + '"  /> \
             </div> \
         </div> \
     ';
-
-    return elementHtml;
-}
+};
 
 /**
  * Handling "onError" event for images if it's can't loaded. Invoke in config kefirbb.xml for [img] bbtag.
