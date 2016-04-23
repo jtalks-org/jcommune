@@ -152,6 +152,10 @@
       <groupId>com.googlecode.lambdaj</groupId>
       <artifactId>lambdaj</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.qala.datagen</groupId>
+      <artifactId>qala-datagen</artifactId>
+    </dependency>
   </dependencies>
 
   <properties>

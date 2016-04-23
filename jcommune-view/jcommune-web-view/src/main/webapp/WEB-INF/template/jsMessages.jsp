@@ -131,6 +131,9 @@ $labelUploadFavIcon = '<spring:message code="label.uploadFavIcon" htmlEscape="tr
 $labelRemoveFavIcon = '<spring:message code="label.deleteFavIcon" htmlEscape="true"/>';
 $labelDeleteIconConfirmation = '<spring:message code="label.deleteIconConfirmation" htmlEscape="true"/>';
 $labelDummyTextBBCode = '<spring:message code="label.dummyTextBBCode" htmlEscape="true"/>';
+$labelSessionTimeout = '<spring:message code="label.sessionTimeout" htmlEscape="true"/>';
+$labelAvatarMaxSize = '<spring:message code="label.avatarMaxSize" htmlEscape="true"/>';
+$labelEmailNotification = '<spring:message code="label.emailNotification" htmlEscape="true"/>';
 
 $labelBranchName = '<spring:message code="label.branchName" htmlEscape="true"/>';
 $labelBranchDescription = '<spring:message code="label.branchDescription" htmlEscape="true"/>';

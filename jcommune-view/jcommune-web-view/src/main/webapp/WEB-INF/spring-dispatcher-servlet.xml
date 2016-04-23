@@ -110,6 +110,9 @@
       <constructor-arg ref="componentInfoChangeDateProperty"/>
       <constructor-arg ref="componentAllPagesTitlePrefixProperty"/>
       <constructor-arg ref="componentCopyrightProperty"/>
+      <constructor-arg ref="sessionTimeoutProperty"/>
+      <constructor-arg ref="avatarMaxSizeProperty"/>
+      <constructor-arg ref="sendingNotificationsProperty"/>
 
     </bean>
     <bean id="bannerInterceptor" class="org.jtalks.jcommune.web.interceptors.BannerInterceptor">

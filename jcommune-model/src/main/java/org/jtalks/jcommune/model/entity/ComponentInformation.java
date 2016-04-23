@@ -16,6 +16,7 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Component;
+import org.jtalks.jcommune.model.validation.annotations.IntegerRange;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -27,6 +28,8 @@ import javax.validation.constraints.Size;
  */
 public class ComponentInformation {
     private static final int PARAM_MIN_SIZE = 1;
+    private static final int SESSION_MAX_TIMEOUT = 1440;
+    private static final int AVATAR_MAX_SIZE = 1048576;
 
     private Long id;
 
@@ -54,6 +57,16 @@ public class ComponentInformation {
 
     private String icon;
 
+    @NotNull(message = "{validation.not_null}")
+    @IntegerRange(min = 0, max = SESSION_MAX_TIMEOUT)
+    private String sessionTimeout;
+
+    @NotNull(message = "{validation.not_null}")
+    @IntegerRange(min = 0, max = AVATAR_MAX_SIZE)
+    private String avatarMaxSize;
+
+    @NotNull(message = "{validation.not_null}")
+    private boolean emailNotification;
 
     /**
      * Gets the string with encoded logo picture
@@ -185,6 +198,28 @@ public class ComponentInformation {
     public void setCopyright(String copyright) {
         this.copyright = copyright;
     }
-    
-    
+
+    public String getSessionTimeout() {
+        return sessionTimeout;
+    }
+
+    public void setSessionTimeout(String sessionTimeout) {
+        this.sessionTimeout = sessionTimeout;
+    }
+
+    public String getAvatarMaxSize() {
+        return avatarMaxSize;
+    }
+
+    public void setAvatarMaxSize(String avatarMaxSize) {
+        this.avatarMaxSize = avatarMaxSize;
+    }
+
+    public boolean isEmailNotification() {
+        return emailNotification;
+    }
+
+    public void setEmailNotification(boolean emailNotification) {
+        this.emailNotification = emailNotification;
+    }
 }

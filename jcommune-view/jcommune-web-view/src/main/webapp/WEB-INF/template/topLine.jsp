@@ -37,6 +37,9 @@
 <span id="descriptionHolder" class="hidden"><c:out value="${cmpDescription}"/></span>
 <span id="titlePrefixHolder" class="hidden"><c:out value="${cmpTitlePrefix}"/></span>
 <span id="copyrightHolder" class="hidden"><c:out value="${copyrightTemplate}"/></span>
+<span id="sessionTimeoutHolder" class="hidden"><c:out value="${sessionTimeout}"/></span>
+<span id="avatarMaxSizeHolder" class="hidden"><c:out value="${avatarMaxSize}"/></span>
+<span id="emailNotificationHolder" class="hidden"><c:out value="${emailNotification}"/></span>
 
 <c:set var="toolTipKey" value="${logoTooltip}"/>
 <c:if test="${not empty forumComponent}">

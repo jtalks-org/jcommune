@@ -40,6 +40,9 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     private static final String PARAM_ADMIN_INFO_CHANGE_DATE = "infoChangeDate";
     private static final String PARAM_COPYRIGHT_TEMPLATE = "copyrightTemplate";
     private static final String PARAM_USER_DEFINED_COPYRIGHT = "userDefinedCopyright";
+    private static final String PARAM_SESSION_TIMEOUT = "sessionTimeout";
+    private static final String PARAM_AVATAR_MAX_SIZE = "avatarMaxSize";
+    private static final String PARAM_EMAIL_NOTIFICATION = "emailNotification";
     
     private static final String CURRENT_YEAR_PLACEHOLDER = "{current_year}";
     
@@ -50,6 +53,10 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     private JCommuneProperty adminInfoChangeDateProperty;
     private JCommuneProperty allPagesTitlePrefixProperty;
     private JCommuneProperty copyrightProperty;
+    private JCommuneProperty urlAddressProperty;
+    private JCommuneProperty sessionTimeoutProperty;
+    private JCommuneProperty avatarMaxSizeProperty;
+    private JCommuneProperty emailNotificationProperty;
     
     private final String CURRENT_YEAR = String.valueOf(new LocalDateTime().getYear());
 
@@ -67,7 +74,11 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
                                  JCommuneProperty logoTooltipProperty,
                                  JCommuneProperty adminInfoChangeDateProperty,
                                  JCommuneProperty allPagesTitlePrefixProperty,
-                                 JCommuneProperty copyrightProperty) {
+                                 JCommuneProperty copyrightProperty,
+                                 JCommuneProperty sessionTimeoutProperty,
+                                 JCommuneProperty avatarMaxSizeProperty,
+                                 JCommuneProperty emailNotificationProperty
+    ) {
         this.componentDescriptionProperty = componentDescriptionProperty;
         this.componentNameProperty = componentNameProperty;
         this.sapeShowDummyLinksProperty = sapeShowDummyLinksProperty;
@@ -75,6 +86,9 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
         this.adminInfoChangeDateProperty = adminInfoChangeDateProperty;
         this.allPagesTitlePrefixProperty = allPagesTitlePrefixProperty;
         this.copyrightProperty = copyrightProperty;
+        this.sessionTimeoutProperty = sessionTimeoutProperty;
+        this.avatarMaxSizeProperty = avatarMaxSizeProperty;
+        this.emailNotificationProperty = emailNotificationProperty;
     }
 
     /**
@@ -100,6 +114,9 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
             modelAndView.addObject(PARAM_ADMIN_INFO_CHANGE_DATE, adminInfoChangeDateProperty.getValue());
             modelAndView.addObject(PARAM_COPYRIGHT_TEMPLATE, copyrightProperty.getValue());
             modelAndView.addObject(PARAM_USER_DEFINED_COPYRIGHT, getCopyrightWithYear());
+            modelAndView.addObject(PARAM_SESSION_TIMEOUT, sessionTimeoutProperty.getValue());
+            modelAndView.addObject(PARAM_AVATAR_MAX_SIZE, avatarMaxSizeProperty.getValue());
+            modelAndView.addObject(PARAM_EMAIL_NOTIFICATION, emailNotificationProperty.booleanValue());
         }
     }
 

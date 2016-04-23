@@ -45,6 +45,9 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
     public static final String COPYRIGHT_PROPERTY = "jcommune.copyright";
     public static final String COMPONENT_FAVICON_ICO_PARAM = "jcommune.favicon.ico";
     public static final String COMPONENT_FAVICON_PNG_PARAM = "jcommune.favicon.png";
+    public static final String COMPONENT_SESSION_TIMEOUT = "jcommune.session_timeout";
+    public static final String COMPONENT_EMAIL_NOTIFICATION = "jcommune.sending_notifications_enabled";
+    public static final String COMPONENT_AVATAR_MAX_SIZE = "jcommune.avatar_max_size";
 
     protected static final String COMPONENT_INFO_CHANGE_DATE_PROPERTY = "jcommune.info_change_date";
 
@@ -87,6 +90,10 @@ public class TransactionalComponentService extends AbstractTransactionalEntitySe
         forumComponent.setProperty(LOGO_TOOLTIP_PROPERTY, componentInformation.getLogoTooltip());
         forumComponent.setProperty(TITLE_PREFIX_PROPERTY, componentInformation.getTitlePrefix());
         forumComponent.setProperty(COPYRIGHT_PROPERTY, componentInformation.getCopyright());
+
+        forumComponent.setProperty(COMPONENT_AVATAR_MAX_SIZE, componentInformation.getAvatarMaxSize());
+        forumComponent.setProperty(COMPONENT_EMAIL_NOTIFICATION, String.valueOf(componentInformation.isEmailNotification()));
+        forumComponent.setProperty(COMPONENT_SESSION_TIMEOUT, componentInformation.getSessionTimeout());
         
         if (!StringUtils.isEmpty(componentInformation.getLogo())) {
             forumComponent.setProperty(LOGO_PROPERTY, componentInformation.getLogo());
