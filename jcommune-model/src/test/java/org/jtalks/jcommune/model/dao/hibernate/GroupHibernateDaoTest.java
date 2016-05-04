@@ -31,6 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -101,9 +104,19 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         saveAndEvict(group1);
 
         List<Group> actual = groupDao.getAll();
+        sortById(actual);
         assertEquals(actual.size(), 2);
         assertReflectionEquals(actual.get(0), group0);
         assertReflectionEquals(actual.get(1), group1);
+    }
+
+    private void sortById(List<Group> groups) {
+        Collections.sort(groups, new Comparator<Group>() {
+            @Override
+            public int compare(@Nonnull Group group, @Nonnull Group group1) {
+                return Long.compareUnsigned(group.getId(), group1.getId());
+            }
+        });
     }
 
     @Test
