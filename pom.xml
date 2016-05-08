@@ -474,7 +474,7 @@
       <dependency>
         <groupId>io.qala.datagen</groupId>
         <artifactId>qala-datagen</artifactId>
-        <version>1.2.1</version>
+        <version>1.4.0</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -606,13 +606,6 @@
       <snapshots>
         <checksumPolicy>fail</checksumPolicy>
       </snapshots>
-    </repository>
-    <repository>
-      <id>opencast-public</id>
-      <url>http://repository.opencastproject.org/nexus/content/repositories/public/</url>
-      <releases>
-        <checksumPolicy>fail</checksumPolicy>
-      </releases>
     </repository>
     <repository>
       <id>terracotta-releases</id>
