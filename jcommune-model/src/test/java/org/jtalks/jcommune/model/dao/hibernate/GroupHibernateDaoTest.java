@@ -114,7 +114,7 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         Collections.sort(groups, new Comparator<Group>() {
             @Override
             public int compare(@Nonnull Group group, @Nonnull Group group1) {
-                return Long.compareUnsigned(group.getId(), group1.getId());
+                return Long.compare(group.getId(), group1.getId());
             }
         });
     }
