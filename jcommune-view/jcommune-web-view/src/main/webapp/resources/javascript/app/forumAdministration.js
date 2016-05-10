@@ -14,8 +14,8 @@
  */
 
 /*
-Object storing input values in the dialog.
-Used to keep values when logo removing dialog is showed
+ Object storing input values in the dialog.
+ Used to keep values when logo removing dialog is showed
  */
 var currentAdminValues = getCurrentAdminValues();
 var REQUEST_ENTITY_TOO_LARGE = 413;
@@ -40,7 +40,7 @@ function showNewBranchDialog(e) {
 }
 
 /**
- * Show dialog for edit or create branch. 
+ * Show dialog for edit or create branch.
  * sectionId should be specified if new branch created.
  * @param {type} e
  * @param {type} sectionId
@@ -54,7 +54,7 @@ function showBranchEditDialog(e, sectionId) {
     }
     var bodyContent = Utils.createFormElement($labelBranchName, 'branchName', 'text', 'first dialog-input')
         + Utils.createFormElement($labelBranchDescription, 'branchDescription', 'text', 'dialog-input') +
-            '<div class="clearfix"/>';
+        '<div class="clearfix"/>';
 
     var footerContent = ' \
             <button id="administrationCancelButton" class="btn">' + $labelCancel + '</button> \
@@ -146,7 +146,7 @@ function getCurrentAdminValues() {
         copyright: $("#copyrightHolder").text() || "",
         sessionTimeout: $("#sessionTimeoutHolder").text() || "",
         avatarMaxSize: $("#avatarMaxSizeHolder").text() || "",
-        emailNotification: $("#emailNotificationHolder").text() || ""
+        emailNotification: !!$("#emailNotificationHolder").text()
     }
 }
 
@@ -154,8 +154,8 @@ function getCurrentAdminValues() {
  * Open configuration dialog and focus on copyright field.
  */
 function editCopyright(e) {
-  showForumConfigurationDialog(e);
-  $("#forumCopyright").focus();
+    showForumConfigurationDialog(e);
+    $("#forumCopyright").focus();
 }
 
 function showForumConfigurationDialog(e) {
@@ -169,7 +169,7 @@ function showForumConfigurationDialog(e) {
 }
 
 /*
-Creates Forum Administration dialog
+ Creates Forum Administration dialog
  */
 function createAdministrationDialog() {
 
@@ -285,8 +285,8 @@ function getFavIconUrl(){
 }
 
 /*
-Fills inputs with current information or with
-information stored before logo removing dialog was showed
+ Fills inputs with current information or with
+ information stored before logo removing dialog was showed
  */
 function fillAdminDialogInputs() {
     $('#forumName').val(currentAdminValues.forumName);
@@ -300,7 +300,7 @@ function fillAdminDialogInputs() {
     $('#forumCopyright').val(currentAdminValues.copyright);
     $('#forumSessionTimeout').val(currentAdminValues.sessionTimeout);
     $('#forumAvatarMaxSize').val(currentAdminValues.avatarMaxSize);
-    $('#forumEmailNotification').prop('checked', currentAdminValues.emailNotification === "true");
+    $('#forumEmailNotification').prop('checked', currentAdminValues.emailNotification === true);
 }
 
 /*
@@ -384,7 +384,7 @@ function createUploader(IFrameActionUrl, XhrActionUrl, uploadButtonId, onSuccess
 }
 
 /*
-Creates uploader for uploading logo to the server
+ Creates uploader for uploading logo to the server
  */
 function createLogoUploader() {
     createUploader($root + '/admin/logo/IFrameLogoPreview', $root + '/admin/logo/XHRlogoPreview', "uploadLogo",
@@ -450,7 +450,7 @@ function addRestoreDefaultImageHandler(buttonId, defaultImageUrl, onSuccess) {
 }
 
 /*
-Adds handler for "Remove Logo" button
+ Adds handler for "Remove Logo" button
  */
 function addRemoveLogoHandler() {
     addRestoreDefaultImageHandler("removeLogo", $root + "/admin/defaultLogo",
@@ -474,7 +474,7 @@ function addRemoveFavIconHandler() {
 }
 
 /*
-Copies values for Forum Name, Description and Logo from the Dialog
+ Copies values for Forum Name, Description and Logo from the Dialog
  */
 function saveInputValues() {
     currentAdminValues = {
