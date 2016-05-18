@@ -427,6 +427,11 @@ function addRestoreDefaultImageHandler(buttonId, defaultImageUrl, onSuccess) {
             });
             jDialog.closeDialog();
         };
+        
+        var cancelFunc = function () {
+            createAdministrationDialog();
+            return false;
+        };
 
         jDialog.createDialog({
             type: jDialog.confirmType,
@@ -438,7 +443,7 @@ function addRestoreDefaultImageHandler(buttonId, defaultImageUrl, onSuccess) {
             tabNavigation: ['#restoreDefaultOk','#restoreDefaultCancel'],
             handlers: {
                 '#restoreDefaultOk': {'click': submitFunc},
-                '#restoreDefaultCancel': {'click': createAdministrationDialog}
+                '#restoreDefaultCancel': {'click': cancelFunc}
             }
         });
 
