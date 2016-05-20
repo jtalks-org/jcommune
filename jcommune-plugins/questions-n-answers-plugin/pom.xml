@@ -4,7 +4,7 @@
   <parent>
     <artifactId>jcommune-plugins</artifactId>
     <groupId>org.jtalks.jcommune</groupId>
-    <version>3.6-SNAPSHOT</version>
+    <version>3.7-SNAPSHOT</version>
   </parent>
   <artifactId>questions-n-answers-plugin</artifactId>
 

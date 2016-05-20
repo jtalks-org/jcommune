@@ -40,7 +40,7 @@ function showNewBranchDialog(e) {
 }
 
 /**
- * Show dialog for edit or create branch. 
+ * Show dialog for edit or create branch.
  * sectionId should be specified if new branch created.
  * @param {type} e
  * @param {type} sectionId
@@ -143,7 +143,10 @@ function getCurrentAdminValues() {
         iconPreview: getFavIconUrl() || "",
         logo: null,
         icon: null,
-        copyright: $("#copyrightHolder").text() || ""
+        copyright: $("#copyrightHolder").text() || "",
+        sessionTimeout: $("#sessionTimeoutHolder").text() || "",
+        avatarMaxSize: $("#avatarMaxSizeHolder").text() || "",
+        emailNotification: !!$("#emailNotificationHolder").text()
     }
 }
 
@@ -217,8 +220,11 @@ function createAdministrationDialog() {
         ' + Utils.createFormElement($labelForumTitle, 'forumName', 'text', 'first dialog-input')
         + Utils.createFormElement($labelForumDescription, 'forumDescription', 'text', 'dialog-input')
         + Utils.createFormElement($labelTitlePrefix, 'forumTitlePrefix', 'text', 'first dialog-input')
-        + Utils.createFormElement($labelLogoTooltip, 'forumLogoTooltip', 'text', 'dialog-input') 
-        + Utils.createFormElement($copyrightLabel, 'forumCopyright', 'text', 'dialog-input') + ' \
+        + Utils.createFormElement($labelLogoTooltip, 'forumLogoTooltip', 'text', 'dialog-input')
+        + Utils.createFormElement($copyrightLabel, 'forumCopyright', 'text', 'dialog-input')
+        + Utils.createFormElement($labelSessionTimeout, 'forumSessionTimeout', 'text', 'dialog-input')
+        + Utils.createFormElement($labelAvatarMaxSize, 'forumAvatarMaxSize', 'text', 'dialog-input')
+        + Utils.createFormElement($labelEmailNotification, 'forumEmailNotification', 'checkbox', 'dialog-input', "", $labelEmailNotification) + ' \
             <div class="clearfix"></div>';
 
     var footerContent = ' \
@@ -234,7 +240,8 @@ function createAdministrationDialog() {
         maxHeight: 700,
         firstFocus: true,
         tabNavigation: ['#forumName', '#forumDescription', '#forumTitlePrefix', '#forumLogoTooltip', '#forumCopyright',
-                        '#administrationSubmitButton', '#administrationCancelButton'],
+            '#sessionTimeout', '#avatarMaxSize', '#emailNotification',
+            '#administrationSubmitButton', '#administrationCancelButton'],
         handlers: {
             '#administrationSubmitButton': {'click': sendForumConfiguration},
             '#administrationCancelButton': {'static':'close'}
@@ -291,6 +298,9 @@ function fillAdminDialogInputs() {
     $('#logo').val(currentAdminValues.logo);
     $('#icon').val(currentAdminValues.icon);
     $('#forumCopyright').val(currentAdminValues.copyright);
+    $('#forumSessionTimeout').val(currentAdminValues.sessionTimeout);
+    $('#forumAvatarMaxSize').val(currentAdminValues.avatarMaxSize);
+    $('#forumEmailNotification').prop('checked', currentAdminValues.emailNotification === true);
 }
 
 /*
@@ -417,6 +427,11 @@ function addRestoreDefaultImageHandler(buttonId, defaultImageUrl, onSuccess) {
             });
             jDialog.closeDialog();
         };
+        
+        var cancel = function () {
+            createAdministrationDialog();
+            return false;
+        };
 
         jDialog.createDialog({
             type: jDialog.confirmType,
@@ -428,7 +443,7 @@ function addRestoreDefaultImageHandler(buttonId, defaultImageUrl, onSuccess) {
             tabNavigation: ['#restoreDefaultOk','#restoreDefaultCancel'],
             handlers: {
                 '#restoreDefaultOk': {'click': submitFunc},
-                '#restoreDefaultCancel': {'click': createAdministrationDialog}
+                '#restoreDefaultCancel': {'click': cancel}
             }
         });
 
@@ -476,7 +491,10 @@ function saveInputValues() {
         logoPreview: jDialog.dialog.find('#logoPreview').attr("src"),
         icon: jDialog.dialog.find('#icon').val(),
         iconPreview: jDialog.dialog.find('#iconPreview').attr("src"),
-        copyright: jDialog.dialog.find('#forumCopyright').val()
+        copyright: jDialog.dialog.find('#forumCopyright').val(),
+        sessionTimeout: jDialog.dialog.find('#forumSessionTimeout').val(),
+        avatarMaxSize: jDialog.dialog.find('#forumAvatarMaxSize').val(),
+        emailNotification: jDialog.dialog.find('#forumEmailNotification').prop('checked')
     }
 }
 
@@ -497,6 +515,9 @@ function sendForumConfiguration(e) {
     componentInformation.icon = currentAdminValues.icon;
     componentInformation.titlePrefix = currentAdminValues.titlePrefix;
     componentInformation.copyright = currentAdminValues.copyright;
+    componentInformation.sessionTimeout = currentAdminValues.sessionTimeout;
+    componentInformation.avatarMaxSize = currentAdminValues.avatarMaxSize;
+    componentInformation.emailNotification = currentAdminValues.emailNotification;
 
     jDialog.dialog.find('*').attr('disabled', true);
 

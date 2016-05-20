@@ -5,7 +5,7 @@
   <groupId>org.jtalks.jcommune</groupId>
   <artifactId>jcommune</artifactId>
   <packaging>pom</packaging>
-  <version>3.6-SNAPSHOT</version>
+  <version>3.7-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <modules>
     <module>jcommune-model</module>
@@ -471,6 +471,12 @@
         <version>4.11</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+        <groupId>io.qala.datagen</groupId>
+        <artifactId>qala-datagen</artifactId>
+        <version>1.4.0</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -602,13 +608,6 @@
       </snapshots>
     </repository>
     <repository>
-      <id>opencast-public</id>
-      <url>http://repository.opencastproject.org/nexus/content/repositories/public/</url>
-      <releases>
-        <checksumPolicy>fail</checksumPolicy>
-      </releases>
-    </repository>
-    <repository>
       <id>terracotta-releases</id>
       <url>http://www.terracotta.org/download/reflector/releases</url>
       <releases>
@@ -637,6 +636,7 @@
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
     <commonVersion>0.60</commonVersion>
     <isJsCompressed>true</isJsCompressed>
+    <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
   </properties>
 
 </project>

@@ -241,7 +241,7 @@ ul.lang-menu li img {
 }
 
 #topics-table .title-col{
-    word-break:break-all;
+    word-wrap: break-word;
 }
 
 .wraptocenter {

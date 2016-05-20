@@ -4,7 +4,7 @@
   <parent>
     <artifactId>jcommune</artifactId>
     <groupId>org.jtalks.jcommune</groupId>
-    <version>3.6-SNAPSHOT</version>
+    <version>3.7-SNAPSHOT</version>
   </parent>
   <artifactId>jcommune-model</artifactId>
   <name>${project.artifactId}</name>
@@ -151,6 +151,10 @@
     <dependency>
       <groupId>com.googlecode.lambdaj</groupId>
       <artifactId>lambdaj</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.qala.datagen</groupId>
+      <artifactId>qala-datagen</artifactId>
     </dependency>
   </dependencies>
 
