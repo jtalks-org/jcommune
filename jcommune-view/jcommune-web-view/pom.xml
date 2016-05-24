@@ -142,7 +142,7 @@
       <plugin>
         <groupId>ro.isdc.wro4j</groupId>
         <artifactId>wro4j-maven-plugin</artifactId>
-        <version>1.7.5</version>
+        <version>1.7.6</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
@@ -152,12 +152,18 @@
           </execution>
         </executions>
         <configuration>
+          <!-- For more information about parameters see wro4j-maven-plugin's official documentation: 
+          https://github.com/wro4j/wro4j/blob/1.7.x/docs/MavenPlugin.md#plugin-parameters -->
           <targetGroups>main,pm,cr,post,user,plugin,topic,topicDraft,postDraft,users</targetGroups>
           <minimize>true</minimize>
           <destinationFolder>${basedir}/src/main/webapp/resources/wro</destinationFolder>
           <cssDestinationFolder>${basedir}/src/main/webapp/resources/wro</cssDestinationFolder>
           <jsDestinationFolder>${basedir}/src/main/webapp/resources/wro</jsDestinationFolder>
-          <contextFolder>${basedir}/src/main/webapp/</contextFolder>
+          <!-- Added additional path specified in Windows style (with back slashes)
+          to solve that is not correctly rewritten URLs of resources in css-files when
+          wro4j-maven-plugin is run on Windows platforms.
+          For more information see bug report: https://github.com/wro4j/wro4j/issues/1021 -->
+          <contextFolder>${basedir}/src/main/webapp/,${basedir}\src\main\webapp\</contextFolder>
           <wroFile>${basedir}/wro.xml</wroFile>
           <wroManagerFactory>
             ro.isdc.wro.extensions.manager.standalone.GoogleStandaloneManagerFactory
