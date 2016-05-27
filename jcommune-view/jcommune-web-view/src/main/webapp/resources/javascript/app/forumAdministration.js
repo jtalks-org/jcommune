@@ -146,7 +146,7 @@ function getCurrentAdminValues() {
         copyright: $("#copyrightHolder").text() || "",
         sessionTimeout: $("#sessionTimeoutHolder").text() || "",
         avatarMaxSize: $("#avatarMaxSizeHolder").text() || "",
-        emailNotification: !!$("#emailNotificationHolder").text()
+        emailNotification: $("#emailNotificationHolder").text() || ""
     }
 }
 
@@ -300,7 +300,7 @@ function fillAdminDialogInputs() {
     $('#forumCopyright').val(currentAdminValues.copyright);
     $('#forumSessionTimeout').val(currentAdminValues.sessionTimeout);
     $('#forumAvatarMaxSize').val(currentAdminValues.avatarMaxSize);
-    $('#forumEmailNotification').prop('checked', currentAdminValues.emailNotification === true);
+    $('#forumEmailNotification').prop('checked', currentAdminValues.emailNotification.toString() === 'true');
 }
 
 /*
