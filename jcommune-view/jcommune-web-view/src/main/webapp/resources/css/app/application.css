@@ -370,6 +370,9 @@ ul.lang-menu li img {
     line-height: 13px;
 }
 
+.post-header > .post-date{
+    display: block;
+}
 .post table .top-buttons {
     text-align: right;
     border-left: 0px;
