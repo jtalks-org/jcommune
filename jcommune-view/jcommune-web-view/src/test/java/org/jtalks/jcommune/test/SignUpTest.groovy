@@ -198,7 +198,7 @@ abstract class SignUpTest extends Specification {
             users.singUp(new User(email: email))
         then: 'Email field marked with error'
             def e = thrown(ValidationException)
-            ['User with the email already exists.'].equals(e.defaultErrorMessages)
+            ['User with this email already exists.'].equals(e.defaultErrorMessages)
     }
 
     void setUsers(Users users) {
