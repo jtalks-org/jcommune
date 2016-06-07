@@ -240,7 +240,7 @@ function createAdministrationDialog() {
         maxHeight: 700,
         firstFocus: true,
         tabNavigation: ['#forumName', '#forumDescription', '#forumTitlePrefix', '#forumLogoTooltip', '#forumCopyright',
-            '#sessionTimeout', '#avatarMaxSize', '#emailNotification',
+            '#forumSessionTimeout', '#forumAvatarMaxSize', '#forumEmailNotification',
             '#administrationSubmitButton', '#administrationCancelButton'],
         handlers: {
             '#administrationSubmitButton': {'click': sendForumConfiguration},
