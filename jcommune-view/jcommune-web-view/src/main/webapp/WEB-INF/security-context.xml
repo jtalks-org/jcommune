@@ -102,7 +102,6 @@
 
     <security:intercept-url pattern="/admin/enter" access="isAuthenticated()"/>
     <security:intercept-url pattern="/admin/exit" access="isAuthenticated()"/>
-    <security:intercept-url pattern="/admin/edit" access="isAuthenticated()"/>
 
     <security:intercept-url pattern="/plugin/**" access="permitAll()"/>
 
