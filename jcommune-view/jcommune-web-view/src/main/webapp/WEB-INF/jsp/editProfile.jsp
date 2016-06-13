@@ -27,7 +27,7 @@
   <meta name="description" content="<c:out value="${label.user}"/>">
   <title>
     <c:out value="${cmpTitlePrefix}"/>
-    <spring:message code="label.user"/> - "${editedUser.username}"
+    <spring:message code="label.user"/> - <c:out value="${editedUser.username}"/>
   </title>
 </head>
 <body>
