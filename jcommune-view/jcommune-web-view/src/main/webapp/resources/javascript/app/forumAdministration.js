@@ -256,6 +256,10 @@ function createAdministrationDialog() {
     $('#forumTitlePrefix').tooltip();
     $('#forumCopyright').attr('data-original-title', $copyrightHint);
     $('#forumCopyright').tooltip();
+    $('#forumSessionTimeout').attr('data-original-title', $labelSessionTimeoutHint);
+    $('#forumSessionTimeout').tooltip();
+    $('#forumAvatarMaxSize').attr('data-original-title', $labelAvatarMaxSizeHint);
+    $('#forumAvatarMaxSize').tooltip();
 
     var tabFunc = function (e) {
         if (document.activeElement.id == jDialog.options.dialogId && (e.keyCode || e.charCode) == tabCode) {
