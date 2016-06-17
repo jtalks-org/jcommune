@@ -19,6 +19,10 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.LastReadPostService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ReadPostsController {
     private BranchService branchService;
     private LastReadPostService lastReadPostService;
-
+    private RetryTemplate retryTemplate;
     /**
      * Constructs an instance with required fields.
      * 
@@ -45,9 +49,11 @@ public class ReadPostsController {
      * @param lastReadPostService to mark all forum as read for current user
      */
     @Autowired
-    public ReadPostsController(BranchService branchService, LastReadPostService lastReadPostService) {
+    public ReadPostsController(BranchService branchService, LastReadPostService lastReadPostService,
+                               RetryTemplate retryTemplate) {
         this.branchService = branchService;
         this.lastReadPostService = lastReadPostService;
+        this.retryTemplate = retryTemplate;
     }
 
     /**
@@ -57,7 +63,13 @@ public class ReadPostsController {
      */
     @RequestMapping(value = "/recent/forum/markread", method = RequestMethod.GET)
     public String markAllForumAsReadFromRecentActivity() {
-        lastReadPostService.markAllForumAsReadForCurrentUser();
+        retryTemplate.execute(new RetryCallback<Void, RuntimeException>() {
+            @Override
+            public Void doWithRetry(RetryContext context) throws HibernateOptimisticLockingFailureException {
+                lastReadPostService.markAllForumAsReadForCurrentUser();
+                return null;
+            }
+        });
         return "redirect:/topics/recent";
     }
     
