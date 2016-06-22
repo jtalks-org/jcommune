@@ -27,6 +27,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.springframework.retry.policy.NeverRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -47,6 +48,8 @@ public class ReadPostsControllerTest {
     @BeforeMethod
     public void init() {
         initMocks(this);
+        retryTemplate = new RetryTemplate();
+        retryTemplate.setRetryPolicy(new NeverRetryPolicy());
         controller = new ReadPostsController(branchService, lastReadPostService, retryTemplate);
     }
     
