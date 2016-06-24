@@ -66,4 +66,8 @@
   <query name="getGroupsByIds">
       <![CDATA[from Group where id in (:ids)]]>
   </query>
+
+    <query name="selectGroupsWithUserCount">
+        <![CDATA[select new org.jtalks.jcommune.model.dto.GroupAdministrationDto(g.name, g.users.size) from Group g order by g.name ASC]]>
+    </query>
 </hibernate-mapping>

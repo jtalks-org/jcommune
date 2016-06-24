@@ -23,6 +23,7 @@ import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.common.service.transactional.AbstractTransactionalEntityService;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import org.jtalks.jcommune.model.dto.SecurityGroupList;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.GroupService;
@@ -31,7 +32,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.javatalks.utils.general.Assert;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author alexander afanasiev
@@ -121,5 +124,13 @@ public class TransactionalGroupService extends AbstractTransactionalEntityServic
         Assert.throwIfNull(group, "group");
         group.setName(group.getName().trim());
         dao.saveOrUpdate(group);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<GroupAdministrationDto> getGroupNamesWithCountOfUsers() {
+        return dao.getGroupNamesWithCountOfUsers();
     }
 }

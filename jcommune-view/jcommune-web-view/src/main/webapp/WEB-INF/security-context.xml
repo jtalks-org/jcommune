@@ -106,6 +106,7 @@
     <security:intercept-url pattern="/plugin/**" access="permitAll()"/>
 
     <security:intercept-url pattern="/plugins/**" access="isAuthenticated()"/>
+    <security:intercept-url pattern="/group/list" access="isAuthenticated()"/>
   </security:http>
 
   <bean id="rememberMeServices"

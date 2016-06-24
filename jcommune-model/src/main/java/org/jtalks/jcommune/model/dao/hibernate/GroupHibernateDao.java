@@ -23,6 +23,7 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dao.utils.SqlLikeEscaper;
+import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import ru.javatalks.utils.general.Assert;
 
 import java.util.List;
@@ -140,5 +141,14 @@ public class GroupHibernateDao extends GenericDao<Group> implements GroupDao {
         // we should use lower case to search ignoring case
         query.setString("name", name);
         return query.list();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<GroupAdministrationDto> getGroupNamesWithCountOfUsers() {
+        return (List<GroupAdministrationDto>) session().getNamedQuery("selectGroupsWithUserCount").list();
     }
 }

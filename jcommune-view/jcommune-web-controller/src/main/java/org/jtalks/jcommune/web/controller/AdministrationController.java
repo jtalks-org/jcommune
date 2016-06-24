@@ -16,6 +16,7 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.JtalksPermission;
+import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -23,6 +24,7 @@ import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.GroupService;
 import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.BranchPermissionDto;
@@ -58,6 +60,7 @@ public class AdministrationController {
     private static final String ACCESS_DENIED_MESSAGE = "access.denied";
 
     private final ComponentService componentService;
+    private final GroupService groupService;
     private final MessageSource messageSource;
     private final BranchService branchService;
     private final PermissionManager permissionManager;
@@ -73,11 +76,13 @@ public class AdministrationController {
     public AdministrationController(ComponentService componentService,
                                     MessageSource messageSource,
                                     BranchService branchService,
-                                    PermissionManager permissionManager) {
+                                    PermissionManager permissionManager,
+                                    GroupService groupService) {
         this.messageSource = messageSource;
         this.componentService = componentService;
         this.branchService = branchService;
         this.permissionManager = permissionManager;
+        this.groupService = groupService;
     }
 
     /**
@@ -248,6 +253,16 @@ public class AdministrationController {
             return new JsonResponse(JsonResponseStatus.FAIL);
         }
         return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+    /**
+     * Display to user list of groups with count of users.
+     */
+    @RequestMapping(value = "/group/list", method = RequestMethod.GET)
+    public ModelAndView showGroupsWithUsers() {
+        long forumId = componentService.getComponentOfForum().getId();
+        componentService.checkPermissionsForComponent(forumId);
+        List<GroupAdministrationDto> groupAdministrationDtos = groupService.getGroupNamesWithCountOfUsers();
+        return new ModelAndView("groupAdministration").addObject("groups",groupAdministrationDtos);
     }
 
     /**

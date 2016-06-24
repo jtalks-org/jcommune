@@ -19,10 +19,11 @@ import org.hibernate.SessionFactory;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.Section;
 import org.jtalks.jcommune.model.dao.GroupDao;
-import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.ObjectsFactory;
+import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
@@ -32,12 +33,14 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.text.Collator;
+import java.text.ParseException;
+import java.text.RuleBasedCollator;
+import java.util.*;
 
+import static io.qala.datagen.RandomShortApi.alphanumeric;
+import static io.qala.datagen.RandomValue.between;
 import static org.testng.Assert.*;
-import static org.testng.Assert.assertEquals;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -48,7 +51,18 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @Transactional
 public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     static final String NO_FILTER = "";
-
+    private static final String SORTING_TEST_RULES =
+            "< A< B< C< D< E< F< G< H< I< J" +
+                    "< K< L< M< N< O< P< Q< R< S< T" +
+                    "< U< V< W< X< Y< Z" +
+                    "< a< b< c< d< e< f< g< h< i< j" +
+                    "< k< l< m< n< o< p< q< r< s< t" +
+                    "< u< v< w< x< y< z";
+    private static final String DICTIONARY_RU = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯ" +
+                                                "абвгдеёжзийклмнопрстуфхцчшщьыъэюя" +
+                                                "0123456789";
+    private static final int MIN_GROUP_NAME_LENGTH = 1;
+    private static final int MAX_GROUP_NAME_LENGTH = Group.GROUP_NAME_MAX_LENGTH;
     @Autowired
     private GroupDao groupDao;
 
@@ -240,6 +254,30 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         }
     }
 
+    @Test
+    public void listOfGroupsMustBeSortedAlphabetically() throws ParseException {
+        List<GroupAdministrationDto> expected = new LinkedList<>();
+        for (int i = 0; i < 10; i++) {
+            Group en = new Group(alphanumeric(MIN_GROUP_NAME_LENGTH, MAX_GROUP_NAME_LENGTH));
+            Group ru = new Group(between(MIN_GROUP_NAME_LENGTH, MAX_GROUP_NAME_LENGTH).string(DICTIONARY_RU));
+            saveAndEvict(en);
+            saveAndEvict(ru);
+            expected.add(new GroupAdministrationDto(en.getName(),en.getUsers().size()));
+            expected.add(new GroupAdministrationDto(ru.getName(),ru.getUsers().size()));
+        }
+        sortByName(expected);
+        List<GroupAdministrationDto> actual = groupDao.getGroupNamesWithCountOfUsers();
+        assertReflectionEquals(actual,expected);
+    }
 
+    private void sortByName(List<GroupAdministrationDto> dtoList) throws ParseException {
+        RuleBasedCollator enUS = (RuleBasedCollator) Collator.getInstance(new Locale("en", "US"));
+        final RuleBasedCollator finalCollator = new RuleBasedCollator(enUS.getRules() + SORTING_TEST_RULES);
+        Collections.sort(dtoList, new Comparator<GroupAdministrationDto>() {
+            @Override
+            public int compare(GroupAdministrationDto o1, GroupAdministrationDto o2) {
+                return finalCollator.compare(o1.getName(), o2.getName());
+            }
+        });
+    }
 }
-

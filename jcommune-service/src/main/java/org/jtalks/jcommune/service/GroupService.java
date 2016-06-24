@@ -17,6 +17,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.service.EntityService;
 import org.jtalks.common.service.exceptions.NotFoundException;
+import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import org.jtalks.jcommune.model.dto.SecurityGroupList;
 
 import java.util.List;
@@ -67,4 +68,9 @@ public interface GroupService extends EntityService<Group> {
      * @throws IllegalArgumentException if group is null
      */
     void saveGroup(Group selectedGroup);
+
+    /**
+     * @return list of GroupAdministrationDto
+     */
+    List<GroupAdministrationDto> getGroupNamesWithCountOfUsers();
 }
