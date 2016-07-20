@@ -1,4 +1,10 @@
-﻿SET @forum_component_id := 2;
+﻿# We have collation_connection = utf8mb4_general_ci by default and if user has SUPER privileges then
+# init-connect command in mysql config file has no effect (only for SUPER users) and we need to set up
+# collation_connection to utf8mb4_unicode_ci to prevent Illegal Mix of Collations for '=' operations,
+# because on the one hand we have utf8mb4_general_ci and utf8mb4_unicode_ci on the other.
+SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
+
+SET @forum_component_id := 2;
 -- Update description of FORUM component for new users baing created
 update COMPONENTS set DESCRIPTION = 'Available users: admin/admin registered/registered moderator/moderator banned/banned and others'
   where CMP_ID = @forum_component_id;

@@ -19,7 +19,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<html>
 <head>
     <title>
         <c:out value="${cmpTitlePrefix}"/>
@@ -29,6 +28,7 @@
 <body>
 
 <div class="container">
+    <h2><spring:message code="label.administration.userGroups"/> </h2>
     <table class="table table-bordered grid-table display" id="userGroups">
         <thead>
         <tr>
@@ -45,4 +45,3 @@
     </table>
 </div>
 </body>
-</html>

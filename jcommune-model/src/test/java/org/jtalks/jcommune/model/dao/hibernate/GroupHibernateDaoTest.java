@@ -33,6 +33,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.text.Collator;
 import java.text.ParseException;
 import java.text.RuleBasedCollator;
@@ -52,12 +55,16 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     static final String NO_FILTER = "";
     private static final String SORTING_TEST_RULES =
-            "< A< B< C< D< E< F< G< H< I< J" +
-                    "< K< L< M< N< O< P< Q< R< S< T" +
-                    "< U< V< W< X< Y< Z" +
-                    "< a< b< c< d< e< f< g< h< i< j" +
-                    "< k< l< m< n< o< p< q< r< s< t" +
-                    "< u< v< w< x< y< z";
+            "< A< a< B< b< C< c< D< d< E< e< F< f< G< g< " +
+                    "H< h< I< i< J< j< K< k< L< l< M< m< " +
+                    "N< n< O< o< P< p< Q< q< R< r< S< s< " +
+                    "T< t< U< u< V< v< W< w< X< x< Y< y< Z< z< " +
+                    "А< а< Б< б< В< в< Г< г< Д< д< Е< е< " +
+                    "Ё< ё< Ж< ж< З< з< И< и< Й< й< К< к< " +
+                    "Л< л< М< м< Н< н< О< о< П< п< Р< р< " +
+                    "С< с< Т< т< У< у< Ф< ф< Х< х< Ц< ц< " +
+                    "Ч< ч< Ш< ш< Щ< щ< Ь< ь< Ы< ы< Ъ< ъ< " +
+                    "Э< э< Ю< ю< Я< я";
     private static final String DICTIONARY_RU = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯ" +
                                                 "абвгдеёжзийклмнопрстуфхцчшщьыъэюя" +
                                                 "0123456789";
@@ -70,6 +77,9 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
     private SessionFactory sessionFactory;
 
     private Session session;
+
+    @Resource(lookup = "org/jtalks/jcommune/model/datasource.properties")
+    private DataSource dataSource;
 
     @BeforeMethod
     public void setUp() throws Exception {
@@ -254,20 +264,26 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
         }
     }
 
+    /**
+     * Works properly only with MySql database
+     * @throws ParseException
+     */
     @Test
-    public void listOfGroupsMustBeSortedAlphabetically() throws ParseException {
-        List<GroupAdministrationDto> expected = new LinkedList<>();
-        for (int i = 0; i < 10; i++) {
-            Group en = new Group(alphanumeric(MIN_GROUP_NAME_LENGTH, MAX_GROUP_NAME_LENGTH));
-            Group ru = new Group(between(MIN_GROUP_NAME_LENGTH, MAX_GROUP_NAME_LENGTH).string(DICTIONARY_RU));
-            saveAndEvict(en);
-            saveAndEvict(ru);
-            expected.add(new GroupAdministrationDto(en.getName(),en.getUsers().size()));
-            expected.add(new GroupAdministrationDto(ru.getName(),ru.getUsers().size()));
+    public void listOfGroupsMustBeSortedAlphabetically() throws ParseException{
+        if (isMySql()){
+            List<GroupAdministrationDto> expected = new LinkedList<>();
+            for (int i = 0; i < 10; i++) {
+                Group en = new Group(alphanumeric(MIN_GROUP_NAME_LENGTH, MAX_GROUP_NAME_LENGTH));
+                Group ru = new Group(between(MIN_GROUP_NAME_LENGTH, MAX_GROUP_NAME_LENGTH).string(DICTIONARY_RU));
+                saveAndEvict(en);
+                saveAndEvict(ru);
+                expected.add(new GroupAdministrationDto(en.getName(), en.getUsers().size()));
+                expected.add(new GroupAdministrationDto(ru.getName(), ru.getUsers().size()));
+            }
+            sortByName(expected);
+            List<GroupAdministrationDto> actual = groupDao.getGroupNamesWithCountOfUsers();
+            assertReflectionEquals(expected, actual);
         }
-        sortByName(expected);
-        List<GroupAdministrationDto> actual = groupDao.getGroupNamesWithCountOfUsers();
-        assertReflectionEquals(actual,expected);
     }
 
     private void sortByName(List<GroupAdministrationDto> dtoList) throws ParseException {
@@ -279,5 +295,20 @@ public class GroupHibernateDaoTest extends AbstractTransactionalTestNGSpringCont
                 return finalCollator.compare(o1.getName(), o2.getName());
             }
         });
+    }
+
+    /**
+     * listOfGroupsMustBeSortedAlphabetically test can run only with MySql database,
+     * so we need to check whether jdbc driver is MySql
+     * @return
+     */
+    private boolean isMySql(){
+        String driverName = "";
+        try {
+            driverName = dataSource.getConnection().getMetaData().getDriverName();
+        } catch (SQLException e) {
+            logger.warn(e.getMessage());
+        }
+        return driverName.equalsIgnoreCase("MySQL Connector Java");
     }
 }

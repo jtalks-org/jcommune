@@ -1,3 +1,5 @@
+-- SET NAMES used to avoid Illegal mix of collations error when '=' operator is called
+SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 set @adminUserName := 'admin';
 set @adminPassword := 'admin';
 set @adminGroupName := 'Administrators';
@@ -12,7 +14,7 @@ set @forumComponentAclClass :='COMPONENT';
 set @forumComponentId := 2;
 set @availableUsersText := 'Available users: admin/admin';
 set @isPrincipal := true;
-set @notPricipal := false;
+set @notPrincipal := false;
 set @adminMask := 16;
 
 insert into COMPONENTS (CMP_ID, COMPONENT_TYPE, UUID, `NAME`, DESCRIPTION)
