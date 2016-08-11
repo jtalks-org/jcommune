@@ -19,68 +19,7 @@
 
 $(function () {
 
-    $("#signin").on('click', function (e) {
-        // prevent from following link
-        e.preventDefault();
-
-        var bodyContent = '\
-        ' + Utils.createFormElement($labelUsername, 'userName', 'text', 'first', 'width:90%')
-            + Utils.createFormElement($labelPassword, 'password', 'password', null, 'width:90%') + ' \
-            <div id="rememberme-area" class="control-group"> \
-                <label class="rememberme-lbl"><input name="_spring_security_remember_me" class="form-check-radio-box" type="checkbox" checked="checked">' + $labelRememberMe + '</label> \
-            </div> \
-            <div class="signup">\
-                <a id="dialog-signup-link" href="' + $root + '/user/new' + '">' + $labelSignupRightNow + '</a> \
-            </div> \
-            <div class="clearfix" /> \
-            <div id="restore-passwd" class="control-group"> \
-                <a href="' + $root + '/password/restore' + '">' + $labelRestorePassword + '</a> \
-            </div>';
-
-        var footerContent = '<input  type="submit" id="signin-submit-button" value="' + $labelSignin + '" class="btn btn-primary" name="commit"/>';
-
-        var submitDialog = function (e) {
-            if(e.which == enterCode) {
-                /*
-                 Simulate submit when enter pressed on "input" element in the internet explorer.
-
-                 Note: in internet explorer (specifically ie8) when you press "Enter" button on the item "input", does
-                 not cause an event "submit" of the form. If we move focus to the submit button and press "Enter" (when
-                 form fields filled with error), then press "Enter" in the next time on the input element ("username")
-                 will cause this event. But there is one comment: although visually focused will remain "username"
-                 field, but actually - form. Therefore, in the "isPreventSubmitFor($inputElement)" method will be passed
-                 an incorrect value. Consequently, the method will produce incorrect result.
-                 */
-                if($.browser.msie && $(e.target).is(':input')) {
-                    e.preventDefault();
-                    sendLoginPost(e);
-                }
-            }
-            if (e.which == escCode) {
-                jDialog.dialog.find('.close').click();
-            }
-        };
-
-        jDialog.createDialog({
-            dialogId: 'signin-modal-dialog',
-            title: $labelSignin,
-            bodyContent: bodyContent,
-            footerContent: footerContent,
-            maxWidth: 350,
-            tabNavigation: ['#userName', '#password', '#rememberme-area input', '#dialog-signup-link', '#restore-passwd a',
-                '#signin-submit-button', 'button.close'],
-            handlers: {
-                '#signin-modal-dialog': {'submit': sendLoginPost},
-                '#dialog-signup-link': {'click': function(e){
-                    jDialog.closeDialog();
-                    signUp(e);
-                }}
-
-            },
-            dialogKeydown: submitDialog,
-            preventSubmitInputElements: ['#userName']
-        });
-    });
+    $("#signin").on('click', signIn);
 
     var success = $('#restorePassSuccess');
     if (success.length > 0) {
@@ -112,6 +51,86 @@ $(function () {
         });
     }
 });
+
+function middleMouseButtonClicked(event) {
+    return event.which == 2 || event.button == 4;
+}
+
+function leftMouseButtonWithCtrlClicked(event) {
+    return event.ctrlKey && (event.which == 1 || event.button == 1);
+}
+
+function openInNewTab(e) {
+    return middleMouseButtonClicked(e) || leftMouseButtonWithCtrlClicked(e);
+}
+
+function signIn(e) {
+
+    if (e && openInNewTab(e)) {
+        return;
+    }
+
+    // prevent from following link
+    e.preventDefault();
+
+    var bodyContent = '\
+        ' + Utils.createFormElement($labelUsername, 'userName', 'text', 'first', 'width:90%')
+        + Utils.createFormElement($labelPassword, 'password', 'password', null, 'width:90%') + ' \
+            <div id="rememberme-area" class="control-group"> \
+                <label class="rememberme-lbl"><input name="_spring_security_remember_me" class="form-check-radio-box" type="checkbox" checked="checked">' + $labelRememberMe + '</label> \
+            </div> \
+            <div class="signup">\
+                <a id="dialog-signup-link" href="' + $root + '/user/new' + '">' + $labelSignupRightNow + '</a> \
+            </div> \
+            <div class="clearfix" /> \
+            <div id="restore-passwd" class="control-group"> \
+                <a href="' + $root + '/password/restore' + '">' + $labelRestorePassword + '</a> \
+            </div>';
+
+    var footerContent = '<input  type="submit" id="signin-submit-button" value="' + $labelSignin + '" class="btn btn-primary" name="commit"/>';
+
+    var submitDialog = function (e) {
+        if(e.which == enterCode) {
+            /*
+             Simulate submit when enter pressed on "input" element in the internet explorer.
+
+             Note: in internet explorer (specifically ie8) when you press "Enter" button on the item "input", does
+             not cause an event "submit" of the form. If we move focus to the submit button and press "Enter" (when
+             form fields filled with error), then press "Enter" in the next time on the input element ("username")
+             will cause this event. But there is one comment: although visually focused will remain "username"
+             field, but actually - form. Therefore, in the "isPreventSubmitFor($inputElement)" method will be passed
+             an incorrect value. Consequently, the method will produce incorrect result.
+             */
+            if($.browser.msie && $(e.target).is(':input')) {
+                e.preventDefault();
+                sendLoginPost(e);
+            }
+        }
+        if (e.which == escCode) {
+            jDialog.dialog.find('.close').click();
+        }
+    };
+
+    jDialog.createDialog({
+        dialogId: 'signin-modal-dialog',
+        title: $labelSignin,
+        bodyContent: bodyContent,
+        footerContent: footerContent,
+        maxWidth: 350,
+        tabNavigation: ['#userName', '#password', '#rememberme-area input', '#dialog-signup-link', '#restore-passwd a',
+            '#signin-submit-button', 'button.close'],
+        handlers: {
+            '#signin-modal-dialog': {'submit': sendLoginPost},
+            '#dialog-signup-link': {'click': function(e){
+                jDialog.closeDialog();
+                signUp(e);
+            }}
+
+        },
+        dialogKeydown: submitDialog,
+        preventSubmitInputElements: ['#userName']
+    });
+}
 
 function sendEmailConfirmation(recipient) {
     $.ajax({
