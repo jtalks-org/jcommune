@@ -86,7 +86,6 @@
     <security:intercept-url pattern="/pages/create/**" access="isAuthenticated()"/>
 
     <security:intercept-url pattern="/poll/**" access="isAuthenticated()"/>
-    <security:intercept-url pattern="/search/index/rebuild" access="hasIpAddress('127.0.0.1')"/>
     <security:intercept-url pattern="/configuration/*" access="isAuthenticated()"/>
 
     <security:intercept-url pattern="/recent/forum/markread" access="isAuthenticated()"/>

@@ -238,6 +238,7 @@
   <bean id="topicFetchService"
         class="org.jtalks.jcommune.service.transactional.TransactionalTopicFetchService">
     <constructor-arg ref="topicDao"/>
+    <constructor-arg ref="componentService"/>
     <constructor-arg ref="userService"/>
     <constructor-arg ref="topicSearchDao"/>
   </bean>
