@@ -16,12 +16,14 @@ package org.jtalks.jcommune.service.transactional;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.jtalks.common.model.entity.Component;
 import org.jtalks.jcommune.model.dao.TopicDao;
 import org.jtalks.jcommune.model.dao.search.TopicSearchDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -59,11 +61,13 @@ public class TransactionalTopicFetchServiceTest {
     private TopicFetchService topicFetchService;
 
     private JCUser user;
+    @Mock
+    private ComponentService componentService;
 
     @BeforeMethod
     public void init(){
         initMocks(this);
-        topicFetchService = new TransactionalTopicFetchService(topicDao, userService, searchDao);
+        topicFetchService = new TransactionalTopicFetchService(topicDao, componentService, userService, searchDao);
         user = new JCUser("username", "email@mail.com", "password");
         when(userService.getCurrentUser()).thenReturn(user);
     }
@@ -169,8 +173,16 @@ public class TransactionalTopicFetchServiceTest {
         };
     }
 
+    private Component setupComponentMock() {
+        Component component = new Component();
+        component.setId(1L);
+        when(componentService.getComponentOfForum()).thenReturn(component);
+        return component;
+    }
+
     @Test
     public void testRebuildIndex() {
+        setupComponentMock();
         topicFetchService.rebuildSearchIndex();
 
         Mockito.verify(searchDao).rebuildIndex();

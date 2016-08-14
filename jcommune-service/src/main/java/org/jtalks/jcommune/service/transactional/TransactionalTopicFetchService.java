@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
 import org.jtalks.jcommune.plugin.api.service.PluginTopicFetchService;
+import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.TopicFetchService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -40,16 +41,19 @@ import java.util.List;
 public class TransactionalTopicFetchService extends AbstractTransactionalEntityService<Topic, TopicDao>
         implements TopicFetchService, PluginTopicFetchService {
 
+    private ComponentService componentService;
     private UserService userService;
     private TopicSearchDao searchDao;
 
     /**
      * @param dao         topic dao for database manipulations
+     * @param componentService to checking user permissions
      * @param userService to get current user and his preferences
      * @param searchDao   for search index access
      */
-    public TransactionalTopicFetchService(TopicDao dao, UserService userService, TopicSearchDao searchDao) {
+    public TransactionalTopicFetchService(TopicDao dao, ComponentService componentService, UserService userService, TopicSearchDao searchDao) {
         super(dao);
+        this.componentService = componentService;
         this.userService = userService;
         this.searchDao = searchDao;
     }
@@ -126,6 +130,8 @@ public class TransactionalTopicFetchService extends AbstractTransactionalEntityS
      */
     @Override
     public void rebuildSearchIndex() {
+        long componentId = componentService.getComponentOfForum().getId();
+        componentService.checkPermissionsForComponent(componentId);
         searchDao.rebuildIndex();
     }
     

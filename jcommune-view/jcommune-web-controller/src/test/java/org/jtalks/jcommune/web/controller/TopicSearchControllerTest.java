@@ -45,8 +45,8 @@ public class TopicSearchControllerTest {
 	private TopicFetchService topicFetchService;
 	@Mock
 	private LastReadPostService lastReadPostService;
-    @Mock
-    private EntityToDtoConverter converter;
+	@Mock
+	private EntityToDtoConverter converter;
 
 	private TopicSearchController topicSearchController;
 
