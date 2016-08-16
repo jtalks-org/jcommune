@@ -149,9 +149,16 @@ public class TransactionalPrivateMessageService
     @Override
     @PreAuthorize("hasPermission(#userFrom.id, 'USER', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
     public void saveDraft(long id, JCUser userTo, String title, String body, JCUser userFrom) {
-        PrivateMessage pm = new PrivateMessage(userTo, userFrom, title, body);
-        pm.setId(id);
-        pm.setStatus(PrivateMessageStatus.DRAFT);
+        PrivateMessage pm;
+        if (this.getDao().isExist(id)) {
+            pm = this.getDao().get(id);
+            pm.setUserTo(userTo);
+            pm.setTitle(title);
+            pm.setBody(body);
+        } else {
+            pm = new PrivateMessage(userTo, userFrom, title, body);
+            pm.setStatus(PrivateMessageStatus.DRAFT);
+        }
         this.getDao().saveOrUpdate(pm);
 
         JCUser user = userService.getCurrentUser();

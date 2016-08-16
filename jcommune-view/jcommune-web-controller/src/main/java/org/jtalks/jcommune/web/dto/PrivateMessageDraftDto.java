@@ -14,10 +14,8 @@
  */
 package org.jtalks.jcommune.web.dto;
 
-import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.PrivateMessage;
 import org.jtalks.jcommune.web.validation.annotations.AtLeastOneNotEmpty;
-import org.jtalks.jcommune.web.validation.annotations.Exists;
 
 import javax.validation.constraints.Size;
 
@@ -36,8 +34,6 @@ public class PrivateMessageDraftDto {
     @Size(max = PrivateMessage.MAX_MESSAGE_LENGTH)
     private String body;
 
-    @Exists(entity = JCUser.class, field = "username", message = "{validation.wrong_recipient}", ignoreCase=true,
-            isNullableAllowed = true)
     private String recipient;
 
     private long id;

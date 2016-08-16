@@ -100,6 +100,10 @@
        <groupId>org.springframework.retry</groupId>
        <artifactId>spring-retry</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.qala.datagen</groupId>
+      <artifactId>qala-datagen</artifactId>
+    </dependency>
   </dependencies>
 
   <properties>
