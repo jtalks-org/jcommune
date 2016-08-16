@@ -242,20 +242,9 @@ public class PrivateMessageController {
      * @return redirect to "drafts" folder if saved successfully or show form with error message
      */
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
-    public String saveDraft(@Valid @ModelAttribute PrivateMessageDraftDto pmDto, BindingResult result) {
+    public ModelAndView saveDraft(@Valid @ModelAttribute("privateMessageDto") PrivateMessageDraftDto pmDto, BindingResult result) {
         String targetView = "redirect:/drafts";
-        if (result.hasFieldErrors() && result.hasGlobalErrors()) {
-            if (pmDto.getId() != 0) { //means that we try to edit existing draft
-                try {
-                    pmService.delete(Arrays.asList(pmDto.getId()));
-                } catch (NotFoundException e) {
-                    // Catch block is empty because we don't need any additional logic in case if user removed
-                    // draft in separate browser tab. We should just redirect him to list of drafts
-                }
-            }
-            return targetView;
-        }
-
+        long pmDtoId = pmDto.getId();
         JCUser userFrom = userService.getCurrentUser();
         JCUser userTo = null;
         if (pmDto.getRecipient() != null) {
@@ -265,9 +254,23 @@ public class PrivateMessageController {
                 //Catch block is empty because we don't need any logic if recipient not found. We should leave it null
             }
         }
-        pmService.saveDraft(pmDto.getId(), userTo, pmDto.getTitle(), pmDto.getBody(), userFrom);
-
-        return targetView;
+        if (userTo == null && result.hasGlobalErrors()) {
+            // The case when field "To:" filled incorrectly and fields "Title:" and "Body" are both empty .
+            if (pmDtoId != 0) { //means that we try to edit existing draft
+                try {
+                    pmService.delete(Arrays.asList(pmDtoId));
+                } catch (NotFoundException e) {
+                    // Catch block is empty because we don't need any additional logic in case if user removed
+                    // draft in separate browser tab. We should just redirect him to list of drafts
+                }
+            }
+            return new ModelAndView(targetView);
+        }
+        if (result.hasFieldErrors()){
+            return new ModelAndView(PM_FORM).addObject(DTO,pmDto);
+        }
+        pmService.saveDraft(pmDtoId, userTo, pmDto.getTitle(), pmDto.getBody(), userFrom);
+        return new ModelAndView(targetView);
     }
 
     /**
