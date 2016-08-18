@@ -77,8 +77,8 @@ This might be tuned further in the future if the page size itself changes.-->
 
     <query name="getAllowedSubscribersForTopic">
         <![CDATA[SELECT ts FROM Topic topic JOIN topic.subscribers ts JOIN ts.groups tsg WHERE topic = (:topic) AND topic.branch.id
-            not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in elements(tsg.id))
-            AND topic.branch.id in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=1 and v.sid in elements(tsg.id))]]>
+            not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and cast(v.sid as integer) in elements(tsg.id))
+            AND topic.branch.id in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=1 and cast(v.sid as integer) in elements(tsg.id))]]>
     </query>
 
     <query name="getCountTopicsInBranch">
