@@ -72,8 +72,8 @@
 
   <query name="getAllowedSubscribersForBranch">
     <![CDATA[SELECT bs FROM org.jtalks.jcommune.model.entity.Branch branch JOIN branch.subscribers bs JOIN bs.groups bsg WHERE branch = (:branch) AND branch.id
-            not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and v.sid in elements(bsg.id))
-            AND branch.id in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=1 and v.sid in elements(bsg.id))]]>
+            not in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=0 and cast(v.sid as integer) in elements(bsg.id))
+            AND branch.id in (select v.branchId from org.jtalks.jcommune.model.entity.ViewTopicsBranches v where v.granting=1 and cast(v.sid as integer) in elements(bsg.id))]]>
   </query>
 
   <query name="getCountPostsInBranch">
