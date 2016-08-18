@@ -128,27 +128,27 @@ ul.lang-menu li img {
 }
 
 .icon-code {
-    background-image: url("../images/code-icon.png");
+    background-image: url("../../images/code-icon.png");
     background-position: center;
     padding-top: 1px;
 }
 
 .icon-icq {
-    background-image: url("../images/icq.png");
+    background-image: url("../../images/iconOfUserContact/icq.png");
     background-position: center;
     height: 16px;
     width: 16px;
 }
 
 .icon-skype {
-    background-image: url("../images/skype.png");
+    background-image: url("../../images/iconOfUserContact/skype.png");
     background-position: center;
     height: 16px;
     width: 16px;
 }
 
 .icon-mail {
-    background-image: url("../images/mail.png");
+    background-image: url("../../images/iconOfUserContact/mail.png");
     background-position: center;
     height: 16px;
     width: 16px;

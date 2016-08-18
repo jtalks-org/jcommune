@@ -551,7 +551,6 @@
             <exclude>**/.*</exclude>
             <exclude>**/empty</exclude>
             <exclude>**/lib/**</exclude>
-            <exclude>**/wro/**</exclude>
             <exclude>**/META-INF/context.xml</exclude>
             <exclude>**/logback.xml</exclude>
             <exclude>**/*.conf</exclude>

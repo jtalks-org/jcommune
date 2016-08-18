@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>jcommune-view</artifactId>
@@ -144,35 +145,289 @@
         <artifactId>gmavenplus-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>ro.isdc.wro4j</groupId>
-        <artifactId>wro4j-maven-plugin</artifactId>
-        <version>1.7.6</version>
+        <groupId>org.primefaces.extensions</groupId>
+        <artifactId>resources-optimizer-maven-plugin</artifactId>
+        <version>2.1.0</version>
         <executions>
           <execution>
             <phase>generate-resources</phase>
+            <id>optimize</id>
             <goals>
-              <goal>run</goal>
+              <goal>optimize</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
-          <!-- For more information about parameters see wro4j-maven-plugin's official documentation: 
-          https://github.com/wro4j/wro4j/blob/1.7.x/docs/MavenPlugin.md#plugin-parameters -->
-          <targetGroups>main,pm,cr,post,user,plugin,topic,topicDraft,postDraft,users</targetGroups>
-          <minimize>true</minimize>
-          <destinationFolder>${basedir}/src/main/webapp/resources/wro</destinationFolder>
-          <cssDestinationFolder>${basedir}/src/main/webapp/resources/wro</cssDestinationFolder>
-          <jsDestinationFolder>${basedir}/src/main/webapp/resources/wro</jsDestinationFolder>
-          <!-- Added additional path specified in Windows style (with back slashes)
-          to solve that is not correctly rewritten URLs of resources in css-files when
-          wro4j-maven-plugin is run on Windows platforms.
-          For more information see bug report: https://github.com/wro4j/wro4j/issues/1021 -->
-          <contextFolder>${basedir}/src/main/webapp/,${basedir}\src\main\webapp\</contextFolder>
-          <wroFile>${basedir}/wro.xml</wroFile>
-          <wroManagerFactory>
-            ro.isdc.wro.extensions.manager.standalone.GoogleStandaloneManagerFactory
-          </wroManagerFactory>
-          <ignoreMissingResources>false</ignoreMissingResources>
+          <inputDir>${basedir}/src/main/webapp</inputDir>
+          <languageIn>ECMASCRIPT5</languageIn>
+          <sourceMap>
+            <create>true</create>
+            <sourceMapRoot>
+              sourcemaps/
+            </sourceMapRoot>
+            <outputDir>
+              ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/sourcemaps/
+            </outputDir>
+          </sourceMap>
+          <resourcesSets>
+            <resourcesSet>
+              <includes>
+                <!--SCREEN - CSS-->
+                <include>resources/css/app/editor.css</include>
+                <include>resources/css/lib/fonts-googleapis-com.css</include>
+                <include>resources/css/lib/bootstrap.css</include>
+                <include>resources/css/lib/bootstrap-responsive.css</include>
+                <include>resources/css/lib/prettify.css</include>
+                <include>resources/css/lib/prettyPhoto.css</include>
+                <include>resources/css/lib/inline.css</include>
+                <include>resources/css/app/application.css</include>
+
+                <!--LIBS - CSS-->
+                <include>/resources/css/lib/jquery.contextMenu.css</include>
+                <include>/resources/css/lib/jquery-ui.css</include>
+                <include>/resources/css/lib/chosen.css</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/css/main.css
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+
+            <resourcesSet>
+              <includes>
+                <!--LIBS - JS-->
+                <include>resources/javascript/lib/jquery/jquery-1.7.min.js</include>
+                <include>resources/javascript/lib/jquery/jquery.truncate.js</include>
+                <include>resources/javascript/lib/jquery/jquery-ui.min.js</include>
+                <include>resources/javascript/lib/jquery/jquery-ui-i18n.min.js</include>
+                <include>resources/javascript/lib/jquery/jquery.prettyPhoto.js</include>
+                <include>resources/javascript/lib/jquery/contextmenu/*.js</include>
+                <include>resources/javascript/lib/prettify/prettify.js</include>
+                <include>resources/javascript/lib/prettify/lang-*.js</include>
+                <include>resources/javascript/lib/wysiwyg-bbcode/*.js</include>
+                <include>resources/javascript/lib/*.js</include>
+
+                <!--MAIN - JS-->
+                <include>resources/javascript/app/keymaps.js</include>
+                <include>resources/javascript/app/dialog.js</include>
+                <include>resources/javascript/app/mainLinksEditor.js</include>
+                <include>resources/javascript/app/URLBuilder.js</include>
+                <include>resources/javascript/app/registration.js</include>
+                <include>resources/javascript/app/signin.js</include>
+                <include>resources/javascript/app/global.js</include>
+                <include>resources/javascript/app/antimultipost.js</include>
+                <include>resources/javascript/app/errorUtils.js</include>
+                <include>resources/javascript/app/utils.js</include>
+                <include>resources/javascript/app/dropdown.js</include>
+                <include>resources/javascript/app/forumEffects.js</include>
+                <include>resources/javascript/app/topline.js</include>
+                <include>resources/javascript/app/search.js</include>
+                <include>resources/javascript/app/events.js</include>
+                <include>resources/javascript/app/banner.js</include>
+                <include>resources/javascript/app/forumAdministration.js</include>
+                <include>resources/javascript/app/editPermissions.js</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/main.js
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+
+            <resourcesSet>
+              <includes>
+                <!--PM - JS-->
+                <include>resources/javascript/app/privateMessages.js</include>
+                <include>resources/javascript/app/updateSaveButtonStateOnPmForm.js</include>
+                <include>resources/javascript/app/leaveConfirm.js</include>
+                <include>resources/javascript/app/contextMenu.js</include>
+                <include>resources/javascript/lib/purl.js</include>
+                <include>resources/javascript/app/pollPreview.js</include>
+                <include>resources/javascript/app/codeHighlighting.js</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/pm.js
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+
+            <resourcesSet>
+              <includes>
+                <!--CR - JS-->
+                <include>resources/javascript/app/leaveConfirm.js</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/cr.js
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+
+            <resourcesSet>
+              <includes>
+                <!--POST - JS-->
+                <include>resources/javascript/app/leaveConfirm.js</include>
+                <include>resources/javascript/app/bbeditorEffects.js</include>
+                <include>resources/javascript/app/contextMenu.js</include>
+                <include>resources/javascript/app/pollPreview.js</include>
+                <include>resources/javascript/lib/purl.js</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/post.js
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+
+            <resourcesSet>
+              <includes>
+                <!--USER - CSS-->
+                <include>resources/css/app/profile.css</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/css/user.css
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+
+            <resourcesSet>
+              <includes>
+                <!--USER - JS-->
+                <include>resources/javascript/app/avatarUpload.js</include>
+                <include>resources/javascript/app/contacts.js</include>
+                <include>resources/javascript/app/userProfileEffects.js</include>
+                <include>resources/javascript/app/contextMenu.js</include>
+                <include>resources/javascript/app/codeHighlighting.js</include>
+                <include>resources/javascript/app/registration.js</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/user.js
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+            <resourcesSet>
+              <includes>
+                <!--USERS - JS-->
+                <include>resources/javascript/app/userSearch.js</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/users.js
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+            <resourcesSet>
+              <includes>
+                <!--PLUGIN - JS-->
+                <include>resources/javascript/app/utils.js</include>
+                <include>resources/javascript/app/permissionService.js</include>
+                <include>resources/javascript/app/pluginConfiguration.js</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/plugin.js
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+            <resourcesSet>
+              <includes>
+                <!--TOPIC - JS-->
+                <include>resources/javascript/app/datepicker.js</include>
+                <include>resources/javascript/app/pollPreview.js</include>
+                <include>resources/javascript/app/leaveConfirm.js</include>
+                <include>resources/javascript/app/contextMenu.js</include>
+                <include>resources/javascript/app/bbeditorEffects.js</include>
+                <include>resources/javascript/app/utils.js</include>
+                <include>resources/javascript/app/subscription.js</include>
+                <include>resources/javascript/app/moveTopic.js</include>
+                <include>resources/javascript/app/poll.js</include>
+                <include>resources/javascript/app/codeHighlighting.js</include>
+                <include>resources/javascript/app/permissionService.js</include>
+                <include>resources/javascript/lib/purl.js</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/topic.js
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+            <resourcesSet>
+              <includes>
+                <!--POSTDRAFT - JS-->
+                <include>resources/javascript/app/draft.js</include>
+                <include>resources/javascript/app/postDraft.js</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/postDraft.js
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+            <resourcesSet>
+              <includes>
+                <!--TOPICDRAFT - JS-->
+                <include>resources/javascript/app/draft.js</include>
+                <include>resources/javascript/app/topicDraft.js</include>
+              </includes>
+
+              <aggregations>
+                <aggregation>
+                  <outputFile>
+                    ${project.build.directory}/${project.build.finalName}/resources/compressed/javascript/topicDraft.js
+                  </outputFile>
+                  <removeIncluded>false</removeIncluded>
+                </aggregation>
+              </aggregations>
+            </resourcesSet>
+          </resourcesSets>
         </configuration>
       </plugin>
       <plugin>
@@ -212,7 +467,10 @@
               as well as prepare-package phase and goal exploded in execution-->
           <useCache>true</useCache>
           <packagingExcludes>
-            resources/css/app/**,resources/css/lib/**,resources/javascript/**,
+            <!--Exclude compressed resources-->
+            **/resources/css/app/**,
+            **/resources/css/lib/**,
+            **/resources/javascript/**,
             <!-- Ignore jsp-classes compiled by jspc -->
             WEB-INF/classes/jsp/**
           </packagingExcludes>
@@ -269,7 +527,7 @@
             <!--Remove all new line characters(Windows and Unix)-->
             <replacement>
               <token>\r\n|\n</token>
-              <value />
+              <value/>
             </replacement>
             <replacement>
               <!--Removes spaces, tabs and line breaks after " or ' -->
