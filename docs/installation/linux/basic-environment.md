@@ -6,9 +6,10 @@ Java:
  - Add it to your PATH: `PATH=$JAVA_HOME/bin:$PATH`
 
 MySQL:
- - Install it: `sudo apt-get install mysql-server-5.5`
+ - Install it: `sudo apt-get install mysql-server-5.7`
  - Log into MySQL terminal, it may look like `mysql -uroot -proot`
- - Create database: `create database jtalks character set utf8`
+ - Create database: `create database jtalks character set utf8mb4`
+ - NB: some functionality (like posting extended unicode symbols e.g. smiles) is not going to work with default MySQL configuration, read details in the [Advanced configuration of MySQL Server](https://github.com/jtalks-org/jcommune/blob/master/docs/installation/general-installation-guide.md#advanced-configuration-of-mysql-server)
 
 Tomcat:
  - Download it: `wget http://apache.softded.ru/tomcat/tomcat-7/v7.0.35/bin/apache-tomcat-7.0.35.zip`

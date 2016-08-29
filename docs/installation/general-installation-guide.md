@@ -23,3 +23,22 @@ So if you want to run the app locally (from binaries or sources), you need to in
  - Clone the project: `git@github.com:jtalks-org/jcommune.git`. Now you can work with that project from your IDE.
  - If you want to deploy it from command line.. Step into the folder and build it: `mvn clean package`
  - Repeat everything from _Installing from Binaries_ but instead of downloading war-file, just grab it from `jcommune/jcommune-view/jcommunew-web-view/target`
+
+####Advanced configuration of MySQL Server
+ - Make sure that you are using MySQL Server ver. 5.7.9 or higher. Edit the my.cnf file (my.ini on Windows operating systems) in your MySQL server. The configuration file may be located on one of the following paths (in priority order):
+    WINDOWS:
+        - %PROGRAMDATA%\MySQL\MySQL Server X.X\my.ini (my.cnf)
+        - %WINDIR%\my.ini (my.cnf)
+        - C:\my.ini (my.cnf)
+        - INSTALLDIR\my.ini (my.cnf)
+    Unix, Linux и OS X:
+        - /etc/my.cnf
+        - /etc/mysql/my.cnf
+        - SYSCONFDIR/my.cnf
+ - Locate the [mysqld] section in the file, and add or modify the following parameters:
+    [mysqld]
+        character-set-client-handshake = FALSE
+        character-set-server = utf8mb4
+        collation-server = utf8mb4_unicode_ci
+ - Without making this changes symbols from UTF8MB4 character set will be displayed like '??'.
+ - Restart your MySQL server for the changes to take effect.
