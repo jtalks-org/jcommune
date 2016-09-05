@@ -1,5 +1,9 @@
--- SET NAMES used to avoid Illegal mix of collations error when '=' operator is called
-SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
+-- vars that have different types of collation can not be compared by '=',
+-- that's why we need to set connection collation the same as database collation
+-- in spite of server configuration.
+SET @default_collation_connection = @@collation_connection;
+SET @@collation_connection = @@collation_database;
+
 set @adminUserName := 'admin';
 set @adminPassword := 'admin';
 set @adminGroupName := 'Administrators';
@@ -101,3 +105,6 @@ set @ace_order := (case when  @ace_order_max is null then 0 else @ace_order_max 
 insert ignore into acl_entry (acl_object_identity, sid, ace_order, mask, granting, audit_success, audit_failure)
   select @forum_acl_object_identity_id, @acl_sid_admin_group_id, @ace_order, @adminMask, 1, 0 , 0
   from dual;
+
+-- return collation_connection to a previous state.
+SET @@collation_connection = @default_collation_connection;
