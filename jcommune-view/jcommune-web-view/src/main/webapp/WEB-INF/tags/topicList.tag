@@ -28,7 +28,7 @@
             <jtalks:topicIconSmall topicDto="${topicDto}" authenticated="${authenticated}"/>
           </td>
           <td class="posts-td-small posts-td-small_2">
-            <h2 class="h-nostyle">
+            <h2 class="h-nostyle"  hNoStyleId="${topicDto.topic.id}">
                 <%--Some topic types should have a special prefix when displayed--%>
               <c:if test="${topicDto.topic.announcement=='true'}">
                 <span class="sticky space-left-small-nf"><spring:message code="label.marked_as_announcement"/></span>

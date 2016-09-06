@@ -7,7 +7,7 @@ SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';
 SET @forum_component_id := 2;
 -- Update description of FORUM component for new users baing created
 update COMPONENTS set DESCRIPTION = 'Available users: admin/admin registered/registered moderator/moderator banned/banned and others'
-  where CMP_ID = @forum_component_id;
+where CMP_ID = @forum_component_id;
 
 insert ignore into SECTIONS (SECTION_ID, UUID, `NAME`, DESCRIPTION, POSITION, COMPONENT_ID) VALUES
   (1,(SELECT UUID() FROM dual),'Sport', 'All about sport', 1, @forum_component_id),
