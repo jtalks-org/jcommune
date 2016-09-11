@@ -28,7 +28,7 @@
             <jtalks:topicIconSmall topicDto="${topicDto}" authenticated="${authenticated}"/>
           </td>
           <td class="posts-td-small posts-td-small_2">
-            <h2 class="h-nostyle">
+            <h2 class="h-nostyle"  hNoStyleId="${topicDto.topic.id}">
                 <%--Some topic types should have a special prefix when displayed--%>
               <c:if test="${topicDto.topic.announcement=='true'}">
                 <span class="sticky space-left-small-nf"><spring:message code="label.marked_as_announcement"/></span>
@@ -39,7 +39,7 @@
               <c:if test="${topicDto.topic.hasPoll}">
                 <span class="sticky space-left-small-nf"><spring:message code="label.marked_as_poll"/></span>
               </c:if>
-              <a class="space-left-small-nf" topicId="${topicDto.topic.id}" href="${pageContext.request.contextPath}${topicDto.topicUrl}">
+              <a class="space-left-small-nf" href="${pageContext.request.contextPath}${topicDto.topicUrl}">
                 <c:out value="${topicDto.topic.title}"/>
               </a>
             </h2>
