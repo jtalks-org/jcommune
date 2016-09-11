@@ -39,7 +39,7 @@
               <c:if test="${topicDto.topic.hasPoll}">
                 <span class="sticky space-left-small-nf"><spring:message code="label.marked_as_poll"/></span>
               </c:if>
-              <a class="space-left-small-nf" topicId ="${topicDto.topic.id}" href="${pageContext.request.contextPath}${topicDto.topicUrl}">
+              <a class="space-left-small-nf" topicId="${topicDto.topic.id}" href="${pageContext.request.contextPath}${topicDto.topicUrl}">
                 <c:out value="${topicDto.topic.title}"/>
               </a>
             </h2>
