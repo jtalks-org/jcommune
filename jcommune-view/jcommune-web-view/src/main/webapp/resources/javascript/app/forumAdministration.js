@@ -29,6 +29,7 @@ $(function () {
 
     $("[id^=branchLabel]").on('click', showBranchEditDialog);
     $("[id^=newBranch]").on('click', showNewBranchDialog);
+    $("[id^=newGroup]").on('click', showGroupCreateDialog);
 });
 
 /**
@@ -555,3 +556,82 @@ function sendForumConfiguration(e) {
         }
     });
 };
+
+/**
+ * Show dialog for create group.
+ * 
+ * @param event
+ */
+function showGroupCreateDialog(event) {
+    event.preventDefault();
+
+    var bodyContent =
+        Utils.createFormElement($labelGroupPlaceholderName, 'groupName', 'text', 'first dialog-input') +
+        Utils.createFormElement($labelGroupPlaceholderDescription, 'groupDescription', 'text', 'dialog-input') +
+        '<div class="clearfix"/>';
+
+    var footerContent = ' \
+          <button id="cancelGroupButton" class="btn">' + $labelCancel + '</button> \
+          <button id="saveGroupButton" class="btn btn-primary">' + $labelSave + '</button>';
+
+    jDialog.createDialog({
+        dialogId: 'groupCreateDialog',
+        title: $labelGroupPopUpTitle,
+        bodyContent: bodyContent,
+        footerContent: footerContent,
+        maxWidth: 350,
+        maxHeight: 500,
+        firstFocus: true,
+        tabNavigation: ['#groupName', '#groupDescription',
+            '#saveGroupButton', '#cancelGroupButton'],
+        handlers: {
+            '#saveGroupButton': {'click': sendNewGroup},
+            '#cancelGroupButton': {'static': 'close'}
+        }
+    });
+
+    /**
+     * Handles submit request from groupCreateDialog by sending POST request, with params
+     * containing group name and description.
+     * 
+     * @param event
+     */
+    function sendNewGroup(event) {
+        event.preventDefault();
+
+        var groupInformation = {};
+        groupInformation.name = jDialog.dialog.find('#groupName').val();
+        groupInformation.description = jDialog.dialog.find('#groupDescription').val();
+
+        jDialog.dialog.find('*').attr('disabled', true);
+
+        $.ajax({
+            url: $root + '/group/new',
+            type: 'POST',
+            contentType: 'application/json',
+            async: false,
+            data: JSON.stringify(groupInformation),
+            success: function (response) {
+                if (response.status === 'SUCCESS') {
+                    location.reload();
+                } else {
+                    if (response.result instanceof Array) {
+                        jDialog.prepareDialog(jDialog.dialog);
+                        jDialog.showErrors(jDialog.dialog, response.result, 'group', '');
+                    } else {
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: response.result
+                        });
+                    }
+                }
+            },
+            error: function () {
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelError500Detail
+                });
+            }
+        });
+    }
+}
