@@ -194,3 +194,6 @@ $labelNotLoggedInGenericError = '<spring:message code="label.not.logged.in.gener
 $labelUserGroupAddError = '<spring:message code="label.user.group.add.error" htmlEscape="true"/>';
 $labelUserGroupDeleteError = '<spring:message code="label.user.group.delete.error" htmlEscape="true"/>';
 $labelUserGroupsNoMatches = '<spring:message code="label.user.groups.no.matches" htmlEscape="true"/>';
+$labelGroupPlaceholderName = '<spring:message code="label.group.placeholder.name" htmlEscape="true"/>';
+$labelGroupPlaceholderDescription = '<spring:message code="label.group.placeholder.description" htmlEscape="true"/>';
+$labelGroupPopUpTitle = '<spring:message code="label.group.pop-up.title" htmlEscape="true"/>';
