@@ -14,7 +14,9 @@
  */
 package org.jtalks.jcommune.test.utils
 
-import org.jtalks.jcommune.test.service.ComponentService
+import org.jtalks.common.model.entity.Group
+import org.jtalks.jcommune.model.dao.GroupDao
+import org.jtalks.jcommune.model.dto.GroupAdministrationDto
 import org.jtalks.jcommune.test.utils.assertions.Assert
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -23,22 +25,52 @@ import org.springframework.test.web.servlet.MockMvc
 
 import javax.servlet.http.HttpSession
 
+import static io.qala.datagen.RandomShortApi.alphanumeric
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 
 /**
  * @author Oleg Tkachenko
  */
 class Groups {
 
-    @Autowired MockMvc mockMvc
-    @Autowired ComponentService componentService
+    @Autowired
+    GroupDao groupDao
+    @Autowired
+    MockMvc mockMvc
+
+    boolean isExist(String username) {
+        return groupDao.getByName(username) != null
+    }
 
     def getGroupsWithCountOfUsers(HttpSession session) {
-        componentService.createForumComponent();
         def result = mockMvc.perform(get('/group/list')
                 .session(session as MockHttpSession)
                 .contentType(MediaType.APPLICATION_JSON)
         ).andReturn()
         Assert.assertView(result, "groupAdministration")
+    }
+
+    void create(Group group, HttpSession session) {
+        def groupDto = new GroupAdministrationDto()
+        groupDto.name = group.name
+        groupDto.description = group.description
+        def result = mockMvc.perform(post("/group/new")
+                .contentType(MediaType.APPLICATION_JSON)
+                .session(session as MockHttpSession)
+                .content(JsonResponseUtils.pojoToJsonString(groupDto)))
+                .andReturn()
+
+        Assert.assertJsonResponseResult(result)
+    }
+
+    public static Group random() {
+        return new Group(alphanumeric(1, Group.GROUP_NAME_MAX_LENGTH), alphanumeric(0, Group.GROUP_DESCRIPTION_MAX_LENGTH))
+    }
+
+    void assertDoesNotExist(Group group) {
+        def groups = groupDao.getAll()
+        assert groups.find { group.name == group.name } != null,
+                "Found a group with name ${group.name} while it wasn't expected it exists"
     }
 }

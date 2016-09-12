@@ -14,10 +14,15 @@
  */
 package org.jtalks.jcommune.test
 
+import org.jtalks.common.model.entity.Component
+import org.jtalks.common.model.entity.Group
+import org.jtalks.common.model.permissions.GeneralPermission
 import org.jtalks.jcommune.test.model.User
+import org.jtalks.jcommune.test.service.ComponentService
 import org.jtalks.jcommune.test.service.GroupsService
 import org.jtalks.jcommune.test.utils.Groups
 import org.jtalks.jcommune.test.utils.Users
+import org.jtalks.jcommune.test.utils.exceptions.ValidationException
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
@@ -25,6 +30,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
+import static io.qala.datagen.RandomShortApi.alphanumeric;
 
 /**
  * @author Oleg Tkachenko
@@ -37,9 +43,12 @@ class AdministrationControllerTest extends Specification {
     @Autowired Users users
     @Autowired Groups groups
     @Autowired GroupsService groupsService
+    @Autowired ComponentService componentService
+    private Component forum
 
     def setup() {
         groupsService.create()
+        forum = componentService.createForumComponent()
     }
 
     def 'must not be able to see group administration page if you are not admin'() {
@@ -61,5 +70,51 @@ class AdministrationControllerTest extends Specification {
             groups.getGroupsWithCountOfUsers(session);
         then:
             thrown(MissingPropertyException)
+    }
+
+    def 'must not be able to create group if you are not admin'() {
+        given: 'User created without access and login'
+            def user = new User()
+            users.created(user);
+            def session = users.signIn(user);
+        when: 'User creates group'
+            Group group = Groups.random()
+            groups.create(group,session)
+        then:
+            thrown(WrongResponseException)
+    }
+
+    def 'test create group success'() {
+        given: 'User created and have admin permission on forum'
+            def user = new User()
+            users.created(user).withPermissionOn(forum, GeneralPermission.ADMIN)
+            def session = users.signIn(user)
+        when: 'User creates group'
+            Group group = Groups.random()
+            groups.create(group,session)
+        then: 'Group is created'
+            groups.isExist(group.name)
+    }
+    def 'create group with invalid name or description should fail'() {
+        given: 'User created and have admin permission on forum'
+            def user = new User()
+            users.created(user).withPermissionOn(forum, GeneralPermission.ADMIN)
+            def session = users.signIn(user)
+        when: 'User creates group'
+            Group group = new Group()
+            group.name = groupName
+            group.description = groupDescription
+            groups.create(group, session)
+        then: 'Validation error occurs'
+            def e = thrown(ValidationException)
+            [errorMessage] == e.defaultErrorMessages
+        and: 'Group is not created'
+            groups.assertDoesNotExist(group)
+        where:
+            groupName           | groupDescription    |errorMessage                                                    | caseName
+            ''                  | alphanumeric(0,255) |"Group name length must be between 1 and 100 characters"        | 'Group name is empty'
+            '     '             | alphanumeric(0,255) |"Group name length must be between 1 and 100 characters"        | 'Group name contains only spaces'
+            alphanumeric(101)   | alphanumeric(0,255) |"Group name length must be between 1 and 100 characters"        | 'Group name too long'
+            alphanumeric(1,100) | alphanumeric(256)   |"Group description length must be between 0 and 255 characters" | 'Group description too long'
     }
 }
