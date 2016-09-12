@@ -131,6 +131,10 @@
       <groupId>com.jayway.jsonpath</groupId>
       <artifactId>json-path-assert</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.qala.datagen</groupId>
+      <artifactId>qala-datagen</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
