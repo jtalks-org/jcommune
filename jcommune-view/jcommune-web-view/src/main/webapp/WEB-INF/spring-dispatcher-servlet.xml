@@ -60,6 +60,7 @@
         <prop key="org.springframework.security.access.AccessDeniedException">redirect:/errors/403</prop>
         <prop key="org.springframework.beans.TypeMismatchException">redirect:/errors/400</prop>
         <prop key="org.springframework.security.web.authentication.rememberme.CookieTheftException">/login?login_error=2</prop>
+        <prop key="org.springframework.web.HttpRequestMethodNotSupportedException">redirect:/errors/405</prop>
       </props>
     </property>
     <property name="warnLogCategory" value="org.jtalks.jcommune"/>

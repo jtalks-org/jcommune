@@ -77,4 +77,9 @@ public class ErrorsHandlerController {
     public String handleNotImplementedError() {
         return "/errors/501";
     }
+    @RequestMapping(value = "405")
+    @ResponseStatus(value = HttpStatus.METHOD_NOT_ALLOWED)
+    public String handleMethodNotSupportedError() {
+        return "/errors/405";
+    }
 }
