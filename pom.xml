@@ -543,6 +543,7 @@
           </includes>
           <excludes>
             <exclude>target/**</exclude>
+            <exclude>**/wro/**</exclude>
             <exclude>**/*.properties</exclude>
             <exclude>**/*.txt</exclude>
             <exclude>**/*.sql</exclude>
