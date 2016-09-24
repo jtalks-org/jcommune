@@ -539,6 +539,7 @@
             <include>**/*.java</include>
             <include>**/test/**</include>
             <include>**/main/**</include>
+            <include>**/*.scala</include>
           </includes>
           <excludes>
             <exclude>target/**</exclude>
@@ -552,6 +553,14 @@
             <exclude>**/lib/**</exclude>
             <exclude>**/wro/**</exclude>
             <exclude>**/META-INF/context.xml</exclude>
+            <exclude>**/logback.xml</exclude>
+            <exclude>**/*.conf</exclude>
+            <exclude>**/*.tag</exclude>
+            <exclude>**/*.index</exclude>
+            <exclude>**/*.jpeg</exclude>
+            <exclude>**/*.md</exclude>
+            <exclude>**/*.pcx</exclude>
+            <exclude>**/*.pdf</exclude>
           </excludes>
           <useDefaultExcludes>true</useDefaultExcludes>
           <strictCheck>true</strictCheck>
