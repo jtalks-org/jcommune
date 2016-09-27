@@ -28,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 /**
  * <p>Servlet that provides access to JETM HTTP-console like the
  * {@link etm.contrib.integration.spring.web.SpringHttpConsoleServlet}, but additionally check JNDI for the performance
@@ -40,6 +42,7 @@ import java.io.IOException;
 public class JetmHttpConsoleServlet extends SpringHttpConsoleServlet {
 
     private static final String ACTIVE_PROFILE_PROPERTY = "spring.profiles.active";
+    private static final String ACTIVE_PROFILE_ENV_VAR = "SPRING_PROFILES_ACTIVE";
     private static final String PERFORMANCE_PROFILE = "performance";
 
     private ComponentService componentService;
@@ -89,6 +92,8 @@ public class JetmHttpConsoleServlet extends SpringHttpConsoleServlet {
 
     private boolean profileIsActive() {
         String profile = new JndiAwarePropertyPlaceholderConfigurer().resolveJndiProperty(ACTIVE_PROFILE_PROPERTY);
+        profile = defaultIfBlank(profile, System.getProperty(ACTIVE_PROFILE_PROPERTY));
+        profile = defaultIfBlank(profile, System.getenv(ACTIVE_PROFILE_ENV_VAR));
         return PERFORMANCE_PROFILE.equals(profile);
     }
 }
