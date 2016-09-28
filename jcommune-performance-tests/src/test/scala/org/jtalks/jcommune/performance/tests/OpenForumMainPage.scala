@@ -34,6 +34,6 @@ class OpenForumMainPage extends Simulation{
     .pause(5)
 
   setUp(
-    scn.inject(atOnceUsers(1))
+    scn.inject(constantUsersPerSec(30) during DurationInteger(1800).seconds randomized)
   ).protocols(httpConf)
 }
