@@ -111,6 +111,9 @@
         <groupId>io.gatling</groupId>
         <artifactId>gatling-maven-plugin</artifactId>
         <version>${gatling-maven-plugin.version}</version>
+        <configuration>
+          <runMultipleSimulations>true</runMultipleSimulations>
+        </configuration>
         <executions>
           <execution>
             <phase>test</phase>
