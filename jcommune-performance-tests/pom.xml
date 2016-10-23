@@ -123,13 +123,7 @@
         <artifactId>gatling-maven-plugin</artifactId>
         <version>${gatling-maven-plugin.version}</version>
         <configuration>
-          <runMultipleSimulations>false</runMultipleSimulations>
-          <simulationClass>org.jtalks.jcommune.performance.tests.OpenTopicPage</simulationClass>
-          <jvmArgs>
-            <jvmArg>-Durl=http://performance.jtalks.org</jvmArg>
-            <jvmArg>-Dport=</jvmArg>
-            <jvmArg>-DurlPath=/jcommune</jvmArg>
-          </jvmArgs>
+          <runMultipleSimulations>true</runMultipleSimulations>
         </configuration>
         <executions>
           <execution>
