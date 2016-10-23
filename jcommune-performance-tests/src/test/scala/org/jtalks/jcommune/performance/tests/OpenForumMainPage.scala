@@ -16,25 +16,30 @@
 package org.jtalks.jcommune.performance.tests
 
 import io.gatling.core.Predef._
-import io.gatling.http.Predef._
+import org.jtalks.jcommune.performance.model.User.Role._
+import org.jtalks.jcommune.performance.utils.ScnBuilder._
+
+import scala.concurrent.duration.FiniteDuration
 
 class OpenForumMainPage extends Simulation{
-  val url = "http://performance.jtalks.org/jcommune"
 
-  val httpConf = http
-    .baseURL(url)
-    .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-    .doNotTrackHeader("1")
-    .acceptLanguageHeader("en-US,en;q=0.5")
-    .acceptEncodingHeader("gzip, deflate")
-    .userAgentHeader("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0")
-
-  val scn = scenario("BasicSimulation")
-    .exec(http("request_1")
-    .get("/"))
-    .pause(5)
+  val TEST_DURATION: FiniteDuration = 60  //Simulation duration in seconds
+  val NUM_OF_ANONYMOUS_USERS: Int = 1     // Number of Anonymous users generated per second
+  val NUM_OF_REGISTERED_USERS: Int = 1    // Number of Registered users generated per second
 
   setUp(
-    scn.inject(constantUsersPerSec(30) during DurationInteger(1800).seconds randomized)
-  ).protocols(httpConf)
+    scnOpenForumMainPage(Anonymous)
+      .inject(
+        constantUsersPerSec(NUM_OF_ANONYMOUS_USERS)
+          .during(TEST_DURATION)),
+
+    scnOpenForumMainPage(Registered)
+      .inject(
+        constantUsersPerSec(NUM_OF_REGISTERED_USERS)
+          .during(TEST_DURATION)
+      ))
+    .assertions(
+      global.successfulRequests.percent.is(100),
+      global.responseTime.percentile1.lessThan(1500))
+    .protocols(httpProtocol)
 }

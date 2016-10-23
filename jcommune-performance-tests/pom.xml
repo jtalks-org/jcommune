@@ -69,6 +69,17 @@
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.gatling</groupId>
+      <artifactId>gatling-commons</artifactId>
+      <version>${gatling.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 
 
@@ -112,7 +123,13 @@
         <artifactId>gatling-maven-plugin</artifactId>
         <version>${gatling-maven-plugin.version}</version>
         <configuration>
-          <runMultipleSimulations>true</runMultipleSimulations>
+          <runMultipleSimulations>false</runMultipleSimulations>
+          <simulationClass>org.jtalks.jcommune.performance.tests.OpenTopicPage</simulationClass>
+          <jvmArgs>
+            <jvmArg>-Durl=http://performance.jtalks.org</jvmArg>
+            <jvmArg>-Dport=</jvmArg>
+            <jvmArg>-DurlPath=/jcommune</jvmArg>
+          </jvmArgs>
         </configuration>
         <executions>
           <execution>
