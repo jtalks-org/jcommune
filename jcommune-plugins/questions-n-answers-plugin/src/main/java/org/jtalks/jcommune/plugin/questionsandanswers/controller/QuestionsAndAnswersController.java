@@ -755,6 +755,14 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         return TransactionalPluginCommentService.getInstance();
     }
 
+    /**
+     * Needed for mocking
+     *
+     * @return service for handling bb-codes
+     */
+    PluginBbCodeService getBbCodeService() {
+        return BbToHtmlConverter.getInstance();
+    }
 
     /**
      * Sets specified {@link BreadcrumbBuilder}
