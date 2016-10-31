@@ -78,7 +78,6 @@ public class TopicController {
     private TopicDraftService topicDraftService;
     private PostService postService;
     private BranchService branchService;
-    private LastReadPostService lastReadPostService;
     private UserService userService;
     private BreadcrumbBuilder breadcrumbBuilder;
     private LocationService locationService;
@@ -107,7 +106,6 @@ public class TopicController {
      *                                 {@link org.jtalks.jcommune.model.entity.Post} entity
      * @param branchService            the object which provides actions on
      *                                 {@link org.jtalks.jcommune.model.entity.Branch} entity
-     * @param lastReadPostService      to perform post-related actions
      * @param userService              to determine the current user logged in
      * @param breadcrumbBuilder        to create Breadcrumbs for pages
      * @param locationService          to track user location on forum (what page he is viewing now)
@@ -118,7 +116,6 @@ public class TopicController {
     public TopicController(TopicModificationService topicModificationService,
                            PostService postService,
                            BranchService branchService,
-                           LastReadPostService lastReadPostService,
                            UserService userService,
                            BreadcrumbBuilder breadcrumbBuilder,
                            LocationService locationService,
@@ -130,7 +127,6 @@ public class TopicController {
         this.topicModificationService = topicModificationService;
         this.postService = postService;
         this.branchService = branchService;
-        this.lastReadPostService = lastReadPostService;
         this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
         this.locationService = locationService;
@@ -280,7 +276,6 @@ public class TopicController {
         if (draft != null) {
             postDto = PostDto.getDtoFor(draft);
         }
-        lastReadPostService.markTopicPageAsRead(topic, postsPage.getNumber());
         return new ModelAndView("topic/postList")
                 .addObject("viewList", locationService.getUsersViewing(topic))
                 .addObject("usersOnline", sessionRegistry.getAllPrincipals())
@@ -288,7 +283,8 @@ public class TopicController {
                 .addObject("topic", topic)
                 .addObject(POST_DTO, postDto)
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
-                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
+                .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
+                .addObject("markAsReadLink", topic.getMarkAsReadUrl(currentUser, page).orNull());
     }
 
     /**

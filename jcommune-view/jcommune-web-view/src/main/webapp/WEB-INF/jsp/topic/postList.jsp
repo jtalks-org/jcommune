@@ -385,4 +385,7 @@ Without it we're likely to get lots of problems simulating HTTP DELETE via JS in
     Utils.focusFirstEl('#postBody');
   }
 </script>
+<c:if test="${markAsReadLink != null}">
+  <script type="text/javascript" src="${markAsReadLink}" defer></script>
+</c:if>
 </body>

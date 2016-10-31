@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.base.Optional;
 import org.apache.solr.analysis.LowerCaseFilterFactory;
 import org.apache.solr.analysis.SnowballPorterFilterFactory;
 import org.apache.solr.analysis.StandardFilterFactory;
@@ -765,5 +766,25 @@ public class Topic extends Entity implements SubscriptionAwareEntity {
             }
         }
         return count;
+    }
+
+    /**
+     * Makes URL to mark topic page as read.
+     * For anonymous user returns empty optional.
+     *
+     * @param user current user
+     * @param page page to mark as read
+     * @return Optional url string
+     */
+    public Optional<String> getMarkAsReadUrl(JCUser user, String page) {
+        if (user.isAnonymous()) {
+            return Optional.absent();
+        }
+        return Optional.of("{topicId}/page/{pageNum}/markread?userId={userId}&lastModified={lastModified}"
+                                       .replace("{topicId}", String.valueOf(getId()))
+                                       .replace("{pageNum}", page)
+                                       .replace("{userId}", String.valueOf(user.getId()))
+                                       .replace("{lastModified}", String.valueOf(getLastModificationPostDate().getMillis()))
+        );
     }
 }

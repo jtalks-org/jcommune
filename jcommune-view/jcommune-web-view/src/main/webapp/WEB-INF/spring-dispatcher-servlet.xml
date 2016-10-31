@@ -100,6 +100,12 @@
       <property name="useExpiresHeader" value="true"/>
       <property name="useCacheControlHeader" value="true"/>
       <property name="useCacheControlNoStore" value="true"/>
+      <property name="cacheMappings">
+        <props>
+          <!-- Allow caching for "mark page as read" requests -->
+          <prop key="/topics/*/page/*/markread">604800</prop>
+        </props>
+      </property>
     </bean>
     <!--Fills common data, required to render all the pages-->
     <bean id="userDataInterceptor" class="org.jtalks.jcommune.web.interceptors.UserDataInterceptor"/>

@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.common.base.Optional;
 import org.joda.time.DateTime;
 import org.testng.annotations.Test;
 
@@ -456,6 +457,41 @@ public class TopicTest {
         topic.setBranch(branch);
 
         assertEquals(topic.getUnsubscribeLinkForSubscribersOf(BranchSubClass.class), "/branches/1/unsubscribe");
+    }
+
+    @Test
+    public void markAsReadUrlIsEmptyForAnonymousUser() throws Exception {
+        Optional<String> markAsReadUrl = createTopic().getMarkAsReadUrl(new AnonymousUser(), "2");
+        assertFalse(markAsReadUrl.isPresent(), "URL should be absent for anonymous user");
+    }
+
+    @Test
+    public void markAsReadUrlPresentsForNonAnonymousUser() throws Exception {
+        Optional<String> markAsReadUrl = createTopic().getMarkAsReadUrl(new JCUser(), "2");
+        assertTrue(markAsReadUrl.isPresent(), "URL should be present for authorized user");
+    }
+
+    @Test
+    public void markAsReadUrlContainsTopicIdAndPageNumberInPath() throws Exception {
+        Optional<String> markAsReadUrl = createTopic().getMarkAsReadUrl(new JCUser(), "2");
+        String url = markAsReadUrl.get();
+        assertTrue(url.startsWith("0/page/2/markread"), "URL should contain topicId and page");
+    }
+
+    @Test
+    public void markAsReadUrlContainsUserIdAsQueryParams() throws Exception {
+        Optional<String> markAsReadUrl = createTopic().getMarkAsReadUrl(new JCUser(), "2");
+        String url = markAsReadUrl.get();
+        assertTrue(url.contains("userId=0"), "URL should have userId param");
+    }
+
+    @Test
+    public void markAsReadUrlContainsLastModifiedAsQueryParams() throws Exception {
+        Topic topic = createTopic();
+        DateTime lastModificationPostDate = topic.getLastModificationPostDate();
+        Optional<String> markAsReadUrl = topic.getMarkAsReadUrl(new JCUser(), "2");
+        String url = markAsReadUrl.get();
+        assertTrue(url.endsWith("lastModified=" + lastModificationPostDate.getMillis()), "URL should have lastModified param");
     }
 
 

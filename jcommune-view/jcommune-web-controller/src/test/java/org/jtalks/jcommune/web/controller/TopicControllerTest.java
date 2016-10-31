@@ -86,8 +86,6 @@ public class TopicControllerTest {
     @Mock
     private SessionRegistry registry;
     @Mock
-    private LastReadPostService lastReadPostService;
-    @Mock
     private EntityToDtoConverter converter;
 
     private TopicController controller;
@@ -105,7 +103,6 @@ public class TopicControllerTest {
                 topicModificationService,
                 postService,
                 branchService,
-                lastReadPostService,
                 userService,
                 breadcrumbBuilder,
                 locationService,
@@ -155,7 +152,6 @@ public class TopicControllerTest {
         ModelAndView mav = controller.showTopicPage(request, TOPIC_ID, page);
 
         verify(topicFetchService).checkViewTopicPermission(topic.getBranch().getId());
-        verify(lastReadPostService).markTopicPageAsRead(topic, Integer.valueOf(page));
         //
         assertViewName(mav, "topic/postList");
         assertAndReturnModelAttributeOfType(mav, "postsPage", Page.class);
@@ -441,6 +437,17 @@ public class TopicControllerTest {
         controller.openTopic(TOPIC_ID);
 
         verify(topicModificationService).openTopic(topic);
+    }
+
+    @Test
+    public void pageContainLinkToMarkAsRead() throws NotFoundException {
+        String page = "1";
+        Topic topic = createTopic();
+        prepareViewTopicMocks(topic, page);
+
+        ModelAndView mav = controller.showTopicPage(mock(WebRequest.class), TOPIC_ID, page);
+
+        assertModelAttributeAvailable(mav, "markAsReadLink");
     }
 
     private Branch createBranch() {
