@@ -45,7 +45,6 @@
     <!-- Link to actual ACL Service -->
     <constructor-arg name="aclManager" ref="aclManager"/>
     <constructor-arg name="aclUtil" ref="aclUtils"/>
-    <constructor-arg name="groupDao" ref="groupDao"/>
     <constructor-arg name="sidFactory" ref="jtalksSidFactory"/>
     <constructor-arg name="mutableAclService" ref="aclService"/>
     <constructor-arg name="userDao" ref="userDao"/>

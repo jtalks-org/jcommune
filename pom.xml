@@ -643,7 +643,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <headerBaseDir>${basedir}</headerBaseDir>
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
-    <commonVersion>0.60</commonVersion>
+    <commonVersion>0.62</commonVersion>
     <isJsCompressed>true</isJsCompressed>
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
   </properties>

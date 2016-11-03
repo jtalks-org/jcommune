@@ -21,13 +21,10 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import org.apache.commons.lang.Validate;
-//import org.jtalks.common.model.dao.GroupDao;
-//import org.jtalks.common.model.entity.Group;
-//import org.jtalks.common.model.entity.User;
-import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
+import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
 import org.jtalks.common.security.acl.AclManager;
 import org.jtalks.common.security.acl.AclUtil;
@@ -65,7 +62,6 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
 
     private final AclManager aclManager;
     private final AclUtil aclUtil;
-    private final GroupDao groupDao;
     private final JtalksSidFactory sidFactory;
     private final JdbcMutableAclService mutableAclService;
     private final UserDao userDao;
@@ -74,13 +70,11 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     /**
      * @param aclManager        for getting permissions on object indentity
      * @param aclUtil           utilities to work with Spring ACL
-     * @param groupDao          dao for user group getting
      * @param sidFactory        factory to work with principals
      * @param mutableAclService for checking existing of sids
      */
     public AclGroupPermissionEvaluator(@Nonnull org.jtalks.common.security.acl.AclManager aclManager,
                                        @Nonnull AclUtil aclUtil,
-                                       @Nonnull GroupDao groupDao,
                                        @Nonnull JtalksSidFactory sidFactory,
                                        @Nonnull JdbcMutableAclService mutableAclService,
                                        @Nonnull UserDao userDao,
@@ -90,7 +84,6 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
         this.sidFactory = sidFactory;
         this.mutableAclService = mutableAclService;
         this.userDao = userDao;
-        this.groupDao = groupDao;
         this.pluginPermissionManager = pluginPermissionManager;
     }
 
@@ -113,43 +106,38 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId,
                                  String targetType, Object permission) {
-        boolean result = false;
         Long id = parseTargetId(targetId);
-
-        ObjectIdentity objectIdentity = aclUtil.createIdentity(id, targetType);
-        Permission jtalksPermission;
-        if (permission instanceof Permission) {
-            jtalksPermission = (Permission) permission;
-        } else {
-            jtalksPermission = getPermission(permission);
+        if (permission == ProfilePermission.EDIT_OWN_PROFILE &&
+                ((JCUser) authentication.getPrincipal()).getId() != id) {
+            return false;
         }
+        JtalksPermission jtalksPermission = permission instanceof Permission ?
+                (JtalksPermission) permission : getPermission(permission);
+        ObjectIdentity objectIdentity = aclUtil.createIdentity(id, targetType);
         Sid sid = sidFactory.createPrincipal(authentication);
         List<AccessControlEntry> aces;
         List<GroupAce> controlEntries;
 
         try {
             aces = ExtendedMutableAcl.castAndCreate(mutableAclService.readAclById(objectIdentity)).getEntries();
-            controlEntries = aclManager.getGroupPermissionsOn(objectIdentity);
+            controlEntries = aclManager.getGroupPermissionsFilteredByPermissionOn(objectIdentity, jtalksPermission);
         } catch (NotFoundException nfe) {
             aces = new ArrayList<>();
             controlEntries = new ArrayList<>();
         }
-
-        if (permission == ProfilePermission.EDIT_OWN_PROFILE &&
-                ((JCUser) authentication.getPrincipal()).getId() != id) {
-            return false;
+        if (jtalksPermission instanceof ProfilePermission
+                && authentication.getPrincipal() instanceof JCUser){
+            if (isRestrictedPersonalPermission(authentication, jtalksPermission)) return false;
+            else if (isAllowedPersonalPermission(authentication, jtalksPermission)) return true;
         }
-
         if (isRestrictedForSid(sid, aces, jtalksPermission) ||
-                isRestrictedForGroup(controlEntries, authentication, jtalksPermission) ||
-                isRestrictedPersonalPermission(authentication, jtalksPermission)) {
+                isRestrictedForGroup(controlEntries, authentication, jtalksPermission)) {
             return false;
         } else if (isAllowedForSid(sid, aces, jtalksPermission) ||
-                isAllowedForGroup(controlEntries, authentication, jtalksPermission) ||
-                isAllowedPersonalPermission(authentication, jtalksPermission)) {
+                isAllowedForGroup(controlEntries, authentication, jtalksPermission)) {
             return true;
         }
-        return result;
+        return false;
     }
 
     /**
@@ -248,9 +236,9 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      */
     private boolean isGrantedForSid(Sid sid, AccessControlEntry ace,
                                     Permission permission, boolean isCheckAllowedGrant) {
-        return ((UniversalSid)sid).getSidId().equals(((UniversalSid)ace.getSid()).getSidId())
+        return ace.isGranting() == isCheckAllowedGrant
                 && permission.equals(ace.getPermission())
-                && (ace.isGranting() == isCheckAllowedGrant);
+                && ((UniversalSid)sid).getSidId().equals(((UniversalSid)ace.getSid()).getSidId());
     }
 
     /**
@@ -265,7 +253,6 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      */
     private boolean isGrantedPersonalPermission(Authentication authentication, Permission permission,
                                                 boolean isCheckAllowedGrant) {
-        if (authentication.getPrincipal() instanceof JCUser) {
             JCUser storedUser = (JCUser) authentication.getPrincipal();
             // retriev user with replicated groups from EhCache
             JCUser actualUser = userDao.get(storedUser.getId());
@@ -290,7 +277,6 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
                     return true;
                 }
             }
-        }
         return false;
     }
 
@@ -340,11 +326,13 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
     private boolean isGrantedForGroup(List<GroupAce> controlEntries,
                                       Authentication authentication, Permission permission,
                                       boolean isCheckAllowedGrant) {
-        if (authentication.getPrincipal() instanceof JCUser) {
-            for (GroupAce ace : controlEntries) {
-                if (isGrantedForGroup(ace, authentication, permission, isCheckAllowedGrant)) {
-                    return true;
-                }
+        Object auth = authentication.getPrincipal();
+        if (!(auth instanceof JCUser)) return false;
+
+        List<Long> groupsIDs = ((JCUser) auth).getGroupsIDs();
+        for (GroupAce ace : controlEntries) {
+            if (groupsIDs.contains(ace.getGroupId())) {
+                if (isGrantedForGroup(ace, permission, isCheckAllowedGrant)) return true;
             }
         }
         return false;
@@ -355,26 +343,22 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      * group.
      *
      * @param ace                 entry with security information (for groups)
-     * @param authentication      authentication to check permission for it
      * @param permission          permission to check
      * @param isCheckAllowedGrant flag that indicates what type of grant need to
      *                            be checked  - 'allowed' (true) or 'restricted' (false)
      * @return <code>true</code> if this entry has specified <tt>permission</tt>
      *         and type of grant.
      */
-    private boolean isGrantedForGroup(GroupAce ace, Authentication authentication,
-                                      Permission permission, boolean isCheckAllowedGrant) {
+    private boolean isGrantedForGroup(GroupAce ace, Permission permission, boolean isCheckAllowedGrant) {
         Permission permissionToComapare = ace.getPermission();
         if (permissionToComapare == null) {
             permissionToComapare = pluginPermissionManager.findPluginsBranchPermissionByMask(ace.getPermissionMask());
         }
         return ace.isGranting() == isCheckAllowedGrant
-                && permission.equals(permissionToComapare)
-                && ace.getGroup(groupDao).getUsers().
-                contains(authentication.getPrincipal());
+                && permission.equals(permissionToComapare);
     }
 
-    private Permission getPermission(Object permission) {
+    private JtalksPermission getPermission(Object permission) {
         String permissionName = (String) permission;
 
         if ((permissionName).startsWith(GeneralPermission.class.getSimpleName())) {
