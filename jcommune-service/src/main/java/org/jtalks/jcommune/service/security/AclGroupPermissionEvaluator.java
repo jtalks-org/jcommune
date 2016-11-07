@@ -125,8 +125,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
             aces = new ArrayList<>();
             controlEntries = new ArrayList<>();
         }
-        if (jtalksPermission instanceof ProfilePermission
-                && authentication.getPrincipal() instanceof JCUser){
+        if (jtalksPermission instanceof ProfilePermission && authentication.getPrincipal() instanceof JCUser){
             if (isRestrictedPersonalPermission(authentication, jtalksPermission)) return false;
             else if (isAllowedPersonalPermission(authentication, jtalksPermission)) return true;
         }
