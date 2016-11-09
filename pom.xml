@@ -13,6 +13,7 @@
     <module>jcommune-view</module>
     <module>jcommune-plugins</module>
     <module>jcommune-plugin-api</module>
+    <module>jcommune-performance-tests</module>
   </modules>
 
   <dependencyManagement>
