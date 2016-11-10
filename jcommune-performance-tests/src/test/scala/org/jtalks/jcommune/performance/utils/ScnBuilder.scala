@@ -55,11 +55,7 @@ object ScnBuilder {
         exec(performLogin)
       }
       .exec(openForumMainPage(role))
-      .repeat(2) {
-        exec(
-          openBranch(role)
-        )
-      }
+      .exec(openBranch(role))
   }
 
   def scnOpenTopicPage(role: Role): ScenarioBuilder = {
@@ -69,11 +65,7 @@ object ScnBuilder {
       }
       .exec(openForumMainPage(role))
       .exec(openBranch(role))
-      .repeat(2) {
-        exec(
-          openRandomTopic(role)
-        )
-      }
+      .exec(openRandomTopic(role))
   }
 
   val httpProtocol = http
