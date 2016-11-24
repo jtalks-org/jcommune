@@ -30,10 +30,10 @@
   -->
   <appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
     <param name="File" value="${catalina.home}/logs/jcommune.log"/>
-    <param name="MaxFileSize" value="5MB"/>
+    <param name="MaxFileSize" value="40MB"/>
     <param name="Encoding" value="UTF-8"/>
     <!--How many old log files to keep-->
-    <param name="MaxBackupIndex" value="5"/>
+    <param name="MaxBackupIndex" value="15"/>
     <layout class="org.apache.log4j.EnhancedPatternLayout">
       <!--
       The username is set by MDC feature in a web filter. Therefore we have username logged even in guts
