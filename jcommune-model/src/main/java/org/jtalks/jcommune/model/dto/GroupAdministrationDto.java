@@ -26,6 +26,7 @@ import org.jtalks.jcommune.model.validation.annotations.Unique;
 
 public class GroupAdministrationDto {
     public static final int GROUP_NAME_MIN_LENGTH = 1;
+    private long id;
 
     @Length(min = GROUP_NAME_MIN_LENGTH, max = Group.GROUP_NAME_MAX_LENGTH, message = "{group.name.illegal_length}")
     @Unique(entity = Group.class, field = "name", message = "{group.already_exists}", ignoreCase = true)
@@ -35,12 +36,21 @@ public class GroupAdministrationDto {
     private String description;
 
     private long numberOfUsers;
+    private boolean editable;
 
     public GroupAdministrationDto(){}
 
     public GroupAdministrationDto(String name, int count) {
         setName(name);
         setNumberOfUsers(count);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -67,4 +77,10 @@ public class GroupAdministrationDto {
         this.numberOfUsers = numberOfUsers;
     }
 
+    public boolean isEditable() {
+        //TODO
+        // Implement logic that evaluates is group editable. Something like this:
+        // Arrays.asList("Administrators", "Registered Users", "Banned Users").contains(name)
+        return editable;
+    }
 }

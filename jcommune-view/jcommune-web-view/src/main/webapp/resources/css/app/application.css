@@ -1236,3 +1236,16 @@ pre.prettyprint {
 .grid-row {
     background-color: #ffffff !important;
 }
+
+.management-block {
+    display: none;
+    cursor: pointer;
+}
+
+.management-element {
+    opacity: 0.5;
+}
+
+.management-element:hover {
+    opacity: 1;
+}

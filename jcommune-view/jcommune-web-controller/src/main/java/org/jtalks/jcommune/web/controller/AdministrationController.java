@@ -269,7 +269,7 @@ public class AdministrationController {
      * @param groupDto {@link GroupAdministrationDto} populated in form
      * @return JsonResponse with JsonResponseStatus. SUCCESS if registration successful or FAIL if failed
      */
-    @RequestMapping(value = "/group/new", method = RequestMethod.POST)
+    @RequestMapping(value = "/group", method = RequestMethod.POST)
     @ResponseBody
     public JsonResponse createNewGroup(@Valid @RequestBody GroupAdministrationDto groupDto, BindingResult result) {
         checkForAdminPermissions();
