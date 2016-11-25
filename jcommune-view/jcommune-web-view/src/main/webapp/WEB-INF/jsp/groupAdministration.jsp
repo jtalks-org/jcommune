@@ -42,10 +42,17 @@
         </tr>
         </thead>
         <c:forEach var="group" items="${groups}">
-            <tr class="grid-row">
-                <td><c:out value="${group.name}"/></td>
-                <td><c:out value="${group.numberOfUsers}"/></td>
-            </tr>
+          <tr id='${group.id}' name='group-row' class="grid-row group-edit-row">
+            <td id="group-name"><c:out value="${group.name}"/></td>
+            <td><c:out value="${group.numberOfUsers}"/>
+              <c:if test="${group.editable}">
+                <div class="inline-block pull-right management-block">
+                  <span id='editGroup' class="icon-pencil management-element"></span>
+                </div>
+              </c:if>
+            </td>
+            <input id="group-description" type="hidden" value="${group.description}"/>
+          </tr>
         </c:forEach>
     </table>
 </div>

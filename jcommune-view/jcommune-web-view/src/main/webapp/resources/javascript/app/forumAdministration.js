@@ -29,7 +29,14 @@ $(function () {
 
     $("[id^=branchLabel]").on('click', showBranchEditDialog);
     $("[id^=newBranch]").on('click', showNewBranchDialog);
-    $("[id^=newGroup]").on('click', showGroupCreateDialog);
+    $("[id^=newGroup]").on('click', showGroupManagementDialog);
+    $("[id^=editGroup]").on('click', showGroupManagementDialog);
+    $("[name=group-row]").hover(
+        function () {
+            $(this).find('.management-block').show()},
+        function () {
+            $(this).find('.management-block').hide()}
+    );
 });
 
 /**
@@ -432,7 +439,7 @@ function addRestoreDefaultImageHandler(buttonId, defaultImageUrl, onSuccess) {
             });
             jDialog.closeDialog();
         };
-        
+
         var cancel = function () {
             createAdministrationDialog();
             return false;
@@ -558,13 +565,22 @@ function sendForumConfiguration(e) {
 };
 
 /**
- * Show dialog for create group.
- * 
+ * Show dialog for create or edit group.
+ *
  * @param event
  */
-function showGroupCreateDialog(event) {
+function showGroupManagementDialog(event) {
     event.preventDefault();
+    // Create a new group or edit an existing?
+    var editMode = $(this).attr('id') == "editGroup";
 
+    if (editMode){
+        // find row with group and extract all data that we need.
+        var groupRow = $(this).parents('[name=group-row]');
+        var groupId = groupRow.attr('id');
+        var groupName = groupRow.find('#group-name')[0].textContent;
+        var groupDescription = groupRow.find('#group-description').val();
+    }
     var bodyContent =
         Utils.createFormElement($labelGroupPlaceholderName, 'groupName', 'text', 'first dialog-input') +
         Utils.createFormElement($labelGroupPlaceholderDescription, 'groupDescription', 'text', 'dialog-input') +
@@ -576,7 +592,7 @@ function showGroupCreateDialog(event) {
 
     jDialog.createDialog({
         dialogId: 'groupCreateDialog',
-        title: $labelGroupPopUpTitle,
+        title: editMode ? $labelGroupEditTitle : $labelGroupCreateTitle,
         bodyContent: bodyContent,
         footerContent: footerContent,
         maxWidth: 350,
@@ -590,9 +606,11 @@ function showGroupCreateDialog(event) {
         }
     });
 
+    if (editMode) fillGroupManagementDialogFields(groupName, groupDescription);
+
     /**
-     * Handles submit request from groupCreateDialog by sending POST request, with params
-     * containing group name and description.
+     * Handles submit request from groupManagementDialog by sending POST or PUT request, with params
+     * containing group information.
      * 
      * @param event
      */
@@ -600,14 +618,15 @@ function showGroupCreateDialog(event) {
         event.preventDefault();
 
         var groupInformation = {};
+        groupInformation.id = groupId;
         groupInformation.name = jDialog.dialog.find('#groupName').val();
         groupInformation.description = jDialog.dialog.find('#groupDescription').val();
 
         jDialog.dialog.find('*').attr('disabled', true);
 
         $.ajax({
-            url: $root + '/group/new',
-            type: 'POST',
+            url: $root + '/group/' + (editMode ? groupId : ''),
+            type: editMode ? 'PUT' : 'POST',
             contentType: 'application/json',
             async: false,
             data: JSON.stringify(groupInformation),
@@ -633,5 +652,14 @@ function showGroupCreateDialog(event) {
                 });
             }
         });
+    }
+
+    /**
+     *  When groupManagementDialog in 'edit group' mode this method fills up
+     *  the fields in this dialog.
+     */
+    function fillGroupManagementDialogFields(name, description) {
+        jDialog.dialog.find('#groupName').val(name);
+        jDialog.dialog.find('#groupDescription').val(description);
     }
 }

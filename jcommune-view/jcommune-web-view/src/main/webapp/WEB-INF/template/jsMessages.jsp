@@ -196,4 +196,5 @@ $labelUserGroupDeleteError = '<spring:message code="label.user.group.delete.erro
 $labelUserGroupsNoMatches = '<spring:message code="label.user.groups.no.matches" htmlEscape="true"/>';
 $labelGroupPlaceholderName = '<spring:message code="label.group.placeholder.name" htmlEscape="true"/>';
 $labelGroupPlaceholderDescription = '<spring:message code="label.group.placeholder.description" htmlEscape="true"/>';
-$labelGroupPopUpTitle = '<spring:message code="label.group.pop-up.title" htmlEscape="true"/>';
+$labelGroupCreateTitle = '<spring:message code="label.group.create.title" htmlEscape="true"/>';
+$labelGroupEditTitle = '<spring:message code="label.group.edit.title" htmlEscape="true"/>';
