@@ -15,22 +15,21 @@
 package org.jtalks.jcommune.test
 
 import org.jtalks.common.model.entity.Component
-import org.jtalks.common.model.entity.Group
-import org.jtalks.common.model.permissions.GeneralPermission
-import org.jtalks.jcommune.test.model.User
 import org.jtalks.jcommune.test.service.ComponentService
 import org.jtalks.jcommune.test.service.GroupsService
 import org.jtalks.jcommune.test.utils.Groups
 import org.jtalks.jcommune.test.utils.Users
-import org.jtalks.jcommune.test.utils.exceptions.ValidationException
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.transaction.annotation.Transactional
+import spock.lang.Ignore
 import spock.lang.Specification
-import static io.qala.datagen.RandomShortApi.alphanumeric;
+
+import static org.jtalks.jcommune.service.security.AdministrationGroup.*
 
 /**
  * @author Oleg Tkachenko
@@ -51,70 +50,96 @@ class AdministrationControllerTest extends Specification {
         forum = componentService.createForumComponent()
     }
 
-    def 'must not be able to see group administration page if you are not admin'() {
-        given: 'User created without access and login'
-            def user = new User()
-            users.created(user);
-            def session = users.signIn(user);
-        when: 'get all groups with count of users'
-            groups.getGroupsWithCountOfUsers(session);
-        then:
-            thrown(WrongResponseException)
+    def 'user without admin rights cannot see group administration page'() {
+        given: 'user logged in but doesn`t have admin rights'
+            def session = users.signInAsRegisteredUser(forum)
+        when: 'user requests group administration page'
+            groups.showGroupAdministrationPage(session)
+        then: 'Access is denied'
+            thrown(AccessDeniedException)
     }
 
     def 'must not be able to see group administration page for not authenticated users'() {
-        given: 'User created and not login'
-            def user = new User()
-            users.created(user);
-        when: 'get all groups with count of users'
-            groups.getGroupsWithCountOfUsers(session);
-        then:
+        when: 'anonymous user requests group administration page'
+            groups.showGroupAdministrationPage(session = null)
+        then: 'The session is missing, perform login'
             thrown(MissingPropertyException)
     }
 
-    def 'must not be able to create group if you are not admin'() {
-        given: 'User created without access and login'
-            def user = new User()
-            users.created(user);
-            def session = users.signIn(user);
-        when: 'User creates group'
-            Group group = Groups.random()
-            groups.create(group,session)
-        then:
+    def 'user without admin rights cannot create groups'() {
+        given: 'user logged in but doesn`t have admin rights'
+            def session = users.signInAsRegisteredUser(forum)
+        when: 'User attempts to create group'
+            def groupDto = Groups.randomDto()
+            groups.create(groupDto, session)
+        then: 'Access is denied'
+            thrown(AccessDeniedException)
+    }
+
+    def 'only user with admin rights can create group'() {
+        given: 'User logged in and has admin rights'
+            def session = users.signInAsAdmin(forum)
+        when: 'User attempts to create group'
+            def groupDto = Groups.randomDto()
+            groups.create(groupDto,session)
+        then: 'Group is created'
+            groups.isExist(groupDto.name)
+    }
+
+    /**
+     * Next tests will be ignored since we don't have such logic.
+     * TODO: remove @Ignore when functionality of editing group will be added
+     */
+    @Ignore
+    def 'user without admin rights cannot edit groups'() {
+        given: 'user logged in but doesn`t have admin rights, random group created'
+            def session = users.signInAsRegisteredUser(forum)
+            def savedGroupId = groupsService.save(Groups.random())
+        when: 'User attempts to edit an existing group'
+            def groupDto = Groups.randomDto(id: savedGroupId)
+            groups.edit(groupDto, session)
+        then: 'Access is denied'
+            thrown(AccessDeniedException)
+    }
+
+    @Ignore
+    def 'only user with admin rights can edit editable group'() {
+        given: 'User logged in and has admin rights, random group created'
+            def session = users.signInAsAdmin(forum)
+            def savedGroupId = groupsService.save(Groups.random())
+        when: 'User attempts to edit an existing editable group'
+            def groupDto = Groups.randomDto(id: savedGroupId)
+            groups.edit(groupDto, session)
+        then: 'Group successfully edited'
+            groups.isExist(groupDto.name)
+            savedGroupId == groupsService.getIdByName(groupDto.name)
+    }
+
+    @Ignore
+    def 'must not be able to edit not existing group'() {
+        given: 'User logged in and has admin rights, random group created'
+            def session = users.signInAsAdmin(forum)
+            def savedGroupId = groupsService.save(Groups.random())
+        when: 'User attempts to edit not existing group'
+            def groupDto = Groups.randomDto(id: savedGroupId + 1)
+            groups.edit(groupDto, session)
+        then: 'Group not found, error returned'
             thrown(WrongResponseException)
     }
 
-    def 'test create group success'() {
-        given: 'User created and have admin permission on forum'
-            def user = new User()
-            users.created(user).withPermissionOn(forum, GeneralPermission.ADMIN)
-            def session = users.signIn(user)
-        when: 'User creates group'
-            Group group = Groups.random()
-            groups.create(group,session)
-        then: 'Group is created'
-            groups.isExist(group.name)
-    }
-    def 'create group with invalid name or description should fail'() {
-        given: 'User created and have admin permission on forum'
-            def user = new User()
-            users.created(user).withPermissionOn(forum, GeneralPermission.ADMIN)
-            def session = users.signIn(user)
-        when: 'User creates group'
-            Group group = new Group()
-            group.name = groupName
-            group.description = groupDescription
-            groups.create(group, session)
-        then: 'Validation error occurs'
-            def e = thrown(ValidationException)
-            [errorMessage] == e.defaultErrorMessages
-        and: 'Group is not created'
-            groups.assertDoesNotExist(group)
-        where:
-            groupName           | groupDescription    |errorMessage                                                    | caseName
-            ''                  | alphanumeric(0,255) |"Group name length must be between 1 and 100 characters"        | 'Group name is empty'
-            '     '             | alphanumeric(0,255) |"Group name length must be between 1 and 100 characters"        | 'Group name contains only spaces'
-            alphanumeric(101)   | alphanumeric(0,255) |"Group name length must be between 1 and 100 characters"        | 'Group name too long'
-            alphanumeric(1,100) | alphanumeric(256)   |"Group description length must be between 0 and 255 characters" | 'Group description too long'
+    @Ignore
+    def 'must not be able to edit not editable group'() {
+        given: 'User logged in and has admin rights'
+            def session = users.signInAsAdmin(forum)
+        when: 'User attempts to edit not editable group'
+            def groupId = groupsService.getIdByName(notEditable.name)
+            def groupDto = Groups.randomDto(id: groupId)
+            groups.edit(groupDto, session)
+        then: 'Validation error'
+            thrown(WrongResponseException)
+        and: 'Group is not edited'
+            groups.assertDoesNotExist(groupDto.name)
+        where: 'notEditable - list of not editable group names'
+            notEditable << [ADMIN, USER, BANNED_USER]
     }
 }

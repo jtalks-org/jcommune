@@ -19,6 +19,7 @@ import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus
 import org.jtalks.jcommune.test.utils.exceptions.ProcessingException
 import org.jtalks.jcommune.test.utils.exceptions.ValidationException
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.validation.BindingResult
 
@@ -70,4 +71,8 @@ class Assert {
         }
     }
 
+    static def isAccessGranted(MvcResult mvcResult) {
+        def exception = mvcResult.getResolvedException()
+        if (exception != null && exception instanceof AccessDeniedException) throw exception
+    }
 }

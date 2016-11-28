@@ -16,11 +16,11 @@ package org.jtalks.jcommune.test.service;
 
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.jcommune.model.dao.GroupDao;
-import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.jtalks.jcommune.service.security.AdministrationGroup.*;
 
 /**
  * @author Mikhail Stryzhonok
@@ -31,9 +31,9 @@ public class GroupsService {
     private GroupDao groupDao;
 
     public void create() {
-        groupDao.saveOrUpdate(new Group(AdministrationGroup.ADMIN.getName()));
-        groupDao.saveOrUpdate(new Group(AdministrationGroup.BANNED_USER.getName()));
-        groupDao.saveOrUpdate(new Group(AdministrationGroup.USER.getName()));
+        groupDao.saveOrUpdate(new Group(ADMIN.getName()));
+        groupDao.saveOrUpdate(new Group(BANNED_USER.getName()));
+        groupDao.saveOrUpdate(new Group(USER.getName()));
     }
 
     public List<Long> getIdsByName(List<String> groups) {
@@ -46,5 +46,10 @@ public class GroupsService {
 
     public Long getIdByName(String groupName) {
         return groupDao.getGroupByName(groupName).getId();
+    }
+
+    public Long save(Group group){
+        groupDao.saveOrUpdate(group);
+        return getIdByName(group.getName());
     }
 }

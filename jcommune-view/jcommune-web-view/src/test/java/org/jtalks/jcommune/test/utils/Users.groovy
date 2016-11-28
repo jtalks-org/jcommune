@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.test.utils
 
+import org.jtalks.common.model.entity.Component
 import org.jtalks.common.model.permissions.GeneralPermission
 import org.jtalks.common.service.security.SecurityContextHolderFacade
 import org.jtalks.jcommune.model.dao.GroupDao
@@ -199,9 +200,21 @@ abstract class Users {
         assertThat(userGroups, not(hasItem(group)))
     }
 
-    def signInAsAdmin() {
+    HttpSession signInAsAdmin() {
         def adminUser = new User()
         created(adminUser).withPermissionOn(componentService.createForumComponent(), GeneralPermission.ADMIN)
         signIn(adminUser)
+    }
+
+    HttpSession signInAsAdmin(Component forum) {
+        def adminUser = User.newInstance()
+        created(adminUser).withPermissionOn(forum, GeneralPermission.ADMIN)
+        signIn(adminUser)
+    }
+
+    HttpSession signInAsRegisteredUser(Component forum) {
+        def user = User.newInstance()
+        created(user).withPermissionOn(forum, GeneralPermission.READ)
+        signIn(user)
     }
 }
