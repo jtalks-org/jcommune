@@ -232,11 +232,6 @@
         <version>2.4.3</version>
       </dependency>
       <dependency>
-        <groupId>net.sf.ehcache</groupId>
-        <artifactId>ehcache-jgroupsreplication</artifactId>
-        <version>1.5</version>
-      </dependency>
-      <dependency>
         <groupId>org.springframework.retry</groupId>
         <artifactId>spring-retry</artifactId>
         <version>1.1.2.RELEASE</version>

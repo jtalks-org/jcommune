@@ -20,13 +20,6 @@
     <!--Contains replicating caches which are synchronized between the application components-->
 
     <diskStore path="java.io.tmpdir"/>
-
-    <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
-                                     properties="connect=UDP(mcast_addr=235.0.0.1;mcast_port=45567;):PING:
-                    MERGE2:FD_SOCK:VERIFY_SUSPECT:pbcast.NAKACK:UNICAST:pbcast.STABLE:
-                    FRAG:pbcast.GMS"
-                                     propertySeparator="::"/>
-
     <!-- enable ehcache monitoring -->
 <!--     <cacheManagerPeerListenerFactory -->
 <!--         class="org.terracotta.ehcachedx.monitor.probe.ProbePeerListenerFactory" -->
@@ -57,26 +50,14 @@
 
     <cache name="org.jtalks.common.model.entity.Section.branches" maxElementsInMemory="100"
            eternal="true" overflowToDisk="false" statistics="true">
-        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=false,
-                        replicateUpdates=true, replicateUpdatesViaCopy=false,
-                        replicateRemovals=true"/>
     </cache>
 
     <cache name="org.jtalks.common.model.entity.Group.users" maxElementsInMemory="100"
            eternal="true" overflowToDisk="false" statistics="true">
-        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=false,
-                        replicateUpdates=true, replicateUpdatesViaCopy=false,
-                        replicateRemovals=true"/>
     </cache>
 
     <cache name="org.jtalks.common.model.entity.User.groups" maxElementsInMemory="100"
            eternal="true" overflowToDisk="false" statistics="true">
-        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=false,
-                        replicateUpdates=true, replicateUpdatesViaCopy=false,
-                        replicateRemovals=true"/>
     </cache>
 
     <cache name="org.jtalks.EHCOMMON"
@@ -84,9 +65,5 @@
            eternal="true"
            overflowToDisk="false"
            statistics="true">
-        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=false,
-                        replicateUpdates=true, replicateUpdatesViaCopy=false,
-                        replicateRemovals=true"/>
     </cache>
 </ehcache>
