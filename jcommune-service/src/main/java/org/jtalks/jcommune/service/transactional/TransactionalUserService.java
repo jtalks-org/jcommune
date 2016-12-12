@@ -294,7 +294,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    @Scheduled(cron = "0 * * * * *") // cron expression: invoke every hour at :00 min, e.g. 11:00, 12:00 and so on
+//  Temporarily disabled. Until we find the bug due to which activated users become not activated.
+//    @Scheduled(cron = "0 * * * * *") // cron expression: invoke every hour at :00 min, e.g. 11:00, 12:00 and so on
     public void deleteUnactivatedAccountsByTimer() {
         DateTime today = new DateTime();
         for (JCUser user : this.getDao().getNonActivatedUsers()) {
