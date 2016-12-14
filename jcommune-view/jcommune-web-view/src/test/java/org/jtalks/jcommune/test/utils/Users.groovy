@@ -113,6 +113,15 @@ abstract class Users {
         userDao.flush()
     }
 
+    User randomNotActivatedUser() {
+        User user = new User()
+        def toCreate = new JCUser(user.username, user.email, encryptionService.encryptPassword(user.password))
+        toCreate.enabled = false //it is not necessary, only to make sense
+        userDao.saveOrUpdate(toCreate)
+        userDao.flush()
+        return dtoFrom(toCreate)
+    }
+
     def setAuthentication(JCUser user) {
         def token = new UsernamePasswordAuthenticationToken(user.username, user.password)
         token.details = user
@@ -189,7 +198,7 @@ abstract class Users {
     }
 
     void assertUserInGroup(User user, long groupID) {
-        def userGroups = userDao.getByEmail(user.email).groups
+        def userGroups = userDao.getByUsername(user.username).groups
         def group = groupDao.get(groupID)
         assertThat(userGroups, hasItem(group))
     }
@@ -216,5 +225,13 @@ abstract class Users {
         def user = User.newInstance()
         created(user).withPermissionOn(forum, GeneralPermission.READ)
         signIn(user)
+    }
+
+    User dtoFrom(JCUser common){
+        User dto = new User()
+        dto.uuid = common.uuid
+        dto.username = common.username
+        dto.email = common.email
+        return dto
     }
 }

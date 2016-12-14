@@ -326,33 +326,28 @@ public class UserControllerTest {
 
     @Test
     public void testActivateAccount() throws Exception {
-
         JCUser user = new JCUser("username", "password", null);
         user.setPassword("password");
         when(userService.getByUuid(USER_NAME)).thenReturn(user);
         String viewName = userController.activateAccount(USER_NAME, request, response);
-        verify(userService, times(1)).activateAccount(USER_NAME);
+        verify(authenticator, times(1)).activateAccount(user.getUuid());
         verify(userService, times(1)).loginUser(any(LoginUserDto.class), any(MutableHttpRequest.class), eq(response));
         assertEquals("redirect:/", viewName);
     }
 
     @Test
     public void testActivateAccountFail() throws Exception {
-        doThrow(new NotFoundException()).when(userService).activateAccount(anyString());
-
+        doThrow(new NotFoundException()).when(userService).getByUuid(anyString());
         String viewName = userController.activateAccount(USER_NAME, request, response);
-
         assertEquals("errors/activationExpired", viewName);
     }
 
     @Test
     public void testActivateAccountAgain() throws Exception {
-
         JCUser user = new JCUser("username", "password", null);
         user.setEnabled(true);
         when(userService.getByUuid(USER_NAME)).thenReturn(user);
-        doThrow(new UserTriesActivatingAccountAgainException()).when(userService).activateAccount(anyString());
-
+        doThrow(new UserTriesActivatingAccountAgainException()).when(authenticator).activateAccount(anyString());
         String viewName = userController.activateAccount(USER_NAME, request, response);
         assertEquals("redirect:/", viewName);
     }

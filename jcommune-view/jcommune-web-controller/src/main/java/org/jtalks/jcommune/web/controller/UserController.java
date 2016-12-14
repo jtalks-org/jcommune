@@ -353,8 +353,8 @@ public class UserController {
     public String activateAccount(@PathVariable String uuid, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         try {
-            userService.activateAccount(uuid);
             JCUser user = userService.getByUuid(uuid);
+            authenticator.activateAccount(user.getUuid());
             MutableHttpRequest wrappedRequest = new MutableHttpRequest(request);
             wrappedRequest.addParameter(AbstractRememberMeServices.DEFAULT_PARAMETER, "true");
             LoginUserDto loginUserDto = new LoginUserDto(user.getUsername(), user.getPassword(), true, getClientIpAddress(request));

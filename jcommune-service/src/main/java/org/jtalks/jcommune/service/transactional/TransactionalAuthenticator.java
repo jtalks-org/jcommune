@@ -23,23 +23,25 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.core.AuthenticationPlugin;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.PluginService;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.util.AuthenticationStatus;
+import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.Advised;
@@ -61,7 +63,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import org.jtalks.jcommune.model.dto.LoginUserDto;
 
 /**
  * Serves for authentication and registration user.
@@ -344,6 +345,37 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         }
 
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void activateAccount(String uuid) throws NotFoundException, UserTriesActivatingAccountAgainException {
+        JCUser user = this.getDao().getByUuid(uuid);
+        if (user == null) {
+            LOGGER.warn("Could not activate user with UUID[{}] because it doesn't exist. Either it was removed from DB "
+                    + "because too much time passed between registration and activation, or there is an error in link"
+                    + ", might be possible the user searches for vulnerabilities in the forum.", uuid);
+            throw new NotFoundException();
+        } else if (!user.isEnabled()) {
+            Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
+            user.addGroup(group);
+            user.setEnabled(true);
+            this.getDao().saveOrUpdate(user);
+            activateByPlugin(user.getUsername());
+            LOGGER.info("User [{}] successfully activated", user.getUsername());
+        } else {
+            LOGGER.warn("User [{}] tried to activate his account again, but that's impossible. Either he clicked the " +
+                    "link again, or someone looks for vulnerabilities in the forum.", user.getUsername());
+            throw new UserTriesActivatingAccountAgainException();
+        }
+    }
+
+
+    private void activateByPlugin(String username) {
+        AuthenticationPlugin authPlugin = (AuthenticationPlugin) pluginLoader.getPluginByClassName(AuthenticationPlugin.class);
+        if (authPlugin != null && authPlugin.isEnabled()) authPlugin.activate(username);
     }
 
     /**

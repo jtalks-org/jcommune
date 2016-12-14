@@ -117,6 +117,14 @@ public class PoulpeAuthPlugin extends StatefullPlugin
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void activate(String username){
+        service.activate(username);
+    }
+
     @Override
     public boolean supportsJCommuneVersion(String version) {
         return true;

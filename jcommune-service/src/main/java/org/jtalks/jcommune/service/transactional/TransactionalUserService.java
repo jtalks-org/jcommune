@@ -257,30 +257,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      * {@inheritDoc}
      */
     @Override
-    public void activateAccount(String uuid) throws NotFoundException, UserTriesActivatingAccountAgainException {
-        JCUser user = this.getDao().getByUuid(uuid);
-        if (user == null) {
-            LOGGER.info("Could not activate user with UUID[{}] because it doesn't exist. Either it was removed from DB "
-                    + "because too much time passed between registration and activation, or there is an error in link"
-                    + ", might be possible the user searches for vulnerabilities in the forum.", uuid);
-            throw new NotFoundException();
-        } else if (!user.isEnabled()) {
-            Group group = groupDao.getGroupByName(AdministrationGroup.USER.getName());
-            user.addGroup(group);
-            user.setEnabled(true);
-            this.getDao().saveOrUpdate(user);
-            LOGGER.info("User [{}] successfully activated", user.getUsername());
-        } else {
-            LOGGER.info("User [{}] tried to activate his account again, but that's impossible. Either he clicked the " +
-                    "link again, or someone looks for vulnerabilities in the forum.", user.getUsername());
-            throw new UserTriesActivatingAccountAgainException();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public JCUser getByUuid(String uuid) throws NotFoundException {
         JCUser user = this.getDao().getByUuid(uuid);
         if (user == null) {

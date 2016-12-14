@@ -21,6 +21,7 @@ import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic
  * @author Mikhail Stryzhonok
  */
 class User {
+    String uuid = ""
     String username = randomAlphabetic(25)
     String email = randomAlphabetic(40) + "@sample.ru"
     String password = randomAlphabetic(50)

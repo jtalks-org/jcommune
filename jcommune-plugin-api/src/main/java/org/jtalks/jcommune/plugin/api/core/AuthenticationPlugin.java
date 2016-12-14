@@ -44,4 +44,15 @@ public interface AuthenticationPlugin extends Plugin {
      */
     Map<String, String> authenticate(String login, String password)
             throws UnexpectedErrorException, NoConnectionException;
+
+    /**
+     * Performs user activation by username. On the registration stage two copies
+     * of user has been created. One user in jcommune and the other in the Poulpe
+     * and each user have unique UUID. So we can't use UUID as universal key to
+     * access to the user in both databases. When user tries to activate account we
+     * use UUID to activate account in jcommune and username to activate in poulpe.
+     *
+     * @param username username
+     */
+    void activate(String username);
 }

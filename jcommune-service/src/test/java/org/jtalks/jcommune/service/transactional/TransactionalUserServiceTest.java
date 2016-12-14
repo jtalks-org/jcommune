@@ -35,12 +35,10 @@ import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
-import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
@@ -66,7 +64,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionContaining.hasItems;
 import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.matches;
@@ -403,49 +400,6 @@ public class TransactionalUserServiceTest {
             // ensure db modification haven't been done if mailing failed
             verify(userDao, never()).saveOrUpdate(Matchers.<JCUser>any());
         }
-    }
-
-    @Test
-    public void activateAccountShouldEnableUser() throws Exception {
-        JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        when(userDao.getByUuid(user.getUuid())).thenReturn(user);
-        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(new Group());
-
-        userService.activateAccount(user.getUuid());
-        assertTrue(user.isEnabled());
-    }
-
-    @Test
-    public void activateAccountShouldAddUserToRegisteredUsersGroup() throws Exception {
-        JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        when(userDao.getByUuid(user.getUuid())).thenReturn(user);
-        Group registeredUsersGroup = new Group();
-        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(registeredUsersGroup);
-
-        userService.activateAccount(user.getUuid());
-        assertTrue(user.getGroups().contains(registeredUsersGroup));
-    }
-
-    @Test(expectedExceptions = NotFoundException.class)
-    public void testActivateNotFoundAccountTest() throws NotFoundException, UserTriesActivatingAccountAgainException {
-        when(userDao.getByUsername(USERNAME)).thenReturn(null);
-
-        userService.activateAccount(USERNAME);
-    }
-
-    @Test(expectedExceptions = UserTriesActivatingAccountAgainException.class)
-    public void testActivateAccountAlreadyEnabled() throws NotFoundException, UserTriesActivatingAccountAgainException {
-        JCUser user = new JCUser(USERNAME, EMAIL, PASSWORD);
-        user.setEnabled(true);
-        when(userDao.getByUuid(user.getUuid())).thenReturn(user);
-        Group group = new Group();
-        when(groupDao.getGroupByName(AdministrationGroup.USER.getName())).thenReturn(group);
-
-        userService.activateAccount(user.getUuid());
-
-        assertTrue(user.isEnabled());
-        verify(groupDao, never()).saveOrUpdate(any(Group.class));
-        assertFalse(group.getUsers().contains(user));
     }
 
     @Test
