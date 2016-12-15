@@ -14,6 +14,9 @@
  */
 package org.jtalks.jcommune.service.security;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Elements contains IDs predefined user groups.
  * More information see in V21__Add_predefined_groups.sql migration.
@@ -36,6 +39,14 @@ public enum AdministrationGroup {
 
     private String name;
 
+    public static final List<String> PREDEFINED_GROUP_NAMES = new ArrayList<>();
+
+    static {
+        for (AdministrationGroup group : values()) {
+            PREDEFINED_GROUP_NAMES.add(group.getName());
+        }
+    }
+
     /**
      * @param name group database name, hardcoded in initial SQL migrations
      */
@@ -48,5 +59,12 @@ public enum AdministrationGroup {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * @return true if provided name is the one from pre-defined groups
+     */
+    public static boolean isPredefinedGroup(String groupName) {
+        return PREDEFINED_GROUP_NAMES.contains(groupName);
     }
 }

@@ -26,10 +26,14 @@ import org.jtalks.jcommune.model.validation.annotations.Unique;
 
 public class GroupAdministrationDto {
     public static final int GROUP_NAME_MIN_LENGTH = 1;
-    private long id;
+
+    /**
+     * Contains org.jtalks.common.model.entity.Group.id in case of group modification.
+     * Contains null if new group should be created.
+     */
+    private Long id;
 
     @Length(min = GROUP_NAME_MIN_LENGTH, max = Group.GROUP_NAME_MAX_LENGTH, message = "{group.name.illegal_length}")
-    @Unique(entity = Group.class, field = "name", message = "{group.already_exists}", ignoreCase = true)
     private String name;
 
     @Length(max = Group.GROUP_DESCRIPTION_MAX_LENGTH, message = "{group.description.illegal_length}")
@@ -45,11 +49,18 @@ public class GroupAdministrationDto {
         setNumberOfUsers(count);
     }
 
-    public long getId() {
+    public GroupAdministrationDto(Long id, String name, String description, int count) {
+        setId(id);
+        setName(name);
+        setDescription(description);
+        setNumberOfUsers(count);
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -82,5 +93,19 @@ public class GroupAdministrationDto {
         // Implement logic that evaluates is group editable. Something like this:
         // Arrays.asList("Administrators", "Registered Users", "Banned Users").contains(name)
         return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+
+    /**
+     * Copy group name and description to the provided Group.
+     * @return modified group
+     */
+    public Group fillEntity(Group group) {
+        group.setName(name);
+        group.setDescription(description);
+        return group;
     }
 }

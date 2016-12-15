@@ -88,9 +88,7 @@ class AdministrationControllerTest extends Specification {
 
     /**
      * Next tests will be ignored since we don't have such logic.
-     * TODO: remove @Ignore when functionality of editing group will be added
      */
-    @Ignore
     def 'user without admin rights cannot edit groups'() {
         given: 'user logged in but doesn`t have admin rights, random group created'
             def session = users.signInAsRegisteredUser(forum)
@@ -102,7 +100,6 @@ class AdministrationControllerTest extends Specification {
             thrown(AccessDeniedException)
     }
 
-    @Ignore
     def 'only user with admin rights can edit editable group'() {
         given: 'User logged in and has admin rights, random group created'
             def session = users.signInAsAdmin(forum)
@@ -115,7 +112,6 @@ class AdministrationControllerTest extends Specification {
             savedGroupId == groupsService.getIdByName(groupDto.name)
     }
 
-    @Ignore
     def 'must not be able to edit not existing group'() {
         given: 'User logged in and has admin rights, random group created'
             def session = users.signInAsAdmin(forum)
@@ -127,7 +123,6 @@ class AdministrationControllerTest extends Specification {
             thrown(WrongResponseException)
     }
 
-    @Ignore
     def 'must not be able to edit not editable group'() {
         given: 'User logged in and has admin rights'
             def session = users.signInAsAdmin(forum)
