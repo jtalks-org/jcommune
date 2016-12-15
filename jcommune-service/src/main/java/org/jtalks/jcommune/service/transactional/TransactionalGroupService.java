@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.service.transactional;
 
+import com.google.common.collect.Sets;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.acl.AclManager;
@@ -21,20 +22,25 @@ import org.jtalks.common.security.acl.sids.UserGroupSid;
 import org.jtalks.common.security.acl.sids.UserSid;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.common.service.transactional.AbstractTransactionalEntityService;
+import org.jtalks.common.validation.ValidationError;
+import org.jtalks.common.validation.ValidationException;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import org.jtalks.jcommune.model.dto.SecurityGroupList;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.service.GroupService;
+import org.jtalks.jcommune.service.exceptions.OperationIsNotAllowedException;
+import org.jtalks.jcommune.service.security.AdministrationGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.javatalks.utils.general.Assert;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * @author alexander afanasiev
@@ -45,6 +51,7 @@ public class TransactionalGroupService extends AbstractTransactionalEntityServic
 
     private final AclManager manager;
     private final UserDao userDao;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     
     /**
      * Create an instance of entity based service
@@ -130,7 +137,47 @@ public class TransactionalGroupService extends AbstractTransactionalEntityServic
      * {@inheritDoc}
      */
     @Override
+    public void saveOrUpdate(GroupAdministrationDto dto) throws NotFoundException {
+        assertGroupNameUnique(dto);
+        Group group = dto.getId() != null ? dao.get(dto.getId()) : new Group();
+        if (group == null) {
+            throw new NotFoundException("Group with id " + dto.getId() + " is not found");
+        }
+        if (!isGroupEditable(group.getName())) {
+            logger.warn("Attempt to edit pre-defined usergoup {}", group.getName());
+            throw new OperationIsNotAllowedException("Pre-defined usergoup " + group.getName() + " is not editable");
+        }
+        dao.saveOrUpdate(dto.fillEntity(group));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<GroupAdministrationDto> getGroupNamesWithCountOfUsers() {
-        return dao.getGroupNamesWithCountOfUsers();
+        List<GroupAdministrationDto> groupNamesWithCountOfUsers = dao.getGroupNamesWithCountOfUsers();
+        setEditableFlag(groupNamesWithCountOfUsers);
+        return groupNamesWithCountOfUsers;
+    }
+
+    private void setEditableFlag(List<GroupAdministrationDto> groups) {
+        for (GroupAdministrationDto dto : groups) {
+            dto.setEditable(isGroupEditable(dto.getName()));
+        }
+    }
+
+    private boolean isGroupEditable(String groupName) {
+        return !AdministrationGroup.isPredefinedGroup(groupName);
+    }
+
+    /**
+     * Checks group name for uniqueness.
+     * @throws ValidationException if group name is already used
+     */
+    private void assertGroupNameUnique(GroupAdministrationDto dto) {
+        Group existingGroup = dao.getGroupByName(dto.getName());
+        if (!(existingGroup == null || (dto.getId() != null && existingGroup.getId() == dto.getId()))) {
+            throw new ValidationException(Sets.newHashSet((new ValidationError("name", "group.already_exists"))));
+        }
     }
 }

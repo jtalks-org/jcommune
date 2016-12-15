@@ -70,6 +70,16 @@ public interface GroupService extends EntityService<Group> {
     void saveGroup(Group selectedGroup);
 
     /**
+     * Save new group if id is null.
+     * Update group if id is not null.
+     *
+     * @param dto
+     * @throws NotFoundException
+     * @throws org.jtalks.common.validation.ValidationException in case of duplicate group name
+     */
+    void saveOrUpdate(GroupAdministrationDto dto) throws NotFoundException;
+
+    /**
      * @return list of GroupAdministrationDto
      */
     List<GroupAdministrationDto> getGroupNamesWithCountOfUsers();

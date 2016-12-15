@@ -16,34 +16,40 @@ package org.jtalks.jcommune.web.controller;
 
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.JtalksPermission;
+import org.jtalks.common.validation.ValidationError;
+import org.jtalks.common.validation.ValidationException;
 import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
+import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
-import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.GroupService;
 import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.BranchPermissionDto;
 import org.jtalks.jcommune.web.dto.GroupDto;
 import org.jtalks.jcommune.web.dto.PermissionGroupsDto;
-import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
-import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * @author Andrei Alikov
@@ -271,14 +277,17 @@ public class AdministrationController {
      */
     @RequestMapping(value = "/group", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse createNewGroup(@Valid @RequestBody GroupAdministrationDto groupDto, BindingResult result) {
-        checkForAdminPermissions();
-        if (result.hasFieldErrors() || result.hasGlobalErrors()) {
-            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
-        }
-        Group group = new Group(groupDto.getName(), groupDto.getDescription());
-        groupService.saveGroup(group);
-        return new JsonResponse(JsonResponseStatus.SUCCESS, null);
+    public JsonResponse createNewGroup(@Valid @RequestBody GroupAdministrationDto groupDto, BindingResult result, Locale locale) throws org.jtalks.common.service.exceptions.NotFoundException {
+        return saveOrUpdateGroup(groupDto, result, locale);
+    }
+
+    @RequestMapping(value = "/group/{groupId}", method = RequestMethod.PUT)
+    @ResponseBody
+    public JsonResponse editGroup(@Valid @RequestBody GroupAdministrationDto groupDto,
+                                  BindingResult result,
+                                  @PathVariable("groupId") Long groupId,
+                                  Locale locale) throws org.jtalks.common.service.exceptions.NotFoundException {
+        return saveOrUpdateGroup(groupDto, result, locale);
     }
 
     /**
@@ -297,5 +306,29 @@ public class AdministrationController {
     private void checkForAdminPermissions() {
         long forumId = componentService.getComponentOfForum().getId();
         componentService.checkPermissionsForComponent(forumId);
+    }
+
+    private JsonResponse saveOrUpdateGroup(@Valid @RequestBody GroupAdministrationDto groupDto, BindingResult result, Locale locale) throws org.jtalks.common.service.exceptions.NotFoundException {
+        checkForAdminPermissions();
+        if (result.hasFieldErrors() || result.hasGlobalErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
+        }
+        try {
+            groupService.saveOrUpdate(groupDto);
+        } catch (ValidationException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL, convertErrors(e.getErrors(), result.getObjectName(), locale));
+        }
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
+    private List<ObjectError> convertErrors(Set<ValidationError> errors, String objectName, Locale locale) {
+        List<ObjectError> objectErrors = new ArrayList<>();
+        for (ValidationError error : errors) {
+            objectErrors.add(new FieldError(objectName,
+                                            error.getFieldName(),
+                                            messageSource.getMessage(error.getErrorMessageCode(), null, locale)));
+
+        }
+        return objectErrors;
     }
 }
