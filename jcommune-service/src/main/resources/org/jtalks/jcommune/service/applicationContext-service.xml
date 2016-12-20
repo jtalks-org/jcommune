@@ -348,6 +348,7 @@
     <property name="postprocessors">
       <list>
         <ref local="bbCodeReviewProcessor"/>
+        <bean class="org.jtalks.jcommune.service.bb2htmlprocessors.UrlToLinkConvertPostProcessor"/>
         <ref local="bbForeignLinksPostprocessor"/>
       </list>
     </property>
