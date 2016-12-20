@@ -21,23 +21,24 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.core.AuthenticationPlugin;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
+import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.Authenticator;
 import org.jtalks.jcommune.service.PluginService;
-import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
-import org.jtalks.jcommune.plugin.api.PluginLoader;
-import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
+import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.mockito.Mock;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -60,11 +61,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.jtalks.jcommune.model.dto.LoginUserDto;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.refEq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 /**
@@ -482,6 +490,60 @@ public class TransactionalAuthenticatorTest {
 
         authenticator.register(registerUserDto);
         RegisterUserDto expectedRegisterUserDto = createRegisterUserDto("username", "password", "email", null);
+
+        assertReflectionEquals(expectedRegisterUserDto, registerUserDto);
+    }
+
+    @Test
+    public void userMustSetToNullPasswordAndPasswordConfirmFieldsWhenTheyAreDifferent() throws Exception {
+
+        Validator customValidator = new Validator() {
+            @Override
+            public boolean supports(Class<?> clazz) {
+                return true;
+            }
+
+            @Override
+            public void validate(Object target, Errors errors) {
+                errors.rejectValue("passwordConfirm", "", "Password and confirmation password do not match");
+            }
+        };
+        RegisterUserDto registerUserDto = createRegisterUserDto("username", "password", "email@mail.ru", null);
+        registerUserDto.setPasswordConfirm("wrongPassword");
+        EncryptionService realEncryptionService = new EncryptionService(new Md5PasswordEncoder());
+        ReflectionTestUtils.setField(authenticator, "encryptionService", realEncryptionService);
+        ReflectionTestUtils.setField(authenticator, "validator", customValidator);
+        when(pluginService.getRegistrationPlugins()).thenReturn(Collections.EMPTY_MAP);
+
+        authenticator.register(registerUserDto);
+        RegisterUserDto expectedRegisterUserDto = createRegisterUserDto("username", null, "email@mail.ru", null);
+
+        assertReflectionEquals(expectedRegisterUserDto, registerUserDto);
+    }
+
+    @Test
+    public void userMustRestorePasswordAndPasswordConfirmFieldsWhenTheyAreEquals() throws Exception {
+        Validator customValidator = new Validator() {
+            @Override
+            public boolean supports(Class<?> clazz) {
+                return true;
+            }
+
+            @Override
+            public void validate(Object target, Errors errors) {
+                errors.rejectValue("userDto.email", "", "An email format should be like mail@mail.ru");
+            }
+        };
+        RegisterUserDto registerUserDto = createRegisterUserDto("username", "password", "email", null);
+        registerUserDto.setPasswordConfirm("password");
+        EncryptionService realEncryptionService = new EncryptionService(new Md5PasswordEncoder());
+        ReflectionTestUtils.setField(authenticator, "encryptionService", realEncryptionService);
+        ReflectionTestUtils.setField(authenticator, "validator", customValidator);
+        when(pluginService.getRegistrationPlugins()).thenReturn(Collections.EMPTY_MAP);
+
+        authenticator.register(registerUserDto);
+        RegisterUserDto expectedRegisterUserDto = createRegisterUserDto("username", "password", "email", null);
+        expectedRegisterUserDto.setPasswordConfirm("password");
 
         assertReflectionEquals(expectedRegisterUserDto, registerUserDto);
     }
