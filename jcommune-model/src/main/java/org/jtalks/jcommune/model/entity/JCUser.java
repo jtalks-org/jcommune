@@ -380,7 +380,10 @@ public class JCUser extends User {
     }
 
     /**
-     * Creates copy of user needed in plugins.
+     * Creates copy of user needed in plugins. Since TransactionalUserService.getCurrentUser() returns instance
+     * of JCUser stored in Security Context it is not possible to load contacts lazily, also User contacts are
+     * not used in this scope, so we just don't need it. But if you need user contacts you can setup fetch.MODE
+     * on contacts collection in JCUser.hbm.xml
      * @param user user to be copied
      */
     public static JCUser copyUser(JCUser user) {
@@ -411,12 +414,14 @@ public class JCUser extends User {
         copy.setAutosubscribe(user.isAutosubscribe());
         copy.setMentioningNotificationsEnabled(user.isMentioningNotificationsEnabled());
         copy.setSendPmNotification(user.isSendPmNotification());
-        for (UserContact contact : user.getContacts()) {
-            copy.getContacts().add(copyUserContact(contact, copy));
-        }
         copy.setAvatarLastModificationTime(user.getAvatarLastModificationTime());
         copy.setAllForumMarkedAsReadTime(user.getAllForumMarkedAsReadTime());
         copy.setUuid(user.getUuid());
+        /*
+        for (UserContact contact : user.getContacts()) {
+            copy.getContacts().add(copyUserContact(contact, copy));
+        }
+        */
         return copy;
     }
 

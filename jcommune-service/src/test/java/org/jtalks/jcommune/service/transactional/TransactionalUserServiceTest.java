@@ -22,6 +22,7 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
@@ -46,6 +47,8 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
@@ -117,6 +120,8 @@ public class TransactionalUserServiceTest {
     private PostDao postDao;
     @Mock
     private Authenticator authenticator;
+    @Mock
+    private SecurityContextFacade securityContextFacade;
 
 
     @BeforeMethod
@@ -133,7 +138,8 @@ public class TransactionalUserServiceTest {
                 mailService,
                 base64Wrapper,
                 encryptionService,
-                postDao, authenticator);
+                postDao, authenticator,
+                securityContextFacade);
     }
 
     @Test
@@ -421,21 +427,18 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void testGetCurrentUser() {
+    public void shouldReturnUserIfAuthenticated() {
         JCUser expected = user(USERNAME);
-
-        when(securityService.getCurrentUserUsername()).thenReturn(USERNAME);
-        when(userDao.getByUsername(USERNAME)).thenReturn(expected);
-
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(expected, null));
+        when(securityContextFacade.getContext()).thenReturn(SecurityContextHolder.getContext());
         JCUser actual = userService.getCurrentUser();
-
         assertEquals(actual, expected);
     }
 
     @Test
-    public void testGetCurrentUserForAnonymous() {
-        when(securityService.getCurrentUserUsername()).thenReturn(null);
-
+    public void shouldReturnAnonymousUserIfNotAuthenticated() {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(null, null));
+        when(securityContextFacade.getContext()).thenReturn(SecurityContextHolder.getContext());
         JCUser user = userService.getCurrentUser();
         assertNotNull(user);
         assertTrue(user instanceof AnonymousUser);

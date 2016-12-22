@@ -154,11 +154,13 @@
   <bean id="userService" parent="abstractUserService"
         class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
     <constructor-arg index="7" ref="authenticator"/>
+    <constructor-arg index="8" ref="securityContextFacade"/>
   </bean>
 
   <bean id="plainPasswordUserService" parent="abstractUserService"
         class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
     <constructor-arg index="7" ref="plainPasswordAuthenticator"/>
+    <constructor-arg index="8" ref="securityContextFacade"/>
   </bean>
 
   <bean id="abstractAuthenticator" abstract="true">

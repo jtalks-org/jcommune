@@ -18,9 +18,9 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.jtalks.common.model.dao.GroupDao;
-import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.security.SecurityService;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
@@ -38,17 +38,16 @@ import org.jtalks.jcommune.service.dto.UserInfoContainer;
 import org.jtalks.jcommune.service.dto.UserNotificationsContainer;
 import org.jtalks.jcommune.service.dto.UserSecurityContainer;
 import org.jtalks.jcommune.service.exceptions.MailingFailedException;
-import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException;
 import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
-import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -82,6 +81,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private final Base64Wrapper base64Wrapper;
     //Important, use for every password creation.
     private final EncryptionService encryptionService;
+    private final SecurityContextFacade securityContextFacade;
 
     /**
      * Create an instance of User entity based service
@@ -102,7 +102,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     Base64Wrapper base64Wrapper,
                                     EncryptionService encryptionService,
                                     PostDao postDao,
-                                    Authenticator authenticator) {
+                                    Authenticator authenticator,
+                                    SecurityContextFacade securityContextFacade) {
         super(dao);
         this.groupDao = groupDao;
         this.securityService = securityService;
@@ -111,6 +112,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.encryptionService = encryptionService;
         this.postDao = postDao;
         this.authenticator = authenticator;
+        this.securityContextFacade = securityContextFacade;
     }
 
     /**
@@ -155,13 +157,10 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public JCUser getCurrentUser() {
-        String name = securityService.getCurrentUserUsername();
-        if (name == null) {
-            return new AnonymousUser();
-        } else {
-            return this.getDao().getByUsername(name);
-        }
-
+        Authentication auth = securityContextFacade.getContext().getAuthentication();
+        if (auth == null) return null;
+        Object principal = auth.getPrincipal();
+        return principal instanceof JCUser ? (JCUser) principal : new AnonymousUser();
     }
 
     /**
