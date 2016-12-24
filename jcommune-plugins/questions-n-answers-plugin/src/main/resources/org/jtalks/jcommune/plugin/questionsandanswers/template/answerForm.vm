@@ -16,10 +16,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 *#
 #parse("org/jtalks/jcommune/jcommune-plugin-api/web/templates/bbeditor.vm")
 <head>
-  <meta name="description" content="${esc.html(${questionTitle})}">
+  <meta name="description" content="${HtmlEscape.escapeHtml5(${questionTitle})}">
   <title>
     ${propertiesHolder.allPagesTitlePrefix}
-    ${esc.html(${questionTitle})} - ${messages.getString("label.tips.edit.answer")}
+    ${HtmlEscape.escapeHtml5(${questionTitle})} - ${messages.getString("label.tips.edit.answer")}
   </title>
 </head>
 <body>
@@ -31,7 +31,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <form action="${request.contextPath}/topics/question/post/${postDto.id}/edit"
           method="POST" id="postDto" class="well anti-multipost submit-form" enctype="multipart/form-data">
         <input type="hidden" name="topicId" value="${postDto.topicId}"/>
-      #bbeditor(${messages.getString("label.tips.edit.answer")} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")} ${result})
+      #bbeditor(${messages.getString("label.tips.edit.answer")} "" "${HtmlEscape.escapeHtml5(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")} ${result})
     </form>
 
 
