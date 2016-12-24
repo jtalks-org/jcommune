@@ -297,10 +297,10 @@
     <constructor-arg ref="topicDao"/>
   </bean>
 
-  <bean id="securityService"
-        class="org.jtalks.common.security.SecurityService">
+  <bean id="securityService" class="org.jtalks.jcommune.service.security.SecurityService">
     <constructor-arg name="userDao" ref="userDao"/>
-    <constructor-arg ref="aclManager"/>
+    <constructor-arg name="aclManager" ref="aclManager"/>
+    <constructor-arg name="securityContextFacade" ref="securityContextFacade"/>
   </bean>
 
   <bean id="forumStatisticsService"

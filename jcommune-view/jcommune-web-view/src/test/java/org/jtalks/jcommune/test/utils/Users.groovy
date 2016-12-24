@@ -16,7 +16,7 @@ package org.jtalks.jcommune.test.utils
 
 import org.jtalks.common.model.entity.Component
 import org.jtalks.common.model.permissions.GeneralPermission
-import org.jtalks.common.service.security.SecurityContextHolderFacade
+import org.jtalks.common.service.security.SecurityContextFacade
 import org.jtalks.jcommune.model.dao.GroupDao
 import org.jtalks.jcommune.model.dao.UserDao
 import org.jtalks.jcommune.model.entity.JCUser
@@ -57,7 +57,7 @@ abstract class Users {
     @Autowired GroupDao groupDao
     @Autowired PermissionManager permissionManager
     @Autowired AuthenticationManager authenticationManager
-    @Autowired SecurityContextHolderFacade securityFacade
+    @Autowired SecurityContextFacade securityFacade
     @Autowired SessionAuthenticationStrategy sessionStrategy
     @Autowired EncryptionService encryptionService
     @Autowired UserDao userDao

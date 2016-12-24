@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.web.filters;
 
 import org.apache.commons.lang.StringUtils;
-import org.jtalks.common.security.SecurityService;
+import org.jtalks.jcommune.service.security.SecurityService;
 import org.jtalks.jcommune.web.logging.LoggerMdc;
 
 import javax.servlet.*;

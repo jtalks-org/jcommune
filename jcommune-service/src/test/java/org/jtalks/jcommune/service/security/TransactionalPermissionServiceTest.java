@@ -19,7 +19,7 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -41,7 +41,7 @@ import static org.testng.Assert.*;
 public class TransactionalPermissionServiceTest {
 
     @Mock
-    private SecurityContextHolderFacade contextFacade;
+    private SecurityContextFacade contextFacade;
     @Mock
     private AclGroupPermissionEvaluator aclEvaluator;
 

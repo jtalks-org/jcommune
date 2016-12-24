@@ -21,7 +21,7 @@ import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.dao.hibernate.GenericDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
@@ -88,7 +88,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
     private PluginLoader pluginLoader;
     private EncryptionService encryptionService;
     private AuthenticationManager authenticationManager;
-    private SecurityContextHolderFacade securityFacade;
+    private SecurityContextFacade securityFacade;
     private RememberMeServices rememberMeServices;
     private SessionAuthenticationStrategy sessionStrategy;
     private Validator validator;
@@ -115,7 +115,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                       MailService mailService,
                                       ImageService avatarService,
                                       PluginService pluginService,
-                                      SecurityContextHolderFacade securityFacade,
+                                      SecurityContextFacade securityFacade,
                                       RememberMeServices rememberMeServices,
                                       SessionAuthenticationStrategy sessionStrategy,
                                       Validator validator,

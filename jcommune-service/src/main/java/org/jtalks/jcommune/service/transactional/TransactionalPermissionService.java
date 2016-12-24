@@ -17,7 +17,7 @@ package org.jtalks.jcommune.service.transactional;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
@@ -25,10 +25,7 @@ import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
-import org.jtalks.jcommune.service.security.AclClassName;
-import org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator;
-import org.jtalks.jcommune.service.security.PermissionManager;
-import org.jtalks.jcommune.service.security.PermissionService;
+import org.jtalks.jcommune.service.security.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 
@@ -45,7 +42,7 @@ public class TransactionalPermissionService implements PermissionService {
      * {@code BranchPermissions.EDIT_OWN_POSTS}
      */
     private static final String PERMISSION_FULLNAME_PATTERN = "%s.%s";
-    private SecurityContextHolderFacade contextFacade;
+    private SecurityContextFacade contextFacade;
     private AclGroupPermissionEvaluator aclEvaluator;
     private PermissionManager permissionManager;
     private PluginLoader pluginLoader;
@@ -54,7 +51,7 @@ public class TransactionalPermissionService implements PermissionService {
      * @param contextFacade to get {@link Authentication} object from security context
      * @param aclEvaluator  to evaluate permissions
      */
-    public TransactionalPermissionService(SecurityContextHolderFacade contextFacade,
+    public TransactionalPermissionService(SecurityContextFacade contextFacade,
                                           AclGroupPermissionEvaluator aclEvaluator,
                                           PermissionManager permissionManager) {
         this.contextFacade = contextFacade;

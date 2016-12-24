@@ -19,7 +19,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
@@ -42,10 +41,10 @@ import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
+import org.jtalks.jcommune.service.security.SecurityService;
 import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
@@ -158,9 +157,10 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @Override
     public JCUser getCurrentUser() {
         Authentication auth = securityContextFacade.getContext().getAuthentication();
-        if (auth == null) return null;
+        if (auth == null) return new AnonymousUser();
         Object principal = auth.getPrincipal();
-        return principal instanceof JCUser ? (JCUser) principal : new AnonymousUser();
+        // Temporary solution to fix bug when getCurrentUser() returns JCUser detached from hibernate session.
+        return principal instanceof JCUser ? this.getDao().get(((JCUser) principal).getId()) : new AnonymousUser();
     }
 
     /**

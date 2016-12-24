@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.permissions.GeneralPermission;
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.dao.PrivateMessageDao;
 import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -27,6 +26,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.UserDataCacheService;
+import org.jtalks.jcommune.service.security.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

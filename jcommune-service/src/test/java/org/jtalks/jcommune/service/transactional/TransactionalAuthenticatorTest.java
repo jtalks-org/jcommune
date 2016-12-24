@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableMap;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
@@ -86,7 +86,7 @@ public class TransactionalAuthenticatorTest {
     @Mock
     private AuthenticationManager authenticationManager;
     @Mock
-    private SecurityContextHolderFacade securityFacade;
+    private SecurityContextFacade securityFacade;
     @Mock
     private SecurityContext securityContext;
     @Mock

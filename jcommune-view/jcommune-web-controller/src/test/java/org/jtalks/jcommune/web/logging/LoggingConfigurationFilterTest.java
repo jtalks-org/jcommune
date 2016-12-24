@@ -14,7 +14,7 @@
  */
 package org.jtalks.jcommune.web.logging;
 
-import org.jtalks.common.security.SecurityService;
+import org.jtalks.jcommune.service.security.SecurityService;
 import org.jtalks.jcommune.web.filters.LoggingConfigurationFilter;
 import org.mockito.Mock;
 import org.springframework.mock.web.MockFilterChain;

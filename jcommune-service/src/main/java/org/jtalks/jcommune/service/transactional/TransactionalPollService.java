@@ -18,12 +18,12 @@ import ch.lambdaj.function.closure.Closure1;
 import org.jtalks.common.model.dao.Crud;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.permissions.GeneralPermission;
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.Poll;
 import org.jtalks.jcommune.model.entity.PollItem;
 import org.jtalks.jcommune.service.PollService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
+import org.jtalks.jcommune.service.security.SecurityService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;

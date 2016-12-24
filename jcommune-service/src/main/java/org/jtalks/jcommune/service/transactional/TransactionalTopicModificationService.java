@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.transactional;
 
 import org.jtalks.common.model.permissions.GeneralPermission;
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.BranchDao;
 import org.jtalks.jcommune.model.dao.PostDao;
@@ -30,6 +29,7 @@ import org.jtalks.jcommune.plugin.api.service.PluginTopicModificationService;
 import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
+import org.jtalks.jcommune.service.security.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -38,7 +38,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -76,7 +75,7 @@ public class TransactionalTopicModificationService implements TopicModificationS
      * Create an instance of User entity based service.
      *
      * @param dao                   data access object, which should be able do all CRUD operations with topic entity
-     * @param securityService       {@link org.jtalks.common.security.SecurityService} for retrieving current user
+     * @param securityService       used for retrieving current user
      * @param branchDao             used for checking branch existence
      * @param notificationService   to send email notifications on topic updates to subscribed users
      * @param subscriptionService   for subscribing user on topic if notification enabled

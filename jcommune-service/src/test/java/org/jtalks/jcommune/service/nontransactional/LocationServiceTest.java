@@ -14,7 +14,6 @@
  */
 package org.jtalks.jcommune.service.nontransactional;
 
-import org.jtalks.common.security.SecurityService;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.Topic;

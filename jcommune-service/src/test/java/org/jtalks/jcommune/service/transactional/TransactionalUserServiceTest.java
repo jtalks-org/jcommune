@@ -15,14 +15,13 @@
 package org.jtalks.jcommune.service.transactional;
 
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.common.security.SecurityService;
-import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
+import org.jtalks.common.security.acl.AclManager;
 import org.jtalks.common.service.security.SecurityContextFacade;
+import org.jtalks.common.service.security.SecurityContextHolderFacade;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
@@ -40,6 +39,7 @@ import org.jtalks.jcommune.service.nontransactional.Base64Wrapper;
 import org.jtalks.jcommune.service.nontransactional.EncryptionService;
 import org.jtalks.jcommune.service.nontransactional.MailService;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
+import org.jtalks.jcommune.service.security.SecurityService;
 import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
@@ -48,7 +48,6 @@ import org.mockito.Mock;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.testng.annotations.BeforeMethod;
@@ -66,7 +65,6 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionContaining.hasItems;
-import static org.jtalks.jcommune.service.TestUtils.mockAclBuilder;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.matches;
@@ -102,14 +100,12 @@ public class TransactionalUserServiceTest {
     private static final String MENTIONING_MESSAGE_WHEN_USER_NOT_FOUND = "This post contains not notified %s mentioning " +
             "and notified %s mentioning";
 
-
     private UserService userService;
+    private SecurityContextFacade securityContextFacade;
     @Mock
     private UserDao userDao;
     @Mock
     private GroupDao groupDao;
-    @Mock
-    private SecurityService securityService;
     @Mock
     private MailService mailService;
     @Mock
@@ -121,16 +117,15 @@ public class TransactionalUserServiceTest {
     @Mock
     private Authenticator authenticator;
     @Mock
-    private SecurityContextFacade securityContextFacade;
-
+    private AclManager aclManager;
 
     @BeforeMethod
     public void setUp() throws Exception {
         initMocks(this);
         when(encryptionService.encryptPassword(PASSWORD))
                 .thenReturn(PASSWORD_MD5_HASH);
-        CompoundAclBuilder<User> aclBuilder = mockAclBuilder();
-        when(securityService.<User>createAclBuilder()).thenReturn(aclBuilder);
+        securityContextFacade = new SecurityContextHolderFacade();
+        SecurityService securityService = new SecurityService(userDao, aclManager, securityContextFacade);
         userService = new TransactionalUserService(
                 userDao,
                 groupDao,
@@ -163,7 +158,6 @@ public class TransactionalUserServiceTest {
     @Test
     public void editUserProfileShouldUpdateHimAndSaveInRepository() throws NotFoundException {
         JCUser user = user(USERNAME);
-        when(securityService.getCurrentUserUsername()).thenReturn(StringUtils.EMPTY);
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         when(encryptionService.encryptPassword(NEW_PASSWORD)).thenReturn(NEW_PASSWORD_MD5_HASH);
@@ -197,7 +191,6 @@ public class TransactionalUserServiceTest {
     @Test
     public void editUserProfileShouldNotUpdateOtherSettings() throws NotFoundException {
         JCUser user = user(USERNAME);
-        when(securityService.getCurrentUserUsername()).thenReturn(StringUtils.EMPTY);
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         when(encryptionService.encryptPassword(NEW_PASSWORD))
@@ -241,7 +234,6 @@ public class TransactionalUserServiceTest {
     @Test
     public void editUserProfileShouldNotChangePasswordToNull() throws NotFoundException {
         JCUser user = user(USERNAME);
-        when(securityService.getCurrentUserUsername()).thenReturn(StringUtils.EMPTY);
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(encryptionService.encryptPassword(null)).thenReturn(null);
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
@@ -325,7 +317,6 @@ public class TransactionalUserServiceTest {
     @Test
     public void testEditUserProfileSameEmail() throws Exception {
         JCUser user = user(USERNAME);
-        when(securityService.getCurrentUserUsername()).thenReturn("");
         when(userDao.getByUsername(anyString())).thenReturn(user);
         when(userDao.getByEmail(EMAIL)).thenReturn(null);
         when(userDao.isExist(USER_ID)).thenReturn(Boolean.TRUE);
@@ -427,21 +418,20 @@ public class TransactionalUserServiceTest {
     }
 
     @Test
-    public void shouldReturnUserIfAuthenticated() {
+    public void shouldReturnUserInfoIfAuthenticated() {
         JCUser expected = user(USERNAME);
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(expected, null));
-        when(securityContextFacade.getContext()).thenReturn(SecurityContextHolder.getContext());
+        securityContextFacade.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(expected, null));
+        when(userDao.get(anyLong())).thenReturn(expected);
         JCUser actual = userService.getCurrentUser();
         assertEquals(actual, expected);
     }
 
     @Test
     public void shouldReturnAnonymousUserIfNotAuthenticated() {
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(null, null));
-        when(securityContextFacade.getContext()).thenReturn(SecurityContextHolder.getContext());
+        securityContextFacade.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(null, null));
         JCUser user = userService.getCurrentUser();
         assertNotNull(user);
-        assertTrue(user instanceof AnonymousUser);
+        assertTrue(user.isAnonymous());
     }
 
     @Test

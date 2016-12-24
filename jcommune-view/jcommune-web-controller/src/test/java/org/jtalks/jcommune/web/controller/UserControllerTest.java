@@ -17,7 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.jtalks.common.model.entity.Component;
-import org.jtalks.common.service.security.SecurityContextHolderFacade;
+import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
@@ -94,7 +94,7 @@ public class UserControllerTest {
         groupService = mock(GroupService.class);
         retryTemplate = new RetryTemplate();
         retryTemplate.setRetryPolicy(new NeverRetryPolicy());
-        SecurityContextHolderFacade securityFacade = mock(SecurityContextHolderFacade.class);
+        SecurityContextFacade securityFacade = mock(SecurityContextFacade.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
         when(request.getHeader("X-FORWARDED-FOR")).thenReturn("192.168.1.1");
