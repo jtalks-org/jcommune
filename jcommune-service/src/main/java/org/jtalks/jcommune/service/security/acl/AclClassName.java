@@ -12,10 +12,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.security;
+
+package org.jtalks.jcommune.service.security.acl;
 
 /**
- * Contains acl class names that use by {@link org.jtalks.common.security.acl.TypeConvertingObjectIdentityGenerator}
+ * Contains acl class names that use by {@link TypeConvertingObjectIdentityGenerator}
  *
  * @author Elena Lepaeva
  */

@@ -19,7 +19,6 @@ import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
-import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
 import org.jtalks.jcommune.model.dao.SimplePageDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.SimplePage;
@@ -28,6 +27,7 @@ import org.jtalks.jcommune.service.dto.SimplePageInfoContainer;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
 import org.jtalks.jcommune.service.security.SecurityService;
+import org.jtalks.jcommune.service.security.acl.builders.CompoundAclBuilder;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -48,18 +48,11 @@ public class TransactionalSimplePageServiceTest {
     private static final String CONTENT = "content";
     private static final String PATH_NAME = "path_name";
 
-    @Mock
-    private SimplePageDao dao;
-
-    @Mock
-    private GroupDao groupDao;
-
-    @Mock
-    private SecurityService securityService;
-
+    @Mock private SimplePageDao dao;
+    @Mock private GroupDao groupDao;
+    @Mock private SecurityService securityService;
 
     private SimplePageService simplePageService;
-
     private CompoundAclBuilder aclBuilder;
 
     @BeforeMethod

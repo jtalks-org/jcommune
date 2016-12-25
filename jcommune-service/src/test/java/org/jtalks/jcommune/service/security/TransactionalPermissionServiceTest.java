@@ -23,6 +23,8 @@ import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.service.security.acl.AclClassName;
+import org.jtalks.jcommune.service.security.acl.AclGroupPermissionEvaluator;
 import org.jtalks.jcommune.service.transactional.TransactionalPermissionService;
 import org.mockito.Mock;
 import org.springframework.security.access.AccessDeniedException;

@@ -20,6 +20,8 @@ import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.Branch;
+import org.jtalks.jcommune.service.security.acl.AclClassName;
+import org.jtalks.jcommune.service.security.acl.AclGroupPermissionEvaluator;
 
 import java.util.List;
 

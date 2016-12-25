@@ -34,7 +34,7 @@
   </util:list>
 
   <!-- SELECT @@IDENTITY does not work with HSQL db-->
-  <bean id="aclService" class="org.jtalks.common.security.acl.JtalksMutableAcService">
+  <bean id="aclService" class="org.jtalks.jcommune.service.security.acl.JtalksMutableAcService">
     <constructor-arg ref="dataSource"/>
     <constructor-arg ref="lookupStrategy"/>
     <constructor-arg ref="aclCache"/>

@@ -24,17 +24,17 @@ import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
-import org.jtalks.common.security.acl.AclManager;
-import org.jtalks.common.security.acl.AclUtil;
-import org.jtalks.common.security.acl.GroupAce;
-import org.jtalks.common.security.acl.builders.AclBuilders;
-import org.jtalks.common.security.acl.sids.UniversalSid;
-import org.jtalks.common.security.acl.sids.UserSid;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dto.GroupsPermissions;
 import org.jtalks.jcommune.model.dto.PermissionChanges;
 import org.jtalks.jcommune.model.entity.AnonymousGroup;
 import org.jtalks.jcommune.plugin.api.PluginPermissionManager;
+import org.jtalks.jcommune.service.security.acl.AclManager;
+import org.jtalks.jcommune.service.security.acl.AclUtil;
+import org.jtalks.jcommune.service.security.acl.GroupAce;
+import org.jtalks.jcommune.service.security.acl.builders.AclBuilders;
+import org.jtalks.jcommune.service.security.acl.sids.UniversalSid;
+import org.jtalks.jcommune.service.security.acl.sids.UserSid;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
@@ -58,7 +58,7 @@ public class PermissionManager {
 
     /**
      * Constructs {@link org.jtalks.jcommune.service.security.PermissionManager} with given
-     * {@link org.jtalks.common.security.acl.AclManager} and {@link GroupDao}
+     * {@link AclManager} and {@link GroupDao}
      *
      * @param aclManager manager instance
      * @param groupDao   group dao instance
@@ -235,7 +235,7 @@ public class PermissionManager {
 
     /**
      * @param groupAce from which if of group should be extracted
-     * @return {@link org.jtalks.common.model.entity.Group} extracted from {@link org.jtalks.common.security.acl.GroupAce}
+     * @return {@link Group} extracted from {@link GroupAce}
      */
     private Group getGroup(GroupAce groupAce) {
         return groupDao.get(groupAce.getGroupId());

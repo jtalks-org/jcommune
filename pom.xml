@@ -50,11 +50,6 @@
         <artifactId>jtalks-common-service</artifactId>
         <version>${commonVersion}</version>
       </dependency>
-      <dependency>
-        <groupId>org.jtalks.common</groupId>
-        <artifactId>jtalks-common-security</artifactId>
-        <version>${commonVersion}</version>
-      </dependency>
       <!-- Hibernate -->
       <dependency>
         <groupId>org.hibernate</groupId>

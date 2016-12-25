@@ -18,12 +18,11 @@ package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.common.security.SecurityConstants;
-import org.jtalks.common.security.acl.AclManager;
-import org.jtalks.common.security.acl.builders.AclAction;
-import org.jtalks.common.security.acl.builders.AclBuilders;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.service.security.acl.AclManager;
+import org.jtalks.jcommune.service.security.acl.builders.AclAction;
+import org.jtalks.jcommune.service.security.acl.builders.AclBuilders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

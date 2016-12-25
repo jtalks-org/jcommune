@@ -18,7 +18,6 @@ package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.common.security.acl.JtalksPermissionFactory;
 import org.jtalks.jcommune.plugin.api.PluginsPermissionFactory;
 import org.springframework.security.acls.model.Permission;
 import org.testng.annotations.BeforeMethod;

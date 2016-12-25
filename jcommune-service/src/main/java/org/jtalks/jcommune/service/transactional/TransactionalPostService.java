@@ -32,7 +32,7 @@ import org.jtalks.jcommune.service.BranchLastPostService;
 import org.jtalks.jcommune.service.PostService;
 import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.security.AclClassName;
+import org.jtalks.jcommune.service.security.acl.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.jtalks.jcommune.service.security.SecurityService;
 import org.slf4j.Logger;

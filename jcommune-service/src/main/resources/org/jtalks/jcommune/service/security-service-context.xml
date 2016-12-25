@@ -41,7 +41,7 @@
   </bean>
 
   <!-- Evaluates hasPermission expression -->
-  <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.AclGroupPermissionEvaluator">
+  <bean id="aclGroupPermissionEvaluator" class="org.jtalks.jcommune.service.security.acl.AclGroupPermissionEvaluator">
     <!-- Link to actual ACL Service -->
     <constructor-arg name="aclManager" ref="aclManager"/>
     <constructor-arg name="aclUtil" ref="aclUtils"/>
@@ -50,13 +50,13 @@
     <constructor-arg name="userDao" ref="userDao"/>
     <constructor-arg name="pluginPermissionManager" ref="pluginPermissionManager"/>
   </bean>
-  <bean id="aclUtils" class="org.jtalks.common.security.acl.AclUtil">
+  <bean id="aclUtils" class="org.jtalks.jcommune.service.security.acl.AclUtil">
     <constructor-arg name="mutableAclService" ref="aclService"/>
     <property name="objectIdentityGenerator" ref="typeConvertingObjectIdentityGenerator"/>
   </bean>
 
   <bean id="typeConvertingObjectIdentityGenerator"
-        class="org.jtalks.common.security.acl.TypeConvertingObjectIdentityGenerator">
+        class="org.jtalks.jcommune.service.security.acl.TypeConvertingObjectIdentityGenerator">
     <property name="additionalConversionRules">
       <map>
         <entry key="org.jtalks.jcommune.model.entity.Branch" value="BRANCH"/>
@@ -74,7 +74,7 @@
   </bean>
 
   <!-- Retrieves, modifies and strores access control lists -->
-  <bean id="aclService" class="org.jtalks.common.security.acl.JtalksMutableAcService">
+  <bean id="aclService" class="org.jtalks.jcommune.service.security.acl.JtalksMutableAcService">
     <constructor-arg ref="dataSource"/>
     <constructor-arg ref="lookupStrategy"/>
     <constructor-arg ref="aclCache"/>
@@ -83,10 +83,10 @@
     <property name="sidFactory" ref="jtalksSidFactory"/>
   </bean>
 
-  <bean id="jtalksSidFactory" class="org.jtalks.common.security.acl.sids.JtalksSidFactory"/>
+  <bean id="jtalksSidFactory" class="org.jtalks.jcommune.service.security.acl.sids.JtalksSidFactory"/>
 
   <!-- Responsible for efficient retrieval of ACLs from database -->
-  <bean id="lookupStrategy" class="org.jtalks.common.security.acl.JtalksLookupStrategy">
+  <bean id="lookupStrategy" class="org.jtalks.jcommune.service.security.acl.JtalksLookupStrategy">
     <constructor-arg ref="dataSource"/>
     <constructor-arg ref="aclCache"/>
     <constructor-arg ref="aclAuthorizationStrategy"/>
@@ -98,7 +98,7 @@
   </bean>
 
   <!-- ACL permission factory -->
-  <bean name="jtalksPermissionFactory" class="org.jtalks.common.security.acl.JtalksPermissionFactory"
+  <bean name="jtalksPermissionFactory" class="org.jtalks.jcommune.service.security.JtalksPermissionFactory"
         init-method="init"/>
 
   <bean name="pluginPermissionFactory" class="org.jtalks.jcommune.plugin.api.PluginsPermissionFactory">
@@ -122,12 +122,12 @@
   </bean>
 
   <!-- Authorization for ACLs administration setup -->
-  <bean id="aclAuthorizationStrategy" class="org.jtalks.jcommune.service.security.AclAuthorizationStrategyImpl"/>
+  <bean id="aclAuthorizationStrategy" class="org.jtalks.jcommune.service.security.acl.AclAuthorizationStrategyImpl"/>
 
   <bean id="securityContextFacade"
         class="org.jtalks.common.service.security.SecurityContextHolderFacade"/>
 
-  <bean id="aclManager" class="org.jtalks.common.security.acl.AclManager">
+  <bean id="aclManager" class="org.jtalks.jcommune.service.security.acl.AclManager">
     <constructor-arg name="mutableAclService" ref="aclService"/>
     <property name="aclUtil" ref="aclUtils"/>
   </bean>

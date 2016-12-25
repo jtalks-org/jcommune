@@ -12,7 +12,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.security;
+
+package org.jtalks.jcommune.service.security.acl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,16 +27,11 @@ import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.GeneralPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
-import org.jtalks.common.security.acl.AclManager;
-import org.jtalks.common.security.acl.AclUtil;
-import org.jtalks.common.security.acl.ExtendedMutableAcl;
-import org.jtalks.common.security.acl.GroupAce;
-import org.jtalks.common.security.acl.sids.JtalksSidFactory;
-
-import org.jtalks.common.security.acl.sids.UniversalSid;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.plugin.api.PluginPermissionManager;
+import org.jtalks.jcommune.service.security.acl.sids.JtalksSidFactory;
+import org.jtalks.jcommune.service.security.acl.sids.UniversalSid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.PermissionEvaluator;
@@ -73,7 +69,7 @@ public class AclGroupPermissionEvaluator implements PermissionEvaluator {
      * @param sidFactory        factory to work with principals
      * @param mutableAclService for checking existing of sids
      */
-    public AclGroupPermissionEvaluator(@Nonnull org.jtalks.common.security.acl.AclManager aclManager,
+    public AclGroupPermissionEvaluator(@Nonnull AclManager aclManager,
                                        @Nonnull AclUtil aclUtil,
                                        @Nonnull JtalksSidFactory sidFactory,
                                        @Nonnull JdbcMutableAclService mutableAclService,

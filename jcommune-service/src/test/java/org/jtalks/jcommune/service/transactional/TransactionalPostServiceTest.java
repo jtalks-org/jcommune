@@ -32,7 +32,7 @@ import org.jtalks.jcommune.service.UserService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.nontransactional.MentionedUsers;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
-import org.jtalks.jcommune.service.security.AclClassName;
+import org.jtalks.jcommune.service.security.acl.AclClassName;
 import org.jtalks.jcommune.service.security.PermissionService;
 import org.jtalks.jcommune.service.security.SecurityService;
 import org.mockito.Matchers;

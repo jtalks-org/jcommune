@@ -26,6 +26,8 @@ import org.jtalks.jcommune.plugin.api.core.Plugin;
 import org.jtalks.jcommune.plugin.api.core.TopicPlugin;
 import org.jtalks.jcommune.plugin.api.filters.TypeFilter;
 import org.jtalks.jcommune.service.security.*;
+import org.jtalks.jcommune.service.security.acl.AclClassName;
+import org.jtalks.jcommune.service.security.acl.AclGroupPermissionEvaluator;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 

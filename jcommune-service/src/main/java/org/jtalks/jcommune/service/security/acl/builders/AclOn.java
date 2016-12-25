@@ -12,36 +12,30 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.service.security;
+
+package org.jtalks.jcommune.service.security.acl.builders;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.service.security.acl.AclUtil;
-import org.springframework.security.acls.model.ObjectIdentity;
-import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 
 import javax.annotation.Nonnull;
 
 /**
- * This implementation of {@link ObjectIdentityRetrievalStrategy}
- * is used by Spring security custom tags.
+ * A step while creating/modifying ACL structure to assign the permissions on some object identity (like branch, topic,
+ * post).
  *
- * @author Elena Lepaeva
+ * @author stanislav bashkirtsev
+ * @see AclTo
+ * @see AclFrom
+ * @see AclAction
+ * @see AclFlush
  */
-public class ObjectIdentityRetrievalStrategyImpl implements ObjectIdentityRetrievalStrategy {
-    private final AclUtil aclUtil;
-
+public interface AclOn {
     /**
-     * @param aclUtil utilities to work with Spring ACL
+     * This method states for what object the SID will get a permission. Object Identity (or secured object) is always
+     * some object SIDs can do something with, e.g. it can be a branch, or a topic, or a post, or anything else.
+     *
+     * @param objectIdentity the secured object to set permissions to make actions on it
+     * @return the next step of the chain - flushing the changes to the database
      */
-    public ObjectIdentityRetrievalStrategyImpl(@Nonnull AclUtil aclUtil) {
-        this.aclUtil = aclUtil;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ObjectIdentity getObjectIdentity(Object domainObject) {
-        return aclUtil.createIdentityFor((Entity) domainObject);
-    }
+    AclFlush on(@Nonnull Entity objectIdentity);
 }

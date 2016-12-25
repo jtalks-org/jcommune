@@ -17,7 +17,7 @@ package org.jtalks.jcommune.service;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.GeneralPermission;
-import org.jtalks.common.security.acl.builders.CompoundAclBuilder;
+import org.jtalks.jcommune.service.security.acl.builders.CompoundAclBuilder;
 import org.mockito.Mockito;
 
 import static org.mockito.Mockito.mock;

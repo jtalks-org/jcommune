@@ -24,16 +24,14 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.model.permissions.ProfilePermission;
-import org.jtalks.common.security.acl.AclUtil;
-import org.jtalks.common.security.acl.ExtendedMutableAcl;
-import org.jtalks.common.security.acl.GroupAce;
-import org.jtalks.common.security.acl.sids.JtalksSidFactory;
-import org.jtalks.common.security.acl.sids.UserGroupSid;
-import org.jtalks.common.security.acl.sids.UserSid;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.plugin.api.PluginPermissionManager;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.service.security.acl.*;
+import org.jtalks.jcommune.service.security.acl.sids.JtalksSidFactory;
+import org.jtalks.jcommune.service.security.acl.sids.UserGroupSid;
+import org.jtalks.jcommune.service.security.acl.sids.UserSid;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -52,28 +50,17 @@ import org.testng.annotations.Test;
  * @author stanislav bashkirtsev
  */
 public class AclGroupPermissionEvaluatorTest {
-    @Mock
-    private org.jtalks.common.security.acl.AclManager aclManager;
-    @Mock
-    private AclUtil aclUtil;
-    @Mock
-    private GroupDao groupDao;
-    @Mock
-    private JtalksSidFactory sidFactory;
-    @Mock
-    private ExtendedMutableAcl mutableAcl;
-    @Mock
-    Authentication authentication;
-    @Mock
-    JdbcMutableAclService mutableAclService;
-    @Mock
-    MutableAcl acl;
-    @Mock
-    UserDao userDao;
-    @Mock
-    PluginPermissionManager pluginManager;
-    @Mock
-    private JCUser user;
+    @Mock private AclManager aclManager;
+    @Mock private AclUtil aclUtil;
+    @Mock private GroupDao groupDao;
+    @Mock private JtalksSidFactory sidFactory;
+    @Mock private ExtendedMutableAcl mutableAcl;
+    @Mock private Authentication authentication;
+    @Mock private JdbcMutableAclService mutableAclService;
+    @Mock private MutableAcl acl;
+    @Mock private UserDao userDao;
+    @Mock private PluginPermissionManager pluginManager;
+    @Mock private JCUser user;
 
     private AclGroupPermissionEvaluator evaluator;
     private UserGroupSid groupSid;

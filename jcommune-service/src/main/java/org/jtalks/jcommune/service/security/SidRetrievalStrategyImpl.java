@@ -15,8 +15,10 @@
 package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.entity.Group;
-import org.jtalks.common.security.acl.sids.JtalksSidFactory;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.service.security.acl.sids.JtalksSidFactory;
+import org.jtalks.jcommune.service.security.acl.sids.UserGroupSid;
+import org.jtalks.jcommune.service.security.acl.sids.UserSid;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.security.acls.model.SidRetrievalStrategy;
 import org.springframework.security.core.Authentication;
@@ -28,7 +30,7 @@ import java.util.List;
 /**
  * JCommune implementation of {@link SidRetrievalStrategy} that creates a {@link Sid}
  * for the principal by {@link JtalksSidFactory}. Created sids may be
- * {@link org.jtalks.common.security.acl.sids.UserSid} or {@link org.jtalks.common.security.acl.sids.UserGroupSid} type.
+ * {@link UserSid} or {@link UserGroupSid} type.
  *
  * @author Elena Lepaeva
  */

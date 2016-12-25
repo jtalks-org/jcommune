@@ -15,7 +15,6 @@
 package org.jtalks.jcommune.service.security;
 
 import org.jtalks.common.model.permissions.JtalksPermission;
-import org.jtalks.common.security.acl.JtalksPermissionFactory;
 import org.jtalks.jcommune.plugin.api.PluginsPermissionFactory;
 import org.springframework.security.acls.domain.PermissionFactory;
 import org.springframework.security.acls.model.Permission;
