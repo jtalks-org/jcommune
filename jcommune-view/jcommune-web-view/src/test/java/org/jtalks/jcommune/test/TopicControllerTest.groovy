@@ -126,8 +126,7 @@ class TopicControllerTest extends Specification {
                   topicType: TopicTypeName.CODE_REVIEW.name
           ])))
         then:
-          // TODO: check that AccessDeniedException has been thrown
-          result.andExpect(status().isMovedTemporarily())
+          result.andExpect(status().isForbidden())
     }
 
     def 'Deletion of draft topic should pass'() {

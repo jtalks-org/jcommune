@@ -176,19 +176,19 @@
 
     <error-page>
         <error-code>403</error-code>
-        <location>/errors/redirect/403</location>
+        <location>/errors/403</location>
     </error-page>
     <error-page>
         <error-code>404</error-code>
-        <location>/errors/redirect/404</location>
+        <location>/errors/404</location>
     </error-page>
     <error-page>
         <error-code>405</error-code>
-        <location>/errors/redirect/404</location>
+        <location>/errors/405</location>
     </error-page>
     <error-page>
         <error-code>501</error-code>
-        <location>/errors/redirect/501</location>
+        <location>/errors/501</location>
     </error-page>
     <error-page>
         <exception-type>org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException

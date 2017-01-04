@@ -56,15 +56,24 @@
     <property name="order" value="1"/>
     <property name="exceptionMappings">
       <props>
-        <prop key="org.jtalks.jcommune.plugin.api.exceptions.NotFoundException">redirect:/errors/404</prop>
-        <prop key="org.springframework.security.access.AccessDeniedException">redirect:/errors/403</prop>
-        <prop key="org.springframework.beans.TypeMismatchException">redirect:/errors/400</prop>
+        <prop key="org.springframework.beans.TypeMismatchException">/errors/400</prop>
+        <prop key="org.springframework.security.access.AccessDeniedException">/errors/403</prop>
+        <prop key="org.jtalks.jcommune.plugin.api.exceptions.NotFoundException">/errors/404</prop>
+        <prop key="org.springframework.web.HttpRequestMethodNotSupportedException">/errors/405</prop>
         <prop key="org.springframework.security.web.authentication.rememberme.CookieTheftException">/login?login_error=2</prop>
-        <prop key="org.springframework.web.HttpRequestMethodNotSupportedException">redirect:/errors/405</prop>
+      </props>
+    </property>
+    <property name="statusCodes">
+      <props>
+        <prop key="/errors/400">400</prop>
+        <prop key="/errors/403">403</prop>
+        <prop key="/errors/404">404</prop>
+        <prop key="/errors/405">405</prop>
+        <prop key="/errors/500">500</prop>
       </props>
     </property>
     <property name="warnLogCategory" value="org.jtalks.jcommune"/>
-    <property name="defaultErrorView" value="redirect:/errors/500"/>
+    <property name="defaultErrorView" value="/errors/500"/>
   </bean>
   <bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver">
     <property name="order" value="2"/>

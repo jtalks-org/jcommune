@@ -60,7 +60,7 @@ class TopicSearchControllerTest extends Specification {
         when: 'send GET request to indexing data from database'
            MvcResult mvcResult = rebuildIndexes(session);
         then: 'redirect to 403 error page'
-           assertView(mvcResult, "redirect:/errors/403");
+           assertView(mvcResult, "/errors/403");
     }
 
     def rebuildIndexes(HttpSession session) {
