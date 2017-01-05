@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 /**
  * This text postprocessor searches URLs in text and wrap them in &lt;a&gt tag to highlight.
- * Links which are already inside &lt;a&gt or &lt;img&gt tag are skipped.
+ * Links which are already inside &lt;a&gt, &lt;img&gt or &lt;pre&gt tag are skipped.
  * Created by Alexey Usharovskiy on 25.12.16.
  */
 public class UrlToLinkConvertPostProcessor implements TextPostProcessor {
@@ -28,8 +28,8 @@ public class UrlToLinkConvertPostProcessor implements TextPostProcessor {
             "(<a.*?>.*?</a>|<img.*?>.*?</img>|<pre.*?>.*?</pre>)",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final Pattern urlInText = Pattern.compile(
-            "(\\b((?:https?|ftp|file):\\/\\/|www\\.|ftp\\.)[-A-Z0-9+&@#\\/%?=~_|!:,.;]*[-A-Z0-9+&@#\\/%=~_|])",
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+            "(\\b((?:https?|ftp|file):\\/\\/|www\\.|ftp\\.)[-A-ZА-Я0-9+&@#\\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\\/%=~_|])",
+            Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.UNICODE_CHARACTER_CLASS | Pattern.UNICODE_CASE);
     private static final String htmlLinkTemplate = "<a href=\"%s\">%s</a>";
 
     @Override
@@ -38,7 +38,7 @@ public class UrlToLinkConvertPostProcessor implements TextPostProcessor {
     }
 
     /**
-     * Search for text blocks outside &lt;a&gt and &lt;img&gt tags,
+     * Search for text blocks outside &lt;a&gt, &lt;img&gt and &lt;pre&gt tags,
      * pass them to URL process method and build resulting post text
      * with highlighted URLs
      *

@@ -28,7 +28,8 @@ public class UrlToLinkConvertPostProcessorTest {
                 "honoured she building answered her. Strongly thoughts remember mr to do consider debating. \n" +
                 "Spirits musical behaved on we he farther letters. Repulsive he he as deficient newspaper dashwoods we. \n" +
                 "Discovered her his pianoforte insipidity entreaties. Began he at terms meant as fancy. Breakfast \n" +
-                "arranging he if furniture we described on. Astonished thoroughly unpleasant especially you dispatched \n" +
+                "arranging he if furniture we described on. И чуть-чуть на русском. Astonished thoroughly unpleasant \n" +
+                "especially you dispatched \n" +
                 "bed favourable.";
         assertEquals(postProcessor.postProcess(originalText), originalText);
     }
@@ -58,16 +59,31 @@ public class UrlToLinkConvertPostProcessorTest {
         return new Object[][] {
                 {"http://javatalks.ru/common",
                         "<a href=\"http://javatalks.ru/common\">http://javatalks.ru/common</a>"},
+                {"https://javatalks.ru/common",
+                        "<a href=\"https://javatalks.ru/common\">https://javatalks.ru/common</a>"},
                 {"www.javatalks.ru/common",
                         "<a href=\"http://www.javatalks.ru/common\">www.javatalks.ru/common</a>"},
                 {"ftp.javatalks.ru/common",
                         "<a href=\"ftp://ftp.javatalks.ru/common\">ftp.javatalks.ru/common</a>"},
                 {"ftp://javatalks.ru/common",
                         "<a href=\"ftp://javatalks.ru/common\">ftp://javatalks.ru/common</a>"},
+                {"file://javatalks.ru/common",
+                        "<a href=\"file://javatalks.ru/common\">file://javatalks.ru/common</a>"},
                 {"<div class=divclass>http://javatalks.ru/common</div>",
                         "<div class=divclass><a href=\"http://javatalks.ru/common\">http://javatalks.ru/common</a></div>"},
-                {"Text ftp.javatalks.ru/common text \n text http://javatalks.ru/common text and text \n the end.",
-                        "Text <a href=\"ftp://ftp.javatalks.ru/common\">ftp.javatalks.ru/common</a> text \n text <a href=\"http://javatalks.ru/common\">http://javatalks.ru/common</a> text and text \n the end."}
+                {"Text текст ftp.javatalks.ru/common text \n text http://javatalks.ru/common text and text и текст \n the end.",
+                        "Text текст <a href=\"ftp://ftp.javatalks.ru/common\">ftp.javatalks.ru/common</a> text \n text " +
+                        "<a href=\"http://javatalks.ru/common\">http://javatalks.ru/common</a> text and text и текст \n the end."},
+                {"http://привет.рф/информация",
+                        "<a href=\"http://привет.рф/информация\">http://привет.рф/информация</a>"},
+                {"www.привет.рф/информация",
+                        "<a href=\"http://www.привет.рф/информация\">www.привет.рф/информация</a>"},
+                {"ftp://привет.рф/информация",
+                        "<a href=\"ftp://привет.рф/информация\">ftp://привет.рф/информация</a>"},
+                {"ftp.привет.рф/информация",
+                        "<a href=\"ftp://ftp.привет.рф/информация\">ftp.привет.рф/информация</a>"},
+                {"file://привет.рф/информация",
+                        "<a href=\"file://привет.рф/информация\">file://привет.рф/информация</a>"}
         };
     }
 
@@ -76,6 +92,7 @@ public class UrlToLinkConvertPostProcessorTest {
         return new Object[][] {
                 {"<pre class=cls>http://google.com</pre>"},
                 {"<pre>http://google.com</pre>"},
+                {"<pre>http://привет.рф/информация</pre>"},
                 {"<pre class=cls>http://google.com\nwww.ya.ru\nabc abc abc ftp.server.com</pre>"},
                 {"Text <pre class=cls>http://google.com\nwww.ya.ru\nabc abc abc ftp.server.com</pre> text"},
                 {"<a href=http://www.google.com>www.google.com</a>"},
