@@ -25,6 +25,7 @@ import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import org.jtalks.jcommune.model.dto.SecurityGroupList;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.UserInfo;
 import org.jtalks.jcommune.service.GroupService;
@@ -101,6 +102,11 @@ public class TransactionalGroupService extends AbstractTransactionalEntityServic
     @Override
     public List<Group> getByName(String name) {
         return dao.getByName(name);
+    }
+
+    @Override
+    public List<UserDto> getGroupUsers(long id, int count) {
+        return dao.getGroupUsers(id, count);
     }
 
     /**
