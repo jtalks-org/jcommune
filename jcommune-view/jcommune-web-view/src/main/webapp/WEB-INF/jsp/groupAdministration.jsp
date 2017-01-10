@@ -43,7 +43,9 @@
         </thead>
         <c:forEach var="group" items="${groups}">
           <tr id='${group.id}' name='group-row' class="grid-row group-edit-row">
-            <td id="group-name"><c:out value="${group.name}"/></td>
+            <td id="group-name">
+                <a href="${pageContext.request.contextPath}/group/${group.id}"><c:out value="${group.name}"/></a>
+            </td>
             <td><c:out value="${group.numberOfUsers}"/>
               <c:if test="${group.editable}">
                 <div class="inline-block pull-right management-block">

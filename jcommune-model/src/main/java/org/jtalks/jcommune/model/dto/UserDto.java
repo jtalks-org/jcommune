@@ -24,8 +24,7 @@ import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.validation.annotations.Unique;
 
 import javax.validation.constraints.Size;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Contains user information. In some cases serves for transmitting to external services.
@@ -33,6 +32,8 @@ import java.util.Map;
  * @author Andrey Pogorelov
  */
 public class UserDto {
+
+    private long id;
 
     @Size(min = User.USERNAME_MIN_LENGTH, max = User.USERNAME_MAX_LENGTH,
              message = "{user.username.length_constraint_violation}")
@@ -52,6 +53,29 @@ public class UserDto {
     private Language language = Language.ENGLISH;
 
     private Map<String, String> captchas = new HashMap<>();
+
+    public UserDto() {
+    }
+
+    public UserDto(User user) {
+        this.username = user.getUsername();
+        this.email = user.getEmail();
+        this.id = user.getId();
+    }
+
+    public UserDto(String username, String email, Long id) {
+        this.username = username;
+        this.email = email;
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     /**
      * @return username

@@ -19,6 +19,7 @@ import org.jtalks.common.service.EntityService;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import org.jtalks.jcommune.model.dto.SecurityGroupList;
+import org.jtalks.jcommune.model.dto.UserDto;
 
 import java.util.List;
 
@@ -51,6 +52,8 @@ public interface GroupService extends EntityService<Group> {
      * @return list of groups which names exactly match the given name
      */
     List<Group> getByName(String name);
+
+    List<UserDto> getGroupUsers(long id, int count);
 
     /**
      * Delete group

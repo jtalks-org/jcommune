@@ -230,10 +230,10 @@ public class AdministrationController {
         } catch (NotFoundException e) {
             return new JsonResponse(JsonResponseStatus.FAIL, null);
         }
-        List<GroupDto> alreadySelected = GroupDto.convertGroupList(selectedGroups, true);
+        List<GroupDto> alreadySelected = GroupDto.convertToGroupDtoList(selectedGroups, GroupDto.BY_NAME_COMPARATOR);
 
         List<Group> availableGroups = permissionManager.getAllGroupsWithoutExcluded(selectedGroups, branchPermission);
-        List<GroupDto> available = GroupDto.convertGroupList(availableGroups, true);
+        List<GroupDto> available = GroupDto.convertToGroupDtoList(availableGroups, GroupDto.BY_NAME_COMPARATOR);
 
         permission.setSelectedGroups(alreadySelected);
         permission.setAvailableGroups(available);
@@ -292,6 +292,14 @@ public class AdministrationController {
                                   @PathVariable("groupId") Long groupId,
                                   Locale locale) throws org.jtalks.common.service.exceptions.NotFoundException {
         return saveOrUpdateGroup(groupDto, result, locale);
+    }
+
+    @RequestMapping(value = "/group/{groupId}", method = RequestMethod.GET)
+    public ModelAndView getGroupUsers(@PathVariable("groupId") Long groupId)
+            throws org.jtalks.common.service.exceptions.NotFoundException {
+        checkForAdminPermissions();
+        GroupDto groupDto = new GroupDto(groupId, groupService.get(groupId).getName(), groupService.getGroupUsers(groupId, 20));
+        return new ModelAndView("groupUserList").addObject("group", groupDto);
     }
 
     @RequestMapping(value = "/group/{groupId}", method = RequestMethod.DELETE)
