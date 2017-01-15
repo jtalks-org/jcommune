@@ -122,7 +122,7 @@
             <img id="avatarPreview" src="data:image/jpeg;base64,${editedUser.avatar}" alt=""/>
           </c:when>
           <c:otherwise>
-            <img src="${pageContext.request.contextPath}/users/${editedUser.userId}/avatar" alt=""/>
+            <img src="${pageContext.request.contextPath}/users/${editedUser.userId}/avatar?version=${editedUser.userVersion}" alt=""/>
           </c:otherwise>
         </c:choose>
       </span>

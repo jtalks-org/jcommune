@@ -39,6 +39,7 @@ public class EditUserProfileDto {
     private long userId;
     private String username;
     private String avatar;
+    private Long userVersion;
 
     @Valid
     private UserProfileDto userProfileDto;
@@ -58,8 +59,7 @@ public class EditUserProfileDto {
      * @param user edited user
      */
     public EditUserProfileDto(UserProfileDto userProfileDto, JCUser user) {
-        this.userId = user.getId();
-        this.username = user.getUsername();
+        this(user);
         this.userProfileDto = userProfileDto;
     }
 
@@ -69,8 +69,7 @@ public class EditUserProfileDto {
      * @param user edited user
      */
     public EditUserProfileDto(UserSecurityDto userSecurityDto, JCUser user) {
-        this.userId = user.getId();
-        this.username = user.getUsername();
+        this(user);
         this.userSecurityDto = userSecurityDto;
     }
 
@@ -80,8 +79,7 @@ public class EditUserProfileDto {
      * @param user edited user
      */
     public EditUserProfileDto(UserNotificationsDto userNotificationsDto, JCUser user) {
-        this.userId = user.getId();
-        this.username = user.getUsername();
+        this(user);
         this.userNotificationsDto = userNotificationsDto;
     }
 
@@ -91,8 +89,7 @@ public class EditUserProfileDto {
      * @param user edited user
      */
     public EditUserProfileDto(UserContactsDto userContactsDto, JCUser user) {
-        this.userId = user.getId();
-        this.username = user.getUsername();
+        this(user);
         this.userContactsDto = userContactsDto;
     }
 
@@ -120,6 +117,7 @@ public class EditUserProfileDto {
     public EditUserProfileDto(JCUser user) {
         this.userId = user.getId();
         this.username = user.getUsername();
+        this.userVersion = user.getVersion();
     }
 
     /**
@@ -223,7 +221,6 @@ public class EditUserProfileDto {
         this.username = username;
     }
 
-
     /**
      * @return - user avatar
      */
@@ -245,6 +242,21 @@ public class EditUserProfileDto {
      */
     public UserProfileDto getUserProfileDto() {
         return userProfileDto;
+    }
+
+    /**
+     * Set user profile version
+     * @param version - profile version
+     */
+    public void setUserVersion(Long version) {
+        this.userVersion = version;
+    }
+
+    /**
+     * @return user profile version
+     */
+    public Long getUserVersion() {
+        return userVersion;
     }
 
     /**

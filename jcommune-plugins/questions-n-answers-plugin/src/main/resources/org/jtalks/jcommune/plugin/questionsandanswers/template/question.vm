@@ -180,7 +180,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
         <div>
           <div class="question-left-panel pull-left">
             <div class="thumbnail wraptocenter">
-              <img src="${request.contextPath}/users/${post.userCreated.id}/avatar" alt=""/>
+              <img src="${request.contextPath}/users/${post.userCreated.id}/avatar?version=${post.userCreated.version}" alt=""/>
             </div>
             <div class="question-votes">
               <div id="${post.id}-up" class="vote-up $voteUpClass"
