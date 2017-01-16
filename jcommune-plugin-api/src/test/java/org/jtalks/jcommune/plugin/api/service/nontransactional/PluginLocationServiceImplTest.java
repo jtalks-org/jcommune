@@ -16,16 +16,15 @@ package org.jtalks.jcommune.plugin.api.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Topic;
+import org.jtalks.jcommune.model.entity.UserInfo;
 import org.jtalks.jcommune.plugin.api.service.PluginLocationService;
 import org.mockito.Mock;
-import org.testng.annotations.BeforeMethod;
+import org.mockito.Mockito;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -35,23 +34,15 @@ public class PluginLocationServiceImplTest {
     @Mock
     private PluginLocationService locationService;
 
-    @BeforeMethod
-    public void init() {
-        initMocks(this);
-        PluginLocationServiceImpl service = (PluginLocationServiceImpl)PluginLocationServiceImpl.getInstance();
-        service.setLocationService(locationService);
-    }
-
     @Test
-    public void testGetUsersViewing() {
-        JCUser user = new JCUser("name", "mail@example.com", "password");
+    public void userShouldBeInViewersList() {
+        locationService = Mockito.mock(PluginLocationService.class);
+        UserInfo user = new UserInfo(new JCUser("name", "mail@example.com", "password"));
         Topic topic = new Topic();
-        when(locationService.getUsersViewing(topic)).thenReturn(Arrays.asList(user));
-
-        List<JCUser> users = PluginLocationServiceImpl.getInstance().getUsersViewing(topic);
-
+        Mockito.when(locationService.getUsersViewing(topic)).thenReturn(Collections.singletonList(user));
+        ((PluginLocationServiceImpl)PluginLocationServiceImpl.getInstance()).setLocationService(locationService);
+        List<UserInfo> users = PluginLocationServiceImpl.getInstance().getUsersViewing(topic);
         assertEquals(users.size(), 1);
         assertEquals(users.get(0), user);
     }
 }
-

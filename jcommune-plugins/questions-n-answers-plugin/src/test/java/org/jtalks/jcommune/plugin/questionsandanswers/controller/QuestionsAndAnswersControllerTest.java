@@ -109,7 +109,7 @@ public class QuestionsAndAnswersControllerTest {
         controller.setApplicationContext(context);
         controller.setBreadcrumbBuilder(breadcrumbBuilder);
         when(breadcrumbBuilder.getForumBreadcrumb()).thenReturn(Collections.<Breadcrumb>emptyList());
-        when(locationService.getUsersViewing(any(Entity.class))).thenReturn(Collections.<JCUser>emptyList());
+        when(locationService.getUsersViewing(any(Entity.class))).thenReturn(Collections.<UserInfo>emptyList());
         doReturn(content).when(controller).getMergedTemplate(any(VelocityEngine.class), anyString(),
                 anyString(), anyMap());
         when(userReader.getCurrentUser()).thenReturn(new JCUser("name", "example@mail.ru", "pwd"));

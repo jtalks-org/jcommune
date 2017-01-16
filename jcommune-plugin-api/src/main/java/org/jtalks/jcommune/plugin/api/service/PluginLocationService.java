@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.plugin.api.service;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.UserInfo;
 
 import java.util.List;
 
@@ -34,5 +34,5 @@ public interface PluginLocationService {
      * @return Users, who're viewing the page for entity passed. Will return empty list if
      *         there are no viewers or view tracking is not supported for this entity type
      */
-    List<JCUser> getUsersViewing(Entity entity);
+    List<UserInfo> getUsersViewing(Entity entity);
 }

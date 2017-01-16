@@ -30,8 +30,8 @@ import org.springframework.test.web.servlet.MockMvc
 import javax.servlet.http.HttpSession
 
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-
 /**
  * @author Mikhail Stryzhonok
  */
@@ -58,7 +58,9 @@ class Branches {
     }
 
     Branch created(Branch branch = random()) {
+        branch.setSection(sectionService.createSection(new Section()))
         branchDao.saveOrUpdate(branch)
+        branchDao.flush()
         return branch
     }
 
@@ -74,5 +76,12 @@ class Branches {
 
     public static Branch random() {
         return new Branch(randomAlphabetic(80), randomAlphabetic(255))
+    }
+
+    void open(Branch branch, HttpSession session){
+        def result = mockMvc.perform(get("/branches/${branch.id}")
+                .session(session as MockHttpSession)
+        ).andReturn()
+        Assert.assertView(result, "topic/topicList")
     }
 }

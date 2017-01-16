@@ -133,8 +133,7 @@ public class TransactionalUserServiceTest {
                 mailService,
                 base64Wrapper,
                 encryptionService,
-                postDao, authenticator,
-                securityContextFacade);
+                postDao, authenticator);
     }
 
     @Test
@@ -420,8 +419,8 @@ public class TransactionalUserServiceTest {
     @Test
     public void shouldReturnUserInfoIfAuthenticated() {
         JCUser expected = user(USERNAME);
-        securityContextFacade.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(expected, null));
-        when(userDao.get(anyLong())).thenReturn(expected);
+        securityContextFacade.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(new UserInfo(expected), null));
+        when(userDao.loadById(anyLong())).thenReturn(expected);
         JCUser actual = userService.getCurrentUser();
         assertEquals(actual, expected);
     }

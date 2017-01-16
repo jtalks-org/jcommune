@@ -20,6 +20,7 @@ import org.jtalks.common.service.security.SecurityContextFacade
 import org.jtalks.jcommune.model.dao.GroupDao
 import org.jtalks.jcommune.model.dao.UserDao
 import org.jtalks.jcommune.model.entity.JCUser
+import org.jtalks.jcommune.model.entity.UserInfo
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus
 import org.jtalks.jcommune.service.nontransactional.EncryptionService
@@ -49,7 +50,6 @@ import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.hasItem
 import static org.hamcrest.Matchers.not
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
-
 /**
  * @author Mikhail Stryzhonok
  */
@@ -124,7 +124,7 @@ abstract class Users {
 
     def setAuthentication(JCUser user) {
         def token = new UsernamePasswordAuthenticationToken(user.username, user.password)
-        token.details = user
+        token.details = new UserInfo(user)
         def auth = authenticationManager.authenticate(token)
         securityFacade.context.authentication = auth
         def request = new MockHttpServletRequest()
@@ -161,7 +161,7 @@ abstract class Users {
         }
 
         def auth = (context as SecurityContext).authentication
-        return auth != null && auth.authenticated && ((auth.principal as JCUser).username.equals(user.username))
+        return auth != null && auth.authenticated && (auth.principal as UserInfo).username == user.username
     }
 
     long[] fetchGroups(HttpSession session, User user) {
@@ -233,5 +233,9 @@ abstract class Users {
         dto.username = common.username
         dto.email = common.email
         return dto
+    }
+
+    HttpSession anonymousSession(){
+        mockMvc.perform(get("/")).andReturn().request.session
     }
 }

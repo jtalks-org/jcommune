@@ -21,6 +21,7 @@ import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import org.jtalks.jcommune.service.GroupService;
 import org.jtalks.jcommune.service.exceptions.OperationIsNotAllowedException;
+import org.jtalks.jcommune.service.security.SecurityService;
 import org.mockito.Mock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -41,14 +42,14 @@ import static org.testng.Assert.assertFalse;
  */
 public class TransactionalGroupServiceTest {
 
-    @Mock
-    private GroupDao groupDao;
+    @Mock private GroupDao groupDao;
+    @Mock private SecurityService securityService;
     private GroupService groupService;
 
     @BeforeMethod
     public void init() {
         initMocks(this);
-        groupService = new TransactionalGroupService(groupDao, null, null);
+        groupService = new TransactionalGroupService(groupDao, null, null, securityService);
     }
 
     @Test

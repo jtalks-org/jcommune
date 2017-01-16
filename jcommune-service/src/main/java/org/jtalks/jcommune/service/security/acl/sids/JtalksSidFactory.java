@@ -18,12 +18,12 @@ package org.jtalks.jcommune.service.security.acl.sids;
 import org.jtalks.common.model.entity.Entity;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
+import org.jtalks.jcommune.model.entity.UserInfo;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -53,8 +53,8 @@ public class JtalksSidFactory implements SidFactory {
     @Override
     public Sid createPrincipal(Authentication authentication) {
         Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            return new UserSid((User) principal);
+        if (principal instanceof UserInfo) {
+            return new UserSid((UserInfo) principal);
         } else if (UserSid.isAnonymous(principal.toString())) {
             return UserSid.createAnonymous();
         } else {
@@ -101,7 +101,7 @@ public class JtalksSidFactory implements SidFactory {
      */
     public Sid create(Entity receiver) {
         if (User.class.isAssignableFrom(receiver.getClass())) {
-            return new UserSid((User) receiver);
+            return new UserSid(receiver.getId());
         } else if (Group.class.isAssignableFrom(receiver.getClass())) {
             return new UserGroupSid((Group) receiver);
         } else {

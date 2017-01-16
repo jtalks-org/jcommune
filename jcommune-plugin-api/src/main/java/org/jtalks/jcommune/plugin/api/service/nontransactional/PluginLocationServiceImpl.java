@@ -15,7 +15,7 @@
 package org.jtalks.jcommune.plugin.api.service.nontransactional;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.UserInfo;
 import org.jtalks.jcommune.plugin.api.service.PluginLocationService;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class PluginLocationServiceImpl implements PluginLocationService {
     }
 
     @Override
-    public List<JCUser> getUsersViewing(Entity entity) {
+    public List<UserInfo> getUsersViewing(Entity entity) {
         return locationService.getUsersViewing(entity);
     }
 

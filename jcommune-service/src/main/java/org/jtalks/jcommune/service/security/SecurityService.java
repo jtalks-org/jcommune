@@ -20,6 +20,8 @@ import org.jtalks.common.model.entity.Entity;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.UserInfo;
 import org.jtalks.jcommune.service.security.acl.AclManager;
 import org.jtalks.jcommune.service.security.acl.builders.AclAction;
 import org.jtalks.jcommune.service.security.acl.builders.AclBuilders;
@@ -41,12 +43,13 @@ public class SecurityService implements UserDetailsService {
     private final AclManager aclManager;
     private final AclBuilders aclBuilders = new AclBuilders();
     private final SecurityContextFacade securityContextFacade;
+    private ThreadLocal<JCUser> cachedUser = new ThreadLocal<>();
 
     /**
      * Constructor creates an instance of service.
      * @param userDao    {@link UserDao} to be injected
      * @param aclManager manager for actions with ACLs
-     * @param securityContextFacade
+     * @param securityContextFacade for access to security context that contain {@link Authentication} object.
      */
     public SecurityService(UserDao userDao, AclManager aclManager, SecurityContextFacade securityContextFacade) {
         this.userDao = userDao;
@@ -55,22 +58,43 @@ public class SecurityService implements UserDetailsService {
     }
 
     /**
+     * Returns object that contains basic information about authenticated user.
+     * @return {@link UserInfo} if {@link Authentication} contain it, otherwise null.
+     */
+    public UserInfo getCurrentUserBasicInfo() {
+        Object principal = extractPrincipalFromAuthentication();
+        return principal instanceof UserInfo ? (UserInfo) principal : null;
+    }
+
+    /**
+     * Returns copy of persistent user.
+     *
+     * @param authentication to get principal
+     * @return copy of persistent user associated with authentication principal, if authentication
+     * or principal is null - returns null.
+     */
+    public JCUser getFullUserInfoFrom(Authentication authentication){
+        if (authentication == null) return null;
+        Object principal = authentication.getPrincipal();
+        if (!(principal instanceof UserInfo)) return null;
+        return updateCacheAndGet(((UserInfo) principal).getId());
+    }
+
+    /**
      * Get current authenticated {@link User} username.
      *
      * @return current authenticated {@link User} username or {@code null} if there is no {@link User} authenticated
-     * or if no authentication information is available (request not went through spring security filters). 
+     * or if no authentication information is available (request not went through spring security filters).
      */
     public String getCurrentUserUsername() {
-        Authentication auth = securityContextFacade.getContext().getAuthentication();
-        if (auth == null) {
-            return null;
-        }
-        Object principal = auth.getPrincipal();
+        Object principal = extractPrincipalFromAuthentication();
+        if (principal == null) return null;
         String username = extractUsername(principal);
-        if (isAnonymous(username)) {
-            return null;
-        }
-        return username;
+        return isAnonymous(username) ? null : username;
+    }
+
+    public Authentication getAuthentication(){
+        return securityContextFacade.getContext().getAuthentication();
     }
 
     /**
@@ -134,6 +158,25 @@ public class SecurityService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found: " + username);
         }
-        return user;
+        return new UserInfo(user);
+    }
+
+    private JCUser updateCacheAndGet(long principalId){
+        JCUser cached = cachedUser.get();
+        if (cached == null || cached.getId() != principalId){
+            cached = JCUser.copyUser(userDao.loadById(principalId));
+            cachedUser.set(cached);
+        }
+        return cached;
+    }
+
+    /**
+     * Returns the principal encapsulated by Authentication.
+     *
+     * @return <code>Principal</code> if {@link Authentication} contain any, otherwise null.
+     */
+    private Object extractPrincipalFromAuthentication() {
+        Authentication auth = securityContextFacade.getContext().getAuthentication();
+        return auth != null ? auth.getPrincipal() : null;
     }
 }

@@ -19,14 +19,10 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.common.service.security.SecurityContextFacade;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
-import org.jtalks.jcommune.model.entity.AnonymousUser;
-import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.Language;
-import org.jtalks.jcommune.model.entity.Post;
+import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.exceptions.UnexpectedErrorException;
@@ -46,7 +42,6 @@ import org.jtalks.jcommune.service.util.AuthenticationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -80,7 +75,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     private final Base64Wrapper base64Wrapper;
     //Important, use for every password creation.
     private final EncryptionService encryptionService;
-    private final SecurityContextFacade securityContextFacade;
 
     /**
      * Create an instance of User entity based service
@@ -101,8 +95,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
                                     Base64Wrapper base64Wrapper,
                                     EncryptionService encryptionService,
                                     PostDao postDao,
-                                    Authenticator authenticator,
-                                    SecurityContextFacade securityContextFacade) {
+                                    Authenticator authenticator) {
         super(dao);
         this.groupDao = groupDao;
         this.securityService = securityService;
@@ -111,7 +104,6 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         this.encryptionService = encryptionService;
         this.postDao = postDao;
         this.authenticator = authenticator;
-        this.securityContextFacade = securityContextFacade;
     }
 
     /**
@@ -156,11 +148,8 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
      */
     @Override
     public JCUser getCurrentUser() {
-        Authentication auth = securityContextFacade.getContext().getAuthentication();
-        if (auth == null) return new AnonymousUser();
-        Object principal = auth.getPrincipal();
-        // Temporary solution to fix bug when getCurrentUser() returns JCUser detached from hibernate session.
-        return principal instanceof JCUser ? this.getDao().get(((JCUser) principal).getId()) : new AnonymousUser();
+        UserInfo userInfo = securityService.getCurrentUserBasicInfo();
+        return userInfo != null ? this.getDao().loadById(userInfo.getId()) : new AnonymousUser();
     }
 
     /**

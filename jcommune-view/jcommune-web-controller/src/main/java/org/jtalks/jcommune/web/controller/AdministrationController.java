@@ -34,6 +34,7 @@ import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.BranchPermissionDto;
 import org.jtalks.jcommune.web.dto.GroupDto;
 import org.jtalks.jcommune.web.dto.PermissionGroupsDto;
+import org.jtalks.jcommune.web.listeners.SessionSetupListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.access.AccessDeniedException;
@@ -139,6 +140,9 @@ public class AdministrationController {
 
         try {
             componentService.setComponentInformation(componentInformation);
+            // SessionSetupListener read session timeout property once on application startup and
+            // keeps it in memory, so when property is updated we need to read it again.
+            SessionSetupListener.resetSessionTimeoutProperty();
         } catch (AccessDeniedException e) {
             String errorMessage = messageSource.getMessage(ACCESS_DENIED_MESSAGE, null, locale);
             return new JsonResponse(JsonResponseStatus.FAIL, errorMessage);

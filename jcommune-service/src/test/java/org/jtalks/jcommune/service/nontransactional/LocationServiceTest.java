@@ -15,95 +15,60 @@
 package org.jtalks.jcommune.service.nontransactional;
 
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.Topic;
-import org.jtalks.jcommune.service.UserService;
+import org.jtalks.jcommune.model.entity.UserInfo;
+import org.jtalks.jcommune.service.security.SecurityService;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.security.core.session.SessionRegistry;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * @author Andrey Kluev
  */
 public class LocationServiceTest {
+    @Mock private SessionRegistry sessionRegistry;
+    @Mock private SecurityService securityService;
+    private JCUser user;
     private Topic topic;
     private LocationService locationService;
-    @Mock
-    private UserService userService;
-    @Mock
-    private SessionRegistry sessionRegistry;
-    private JCUser user;
-    List<Object> list;
-    Map<JCUser, String> map;
-
+    private UserInfo userInfo;
 
     @BeforeMethod
     protected void setUp() {
         initMocks(this);
-        locationService = new LocationService(userService, sessionRegistry);
-        user = new JCUser("", "", "");
-        topic = new Topic(user, "");
-        topic.setUuid("uuid");
-        list = new ArrayList<Object>();
-        map = new ConcurrentHashMap<JCUser, String>();
+        locationService = new LocationService(securityService, sessionRegistry);
+        user = randomUser();
+        topic = new Topic(user, "Unit test!");
     }
 
     @Test
-    public void testUsersViewing() {
-        when(userService.getCurrentUser()).thenReturn(user);
-        list.add(user);
-        map.put(user, "");
-        when(sessionRegistry.getAllPrincipals()).thenReturn(list);
-
-        topic.setUuid("");
-
-        locationService.getUsersViewing(topic);
+    public void shouldContainUsersViewingTheTopic() {
+        userInfo = new UserInfo(user);
+        when(securityService.getCurrentUserBasicInfo()).thenReturn(userInfo); //returns current user.
+        when(sessionRegistry.getAllPrincipals()).thenReturn(Collections.<Object>singletonList(userInfo)); // returns all principals from Session registry
+        List<UserInfo> usersViewing = locationService.getUsersViewing(topic);
+        assertEquals(usersViewing.size(), 1);
+        assertTrue(usersViewing.contains(userInfo));
     }
 
     @Test
-    public void testUserNotOnline() {
-        when(userService.getCurrentUser()).thenReturn(user);
-        JCUser user1 = new JCUser("", "", "");
-        list.add(user1);
-        when(sessionRegistry.getAllPrincipals()).thenReturn(list);
-
-
-        locationService.getUsersViewing(topic);
+    public void shouldNotContainAnonymousUsers() {
+        when(securityService.getCurrentUserBasicInfo()).thenReturn(null); // returns null coz current user is anonymous.
+        when(sessionRegistry.getAllPrincipals()).thenReturn(Collections.<Object>singletonList(new UserInfo(user))); // returns all principals from Session registry
+        List<UserInfo> usersViewing = locationService.getUsersViewing(topic);
+        assertEquals(usersViewing.size(), 0);
     }
 
-    @Test
-    public void testCurrentUserIsAnonymous() {
-        when(sessionRegistry.getAllPrincipals()).thenReturn(list);
-        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
-
-        locationService.getUsersViewing(topic);
-    }
-
-    @Test
-    public void testClearUserLocation() {
-        when(userService.getCurrentUser()).thenReturn(user);
-        when(userService.getCurrentUser()).thenReturn(user);
-
-        locationService.clearUserLocation();
-    }
-    
-    @Test
-    public void testClearUserLocationForAnonymous() {
-        when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
-        
-    	locationService.clearUserLocation();
-    	@SuppressWarnings("unchecked")
-		Map<JCUser, String> registerUserMap = mock(Map.class);
-    	verify(registerUserMap, Mockito.never()).remove(Mockito.any());
+    private JCUser randomUser() {
+        return new JCUser("username", "email@jtalk.org", "password");
     }
 }

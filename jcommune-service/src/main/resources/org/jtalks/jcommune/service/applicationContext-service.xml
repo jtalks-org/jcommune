@@ -137,8 +137,8 @@
   </bean>
 
   <bean id="locationService" class="org.jtalks.jcommune.service.nontransactional.LocationService">
+    <constructor-arg name="securityService" ref="securityService"/>
     <constructor-arg name="sessionRegistry" ref="sessionRegistry"/>
-    <constructor-arg name="userService" ref="userService"/>
   </bean>
 
   <bean id="abstractUserService" abstract="true">
@@ -154,13 +154,11 @@
   <bean id="userService" parent="abstractUserService"
         class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
     <constructor-arg index="7" ref="authenticator"/>
-    <constructor-arg index="8" ref="securityContextFacade"/>
   </bean>
 
   <bean id="plainPasswordUserService" parent="abstractUserService"
         class="org.jtalks.jcommune.service.transactional.TransactionalUserService">
     <constructor-arg index="7" ref="plainPasswordAuthenticator"/>
-    <constructor-arg index="8" ref="securityContextFacade"/>
   </bean>
 
   <bean id="abstractAuthenticator" abstract="true">
@@ -493,6 +491,7 @@
     <constructor-arg index="0" ref="groupDao"/>
     <constructor-arg index="1" ref="aclManager"/>
     <constructor-arg index="2" ref="userDao"/>
+    <constructor-arg index="3" ref="securityService"/>
   </bean>
 
   <beans profile="performance">

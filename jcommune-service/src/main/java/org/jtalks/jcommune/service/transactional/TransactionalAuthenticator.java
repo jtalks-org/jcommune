@@ -27,6 +27,7 @@ import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.UserInfo;
 import org.jtalks.jcommune.plugin.api.PluginLoader;
 import org.jtalks.jcommune.plugin.api.core.AuthenticationPlugin;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
@@ -212,7 +213,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
                                         HttpServletResponse response) throws AuthenticationException {
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(user.getUsername(), password);
-        token.setDetails(user);
+        token.setDetails(new UserInfo(user));
         Authentication auth = authenticationManager.authenticate(token);
         securityFacade.getContext().setAuthentication(auth);
         if (auth.isAuthenticated()) {

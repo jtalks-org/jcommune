@@ -26,17 +26,17 @@ import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
 import org.jtalks.jcommune.model.dto.SecurityGroupList;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.UserInfo;
 import org.jtalks.jcommune.service.GroupService;
 import org.jtalks.jcommune.service.exceptions.OperationIsNotAllowedException;
 import org.jtalks.jcommune.service.security.AdministrationGroup;
+import org.jtalks.jcommune.service.security.SecurityService;
 import org.jtalks.jcommune.service.security.acl.AclManager;
 import org.jtalks.jcommune.service.security.acl.sids.UserGroupSid;
 import org.jtalks.jcommune.service.security.acl.sids.UserSid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import ru.javatalks.utils.general.Assert;
 
 import java.util.List;
@@ -51,6 +51,7 @@ public class TransactionalGroupService extends AbstractTransactionalEntityServic
 
     private final AclManager manager;
     private final UserDao userDao;
+    private final SecurityService securityService;
     private final Logger logger = LoggerFactory.getLogger(getClass());
     
     /**
@@ -60,14 +61,17 @@ public class TransactionalGroupService extends AbstractTransactionalEntityServic
      *                   operations.
      * @param manager - ACL manager to operate with sids
      * @param userDao - to perform all CRUD operations with users
+     * @param securityService - to get current user information.
      * 
      */
     public TransactionalGroupService(GroupDao groupDao,
                                      AclManager manager,
-                                     UserDao userDao) {
+                                     UserDao userDao,
+                                     SecurityService securityService) {
         this.dao = groupDao;
         this.manager = manager;
         this.userDao = userDao;
+        this.securityService = securityService;
     }
 
     /**
@@ -112,8 +116,7 @@ public class TransactionalGroupService extends AbstractTransactionalEntityServic
         }
         dao.delete(group);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) auth.getPrincipal();
+        UserInfo currentUser = securityService.getCurrentUserBasicInfo();
         UserGroupSid sid = new UserGroupSid(group);
         UserSid sidHeier = new UserSid(currentUser);
         try {

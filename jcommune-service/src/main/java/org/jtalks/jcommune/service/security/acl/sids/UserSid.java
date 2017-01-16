@@ -15,7 +15,7 @@
 
 package org.jtalks.jcommune.service.security.acl.sids;
 
-import org.jtalks.common.model.entity.User;
+import org.jtalks.jcommune.model.entity.UserInfo;
 import org.springframework.security.acls.domain.PrincipalSid;
 
 import javax.annotation.Nonnegative;
@@ -40,9 +40,8 @@ public class UserSid extends PrincipalSid implements UniversalSid {
         this.userId = String.valueOf(userId);
     }
 
-    public UserSid(@Nonnull User user) {
-        super(String.valueOf(user.getId()));
-        this.userId = String.valueOf(user.getId());
+    public UserSid(@Nonnull UserInfo user) {
+        this(user.getId());
     }
 
     private String parseUserId(String sidId) {

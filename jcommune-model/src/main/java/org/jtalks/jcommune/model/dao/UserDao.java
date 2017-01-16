@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.model.dao;
 
+import org.hibernate.ObjectNotFoundException;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.entity.JCUser;
 
@@ -106,4 +107,12 @@ public interface UserDao extends org.jtalks.common.model.dao.UserDao<JCUser> {
      * @return list of found users
      */
     List<JCUser> findByUsernameOrEmail(String pattern, int count);
+
+    /**
+     * May return a proxy (without hitting DB). If no row found the object is returned but it
+     * throws {@link ObjectNotFoundException} when properties are first accessed.
+     * @param id stored user identifier.
+     * @return proxy of JCUser object.
+     */
+    JCUser loadById(Long id);
 }

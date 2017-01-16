@@ -143,4 +143,12 @@ public class UserHibernateDao extends GenericDao<JCUser>
                 .setMaxResults(count)
                 .list();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public JCUser loadById(Long id) {
+        return (JCUser) session().load(JCUser.class, id);
+    }
 }
