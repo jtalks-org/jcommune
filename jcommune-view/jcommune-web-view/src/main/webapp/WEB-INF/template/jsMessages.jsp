@@ -198,3 +198,4 @@ $labelGroupPlaceholderName = '<spring:message code="label.group.placeholder.name
 $labelGroupPlaceholderDescription = '<spring:message code="label.group.placeholder.description" htmlEscape="true"/>';
 $labelGroupCreateTitle = '<spring:message code="label.group.create.title" htmlEscape="true"/>';
 $labelGroupEditTitle = '<spring:message code="label.group.edit.title" htmlEscape="true"/>';
+$deleteGroupDialogMessage = '<spring:message code="label.group.delete.message" htmlEscape="true"/>';

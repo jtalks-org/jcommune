@@ -31,6 +31,7 @@ $(function () {
     $("[id^=newBranch]").on('click', showNewBranchDialog);
     $("[id^=newGroup]").on('click', showGroupManagementDialog);
     $("[id^=editGroup]").on('click', showGroupManagementDialog);
+    $("[id^=deleteGroup]").on('click', showDeleteGroupDialog);
     $("[name=group-row]").hover(
         function () {
             $(this).find('.management-block').show()},
@@ -418,7 +419,45 @@ function createIconUploader() {
         }
     );
 }
+function showDeleteGroupDialog(event) {
+    event.preventDefault();
+    var groupRow = $(this).parents('[name=group-row]');
+    var groupId = groupRow.attr('id');
+    var footerContent = ' \
+            <button id="delete-group-cancel" class="btn">' + $labelCancel + '</button> \
+            <button id="delete-group-ok" class="btn btn-danger">' + $labelOk + '</button>';
 
+    jDialog.createDialog({
+        type: jDialog.confirmType,
+        title: $labelDelete,
+        bodyMessage: $deleteGroupDialogMessage,
+        footerContent: footerContent,
+        handlers: {
+            '#delete-group-ok': {'click': sendDeleteGroupRequest},
+            '#delete-group-cancel': {'static':'close'}
+        }
+    });
+
+    function sendDeleteGroupRequest(event) {
+        event.preventDefault();
+        $.ajax({
+            url: $root + '/group/' + groupId,
+            type: 'DELETE',
+            async: false,
+            success: function (response) {
+                if (response.status === 'SUCCESS') {
+                    location.reload();
+                }
+            },
+            error: function () {
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelError500Detail
+                });
+            }
+        });
+    }
+}
 /*
  Adds handler for remove image button
  */

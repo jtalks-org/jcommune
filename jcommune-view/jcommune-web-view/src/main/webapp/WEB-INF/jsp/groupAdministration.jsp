@@ -48,6 +48,7 @@
               <c:if test="${group.editable}">
                 <div class="inline-block pull-right management-block">
                   <span id='editGroup' class="icon-pencil management-element"></span>
+                  <span id='deleteGroup' class="icon-trash management-element"></span>
                 </div>
               </c:if>
             </td>

@@ -26,11 +26,9 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.transaction.annotation.Transactional
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import static org.jtalks.jcommune.service.security.AdministrationGroup.*
-
 /**
  * @author Oleg Tkachenko
  */
@@ -86,9 +84,6 @@ class AdministrationControllerTest extends Specification {
             groups.isExist(groupDto.name)
     }
 
-    /**
-     * Next tests will be ignored since we don't have such logic.
-     */
     def 'user without admin rights cannot edit groups'() {
         given: 'user logged in but doesn`t have admin rights, random group created'
             def session = users.signInAsRegisteredUser(forum)
@@ -135,6 +130,33 @@ class AdministrationControllerTest extends Specification {
         and: 'Group is not edited'
             groups.assertDoesNotExist(groupDto.name)
         where: 'notEditable - list of not editable group names'
+            notEditable << [ADMIN, USER, BANNED_USER]
+    }
+
+    def 'user with admin rights can delete group'() {
+        given: 'User logged in and has admin rights'
+            def session = users.signInAsAdmin(forum)
+        and: 'group created'
+            def groupDto = Groups.randomDto()
+            groups.create(groupDto, session)
+        when: 'User attempts to delete group'
+            def groupId = groupsService.getIdByName(groupDto.name)
+            groups.delete(groupId, session)
+        then: 'group is deleted'
+            groups.assertDoesNotExist(groupDto.name)
+    }
+
+    def 'must not be able to delete predefined group'() {
+        given: 'User logged in and has admin rights'
+            def session = users.signInAsAdmin(forum)
+        when: 'User attempts to delete predefined group'
+            def groupId = groupsService.getIdByName(notEditable.name)
+            groups.delete(groupId, session)
+        then: 'Validation error'
+            thrown(WrongResponseException)
+        and: 'Group is not deleted'
+            groups.isExist(notEditable.name)
+        where: 'notEditable - list of predefined group names'
             notEditable << [ADMIN, USER, BANNED_USER]
     }
 }

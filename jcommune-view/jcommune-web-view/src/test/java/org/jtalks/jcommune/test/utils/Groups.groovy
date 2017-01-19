@@ -72,6 +72,14 @@ class Groups {
         assertJsonResponseResult(result)
     }
 
+    void delete(long groupId, HttpSession session) {
+        def result = mockMvc.perform(delete("/group/${groupId}")
+                .session(session as MockHttpSession))
+                .andReturn()
+        isAccessGranted(result)
+        assertJsonResponseResult(result)
+    }
+
     void assertDoesNotExist(String groupName) {
         def groups = groupDao.getAll()
         assert groups.find { it.name == groupName } == null,

@@ -17,6 +17,7 @@ package org.jtalks.jcommune.web.exception;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
@@ -70,6 +71,7 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
         String data = "";
         String exceptionMessage = ex.getMessage();
         try {
+            Assert.notNull(request.getInputStream());
             BufferedReader reader = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String line;
             StringBuilder stringBuilder = new StringBuilder();
@@ -77,7 +79,7 @@ public class PrettyLogExceptionResolver extends SimpleMappingExceptionResolver {
                 stringBuilder.append(line).append("\n");
             }
             data = stringBuilder.append(exceptionMessage).toString();
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             logger.warn("Could not parse data from request");
         }
         String queryString = request.getQueryString();

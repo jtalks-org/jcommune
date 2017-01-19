@@ -294,6 +294,15 @@ public class AdministrationController {
         return saveOrUpdateGroup(groupDto, result, locale);
     }
 
+    @RequestMapping(value = "/group/{groupId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JsonResponse deleteGroup(@PathVariable("groupId") Long groupId) throws org.jtalks.common.service.exceptions.NotFoundException {
+        checkForAdminPermissions();
+        Group group = groupService.get(groupId);
+        groupService.deleteGroup(group);
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
     /**
      * Returns redirect string to previous page
      *

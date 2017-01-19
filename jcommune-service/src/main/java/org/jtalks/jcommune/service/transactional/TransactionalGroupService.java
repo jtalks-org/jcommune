@@ -109,7 +109,10 @@ public class TransactionalGroupService extends AbstractTransactionalEntityServic
     @Override
     public void deleteGroup(Group group) throws NotFoundException {
         Assert.throwIfNull(group, "group");
-        
+        if (!isGroupEditable(group.getName())) {
+            logger.warn("Attempt to delete pre-defined usergoup {}", group.getName());
+            throw new OperationIsNotAllowedException("Pre-defined usergoup " + group.getName() + " cannot be deleted");
+        }
         for (User user : group.getUsers()) {
             user.getGroups().remove(group);
             userDao.saveOrUpdate((JCUser) user);

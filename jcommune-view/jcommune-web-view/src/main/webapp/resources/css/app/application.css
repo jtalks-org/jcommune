@@ -1239,11 +1239,12 @@ pre.prettyprint {
 
 .management-block {
     display: none;
-    cursor: pointer;
 }
 
 .management-element {
     opacity: 0.5;
+    margin-left: 10px;
+    cursor: pointer;
 }
 
 .management-element:hover {
