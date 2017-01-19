@@ -52,7 +52,7 @@
                 </div>
               </c:if>
             </td>
-            <input id="group-description" type="hidden" value="${group.description}"/>
+              <input id="group-description" type="hidden" value="<c:out value="${group.description}"/>"/>
           </tr>
         </c:forEach>
     </table>
