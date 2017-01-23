@@ -44,6 +44,17 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jtalks.jcommune</groupId>
+      <artifactId>jcommune-service</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.9.2</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
