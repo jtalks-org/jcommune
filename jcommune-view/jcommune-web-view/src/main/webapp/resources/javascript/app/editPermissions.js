@@ -74,8 +74,7 @@ $(function () {
                 content += "<div id='list-item" + groupsInfo[i].id + "' class='" + className +"'> "
                     + "<input type='checkbox' id='" + groupsInfo[i].id + "' /> \
                         <label data-original-title='" + groupsInfo[i].name + "' id='label" + groupsInfo[i].id
-                    + "' for='" + groupsInfo[i].id + "'><span id='span" + groupsInfo[i].id + "'>" + groupsInfo[i].name
-                    + "</span></label> </div>";
+                    + "' for='" + groupsInfo[i].id + "'><span id='span" + groupsInfo[i].id + "'></span></label> </div>";
             }
             content += "</div>";
             return content;
@@ -153,6 +152,8 @@ $(function () {
                     '#savePermission' : {'click':submitFunc}
                 }
             });
+
+            fillGroupListWith(availableGroups, selectedGroups);
 
             var selectAllAvailableFunc = function() {
                 $("#groupListAvailable input[type='checkbox']").each(function() {
@@ -262,6 +263,7 @@ $(function () {
                 $("#selectAllAlreadyAdded").bind('click', selectAllAlreadyAddedFunc);
                 enableTooltipsOnLongNamesFor(selectedGroups);
                 enableTooltipsOnLongNamesFor(availableGroups);
+                fillGroupListWith(availableGroups, selectedGroups);
             }
 
             /**
@@ -277,6 +279,19 @@ $(function () {
                 }
             }
 
+            /**
+             * Fills groups names with jQuery in manage permission dialog after dialog creation
+             * or when group list is modified. This is protection from XSS vulnerability
+             * when group name contain some script.
+             */
+            function fillGroupListWith() {
+                Array.prototype.slice.call(arguments)
+                    .forEach(function (groups) {
+                        groups.forEach(function (group) {
+                            jDialog.dialog.find('#span' + group.id).text(group.name);
+                        });
+                    })
+            }
         }
     }
 });

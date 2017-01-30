@@ -31,14 +31,14 @@
 <body>
 <div class="container">
   <div class="permissions-branch-header">
-    <h1>${branch.name}</h1>
+    <h1><c:out value="${branch.name}"/></h1>
   </div>
 
   <div class="permissions-branch-header">
     <h3>
       <spring:message code="permissions.moderators"/>:
       <c:if test="${not empty branch.moderatorsGroup.name}">
-        <span id="moderators-group-name">["${branch.moderatorsGroup.name}"]</span><spring:message code="permissions.group"/>
+        <span id="moderators-group-name">["<c:out value="${branch.moderatorsGroup.name}"/>]</span><spring:message code="permissions.group"/>
       </c:if>
     </h3>
   </div>
@@ -46,16 +46,16 @@
   <div class="permissions">
     <c:forEach items="${permissions.permissions}" var="entry">
       <div class="panel panel-primary">
-        <div class="panel-heading">${entry.name}</div>
+        <div class="panel-heading"><c:out value="${entry.name}"/></div>
         <div class="panel-body">
           <div class="pull-left permission-type permission-allowed">
             <spring:message code="permissions.allowed"/>
           </div>
           <div class="pull-right edit-permission">
             <a class="btn editAllowedPermission"
-               data-permission="${entry.mask}"
-               data-branch="${branch.id}"
-               data-permission-name="${entry.name}"
+               data-permission="<c:out value="${entry.mask}"/>"
+               data-branch="<c:out value="${branch.id}"/>"
+               data-permission-name="<c:out value="${entry.name}"/>"
                href="#">
               <span><spring:message code="label.edit"/></span>
             </a>
@@ -63,7 +63,7 @@
           <div class="permissions-container">
             <ul class="permissions-list">
               <c:forEach items="${permissions.accessListMap[entry].allowed}" var="group">
-                <li> ${group.name}</li>
+                <li><c:out value="${group.name}"/></li>
               </c:forEach>
             </ul>
           </div>
@@ -75,9 +75,9 @@
           </div>
           <div class="pull-right edit-permission">
             <a class="btn editRestrictedPermission"
-               data-permission="${entry.mask}"
-               data-branch="${branch.id}"
-               data-permission-name="${entry.name}"
+               data-permission="<c:out value="${entry.mask}"/>"
+               data-branch="<c:out value="${branch.id}"/>"
+               data-permission-name="<c:out value="${entry.name}"/>"
                href="#">
               <span><spring:message code="label.edit"/></span>
             </a>
@@ -85,7 +85,7 @@
           <div class="permissions-container">
             <ul class="permissions-list">
               <c:forEach items="${permissions.accessListMap[entry].restricted}" var="group">
-                <li> ${group.name}</li>
+                <li><c:out value="${group.name}"/></li>
               </c:forEach>
             </ul>
           </div>
