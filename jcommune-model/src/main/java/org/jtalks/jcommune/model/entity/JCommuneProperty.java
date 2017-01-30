@@ -103,8 +103,9 @@ public enum JCommuneProperty {
     /** title prefix - should be displayed at the beginning of the title of the every page */
     ALL_PAGES_TITLE_PREFIX,
     
-    COPYRIGHT
-    ;
+    COPYRIGHT,
+    /** List of email domains restricted to register with*/
+    EMAIL_DOMAINS_BLACK_LIST;
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCommuneProperty.class);

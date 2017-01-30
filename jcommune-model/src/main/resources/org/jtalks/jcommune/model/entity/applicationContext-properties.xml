@@ -35,6 +35,14 @@
         <property name="defaultValue" value="30"/>
     </bean>
 
+    <bean id="emailDomainsBlackListProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
+          factory-method="valueOf">
+        <constructor-arg type="java.lang.String" value="EMAIL_DOMAINS_BLACK_LIST"/>
+        <property name="propertyDao" ref="propertyDao"/>
+        <property name="name" value="jcommune.email_domains_black_list"/>
+        <property name="defaultValue" value=""/>
+    </bean>
+
     <bean id="avatarMaxSizeProperty" class="org.jtalks.jcommune.model.entity.JCommuneProperty"
           factory-method="valueOf">
         <constructor-arg type="java.lang.String" value="AVATAR_MAX_SIZE"/>

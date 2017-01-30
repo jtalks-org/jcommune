@@ -20,6 +20,7 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.plugin.api.core.ExtendedPlugin;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
@@ -42,6 +43,7 @@ import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
@@ -62,11 +64,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
+import static org.apache.commons.lang.StringUtils.substringAfter;
 
 
 /**
@@ -111,6 +111,7 @@ public class UserController {
     private final RetryTemplate retryTemplate;
     private final ComponentService componentService;
     private final GroupService groupService;
+    private final JCommuneProperty emailDomainsBlackListProperty;
 
     /**
      * @param userService              to delegate business logic invocation
@@ -124,7 +125,7 @@ public class UserController {
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService,
                           UserService plainPasswordUserService, MailService mailService,
                           RetryTemplate retryTemplate, ComponentService componentService,
-                          GroupService groupService) {
+                          GroupService groupService, @Qualifier("emailDomainsBlackListProperty") JCommuneProperty emailDomainsBlackListProperty) {
         this.userService = userService;
         this.authenticator = authenticator;
         this.pluginService = pluginService;
@@ -133,6 +134,7 @@ public class UserController {
         this.retryTemplate = retryTemplate;
         this.componentService = componentService;
         this.groupService = groupService;
+        this.emailDomainsBlackListProperty = emailDomainsBlackListProperty;
     }
 
     /**
@@ -280,14 +282,21 @@ public class UserController {
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
+    private boolean isEmailDomainInBlackList(RegisterUserDto registerUserDto) {
+        if (emailDomainsBlackListProperty == null || emailDomainsBlackListProperty.getValue() == null) return false;
+        String domain = substringAfter(registerUserDto.getUserDto().getEmail(), "@");
+        List<String> blackList = Arrays.asList(emailDomainsBlackListProperty.getValue().replaceAll("\\s+","").split(","));
+        return blackList.contains(domain);
+    }
+
     /**
      * Detects the presence honeypot captcha filing error.
      * If honeypot captcha filled it means that bot try to register. .
      * @see <a href="http://jira.jtalks.org/browse/JC-1750">JIRA issue</a>
      */
     private boolean isHoneypotCaptchaFilled(RegisterUserDto registerUserDto, String ip) {
-        if (registerUserDto.getHoneypotCaptcha() != null) {
-            LOGGER.debug("Bot tried to register. Username - {}, email - {}, ip - {}",
+        if (registerUserDto.getHoneypotCaptcha() != null || isEmailDomainInBlackList(registerUserDto)) {
+            LOGGER.warn("Bot tried to register. Username - {}, email - {}, ip - {}",
                         new String[]{registerUserDto.getUserDto().getUsername(),
                             registerUserDto.getUserDto().getEmail(),ip});
             return true;
