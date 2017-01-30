@@ -23,6 +23,7 @@ import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
+import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.plugin.api.core.ExtendedPlugin;
 import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
@@ -81,6 +82,7 @@ public class UserControllerTest {
     private RetryTemplate retryTemplate;
     private ComponentService componentService;
     private GroupService groupService;
+    private JCommuneProperty emailDomainsBlackListProperty;
 
     @BeforeMethod
     public void setUp() throws IOException {
@@ -99,7 +101,7 @@ public class UserControllerTest {
         when(securityFacade.getContext()).thenReturn(securityContext);
         when(request.getHeader("X-FORWARDED-FOR")).thenReturn("192.168.1.1");
         userController = new UserController(userService, authenticator, pluginService, userService,
-                mailService, retryTemplate, componentService, groupService);
+                mailService, retryTemplate, componentService, groupService, emailDomainsBlackListProperty);
     }
 
     @Test
