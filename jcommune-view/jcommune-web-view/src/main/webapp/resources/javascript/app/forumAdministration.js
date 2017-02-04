@@ -425,7 +425,7 @@ function showDeleteGroupDialog(event) {
     var groupId = groupRow.attr('id');
     var footerContent = ' \
             <button id="delete-group-cancel" class="btn">' + $labelCancel + '</button> \
-            <button id="delete-group-ok" class="btn btn-danger">' + $labelOk + '</button>';
+            <button id="delete-group-ok" class="btn btn-primary">' + $labelOk + '</button>';
 
     jDialog.createDialog({
         type: jDialog.confirmType,
