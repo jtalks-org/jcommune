@@ -75,7 +75,7 @@
                     <td colspan="4">
                       <select data-placeholder="<spring:message code="label.user.groups.select.placeHolder" />" class="user-groups-select" data-user-id="${user.id}" multiple="multiple" style="width: 100%">
                         <c:forEach var="group" items="${groups}">
-                          <option value="${group.id}">${group.name}</option>
+                          <option value="${group.id}"><c:out value="${group.name}"/></option>
                         </c:forEach>
                       </select>
                     </td>
