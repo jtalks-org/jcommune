@@ -78,7 +78,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
   <title>
     ${propertiesHolder.allPagesTitlePrefix}
-    ${esc.html(${question.title})}
+    ${HtmlEscape.escapeHtml5(${question.title})}
   </title>
 </head>
 <body>
@@ -86,7 +86,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="container">
   <div id="branch-header">
     <h1>
-      <a class="invisible-link" href="${request.contextPath}/topics/question/${question.id}">${esc.html(${question.title})}</a>
+      <a class="invisible-link" href="${request.contextPath}/topics/question/${question.id}">
+        ${HtmlEscape.escapeHtml5(${question.title})}
+      </a>
     </h1>
 
     <div id="right-block">
@@ -278,7 +280,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
     <form id="answerForm" action="${request.contextPath}/topics/question/${question.id}"
           method="POST" class='well anti-multipost submit-form $formVisibilityClass'>
       <form path="topicId"/>
-      #bbeditor(${messages.getString($labelAnswerType)} "" "${esc.html(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
+      #bbeditor(${messages.getString($labelAnswerType)} "" "${HtmlEscape.escapeHtml5(${postDto.bodyText})}" "bodyText" true ${messages.getString("label.answer.placeholder")})
     </form>
     <div id="antiMultiAnswers" class="well $antiMultianswerBtnVisibilityClass">
       <button id="antiMultiAnswersBtn" class="btn btn-primary">${messages.getString($labelAnswerType)}</button>

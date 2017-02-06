@@ -47,6 +47,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.LocaleResolver;
+import org.unbescape.html.HtmlEscape;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -81,6 +82,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     private static final String QUESTION = "question";
     private static final String POST_PAGE = "postPage";
     private static final String SUBSCRIBED = "subscribed";
+    private static final String HTML_ESCAPE = "HtmlEscape";
     private static final String CONVERTER = "converter";
     private static final String VIEW_LIST = "viewList";
     private static final String LIMIT_OF_POSTS_ATTRIBUTE = "postLimit";
@@ -211,6 +213,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getPosts())));
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(SUBSCRIBED, false);
+        data.put(HTML_ESCAPE, HtmlEscape.class);
         data.put(CONVERTER, BbToHtmlConverter.getInstance());
         data.put(VIEW_LIST, getLocationService().getUsersViewing(topic));
         data.put(POST_DTO, postDto);
@@ -275,6 +278,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(TOPIC_DTO, topicDto);
         data.put(EDIT_MODE, true);
+        data.put(HTML_ESCAPE, HtmlEscape.class);
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
     }
@@ -307,6 +311,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             data.put(TOPIC_DTO, topicDto);
             data.put(EDIT_MODE, true);
             data.put(RESULT, result);
+            data.put(HTML_ESCAPE, HtmlEscape.class);
             model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
             return PLUGIN_VIEW_NAME;
 
@@ -336,6 +341,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Map<String, Object> data = getDefaultModel(request);
         data.put(QEUSTION_TITLE, answer.getTopic().getTitle());
         data.put(POST_DTO, answerDto);
+        data.put(HTML_ESCAPE, HtmlEscape.class);
         model.addAttribute(CONTENT, getMergedTemplate(engine, ANSWER_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
     }
@@ -364,6 +370,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             data.put(QEUSTION_TITLE, answer.getTopic().getTitle());
             data.put(POST_DTO, postDto);
             data.put(RESULT, result);
+            data.put(HTML_ESCAPE, HtmlEscape.class);
             model.addAttribute(CONTENT, getMergedTemplate(engine, ANSWER_FORM_TEMPLATE_PATH, "UTF-8", data));
             return PLUGIN_VIEW_NAME;
 
