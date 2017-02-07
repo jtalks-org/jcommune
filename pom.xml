@@ -358,7 +358,7 @@
       <dependency>
         <groupId>org.kefirsf</groupId>
         <artifactId>kefirbb</artifactId>
-        <version>1.0</version>
+        <version>1.5</version>
       </dependency>
 
       <!--Mail-->
