@@ -23,7 +23,7 @@ get XSS attacks.</p>-->
 <!--See more docs on official site: http://kefir-bb.sourceforge.net/-->
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns="http://kefirsf.org/kefirbb/schema"
-               xsi:schemaLocation="http://kefirsf.org/kefirbb/schema http://kefirsf.org/kefirbb/schema/kefirbb-1.0.xsd">
+               xsi:schemaLocation="http://kefirsf.org/kefirbb/schema http://kefirsf.org/kefirbb/schema/kefirbb-1.2.xsd">
     <!-- XML escape symbols -->
     <scope name="escapeXml">
         <code priority="100">
@@ -252,12 +252,12 @@ get XSS attacks.</p>-->
     <!-- Insert image -->
     <code name="img1" priority="2">
         <pattern ignoreCase="true">[img]<var name="addr" regex=".*"/>[/img]</pattern>
-        <template><![CDATA[<a title="" href="]]><var name="addr"/><![CDATA[" class="pretty-photo"><img class="thumbnail" alt="" src="]]><var name="addr"/><![CDATA[" onError="imgError(this)" /></a>]]></template>
+        <template>&lt;a title="" href="<var name="addr"/>" class="pretty-photo"&gt;&lt;img class="thumbnail" alt="" src="<var name="addr"/>" onError="imgError(this)" /&gt;&lt;/a&gt;</template>
     </code>
 
     <code name="img2" priority="2">
         <pattern ignoreCase="true">[img][/img]</pattern>
-        <template><![CDATA[<a title="" href="/a" class="pretty-photo"><img class="thumbnail-default" alt="" src="/a" onError="imgError(this)" /></a>]]></template>
+        <template>&lt;a title="" href="/a" class="pretty-photo"&gt;&lt;img class="thumbnail-default" alt="" src="/a" onError="imgError(this)" /&gt;&lt;/a&gt;</template>
     </code>
 
     <!-- Links. http, https, mailto protocols -->
@@ -311,12 +311,12 @@ get XSS attacks.</p>-->
     <!-- Quote block -->
     <code name="quote">
         <pattern ignoreCase="true">[quote]<var inherit="true"/>[/quote]</pattern>
-        <template><![CDATA[<div class="quote bb_quote_container"><span class="bb_quote_title">Quote:</span><div class='bb_quote_content'>]]><var/><![CDATA[</div></div>]]></template>
+        <template>&lt;div class="quote bb_quote_container"&gt;&lt;span class="bb_quote_title"&gt;Quote:&lt;/span&gt;&lt;div class='bb_quote_content'&gt;<var/>&lt;/div&gt;&lt;/div&gt;</template>
     </code>
 
     <code name="quote_named">
         <pattern ignoreCase="true">[quote="<var name="author" inherit="true"/>"]<var name="content" inherit="true"/>[/quote]</pattern>
-        <template><![CDATA[<div class="quote bb_quote_container"><span class="bb_quote_title">]]><var name="author"/><![CDATA[:</span><div class='bb_quote_content'>]]><var name="content"/><![CDATA[</div></div>]]></template>
+        <template>&lt;div class="quote bb_quote_container"&gt;&lt;span class="bb_quote_title"&gt;<var name="author"/>:&lt;/span&gt;&lt;div class='bb_quote_content'&gt;<var name="content"/>&lt;/div&gt;&lt;/div&gt;</template>
     </code>
 
     <!-- Code block -->
@@ -328,7 +328,7 @@ get XSS attacks.</p>-->
     <!-- Offtopic block -->
     <code name="offtop">
         <pattern ignoreCase="true">[offtop]<var scope="basic"/>[/offtop]</pattern>
-        <template><![CDATA[<div class="offtop"><p>]]><var/><![CDATA[</p></div>]]></template>
+        <template>&lt;div class="offtop"&gt;&lt;p&gt;<var/>&lt;/p&gt;&lt;/div&gt;</template>
     </code>
 
     <!-- Simple table -->
