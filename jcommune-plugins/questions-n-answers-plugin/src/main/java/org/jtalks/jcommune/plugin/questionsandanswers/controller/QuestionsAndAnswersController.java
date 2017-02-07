@@ -38,6 +38,8 @@ import org.jtalks.jcommune.plugin.api.web.velocity.tool.JodaDateTimeTool;
 import org.jtalks.jcommune.plugin.api.web.velocity.tool.PermissionTool;
 import org.jtalks.jcommune.plugin.questionsandanswers.QuestionsAndAnswersPlugin;
 import org.jtalks.jcommune.plugin.questionsandanswers.dto.CommentDto;
+import org.kefirsf.bb.EscapeXmlProcessorFactory;
+import org.kefirsf.bb.TextProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.domain.PageImpl;
@@ -91,7 +93,11 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     private static final String QEUSTION_TITLE = "questionTitle";
     public static final String POST_ID = "postId";
     public static final String COMMENT_ID = "commentId";
+    private static final String HTML_ESCAPER = "htmlEscaper";
 
+    // custom processor is used for escaping of HTML because
+    // standard Velocity escaping utility not correct displays emoji.
+    private TextProcessor htmlEscaper = EscapeXmlProcessorFactory.getInstance().create();
 
     private BreadcrumbBuilder breadcrumbBuilder = new BreadcrumbBuilder();
 
@@ -212,6 +218,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(SUBSCRIBED, false);
         data.put(CONVERTER, BbToHtmlConverter.getInstance());
+        data.put(HTML_ESCAPER, htmlEscaper);
         data.put(VIEW_LIST, getLocationService().getUsersViewing(topic));
         data.put(POST_DTO, postDto);
         data.put(LIMIT_OF_POSTS_ATTRIBUTE, LIMIT_OF_POSTS_VALUE);
