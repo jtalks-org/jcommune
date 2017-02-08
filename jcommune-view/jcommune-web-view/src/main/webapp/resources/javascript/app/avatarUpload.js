@@ -76,6 +76,8 @@ $(document).ready(function () {
         action = $root + '/users/XHRavatarpreview';
     }
 
+    var fictiveButton = $("#upload").get(0);
+
     var uploader = new qq.FileUploaderBasic({
         button: fictiveButton,
         //server side uploading handler
