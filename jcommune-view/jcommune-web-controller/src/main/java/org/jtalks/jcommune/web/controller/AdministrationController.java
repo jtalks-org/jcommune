@@ -18,9 +18,7 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.validation.ValidationError;
 import org.jtalks.common.validation.ValidationException;
-import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
-import org.jtalks.jcommune.model.dto.GroupsPermissions;
-import org.jtalks.jcommune.model.dto.PermissionChanges;
+import org.jtalks.jcommune.model.dto.*;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -37,6 +35,7 @@ import org.jtalks.jcommune.web.dto.PermissionGroupsDto;
 import org.jtalks.jcommune.web.listeners.SessionSetupListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -65,6 +64,7 @@ public class AdministrationController {
      */
     public static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
     private static final String ACCESS_DENIED_MESSAGE = "access.denied";
+    static final int GROUP_USER_PAGE_SIZE = 20;
 
     private final ComponentService componentService;
     private final GroupService groupService;
@@ -295,11 +295,16 @@ public class AdministrationController {
     }
 
     @RequestMapping(value = "/group/{groupId}", method = RequestMethod.GET)
-    public ModelAndView getGroupUsers(@PathVariable("groupId") Long groupId)
+    public ModelAndView getGroupUsers(@PathVariable("groupId") long groupId,
+                                      @RequestParam(value = "page", defaultValue = "1", required = false) int page)
             throws org.jtalks.common.service.exceptions.NotFoundException {
         checkForAdminPermissions();
-        GroupDto groupDto = new GroupDto(groupId, groupService.get(groupId).getName(), groupService.getGroupUsers(groupId, 20));
-        return new ModelAndView("groupUserList").addObject("group", groupDto);
+        GroupDto groupDto = new GroupDto(groupService.get(groupId));
+        PageRequest pageRequest = new PageRequest(page, GROUP_USER_PAGE_SIZE);
+        Page<UserDto> pagedGroupUsers = groupService.getPagedGroupUsers(groupId, pageRequest);
+        return new ModelAndView("groupUserList")
+                .addObject("group", groupDto)
+                .addObject("groupUsersPage", pagedGroupUsers);
     }
 
     @RequestMapping(value = "/group/{groupId}", method = RequestMethod.DELETE)

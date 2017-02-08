@@ -17,10 +17,7 @@ package org.jtalks.jcommune.web.controller;
 import org.jtalks.common.model.entity.Component;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.BranchPermission;
-import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
-import org.jtalks.jcommune.model.dto.GroupsPermissions;
-import org.jtalks.jcommune.model.dto.PermissionChanges;
-import org.jtalks.jcommune.model.dto.UserDto;
+import org.jtalks.jcommune.model.dto.*;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.service.BranchService;
@@ -31,7 +28,6 @@ import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.BranchPermissionDto;
-import org.jtalks.jcommune.web.dto.GroupDto;
 import org.jtalks.jcommune.web.dto.PermissionGroupsDto;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
@@ -41,7 +37,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.ObjectError;
@@ -90,7 +85,6 @@ public class AdministrationControllerTest {
     PermissionManager permissionManager;
     @Mock
     GroupService groupService;
-
 
     private MockMvc mockMvc;
 
@@ -316,24 +310,5 @@ public class AdministrationControllerTest {
         when(groupService.getGroupNamesWithCountOfUsers()).thenReturn(expected);
         this.mockMvc.perform(get("/group/list").accept(MediaType.TEXT_HTML))
                 .andExpect(model().attribute("groups", expected));
-    }
-
-    @Test
-    public void groupAdministrationPageShouldContainListOfUsersInGroups() throws Exception {
-        setupComponentMock();
-        Group expectedGroup = new Group("Group name");
-        expectedGroup.setId(1L);
-        List<UserDto> expectedGroupUsers = new ArrayList<>();
-        expectedGroupUsers.add(new UserDto("user1", "user1@mail.ru", 1L));
-        expectedGroupUsers.add(new UserDto("user2", "user2@mail.ru", 2L));
-        expectedGroupUsers.add(new UserDto("user3", "user3@mail.ru", 3L));
-        mockMvc = MockMvcBuilders.standaloneSetup(administrationController).build();
-        when(groupService.getGroupUsers(expectedGroup.getId(), 20)).thenReturn(expectedGroupUsers);
-        when(groupService.get(expectedGroup.getId())).thenReturn(expectedGroup);
-        ResultActions perform = this.mockMvc.perform(get("/group/1").accept(MediaType.TEXT_HTML));
-        GroupDto groupDto = (GroupDto) perform.andReturn().getModelAndView().getModel().get("group");
-        assertEquals(groupDto.getId(), expectedGroup.getId());
-        assertEquals(groupDto.getName(), expectedGroup.getName());
-        assertEquals(groupDto.getUsers(), expectedGroupUsers);
     }
 }

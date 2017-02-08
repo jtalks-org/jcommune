@@ -59,6 +59,7 @@
         <prop key="org.springframework.beans.TypeMismatchException">/errors/400</prop>
         <prop key="org.springframework.security.access.AccessDeniedException">/errors/403</prop>
         <prop key="org.jtalks.jcommune.plugin.api.exceptions.NotFoundException">/errors/404</prop>
+        <prop key="org.jtalks.common.service.exceptions.NotFoundException">/errors/404</prop>
         <prop key="org.springframework.web.HttpRequestMethodNotSupportedException">/errors/405</prop>
         <prop key="org.springframework.security.web.authentication.rememberme.CookieTheftException">/login?login_error=2</prop>
       </props>

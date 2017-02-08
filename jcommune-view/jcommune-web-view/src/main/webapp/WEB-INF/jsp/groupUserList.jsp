@@ -17,6 +17,7 @@
 
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="jtalks" uri="http://www.jtalks.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <head>
@@ -40,8 +41,8 @@
             <th><spring:message code="label.group.user.email"/></th>
         </tr>
         </thead>
-        <c:forEach var="user" items="${group.users}">
-            <tr id='${user.id}' name='user-row' class="grid-row user-row-class">
+        <c:forEach var="user" items="${groupUsersPage.content}">
+            <tr id='${user.id}' class="grid-row user-row-class">
                 <td id="user-name">
                     <c:out value="${user.username}"/>
                 </td>
@@ -51,5 +52,12 @@
             </tr>
         </c:forEach>
     </table>
+    <div>
+        <div class="pagination pull-right forum-pagination">
+            <ul>
+                <jtalks:pagination uri="${group.id}" page="${groupUsersPage}"/>
+            </ul>
+        </div>
+    </div>
 </div>
 </body>

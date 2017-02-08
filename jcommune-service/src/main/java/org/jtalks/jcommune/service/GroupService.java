@@ -18,8 +18,10 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.service.EntityService;
 import org.jtalks.common.service.exceptions.NotFoundException;
 import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.dto.SecurityGroupList;
 import org.jtalks.jcommune.model.dto.UserDto;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -53,7 +55,7 @@ public interface GroupService extends EntityService<Group> {
      */
     List<Group> getByName(String name);
 
-    List<UserDto> getGroupUsers(long id, int count);
+    Page<UserDto> getPagedGroupUsers(long id, PageRequest pageRequest);
 
     /**
      * Delete group

@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.dao;
 
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.dto.UserDto;
 
 import java.util.List;
@@ -64,5 +65,7 @@ public interface GroupDao extends org.jtalks.common.model.dao.GroupDao {
      */
     List<GroupAdministrationDto> getGroupNamesWithCountOfUsers();
 
-    List<UserDto> getGroupUsers(long id, int count);
+    List<UserDto> getGroupUsersPage(long id, PageRequest pageRequest);
+
+    int getGroupUserCount(long id);
 }

@@ -107,6 +107,18 @@ abstract class Users {
         return new GroupsManager(fromDb, groupDao, userDao);
     }
 
+    def createdCountInGroupWithoutAccess(int count, String groupName) {
+        def group = groupDao.getGroupByName(groupName)
+        for(int i=0; i<count; i++) {
+            def user = new User();
+            def fromDb = new JCUser(user.username, user.email, encryptionService.encryptPassword(user.password))
+            fromDb.enabled = true
+            fromDb.addGroup(group)
+            userDao.saveOrUpdate(fromDb)
+            userDao.flush()
+        }
+    }
+
     def createdButNotActivated(User user) {
         def toCreate = new JCUser(user.username, 'sample@example.com', encryptionService.encryptPassword(user.password))
         userDao.saveOrUpdate(toCreate)

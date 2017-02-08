@@ -25,6 +25,7 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.transaction.TransactionConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
+import org.springframework.test.web.servlet.MvcResult
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
@@ -158,5 +159,26 @@ class AdministrationControllerTest extends Specification {
             groups.isExist(notEditable.name)
         where: 'notEditable - list of predefined group names'
             notEditable << [ADMIN, USER, BANNED_USER]
+    }
+
+    def 'user in group should paginated with 20 per page'() {
+        given: 'User logged in and has admin rights'
+            def session = users.signInAsAdmin(forum)
+        and: 'Group created'
+            def groupDto = Groups.randomDto()
+            groups.create(groupDto, session)
+        and: 'Users in group created'
+            users.createdCountInGroupWithoutAccess(45, groupDto.name)
+            def group = groupsService.getGroupByName(groupDto.name)
+            def groupUserList = group.users
+            Collections.sort(groupUserList, new GroupsService.UserByNameComparator())
+        when: 'User attempts to retrive paginated list of users in group'
+            MvcResult page1 = groups.getPagedGroupUsers(group.id, 1L, session)
+            MvcResult page2 = groups.getPagedGroupUsers(group.id, 2L, session)
+            MvcResult page3 = groups.getPagedGroupUsers(group.id, 3L, session)
+        then: 'List of users is paginated by 20 on page'
+            groups.assertGroupUserPage(page1, groupUserList.subList(0, 20))
+            groups.assertGroupUserPage(page2, groupUserList.subList(20, 40))
+            groups.assertGroupUserPage(page3, groupUserList.subList(40, 45))
     }
 }
