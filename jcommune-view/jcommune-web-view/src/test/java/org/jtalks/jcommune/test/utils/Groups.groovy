@@ -16,14 +16,20 @@ package org.jtalks.jcommune.test.utils
 
 import org.jtalks.common.model.entity.Group
 import org.jtalks.jcommune.model.dao.GroupDao
+import org.jtalks.jcommune.model.dto.UserDto
 import org.jtalks.jcommune.test.model.GroupDto
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockHttpSession
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MvcResult
+
 import javax.servlet.http.HttpSession
 
 import static io.qala.datagen.RandomShortApi.alphanumeric
+import static org.hamcrest.MatcherAssert.assertThat
+import static org.hamcrest.Matchers.is
 import static org.jtalks.common.model.entity.Group.GROUP_DESCRIPTION_MAX_LENGTH
 import static org.jtalks.common.model.entity.Group.GROUP_NAME_MAX_LENGTH
 import static org.jtalks.jcommune.test.utils.assertions.Assert.*
@@ -78,6 +84,21 @@ class Groups {
                 .andReturn()
         isAccessGranted(result)
         assertJsonResponseResult(result)
+    }
+
+    MvcResult getPagedGroupUsers(long groupId, long page, HttpSession session) {
+        def result = mockMvc.perform(get("/group/${groupId}?page=${page}")
+                .session(session as MockHttpSession))
+                .andReturn()
+        return result
+    }
+
+    void assertGroupUserPage(page, groupUserList) {
+        Page<UserDto> pagedGroupUsers = page.modelAndView.getModel().get("groupUsersPage")
+        assertThat(pagedGroupUsers.content.size(), is(groupUserList.size()));
+        for (int i=0; i<pagedGroupUsers.content.size(); i++) {
+            assertThat(pagedGroupUsers.content.get(i).username, is(groupUserList.get(i).username))
+        }
     }
 
     void assertDoesNotExist(String groupName) {

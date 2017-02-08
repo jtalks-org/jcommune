@@ -15,9 +15,14 @@
 package org.jtalks.jcommune.test.service;
 
 import org.jtalks.common.model.entity.Group;
+import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.jtalks.jcommune.service.security.AdministrationGroup.*;
@@ -48,8 +53,18 @@ public class GroupsService {
         return groupDao.getGroupByName(groupName).getId();
     }
 
+    public Group getGroupByName(String groupName) {
+        return groupDao.getGroupByName(groupName);
+    }
+
     public Long save(Group group){
         groupDao.saveOrUpdate(group);
         return getIdByName(group.getName());
+    }
+
+    public static class UserByNameComparator implements Comparator<User>, Serializable {
+        public int compare(@Nonnull User u1, @Nonnull User u2) {
+            return u1.getUsername().compareTo(u2.getUsername());
+        }
     }
 }

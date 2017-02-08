@@ -71,6 +71,10 @@
       <![CDATA[select new org.jtalks.jcommune.model.dto.GroupAdministrationDto(g.id, g.name, g.description, g.users.size) from Group g order by g.name ASC]]>
   </query>
 
+  <query name="getCountUsersInGroup">
+      <![CDATA[select count(*) from Group g join g.users u where g.id = :id]]>
+  </query>
+
   <query name="getUserDTOListFromGroupById">
       <![CDATA[select new org.jtalks.jcommune.model.dto.UserDto(u.username, u.email, u.id) from Group g join g.users u where g.id = :id order by u.username ASC]]>
   </query>

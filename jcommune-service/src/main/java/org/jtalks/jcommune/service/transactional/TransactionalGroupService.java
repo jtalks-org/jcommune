@@ -24,6 +24,7 @@ import org.jtalks.common.validation.ValidationException;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
+import org.jtalks.jcommune.model.dto.PageRequest;
 import org.jtalks.jcommune.model.dto.SecurityGroupList;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -38,6 +39,8 @@ import org.jtalks.jcommune.service.security.acl.sids.UserSid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import ru.javatalks.utils.general.Assert;
 
 import java.util.List;
@@ -105,8 +108,10 @@ public class TransactionalGroupService extends AbstractTransactionalEntityServic
     }
 
     @Override
-    public List<UserDto> getGroupUsers(long id, int count) {
-        return dao.getGroupUsers(id, count);
+    public Page<UserDto> getPagedGroupUsers(long id, PageRequest pageRequest) {
+        int totalCount = dao.getGroupUserCount(id);
+        pageRequest.adjustPageNumber(totalCount);
+        return new PageImpl<>(dao.getGroupUsersPage(id, pageRequest), pageRequest, totalCount);
     }
 
     /**
