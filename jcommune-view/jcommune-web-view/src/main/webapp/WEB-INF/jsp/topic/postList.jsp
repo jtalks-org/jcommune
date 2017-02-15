@@ -284,7 +284,7 @@
       </div>
              
                    <span class="thumbnail post-userinfo-avatal wraptocenter">
-                        <img src="${pageContext.request.contextPath}/users/${post.userCreated.id}/avatar" alt=""/>
+                        <img src="${pageContext.request.contextPath}/users/${post.userCreated.id}/avatar?version=${post.userCreated.version}" alt=""/>
                    </span>
 
       <div>
