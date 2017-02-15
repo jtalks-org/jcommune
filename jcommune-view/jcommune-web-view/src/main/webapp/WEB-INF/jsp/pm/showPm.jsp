@@ -82,7 +82,7 @@
             <div class="well pm_message_view">
                 <div class="row pm_message_detail">
                     <div class="pull-left thumbnail pm_message_avatar">
-                        <img src="${pageContext.request.contextPath}/users/${pm.userFrom.id}/avatar" alt=""/>
+                        <img src="${pageContext.request.contextPath}/users/${pm.userFrom.id}/avatar?version=${pm.userFrom.version}" alt=""/>
                     </div>
                     <div class="pm_message_userTo_link">
                         <a href="${pageContext.request.contextPath}/users/${pm.userFrom.id}">
