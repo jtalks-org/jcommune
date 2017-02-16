@@ -6,7 +6,7 @@
   <parent>
     <artifactId>jcommune</artifactId>
     <groupId>org.jtalks.jcommune</groupId>
-    <version>3.11-SNAPSHOT</version>
+    <version>3.12-SNAPSHOT</version>
   </parent>
 
   <artifactId>jcommune-performance-tests</artifactId>

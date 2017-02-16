@@ -5,7 +5,7 @@
   <groupId>org.jtalks.jcommune</groupId>
   <artifactId>jcommune</artifactId>
   <packaging>pom</packaging>
-  <version>3.11-SNAPSHOT</version>
+  <version>3.12-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <modules>
     <module>jcommune-model</module>
