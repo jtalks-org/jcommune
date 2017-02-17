@@ -103,9 +103,9 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) {
-        //do not apply to the redirected requests: it's unnecessary and may cause error pages to work incorrectly
-        if (modelAndView != null
-                && (modelAndView.getViewName() == null || !modelAndView.getViewName().contains("redirect:"))) {
+        //do not apply to the redirected requests and error pages
+        if (modelAndView != null &&
+                (modelAndView.getViewName() == null || checkViewNameForErrorAndRedirection(modelAndView))) {
             modelAndView.addObject(PARAM_CMP_NAME, componentNameProperty.getValueOfComponent());
             modelAndView.addObject(PARAM_CMP_DESCRIPTION, componentDescriptionProperty.getValueOfComponent());
             modelAndView.addObject(PARAM_SHOW_DUMMY_LINKS, sapeShowDummyLinksProperty.booleanValue());
@@ -118,6 +118,11 @@ public class PropertiesInterceptor extends HandlerInterceptorAdapter {
             modelAndView.addObject(PARAM_AVATAR_MAX_SIZE, avatarMaxSizeProperty.getValue());
             modelAndView.addObject(PARAM_EMAIL_NOTIFICATION, emailNotificationProperty.booleanValue());
         }
+    }
+
+    private boolean checkViewNameForErrorAndRedirection(ModelAndView modelAndView) {
+        return  !modelAndView.getViewName().contains("redirect:") &&
+                !modelAndView.getViewName().contains("errors/");
     }
 
     private String getCopyrightWithYear() {
