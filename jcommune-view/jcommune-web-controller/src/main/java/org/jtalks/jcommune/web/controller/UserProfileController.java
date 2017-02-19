@@ -245,6 +245,7 @@ public class UserProfileController {
     private void setAvatarToUserProfileView(EditUserProfileDto editUserProfileDto, JCUser user) {
         byte[] avatar = user.getAvatar();
         editUserProfileDto.setAvatar(imageConverter.prepareHtmlImgSrc(avatar));
+        editUserProfileDto.setDefaultAvatarFlag(imageService.isDefaultImage(avatar));
     }
 
     /**

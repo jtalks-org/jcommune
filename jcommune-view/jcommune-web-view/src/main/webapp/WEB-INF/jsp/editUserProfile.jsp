@@ -32,10 +32,12 @@
         <i class="icon-picture"></i>
         <spring:message code="label.avatar.load"/>
       </a>
+    <c:if test="${!editedUser.avatar.isEmpty() && !editedUser.defaultAvatarFlag}">
       <a id="removeAvatar" href="#" class="btn btn-mini btn-danger space-left-big-nf"
          title="<spring:message code="label.avatar.remove" />">
         <i class="icon-remove icon-white"></i>
       </a>
+    </c:if>
     </div>
   </c:if>
 

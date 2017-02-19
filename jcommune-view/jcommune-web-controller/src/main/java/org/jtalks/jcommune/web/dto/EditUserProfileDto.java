@@ -39,6 +39,7 @@ public class EditUserProfileDto {
     private long userId;
     private String username;
     private String avatar;
+    private boolean defaultAvatarFlag;
     private Long userProfileVersion;
 
     @Valid
@@ -52,6 +53,14 @@ public class EditUserProfileDto {
 
     @Valid
     private UserContactsDto userContactsDto;
+
+    public boolean isDefaultAvatarFlag() {
+        return defaultAvatarFlag;
+    }
+
+    public void setDefaultAvatarFlag(Boolean defaultAvatarFlag) {
+        this.defaultAvatarFlag = defaultAvatarFlag;
+    }
 
     /**
      * Create instance with UserProfileDto. All required fields retrieved from JCUser.
