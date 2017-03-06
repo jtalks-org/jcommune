@@ -20,6 +20,7 @@ import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.mockito.Mock;
 import org.springframework.web.servlet.ModelAndView;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -144,9 +145,9 @@ public class PropertiesInterceptorTest {
         propertiesInterceptor.postHandle(null, null, null, null);        
     }
     
-    @Test
-    public void testPostHandleRedirectRequest() {
-        ModelAndView mav = new ModelAndView("redirect:/somewhere");
+    @Test(dataProvider = "redirectAndErrorHandleViewNames")
+    public void testPostHandleRedirectAndErrorRequest(String viewName) {
+        ModelAndView mav = new ModelAndView(viewName);
         propertiesInterceptor.postHandle(null, null, null, mav);
         
         assertNull(mav.getModel().get(PARAM_CMP_NAME));
@@ -161,10 +162,15 @@ public class PropertiesInterceptorTest {
         assertNull(mav.getModel().get("userDefinedCopyright"));
     }
 
+    @DataProvider
+    public Object[][] redirectAndErrorHandleViewNames() {
+        return new Object[][] {
+                {"redirect:/somewhere"},
+                {"/errors/errorcode"}
+        };
+    }
+
     private int getCurrentYear() {
         return new LocalDateTime().getYear();
     }
-    
-    
-
 }

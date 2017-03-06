@@ -173,7 +173,10 @@
         <listener-class>org.springframework.web.util.HttpSessionMutexListener</listener-class>
     </listener>
 
-
+    <error-page>
+        <error-code>400</error-code>
+        <location>/errors/400</location>
+    </error-page>
     <error-page>
         <error-code>403</error-code>
         <location>/errors/403</location>
@@ -185,6 +188,10 @@
     <error-page>
         <error-code>405</error-code>
         <location>/errors/405</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/errors/500</location>
     </error-page>
     <error-page>
         <error-code>501</error-code>
