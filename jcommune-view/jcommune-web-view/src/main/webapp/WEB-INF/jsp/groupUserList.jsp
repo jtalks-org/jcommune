@@ -34,7 +34,12 @@
             <c:out value="${group.name}"/>
         </h2>
     </div>
-    <table class="table table-bordered grid-table display">
+    <div class="pagination pull-right forum-pagination">
+        <ul>
+            <jtalks:pagination uri="${group.id}" page="${groupUsersPage}"/>
+        </ul>
+    </div>
+    <table class="table table-bordered grid-table table-layout-fixed display">
         <thead>
         <tr>
             <th><spring:message code="label.group.user.name"/></th>
@@ -52,12 +57,10 @@
             </tr>
         </c:forEach>
     </table>
-    <div>
-        <div class="pagination pull-right forum-pagination">
-            <ul>
-                <jtalks:pagination uri="${group.id}" page="${groupUsersPage}"/>
-            </ul>
-        </div>
+    <div class="pagination pull-right forum-pagination">
+        <ul>
+            <jtalks:pagination uri="${group.id}" page="${groupUsersPage}"/>
+        </ul>
     </div>
 </div>
 </body>
