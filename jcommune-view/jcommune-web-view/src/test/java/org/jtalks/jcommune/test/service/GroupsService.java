@@ -18,6 +18,8 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.GroupDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -25,20 +27,20 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.jtalks.jcommune.service.security.AdministrationGroup.*;
+import static org.jtalks.jcommune.service.security.AdministrationGroup.PREDEFINED_GROUP_NAMES;
 
 /**
  * @author Mikhail Stryzhonok
  */
+@Transactional
 public class GroupsService {
 
-    @Autowired
-    private GroupDao groupDao;
+    private @Autowired GroupDao groupDao;
 
     public void create() {
-        groupDao.saveOrUpdate(new Group(ADMIN.getName()));
-        groupDao.saveOrUpdate(new Group(BANNED_USER.getName()));
-        groupDao.saveOrUpdate(new Group(USER.getName()));
+        for (String predefinedGroupName : PREDEFINED_GROUP_NAMES) {
+            createIfNotExist(predefinedGroupName);
+        }
     }
 
     public List<Long> getIdsByName(List<String> groups) {
@@ -60,6 +62,11 @@ public class GroupsService {
     public Long save(Group group){
         groupDao.saveOrUpdate(group);
         return getIdByName(group.getName());
+    }
+
+    public void createIfNotExist(String name){
+        List<Group> groups = groupDao.getByName(name);
+        if (groups.isEmpty()) groupDao.saveOrUpdate(new Group(name));
     }
 
     public static class UserByNameComparator implements Comparator<User>, Serializable {

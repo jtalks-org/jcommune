@@ -12,28 +12,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.test.service
 
-import org.jtalks.common.model.entity.Component
-import org.jtalks.common.model.entity.ComponentType
-import org.jtalks.jcommune.model.dao.ComponentDao
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.transaction.annotation.Transactional
+package org.jtalks.jcommune.model.dao;
+
+
+import org.jtalks.common.model.dao.Crud;
+import org.jtalks.jcommune.model.entity.SpamRule;
+
+import java.util.List;
+
 /**
- * @author Mikhail Stryzhonok
+ * @author Oleg Tkachenko
  */
-@Transactional
-class ComponentService {
-
-    @Autowired
-    private ComponentDao componentDao
-
-    def createForumComponent() {
-        def forum = componentDao.getComponent()
-        if (forum == null){
-            forum = new Component("Forum", "Jtalks forum", ComponentType.FORUM)
-            componentDao.saveOrUpdate(forum)
-        }
-        return forum
-    }
+public interface SpamRuleDao extends Crud<SpamRule> {
+    List<SpamRule> getAllRules();
+    List<SpamRule> getEnabledRules();
 }

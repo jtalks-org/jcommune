@@ -15,9 +15,11 @@
 package org.jtalks.jcommune.test
 
 import org.jtalks.common.model.entity.Component
+import org.jtalks.jcommune.test.model.User
 import org.jtalks.jcommune.test.service.ComponentService
 import org.jtalks.jcommune.test.service.GroupsService
 import org.jtalks.jcommune.test.utils.Groups
+import org.jtalks.jcommune.test.utils.SpamRules
 import org.jtalks.jcommune.test.utils.Users
 import org.jtalks.jcommune.test.utils.exceptions.WrongResponseException
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,9 +41,11 @@ import static org.jtalks.jcommune.service.security.AdministrationGroup.*
 @Transactional
 class AdministrationControllerTest extends Specification {
     @Autowired Users users
+    @Autowired Users popUpUsers
     @Autowired Groups groups
     @Autowired GroupsService groupsService
     @Autowired ComponentService componentService
+    @Autowired SpamRules spamRules
     private Component forum
 
     def setup() {
@@ -159,6 +163,32 @@ class AdministrationControllerTest extends Specification {
             groups.isExist(notEditable.name)
         where: 'notEditable - list of predefined group names'
             notEditable << [ADMIN, USER, BANNED_USER]
+    }
+
+    def 'must not be able to register with e-mail from blacklist through AJAX'(){
+        given: 'spam rule created'
+            def banned_email_domain = "mail.com"
+            spamRules.createNewRule(".*@" + banned_email_domain)
+        when: 'user tries to register with banned email address'
+            def user = new User(email: 'some@' + banned_email_domain)
+            popUpUsers.singUp(user)
+        then:
+            thrown(WrongResponseException)
+        and: 'User is not created in database'
+            popUpUsers.isNotExist(user.username)
+    }
+
+    def 'must not be able to register with e-mail from blacklist through HTML-form'(){
+        given: 'spam rule created'
+            def banned_email_domain = "mail.com"
+            spamRules.createNewRule(".*@" + banned_email_domain)
+        when: 'user tries to register with banned email address'
+            def user = new User(email: 'some@' + banned_email_domain)
+            users.singUp(user)
+        then:
+            thrown(WrongResponseException)
+        and: 'User is not created in database'
+            users.isNotExist(user.username)
     }
 
     def 'user in group should paginated with 20 per page'() {

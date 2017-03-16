@@ -24,6 +24,7 @@ import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.GroupService;
+import org.jtalks.jcommune.service.SpamProtectionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.web.dto.BranchDto;
@@ -86,6 +87,9 @@ public class AdministrationControllerTest {
     @Mock
     GroupService groupService;
 
+    @Mock
+    private SpamProtectionService spamProtectionService;
+
     private MockMvc mockMvc;
 
     //
@@ -95,7 +99,7 @@ public class AdministrationControllerTest {
     public void init() {
         initMocks(this);
 
-        administrationController = new AdministrationController(componentService, messageSource, branchService, permissionManager,groupService);
+        administrationController = new AdministrationController(componentService, messageSource, branchService, permissionManager,groupService, spamProtectionService);
     }
 
     @Test

@@ -82,18 +82,22 @@ abstract class Users {
     abstract void assertMvcResult(MvcResult result)
 
     PermissionGranter created(User user) {
-        def group = groupDao.getGroupByName(AdministrationGroup.USER.name)
+        createdWithGroup(user, AdministrationGroup.USER)
+    }
+
+    PermissionGranter createdWithGroup(User user, AdministrationGroup group) {
+        def groupByName = groupDao.getGroupByName(group.name)
         def fromDb = userDao.getByUsername(user.username)
         if (!fromDb) {
             fromDb = new JCUser(user.username, user.email, encryptionService.encryptPassword(user.password))
             fromDb.enabled = true
-            fromDb.addGroup(group)
+            fromDb.addGroup(groupByName)
             userDao.saveOrUpdate(fromDb)
             userDao.flush()
         }
         //Needed for managing permissions
         setAuthentication(new JCUser(user.username, 'sample@example.com', user.password))
-        return new PermissionGranter(permissionManager, group);
+        return new PermissionGranter(permissionManager, groupByName);
     }
 
     GroupsManager createdWithoutAccess(User user) {
@@ -222,14 +226,12 @@ abstract class Users {
     }
 
     HttpSession signInAsAdmin() {
-        def adminUser = new User()
-        created(adminUser).withPermissionOn(componentService.createForumComponent(), GeneralPermission.ADMIN)
-        signIn(adminUser)
+        signInAsAdmin(componentService.createForumComponent())
     }
 
     HttpSession signInAsAdmin(Component forum) {
         def adminUser = User.newInstance()
-        created(adminUser).withPermissionOn(forum, GeneralPermission.ADMIN)
+        createdWithGroup(adminUser, AdministrationGroup.ADMIN).withPermissionOn(forum, GeneralPermission.ADMIN)
         signIn(adminUser)
     }
 

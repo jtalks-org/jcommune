@@ -23,7 +23,6 @@ import org.jtalks.jcommune.model.dto.RegisterUserDto;
 import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.AnonymousUser;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.plugin.api.core.ExtendedPlugin;
 import org.jtalks.jcommune.plugin.api.core.RegistrationPlugin;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
@@ -82,7 +81,7 @@ public class UserControllerTest {
     private RetryTemplate retryTemplate;
     private ComponentService componentService;
     private GroupService groupService;
-    private JCommuneProperty emailDomainsBlackListProperty;
+    private SpamProtectionService spamProtectionService;
 
     @BeforeMethod
     public void setUp() throws IOException {
@@ -95,13 +94,15 @@ public class UserControllerTest {
         componentService = mock(ComponentService.class);
         groupService = mock(GroupService.class);
         retryTemplate = new RetryTemplate();
+        spamProtectionService = mock(SpamProtectionService.class);
         retryTemplate.setRetryPolicy(new NeverRetryPolicy());
         SecurityContextFacade securityFacade = mock(SecurityContextFacade.class);
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityFacade.getContext()).thenReturn(securityContext);
         when(request.getHeader("X-FORWARDED-FOR")).thenReturn("192.168.1.1");
+        when(spamProtectionService.isEmailInBlackList(anyString())).thenReturn(false);
         userController = new UserController(userService, authenticator, pluginService, userService,
-                mailService, retryTemplate, componentService, groupService, emailDomainsBlackListProperty);
+                mailService, retryTemplate, componentService, groupService, spamProtectionService);
     }
 
     @Test

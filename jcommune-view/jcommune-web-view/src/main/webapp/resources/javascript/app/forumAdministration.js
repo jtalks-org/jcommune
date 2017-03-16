@@ -22,21 +22,25 @@ var REQUEST_ENTITY_TOO_LARGE = 413;
 
 
 $(function () {
+    $(this).find('.management-element').hide();
     $("#cmpName").on('click', showForumConfigurationDialog);
     $("#cmpDescription").on('click', showForumConfigurationDialog);
     $("#forumLogo").on('click', showForumConfigurationDialog);
     $("#userDefinedCopyright").on('click', editCopyright);
-
     $("[id^=branchLabel]").on('click', showBranchEditDialog);
     $("[id^=newBranch]").on('click', showNewBranchDialog);
-    $("[id^=newGroup]").on('click', showGroupManagementDialog);
-    $("[id^=editGroup]").on('click', showGroupManagementDialog);
+    $("[id^=newGroup], [id^=editGroup]").on('click', showGroupManagementDialog);
     $("[id^=deleteGroup]").on('click', showDeleteGroupDialog);
-    $("[name=group-row]").hover(
+    $("#addSpamRuleBtn, #editSpamRuleBtn").on('click', showSpamManagementDialog);
+    $("[id^=deleteSpamRuleBtn]").on('click', showDeleteSpamRuleDialog);
+    $("[id^=status]").on('change', sendChangeSpamRuleStatusRequest);
+    $("[name=group-row], [id^=spam-rule-]").hover(
         function () {
-            $(this).find('.management-block').show()},
+            $(this).find('.management-element').show()
+        },
         function () {
-            $(this).find('.management-block').hide()}
+            $(this).find('.management-element').hide()
+        }
     );
 });
 
@@ -645,7 +649,9 @@ function showGroupManagementDialog(event) {
         }
     });
 
-    if (editMode) fillGroupManagementDialogFields(groupName, groupDescription);
+    if (editMode) fillDialogInputFields([
+        {id: '#groupName', value: groupName},
+        {id: '#groupDescription', value: groupDescription}]);
 
     /**
      * Handles submit request from groupManagementDialog by sending POST or PUT request, with params
@@ -692,13 +698,173 @@ function showGroupManagementDialog(event) {
             }
         });
     }
+}
 
-    /**
-     *  When groupManagementDialog in 'edit group' mode this method fills up
-     *  the fields in this dialog.
-     */
-    function fillGroupManagementDialogFields(name, description) {
-        jDialog.dialog.find('#groupName').val(name);
-        jDialog.dialog.find('#groupDescription').val(description);
+function showSpamManagementDialog(event) {
+    event.preventDefault();
+    var spamRule = {
+        id: '',
+        regex: '',
+        description: '',
+        enabled: ''
+    };
+    var editMode = $(this).attr('id') == "editSpamRuleBtn";
+
+    var bodyContent =
+        Utils.createFormElement($spamProtectionRegexPlaceholder, 'spamRegex', 'text', 'first dialog-input') +
+        Utils.createFormElement($spamProtectionDescriptionPlaceholder, 'spamDescription', 'text', 'dialog-input') +
+        '<div class="clearfix"/>';
+
+    var footerContent = ' \
+          <button id="cancelSpamRuleButton" class="btn">' + $labelCancel + '</button> \
+          <button id="saveSpamRuleButton" class="btn btn-primary">' + $labelSave + '</button>';
+
+    jDialog.createDialog({
+        dialogId: 'spamProtectionDialog',
+        title: $labelNewSpamRule,
+        bodyContent: bodyContent,
+        footerContent: footerContent,
+        maxWidth: 350,
+        maxHeight: 500,
+        firstFocus: true,
+        tabNavigation: ['#spamRegex', '#spamDescription',
+            '#saveSpamRuleButton', '#cancelSpamRuleButton'],
+        handlers: {
+            '#saveSpamRuleButton': {'click': saveOrUpdateSpamRule},
+            '#cancelSpamRuleButton': {'static': 'close'}
+        }
+    });
+
+    if (editMode) {
+        var row = $(this).closest('tr');
+        spamRule = parseSpamRuleDataFrom(row);
+        fillDialogInputFields([
+            {id: '#spamRegex', value: spamRule.regex},
+            {id: '#spamDescription', value: spamRule.description}
+        ]);
     }
+
+    function saveOrUpdateSpamRule(event) {
+        event.preventDefault();
+        spamRule.regex = jDialog.dialog.find('#spamRegex').val();
+        spamRule.description = jDialog.dialog.find('#spamDescription').val();
+        if (!editMode) spamRule.enabled = true;
+
+        $.ajax({
+            url: $root + '/spam-rule/' + (editMode ? spamRule.id : ''),
+            type: editMode ? 'PUT' : 'POST',
+            contentType: 'application/json',
+            async: false,
+            data: JSON.stringify(spamRule),
+            success: function (response) {
+                if (response.status === 'SUCCESS') {
+                    location.reload();
+                } else {
+                    if (response.result instanceof Array) {
+                        jDialog.prepareDialog(jDialog.dialog);
+                        jDialog.showErrors(jDialog.dialog, response.result, 'spam', '');
+                    } else {
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: response.result
+                        });
+                    }
+                }
+            },
+            error: function () {
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelError500Detail
+                });
+            }
+        });
+    }
+}
+
+function fillDialogInputFields(elements) {
+    elements.forEach(function (element) {
+        jDialog.dialog.find(element.id).val(element.value);
+    });
+}
+
+function showDeleteSpamRuleDialog(event) {
+    event.preventDefault();
+    var spamRuleId = $(this).closest('tr').attr('data-rule-id');
+    var footerContent = ' \
+            <button id="delete-spam-rule-cancel" class="btn">' + $labelCancel + '</button> \
+            <button id="delete-spam-rule-ok" class="btn btn-primary">' + $labelOk + '</button>';
+
+    jDialog.createDialog({
+        type: jDialog.confirmType,
+        title: $labelDelete,
+        bodyMessage: $labelDeleteSpamRule,
+        footerContent: footerContent,
+        handlers: {
+            '#delete-spam-rule-ok': {'click': sendDeleteSpamRuleRequest},
+            '#delete-spam-rule-cancel': {'static': 'close'}
+        }
+    });
+
+    function sendDeleteSpamRuleRequest(event) {
+        event.preventDefault();
+        $.ajax({
+            url: $root + '/spam-rule/' + spamRuleId,
+            type: 'DELETE',
+            async: false,
+            success: function (response) {
+                if (response.status === 'SUCCESS') {
+                    $('#spam-rule-' + spamRuleId).remove();
+                    jDialog.closeDialog();
+                }
+            },
+            error: function () {
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelError500Detail
+                });
+            }
+        });
+    }
+}
+function sendChangeSpamRuleStatusRequest(event) {
+    event.preventDefault();
+    var row = $(this).closest('tr');
+    var spamRule = parseSpamRuleDataFrom(row);
+    $.ajax({
+        url: $root + '/spam-rule/' + spamRule.id,
+        type: 'PUT',
+        contentType: 'application/json',
+        async: false,
+        data: JSON.stringify(spamRule),
+        success: function (response) {
+            if (response.status === 'SUCCESS') {
+                successActivationHandler();
+            }
+        },
+        error: function () {
+            jDialog.createDialog({
+                type: jDialog.alertType,
+                bodyMessage: $labelError500Detail
+            });
+        }
+    });
+    function successActivationHandler() {
+        var message = spamRule.enabled ? $labelSpamRuleActivated : $labelSpamRuleDeactivated;
+        var statusMessageHolder = $("#status-message");
+        statusMessageHolder.html("<span>" + message + "</span>");
+        statusMessageHolder.show();
+        setTimeout(function () {
+            statusMessageHolder.hide();
+        }, 2000);
+    }
+}
+
+function parseSpamRuleDataFrom(row) {
+    var ruleId = row.attr('data-rule-id');
+    return {
+        id: ruleId,
+        regex: $("#regex-" + ruleId)[0].textContent,
+        description: $("#description-" + ruleId)[0].textContent,
+        enabled: $("#status-" + ruleId)[0].checked
+    };
 }

@@ -1238,7 +1238,7 @@ pre.prettyprint {
 }
 
 .management-block {
-    display: none;
+    display: inline-block;
 }
 
 .management-element {

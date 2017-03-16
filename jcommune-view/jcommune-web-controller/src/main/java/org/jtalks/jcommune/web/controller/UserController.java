@@ -19,8 +19,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
 import org.jtalks.jcommune.model.dto.RegisterUserDto;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
-import org.jtalks.jcommune.model.entity.JCommuneProperty;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.plugin.api.core.ExtendedPlugin;
 import org.jtalks.jcommune.plugin.api.core.Plugin;
@@ -43,7 +43,6 @@ import org.jtalks.jcommune.web.validation.editors.DefaultStringEditor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
@@ -64,9 +63,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.*;
-
-import static org.apache.commons.lang.StringUtils.substringAfter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -90,6 +90,7 @@ public class UserController {
     public static final String REG_SERVICE_CONNECTION_ERROR_URL = "redirect:/user/new?reg_error=1";
     public static final String REG_SERVICE_UNEXPECTED_ERROR_URL = "redirect:/user/new?reg_error=2";
     public static final String REG_SERVICE_HONEYPOT_FILLED_ERROR_URL = "redirect:/user/new?reg_error=3";
+    public static final String REG_SERVICE_SPAM_PROTECTION_ERROR_URL = "redirect:/user/new?reg_error=4";
     public static final String USER_SEARCH = "userSearch";
     public static final String NULL_REPRESENTATION = "null";
     public static final String MAIN_PAGE_REFERER = "/";
@@ -97,6 +98,7 @@ public class UserController {
     public static final String CONNECTION_ERROR = "connectionError";
     public static final String UNEXPECTED_ERROR = "unexpectedError";
     public static final String HONEYPOT_CAPTCHA_ERROR = "honeypotCaptchaNotNull";
+    public static final String SPAM_PROTECTION_ERROR = "spamProtectionError";
     public static final String LOGIN_DTO = "loginUserDto";
     public static final String USERS_ATTR_NAME ="users";
     public static final String GROUPS_ATTR_NAME ="groups";
@@ -111,7 +113,7 @@ public class UserController {
     private final RetryTemplate retryTemplate;
     private final ComponentService componentService;
     private final GroupService groupService;
-    private final JCommuneProperty emailDomainsBlackListProperty;
+    private final SpamProtectionService spamProtectionService;
 
     /**
      * @param userService              to delegate business logic invocation
@@ -120,12 +122,13 @@ public class UserController {
      * @param plainPasswordUserService strategy for authenticating by password without hashing
      * @param mailService              to send account confirmation
      * @param componentService         to check component permissions
+     * @param spamProtectionService    to check is email in blacklist
      */
     @Autowired
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService,
                           UserService plainPasswordUserService, MailService mailService,
                           RetryTemplate retryTemplate, ComponentService componentService,
-                          GroupService groupService, @Qualifier("emailDomainsBlackListProperty") JCommuneProperty emailDomainsBlackListProperty) {
+                          GroupService groupService, SpamProtectionService spamProtectionService) {
         this.userService = userService;
         this.authenticator = authenticator;
         this.pluginService = pluginService;
@@ -134,7 +137,7 @@ public class UserController {
         this.retryTemplate = retryTemplate;
         this.componentService = componentService;
         this.groupService = groupService;
-        this.emailDomainsBlackListProperty = emailDomainsBlackListProperty;
+        this.spamProtectionService = spamProtectionService;
     }
 
     /**
@@ -231,10 +234,15 @@ public class UserController {
         if (isHoneypotCaptchaFilled(registerUserDto, getClientIpAddress(request))) {
             return new ModelAndView(REG_SERVICE_HONEYPOT_FILLED_ERROR_URL);
         }
+        UserDto userDto = registerUserDto.getUserDto();
+        if (spamProtectionService.isEmailInBlackList(userDto.getEmail())) {
+            logBotInfo(userDto, request);
+            return new ModelAndView(REG_SERVICE_SPAM_PROTECTION_ERROR_URL);
+        }
         Map<String, String> registrationPlugins = getRegistrationPluginsHtml(request, locale);
         BindingResult errors;
         try {
-            registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
+            userDto.setLanguage(Language.byLocale(locale));
             errors = authenticator.register(registerUserDto);
         } catch (NoConnectionException e) {
             return new ModelAndView(REG_SERVICE_CONNECTION_ERROR_URL);
@@ -265,11 +273,16 @@ public class UserController {
                                          HttpServletRequest request,
                                          Locale locale) {
         if (isHoneypotCaptchaFilled(registerUserDto, getClientIpAddress(request))) {
-             return getCustomErrorJsonResponse(HONEYPOT_CAPTCHA_ERROR);
+            return getCustomErrorJsonResponse(HONEYPOT_CAPTCHA_ERROR);
+        }
+        UserDto userDto = registerUserDto.getUserDto();
+        if (spamProtectionService.isEmailInBlackList(userDto.getEmail())) {
+            logBotInfo(userDto, request);
+            return getCustomErrorJsonResponse(SPAM_PROTECTION_ERROR);
         }
         BindingResult errors;
         try {
-            registerUserDto.getUserDto().setLanguage(Language.byLocale(locale));
+            userDto.setLanguage(Language.byLocale(locale));
             errors = authenticator.register(registerUserDto);
         } catch (NoConnectionException e) {
             return getCustomErrorJsonResponse(CONNECTION_ERROR);
@@ -282,11 +295,10 @@ public class UserController {
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
-    private boolean isEmailDomainInBlackList(RegisterUserDto registerUserDto) {
-        if (emailDomainsBlackListProperty == null || emailDomainsBlackListProperty.getValue() == null) return false;
-        String domain = substringAfter(registerUserDto.getUserDto().getEmail(), "@");
-        List<String> blackList = Arrays.asList(emailDomainsBlackListProperty.getValue().replaceAll("\\s+","").split(","));
-        return blackList.contains(domain);
+    private void logBotInfo(UserDto userDto, HttpServletRequest request) {
+        LOGGER.warn("Spam protection alert! Bot tries to register. Username - [{}], email - [{}], ip - [{}]",
+                new String[]{userDto.getUsername(),
+                        userDto.getEmail(), getClientIpAddress(request)});
     }
 
     /**
@@ -295,7 +307,7 @@ public class UserController {
      * @see <a href="http://jira.jtalks.org/browse/JC-1750">JIRA issue</a>
      */
     private boolean isHoneypotCaptchaFilled(RegisterUserDto registerUserDto, String ip) {
-        if (registerUserDto.getHoneypotCaptcha() != null || isEmailDomainInBlackList(registerUserDto)) {
+        if (registerUserDto.getHoneypotCaptcha() != null) {
             LOGGER.warn("Bot tried to register. Username - {}, email - {}, ip - {}",
                         new String[]{registerUserDto.getUserDto().getUsername(),
                             registerUserDto.getUserDto().getEmail(),ip});

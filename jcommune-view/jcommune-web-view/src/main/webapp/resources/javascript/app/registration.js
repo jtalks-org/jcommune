@@ -220,6 +220,7 @@ function getCustomErrorMessage(customError) {
     switch (customError) {
         case 'connectionError' : return $labelRegistrationConnectionError;
         case 'honeypotCaptchaNotNull' : return $labelHoneypotCaptchaFilled;
+        case 'spamProtectionError' : return $labelSpamProtectionErrorMessage;
         default : return $labelRegistrationFailture;
     }
 }

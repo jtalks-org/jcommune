@@ -412,6 +412,10 @@
     <constructor-arg name="pluginLoader" ref="pluginLoader"/>
   </bean>
 
+  <bean id="spamProtectionService" class="org.jtalks.jcommune.service.transactional.TransactionalSpamProtectionService">
+    <constructor-arg ref="spamRuleDao"/>
+  </bean>
+
   <!--
   Cache beans for user related data.
   Now used for storing new private messages count.

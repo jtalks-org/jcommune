@@ -199,3 +199,11 @@ $labelGroupPlaceholderDescription = '<spring:message code="label.group.placehold
 $labelGroupCreateTitle = '<spring:message code="label.group.create.title" htmlEscape="true"/>';
 $labelGroupEditTitle = '<spring:message code="label.group.edit.title" htmlEscape="true"/>';
 $deleteGroupDialogMessage = '<spring:message code="label.group.delete.message" htmlEscape="true"/>';
+$labelSpamProtectionErrorMessage = '<spring:message code="label.spamProtection.block.message" htmlEscape="true"/>';
+$spamProtectionRegexPlaceholder = '<spring:message code="label.spamRule.regex" htmlEscape="true"/>';
+$spamProtectionDescriptionPlaceholder = '<spring:message code="label.spamRule.description" htmlEscape="true"/>';
+$labelNewSpamRule = '<spring:message code="label.spamRule.new" htmlEscape="true"/>';
+$labelSpamRuleEnabled = '<spring:message code="label.spamProtection.column.enabled" htmlEscape="true"/>';
+$labelDeleteSpamRule = '<spring:message code="label.spamRule.delete" htmlEscape="true"/>';
+$labelSpamRuleActivated = '<spring:message code="label.spamRule.activated" htmlEscape="true"/>';
+$labelSpamRuleDeactivated = '<spring:message code="label.spamRule.deactivated" htmlEscape="true"/>';

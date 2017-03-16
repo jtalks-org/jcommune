@@ -12,28 +12,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.jtalks.jcommune.test.service
+
+package org.jtalks.jcommune.test.utils
 
 import org.jtalks.common.model.entity.Component
-import org.jtalks.common.model.entity.ComponentType
-import org.jtalks.jcommune.model.dao.ComponentDao
-import org.springframework.beans.factory.annotation.Autowired
+import org.jtalks.jcommune.test.utils.page.PageUsers
 import org.springframework.transaction.annotation.Transactional
+
+import javax.servlet.http.HttpSession
 /**
- * @author Mikhail Stryzhonok
+ * @author Oleg Tkachenko
  */
 @Transactional
-class ComponentService {
+class TransactionalUsers extends PageUsers{
 
-    @Autowired
-    private ComponentDao componentDao
+    HttpSession signInAsAdmin() {
+        super.signInAsAdmin()
+    }
 
-    def createForumComponent() {
-        def forum = componentDao.getComponent()
-        if (forum == null){
-            forum = new Component("Forum", "Jtalks forum", ComponentType.FORUM)
-            componentDao.saveOrUpdate(forum)
-        }
-        return forum
+    HttpSession signInAsRegisteredUser(Component forum) {
+        super.signInAsRegisteredUser(forum)
     }
 }

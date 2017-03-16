@@ -18,15 +18,21 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.validation.ValidationError;
 import org.jtalks.common.validation.ValidationException;
+import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
+import org.jtalks.jcommune.model.dto.GroupsPermissions;
+import org.jtalks.jcommune.model.dto.PermissionChanges;
+import org.jtalks.jcommune.model.dto.SpamRuleDto;
 import org.jtalks.jcommune.model.dto.*;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
+import org.jtalks.jcommune.model.entity.SpamRule;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
 import org.jtalks.jcommune.service.BranchService;
 import org.jtalks.jcommune.service.ComponentService;
 import org.jtalks.jcommune.service.GroupService;
+import org.jtalks.jcommune.service.SpamProtectionService;
 import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.web.dto.BranchDto;
 import org.jtalks.jcommune.web.dto.BranchPermissionDto;
@@ -55,7 +61,11 @@ import java.util.Set;
  * @author Andrei Alikov
  *         Controller for processing forum administration related requests
  *         such as setting up Forum title, description, logo and fav icon
+ *         Some methods in controller are directly used from test classes,
+ *         and some of them are not @SuppressWarnings("unused") is used to
+ *         disable IDE warnings about methods without direct access.
  */
+@SuppressWarnings("unused")
 @Controller
 public class AdministrationController {
 
@@ -71,6 +81,7 @@ public class AdministrationController {
     private final MessageSource messageSource;
     private final BranchService branchService;
     private final PermissionManager permissionManager;
+    private final SpamProtectionService spamProtectionService;
 
     /**
      * Creates instance of the service
@@ -78,18 +89,21 @@ public class AdministrationController {
      * @param componentService service to work with the forum component
      * @param messageSource    to resolve locale-dependent messages
      * @param permissionManager
+     * @param spamProtectionService service to check is email in blacklist
      */
     @Autowired
     public AdministrationController(ComponentService componentService,
                                     MessageSource messageSource,
                                     BranchService branchService,
                                     PermissionManager permissionManager,
-                                    GroupService groupService) {
+                                    GroupService groupService,
+                                    SpamProtectionService spamProtectionService) {
         this.messageSource = messageSource;
         this.componentService = componentService;
         this.branchService = branchService;
         this.permissionManager = permissionManager;
         this.groupService = groupService;
+        this.spamProtectionService = spamProtectionService;
     }
 
     /**
@@ -313,6 +327,66 @@ public class AdministrationController {
         checkForAdminPermissions();
         Group group = groupService.get(groupId);
         groupService.deleteGroup(group);
+        return new JsonResponse(JsonResponseStatus.SUCCESS);
+    }
+
+    @RequestMapping(value = "/spamprotection", method = RequestMethod.GET)
+    public ModelAndView getSpamProtectionPage(){
+        checkForAdminPermissions();
+        List<SpamRuleDto> ruleDtos = SpamRuleDto.fromEntities(spamProtectionService.getAllRules());
+        return new ModelAndView("spamProtection").addObject("rules", ruleDtos);
+    }
+
+    @ResponseBody @RequestMapping(value = "/spam-rule", method = RequestMethod.GET)
+    public JsonResponse getAllSpamRules(){
+        checkForAdminPermissions();
+        List<SpamRuleDto> ruleDtos = SpamRuleDto.fromEntities(spamProtectionService.getAllRules());
+        return new JsonResponse(JsonResponseStatus.SUCCESS, ruleDtos);
+    }
+
+    @ResponseBody @RequestMapping(value = "/spam-rule", method = RequestMethod.POST)
+    public JsonResponse addSpamRule(@Valid @RequestBody SpamRuleDto ruleDto, BindingResult result) throws org.jtalks.common.service.exceptions.NotFoundException, InterruptedException {
+        checkForAdminPermissions();
+        if (result.hasFieldErrors() || result.hasGlobalErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
+        }
+        SpamRule spamRule = SpamRule.toEntity(ruleDto);
+        spamProtectionService.saveOrUpdate(spamRule);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, SpamRuleDto.fromEntity(spamRule));
+    }
+
+    @ResponseBody @RequestMapping(value = "/spam-rule/{ruleId}", method = RequestMethod.GET)
+    public JsonResponse getSpamRule(@PathVariable("ruleId") long ruleId){
+        checkForAdminPermissions();
+        SpamRuleDto spamRule = null;
+        try {
+            spamRule = SpamRuleDto.fromEntity(spamProtectionService.get(ruleId));
+        } catch (NotFoundException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL, e.getMessage());
+        }
+        return new JsonResponse(JsonResponseStatus.SUCCESS, spamRule);
+    }
+
+    @ResponseBody @RequestMapping(value = "/spam-rule/{ruleId}", method = RequestMethod.PUT)
+    public JsonResponse editSpamRule(@Valid @RequestBody SpamRuleDto ruleDto, BindingResult result, @PathVariable("ruleId") long ruleId) {
+        checkForAdminPermissions();
+        if (result.hasFieldErrors() || result.hasGlobalErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
+        }
+        SpamRule spamRule = SpamRule.toEntity(ruleDto);
+        spamRule.setId(ruleId);
+        try {
+            spamProtectionService.saveOrUpdate(spamRule);
+        } catch (org.jtalks.common.service.exceptions.NotFoundException e) {
+            return new JsonResponse(JsonResponseStatus.FAIL, e.getMessage());
+        }
+        return new JsonResponse(JsonResponseStatus.SUCCESS, SpamRuleDto.fromEntity(spamRule));
+    }
+
+    @ResponseBody @RequestMapping(value = "/spam-rule/{ruleId}", method = RequestMethod.DELETE)
+    public JsonResponse deleteSpamRule(@PathVariable("ruleId") long ruleId) {
+        checkForAdminPermissions();
+        spamProtectionService.deleteRule(ruleId);
         return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 

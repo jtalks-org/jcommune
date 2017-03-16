@@ -17,7 +17,8 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
   <import resource="classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"/>
   <import resource="classpath:/org/jtalks/jcommune/model/entity/applicationContext-properties.xml"/>
   <import resource="classpath:/org/jtalks/jcommune/service/applicationContext-service.xml"/>
@@ -27,10 +28,13 @@
   <import resource="classpath:security-context.xml"/>
   <import resource="classpath:spring-dispatcher-servlet.xml"/>
 
+  <tx:annotation-driven/>
+
   <util:list id="testFilters" value-type="javax.servlet.Filter">
     <ref bean="springSecurityFilterChain"/>
     <ref bean="loggingConfigurationFilter"/>
     <bean class="org.jtalks.jcommune.web.filters.HeadRequestTypeFilter"/>
+    <bean class="org.springframework.orm.hibernate3.support.OpenSessionInViewFilter"/>
   </util:list>
 
   <!-- SELECT @@IDENTITY does not work with HSQL db-->
@@ -44,9 +48,11 @@
   <bean class="org.jtalks.jcommune.test.utils.Branches"/>
   <bean class="org.jtalks.jcommune.test.utils.Groups"/>
   <bean class="org.jtalks.jcommune.test.utils.Topics"/>
-  <bean class="org.jtalks.jcommune.test.service.GroupsService"/>
-  <bean class="org.jtalks.jcommune.test.service.ComponentService"/>
+  <bean class="org.jtalks.jcommune.test.utils.SpamRules"/>
   <bean class="org.jtalks.jcommune.test.service.SectionService"/>
+  <bean class="org.jtalks.jcommune.test.service.GroupsService"><aop:scoped-proxy/></bean>
+  <bean class="org.jtalks.jcommune.test.service.ComponentService"><aop:scoped-proxy/></bean>
+  <bean name="transactionalUsers" class="org.jtalks.jcommune.test.utils.TransactionalUsers"><aop:scoped-proxy/></bean>
 
   <bean id="mockMvc" class="org.jtalks.jcommune.test.utils.MockMvcFactoryBean">
     <constructor-arg index="0" ref="testFilters"/>

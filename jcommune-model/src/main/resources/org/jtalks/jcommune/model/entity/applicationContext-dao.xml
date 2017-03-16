@@ -128,6 +128,9 @@
   <bean id="markBranchAsReadDao" parent="genericDao"
         class="org.jtalks.jcommune.model.dao.hibernate.BranchReadedMarkerHibernateDao"/>
 
+  <bean id="spamRuleDao" parent="genericDao"
+        class="org.jtalks.jcommune.model.dao.hibernate.SpamRuleHibernateDao"/>
+
   <!-- Declaration of Hibernate Search DAO beans -->
   <bean id="topicSearchDao"
         class="org.jtalks.jcommune.model.dao.search.hibernate.TopicHibernateSearchDao">
@@ -203,10 +206,9 @@
         <value>/org/jtalks/jcommune/model/entity/Property.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/SimplePage.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Component.hbm.xml</value>
-        <value>/org/jtalks/jcommune/model/entity/ViewTopicsBranches.hbm.xml
-        </value>
-        <value>/org/jtalks/jcommune/model/entity/PostComment.hbm.xml
-        </value>
+        <value>/org/jtalks/jcommune/model/entity/ViewTopicsBranches.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/PostComment.hbm.xml</value>
+        <value>/org/jtalks/jcommune/model/entity/SpamRule.xml</value>
         <value>/org/jtalks/jcommune/model/entity/Banner.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/ExternalLink.hbm.xml</value>
         <value>/org/jtalks/jcommune/model/entity/PluginConfiguration.hbm.xml</value>
