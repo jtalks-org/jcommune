@@ -49,7 +49,7 @@
                 <td>
                     <input type="checkbox" id="status-${rule.id}" <c:if test="${rule.enabled}">checked</c:if>/>
                     <div class="inline-block pull-right management-block">
-                        <span id='editSpamRuleBtn' class="icon-pencil management-element"></span><span id='deleteSpamRuleBtn' class="icon-trash management-element"></span>
+                        <span class="edit-spam-rule-btn icon-pencil management-element"></span><span class="delete-spam-rule-btn icon-trash management-element"></span>
                     </div>
                 </td>
             </tr>

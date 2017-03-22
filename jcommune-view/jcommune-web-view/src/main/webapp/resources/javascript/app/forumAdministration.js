@@ -29,12 +29,12 @@ $(function () {
     $("#userDefinedCopyright").on('click', editCopyright);
     $("[id^=branchLabel]").on('click', showBranchEditDialog);
     $("[id^=newBranch]").on('click', showNewBranchDialog);
-    $("[id^=newGroup], [id^=editGroup]").on('click', showGroupManagementDialog);
-    $("[id^=deleteGroup]").on('click', showDeleteGroupDialog);
-    $("#addSpamRuleBtn, #editSpamRuleBtn").on('click', showSpamManagementDialog);
-    $("[id^=deleteSpamRuleBtn]").on('click', showDeleteSpamRuleDialog);
+    $("[id^=newGroup], .edit-group").on('click', showGroupManagementDialog);
+    $(".delete-group").on('click', showDeleteGroupDialog);
+    $("#addSpamRuleBtn, .edit-spam-rule-btn").on('click', showSpamManagementDialog);
+    $(".delete-spam-rule-btn").on('click', showDeleteSpamRuleDialog);
     $("[id^=status]").on('change', sendChangeSpamRuleStatusRequest);
-    $("[name=group-row], [id^=spam-rule-]").hover(
+    $("[id^=group-], [id^=spam-rule-]").hover(
         function () {
             $(this).find('.management-element').show()
         },
@@ -425,8 +425,8 @@ function createIconUploader() {
 }
 function showDeleteGroupDialog(event) {
     event.preventDefault();
-    var groupRow = $(this).parents('[name=group-row]');
-    var groupId = groupRow.attr('id');
+    var groupRow = $(this).closest('tr');
+    var groupId = groupRow.attr("data-group-id");
     var footerContent = ' \
             <button id="delete-group-cancel" class="btn">' + $labelCancel + '</button> \
             <button id="delete-group-ok" class="btn btn-primary">' + $labelOk + '</button>';
@@ -615,14 +615,14 @@ function sendForumConfiguration(e) {
 function showGroupManagementDialog(event) {
     event.preventDefault();
     // Create a new group or edit an existing?
-    var editMode = $(this).attr('id') == "editGroup";
+    var editMode = this.className.indexOf("edit-group") >= 0;
 
     if (editMode){
         // find row with group and extract all data that we need.
-        var groupRow = $(this).parents('[name=group-row]');
-        var groupId = groupRow.attr('id');
-        var groupName = groupRow.find('#group-name')[0].textContent;
-        var groupDescription = groupRow.find('#group-description').val();
+        var groupRow = $(this).closest('tr');
+        var groupId = groupRow.attr('data-group-id');
+        var groupName = groupRow.attr('data-group-name');
+        var groupDescription = groupRow.attr('data-group-description');
     }
     var bodyContent =
         Utils.createFormElement($labelGroupPlaceholderName, 'groupName', 'text', 'first dialog-input') +
@@ -708,7 +708,7 @@ function showSpamManagementDialog(event) {
         description: '',
         enabled: ''
     };
-    var editMode = $(this).attr('id') == "editSpamRuleBtn";
+    var editMode = this.className.indexOf("edit-spam-rule-btn") >= 0;
 
     var bodyContent =
         Utils.createFormElement($spamProtectionRegexPlaceholder, 'spamRegex', 'text', 'first dialog-input') +

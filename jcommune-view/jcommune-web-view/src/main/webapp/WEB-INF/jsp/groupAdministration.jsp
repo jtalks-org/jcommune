@@ -42,19 +42,18 @@
         </tr>
         </thead>
         <c:forEach var="group" items="${groups}">
-          <tr id='${group.id}' name='group-row' class="grid-row group-edit-row">
-            <td id="group-name">
+          <tr id='group-${group.id}' data-group-id="<c:out value="${group.id}"/>" data-group-name="<c:out value="${group.name}"/>" data-group-description="<c:out value="${group.description}"/>" class="grid-row highlighted-row">
+            <td>
                 <a href="${pageContext.request.contextPath}/group/${group.id}"><c:out value="${group.name}"/></a>
             </td>
             <td><c:out value="${group.numberOfUsers}"/>
               <c:if test="${group.editable}">
                 <div class="inline-block pull-right management-block">
-                  <span id='editGroup' class="icon-pencil management-element"></span>
-                  <span id='deleteGroup' class="icon-trash management-element"></span>
+                  <span class="edit-group icon-pencil management-element"></span>
+                  <span class="delete-group icon-trash management-element"></span>
                 </div>
               </c:if>
             </td>
-              <input id="group-description" type="hidden" value="<c:out value="${group.description}"/>"/>
           </tr>
         </c:forEach>
     </table>

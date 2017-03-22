@@ -1238,6 +1238,8 @@ pre.prettyprint {
 }
 
 .management-block {
+    width: 52px;
+    height: 17px;
     display: inline-block;
 }
 

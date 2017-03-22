@@ -47,8 +47,8 @@
         </tr>
         </thead>
         <c:forEach var="user" items="${groupUsersPage.content}">
-            <tr id='${user.id}' class="grid-row user-row-class">
-                <td id="user-name">
+            <tr id='${user.id}' class="grid-row highlighted-row">
+                <td>
                     <c:out value="${user.username}"/>
                 </td>
                 <td>
