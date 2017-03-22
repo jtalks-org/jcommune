@@ -43,7 +43,7 @@ public class SecurityService implements UserDetailsService {
     private final AclManager aclManager;
     private final AclBuilders aclBuilders = new AclBuilders();
     private final SecurityContextFacade securityContextFacade;
-    private ThreadLocal<JCUser> cachedUser = new ThreadLocal<>();
+    private final static ThreadLocal<JCUser> CACHED_USER = new ThreadLocal<>();
 
     /**
      * Constructor creates an instance of service.
@@ -162,10 +162,10 @@ public class SecurityService implements UserDetailsService {
     }
 
     private JCUser updateCacheAndGet(long principalId){
-        JCUser cached = cachedUser.get();
+        JCUser cached = CACHED_USER.get();
         if (cached == null || cached.getId() != principalId){
             cached = JCUser.copyUser(userDao.loadById(principalId));
-            cachedUser.set(cached);
+            CACHED_USER.set(cached);
         }
         return cached;
     }
@@ -178,5 +178,12 @@ public class SecurityService implements UserDetailsService {
     private Object extractPrincipalFromAuthentication() {
         Authentication auth = securityContextFacade.getContext().getAuthentication();
         return auth != null ? auth.getPrincipal() : null;
+    }
+
+    /**
+     * Removes JCUser object from threadlocal storage
+     */
+    public void cleanThreadLocalStorage() {
+        CACHED_USER.remove();
     }
 }

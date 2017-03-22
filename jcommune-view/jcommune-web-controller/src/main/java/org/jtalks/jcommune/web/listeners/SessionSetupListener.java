@@ -22,14 +22,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.util.concurrent.TimeUnit;
+
+import static org.jtalks.jcommune.web.util.AppContextUtils.getBeanFormApplicationContext;
 
 /**
  * Performs initial session setup.
@@ -57,7 +57,7 @@ public class SessionSetupListener implements HttpSessionListener {
                     if (sessionTimeoutProperty == null){
                         ServletContext context = se.getSession().getServletContext();
                         sessionTimeoutProperty = getBeanFormApplicationContext(context, JCommuneProperty.class, "sessionTimeoutProperty");
-                        locationService = getBeanFormApplicationContext(context, LocationService.class, "locationService");
+                        locationService = getBeanFormApplicationContext(context, LocationService.class);
                         int seconds = extractValueFromProperty(sessionTimeoutProperty);
                         /* Zero property value should mean infinitive session.
                         To disable session expiration we should pass negative value here.
@@ -101,21 +101,6 @@ public class SessionSetupListener implements HttpSessionListener {
         if (securityContext == null) return null;
         Authentication authentication = ((SecurityContext) securityContext).getAuthentication();
         return authentication != null ? authentication.getPrincipal() : null;
-    }
-
-    /**
-     * Returns bean from application context.
-     *
-     * @param servletContext to find the web application context for
-     * @param tClass         interface or superclass of the actual class.
-     * @param beanName       the name of the bean to retrieve
-     * @return an instance of the bean
-     * @throws IllegalStateException if the root WebApplicationContext could not be found
-     * @throws ClassCastException    if the bean found in context is not assignable to the type of tClass
-     */
-    private static <T> T getBeanFormApplicationContext(ServletContext servletContext, Class<T> tClass, String beanName) {
-        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
-        return tClass.cast(context.getBean(beanName));
     }
 
     /**

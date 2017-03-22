@@ -172,6 +172,9 @@
     <listener>
         <listener-class>org.springframework.web.util.HttpSessionMutexListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>org.jtalks.jcommune.web.listeners.HttpRequestListener</listener-class>
+    </listener>
 
     <error-page>
         <error-code>400</error-code>
