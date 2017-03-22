@@ -64,7 +64,7 @@ class TopicControllerTest extends Specification {
     List<Filter> filters;
 
     def setup() {
-        groups.create()
+        groups.createPredefinedGroups()
     }
 
     def 'test create topic'() {

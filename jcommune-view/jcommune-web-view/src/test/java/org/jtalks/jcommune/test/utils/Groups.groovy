@@ -58,7 +58,7 @@ class Groups {
         assertView(result, "groupAdministration")
     }
 
-    void create(GroupDto group, HttpSession session) {
+    long create(GroupDto group, HttpSession session) {
         def result = mockMvc.perform(post("/group")
                 .contentType(MediaType.APPLICATION_JSON)
                 .session(session as MockHttpSession)
@@ -66,6 +66,7 @@ class Groups {
                 .andReturn()
         isAccessGranted(result)
         assertJsonResponseResult(result)
+        groupDao.getByName(group.name).get(0).id
     }
 
     void edit(GroupDto group, HttpSession session) {

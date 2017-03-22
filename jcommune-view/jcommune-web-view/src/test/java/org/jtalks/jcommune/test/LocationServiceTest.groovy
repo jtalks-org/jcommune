@@ -15,12 +15,10 @@
 
 package org.jtalks.jcommune.test
 
-import org.jtalks.common.model.entity.Group
 import org.jtalks.common.model.permissions.BranchPermission
 import org.jtalks.common.service.security.SecurityContextFacade
 import org.jtalks.jcommune.model.entity.AnonymousGroup
 import org.jtalks.jcommune.service.nontransactional.LocationService
-import org.jtalks.jcommune.service.security.AdministrationGroup
 import org.jtalks.jcommune.service.security.PermissionManager
 import org.jtalks.jcommune.test.model.User
 import org.jtalks.jcommune.test.service.ComponentService
@@ -60,8 +58,7 @@ class LocationServiceTest extends Specification {
     @Autowired private SessionAuthenticationStrategy authenticationStrategy
 
     def setup() {
-        groupsService.save(new Group(AdministrationGroup.USER.name))
-        groupsService.save(new Group(AnonymousGroup.ANONYMOUS_GROUP.name))
+        groupsService.createPredefinedGroups()
     }
 
     def 'user should be in a viewers list'() {

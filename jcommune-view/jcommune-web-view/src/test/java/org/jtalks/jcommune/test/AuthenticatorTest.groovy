@@ -15,7 +15,6 @@
 
 package org.jtalks.jcommune.test
 
-import org.jtalks.common.model.entity.Group
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException
 import org.jtalks.jcommune.service.Authenticator
 import org.jtalks.jcommune.service.exceptions.UserTriesActivatingAccountAgainException
@@ -30,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
 import static io.qala.datagen.RandomShortApi.alphanumeric
-
 /**
  * @author Oleg Tkachenko
  */
@@ -44,7 +42,7 @@ class AuthenticatorTest extends Specification {
     @Autowired Authenticator authenticator
 
     def setup() {
-        groupsService.save(new Group(AdministrationGroup.USER.name))
+        groupsService.createPredefinedGroups()
     }
 
     def 'test success account activation'(){

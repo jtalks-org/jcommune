@@ -37,7 +37,7 @@ public class GroupsService {
 
     private @Autowired GroupDao groupDao;
 
-    public void create() {
+    public void createPredefinedGroups() {
         for (String predefinedGroupName : PREDEFINED_GROUP_NAMES) {
             createIfNotExist(predefinedGroupName);
         }
@@ -59,12 +59,7 @@ public class GroupsService {
         return groupDao.getGroupByName(groupName);
     }
 
-    public Long save(Group group){
-        groupDao.saveOrUpdate(group);
-        return getIdByName(group.getName());
-    }
-
-    public void createIfNotExist(String name){
+    private void createIfNotExist(String name){
         List<Group> groups = groupDao.getByName(name);
         if (groups.isEmpty()) groupDao.saveOrUpdate(new Group(name));
     }

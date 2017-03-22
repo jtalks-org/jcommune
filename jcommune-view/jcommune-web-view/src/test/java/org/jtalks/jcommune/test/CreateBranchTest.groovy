@@ -49,7 +49,7 @@ class CreateBranchTest extends Specification {
     private Component forum
 
     def setup() {
-        groupsService.create()
+        groupsService.createPredefinedGroups()
         forum = componentService.createForumComponent()
     }
 

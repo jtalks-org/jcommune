@@ -49,7 +49,7 @@ class TopicSearchControllerTest extends Specification {
     @Autowired GroupsService groupsService;
 
     def setup() {
-        groupsService.create();
+        groupsService.createPredefinedGroups();
     }
 
     def 'must not be able to send GET request to indexing data from database'() {

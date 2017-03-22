@@ -42,7 +42,7 @@ class ReadPostsControllerTest extends Specification {
     @Autowired Branches branches;
 
     def setup() {
-        groupsService.create()
+        groupsService.createPredefinedGroups()
     }
 
     def 'must mark topic as read'() {

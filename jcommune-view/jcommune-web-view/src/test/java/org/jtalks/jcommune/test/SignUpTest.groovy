@@ -47,7 +47,7 @@ abstract class SignUpTest extends Specification {
 
     def setup() {
         initNonDefaultFailParameters()
-        groups.create();
+        groups.createPredefinedGroups();
     }
 
     def 'test sign up success'() {

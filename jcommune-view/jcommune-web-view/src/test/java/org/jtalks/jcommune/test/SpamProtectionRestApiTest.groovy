@@ -42,7 +42,7 @@ class SpamProtectionRestApiTest extends Specification{
     private Component forumComponent
 
     def setup() {
-        groupsService.create()
+        groupsService.createPredefinedGroups()
         forumComponent = componentService.createForumComponent()
     }
 

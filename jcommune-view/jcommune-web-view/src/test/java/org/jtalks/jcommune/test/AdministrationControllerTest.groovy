@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
 import static org.jtalks.jcommune.service.security.AdministrationGroup.*
+import static org.jtalks.jcommune.test.utils.Groups.randomDto
 /**
  * @author Oleg Tkachenko
  */
@@ -49,7 +50,7 @@ class AdministrationControllerTest extends Specification {
     private Component forum
 
     def setup() {
-        groupsService.create()
+        groupsService.createPredefinedGroups()
         forum = componentService.createForumComponent()
     }
 
@@ -73,7 +74,7 @@ class AdministrationControllerTest extends Specification {
         given: 'user logged in but doesn`t have admin rights'
             def session = users.signInAsRegisteredUser(forum)
         when: 'User attempts to create group'
-            def groupDto = Groups.randomDto()
+            def groupDto = randomDto()
             groups.create(groupDto, session)
         then: 'Access is denied'
             thrown(AccessDeniedException)
@@ -83,7 +84,7 @@ class AdministrationControllerTest extends Specification {
         given: 'User logged in and has admin rights'
             def session = users.signInAsAdmin(forum)
         when: 'User attempts to create group'
-            def groupDto = Groups.randomDto()
+            def groupDto = randomDto()
             groups.create(groupDto,session)
         then: 'Group is created'
             groups.isExist(groupDto.name)
@@ -91,11 +92,12 @@ class AdministrationControllerTest extends Specification {
 
     def 'user without admin rights cannot edit groups'() {
         given: 'user logged in but doesn`t have admin rights, random group created'
-            def session = users.signInAsRegisteredUser(forum)
-            def savedGroupId = groupsService.save(Groups.random())
+            def adminSession = users.signInAsAdmin()
+            def savedGroupId = groups.create(randomDto(), adminSession)
         when: 'User attempts to edit an existing group'
-            def groupDto = Groups.randomDto(id: savedGroupId)
-            groups.edit(groupDto, session)
+            def userSession = users.signInAsRegisteredUser(forum)
+            def groupDto = randomDto(id: savedGroupId)
+            groups.edit(groupDto, userSession)
         then: 'Access is denied'
             thrown(AccessDeniedException)
     }
@@ -103,9 +105,9 @@ class AdministrationControllerTest extends Specification {
     def 'only user with admin rights can edit editable group'() {
         given: 'User logged in and has admin rights, random group created'
             def session = users.signInAsAdmin(forum)
-            def savedGroupId = groupsService.save(Groups.random())
+            def savedGroupId = groups.create(randomDto(), session)
         when: 'User attempts to edit an existing editable group'
-            def groupDto = Groups.randomDto(id: savedGroupId)
+            def groupDto = randomDto(id: savedGroupId)
             groups.edit(groupDto, session)
         then: 'Group successfully edited'
             groups.isExist(groupDto.name)
@@ -115,9 +117,9 @@ class AdministrationControllerTest extends Specification {
     def 'must not be able to edit not existing group'() {
         given: 'User logged in and has admin rights, random group created'
             def session = users.signInAsAdmin(forum)
-            def savedGroupId = groupsService.save(Groups.random())
+            def savedGroupId = groups.create(randomDto(), session)
         when: 'User attempts to edit not existing group'
-            def groupDto = Groups.randomDto(id: savedGroupId + 1)
+            def groupDto = randomDto(id: savedGroupId + 1)
             groups.edit(groupDto, session)
         then: 'Group not found, error returned'
             thrown(WrongResponseException)
@@ -128,7 +130,7 @@ class AdministrationControllerTest extends Specification {
             def session = users.signInAsAdmin(forum)
         when: 'User attempts to edit not editable group'
             def groupId = groupsService.getIdByName(notEditable.name)
-            def groupDto = Groups.randomDto(id: groupId)
+            def groupDto = randomDto(id: groupId)
             groups.edit(groupDto, session)
         then: 'Validation error'
             thrown(WrongResponseException)
@@ -142,7 +144,7 @@ class AdministrationControllerTest extends Specification {
         given: 'User logged in and has admin rights'
             def session = users.signInAsAdmin(forum)
         and: 'group created'
-            def groupDto = Groups.randomDto()
+            def groupDto = randomDto()
             groups.create(groupDto, session)
         when: 'User attempts to delete group'
             def groupId = groupsService.getIdByName(groupDto.name)
@@ -195,7 +197,7 @@ class AdministrationControllerTest extends Specification {
         given: 'User logged in and has admin rights'
             def session = users.signInAsAdmin(forum)
         and: 'Group created'
-            def groupDto = Groups.randomDto()
+            def groupDto = randomDto()
             groups.create(groupDto, session)
         and: 'Users in group created'
             users.createdCountInGroupWithoutAccess(45, groupDto.name)
