@@ -140,7 +140,7 @@ Keymaps.defaultDialog = function (e) {
     //disable submit by enter
     if (e.keyCode == enterCode) {
         //if focus on button then do action of button, else click submit
-        if (!$(e.target).hasClass('btn')) {
+        if (!$(e.target).hasClass('btn') && !$(e.target).hasClass('close')) {
             e.preventDefault();
             jDialog.dialog.find('.btn-primary:first').click();
         }

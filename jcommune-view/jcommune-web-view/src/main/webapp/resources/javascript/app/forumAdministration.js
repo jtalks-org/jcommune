@@ -642,7 +642,7 @@ function showGroupManagementDialog(event) {
         maxHeight: 500,
         firstFocus: true,
         tabNavigation: ['#groupName', '#groupDescription',
-            '#saveGroupButton', '#cancelGroupButton'],
+            '#saveGroupButton', '#cancelGroupButton', 'button.close'],
         handlers: {
             '#saveGroupButton': {'click': sendNewGroup},
             '#cancelGroupButton': {'static': 'close'}
@@ -728,7 +728,7 @@ function showSpamManagementDialog(event) {
         maxHeight: 500,
         firstFocus: true,
         tabNavigation: ['#spamRegex', '#spamDescription',
-            '#saveSpamRuleButton', '#cancelSpamRuleButton'],
+            '#saveSpamRuleButton', '#cancelSpamRuleButton', 'button.close'],
         handlers: {
             '#saveSpamRuleButton': {'click': saveOrUpdateSpamRule},
             '#cancelSpamRuleButton': {'static': 'close'}
