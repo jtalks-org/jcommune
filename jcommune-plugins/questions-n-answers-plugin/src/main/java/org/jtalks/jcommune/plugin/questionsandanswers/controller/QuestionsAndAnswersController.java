@@ -133,6 +133,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(dto.getTopic()));
         data.put(TOPIC_DTO, dto);
         data.put(TOPIC_DRAFT, draft);
+        data.put(HTML_ESCAPER, htmlEscaper);
         data.put(EDIT_MODE, false);
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
@@ -164,6 +165,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         if (result.hasErrors()) {
             data.put(BREADCRUMB_LIST, breadcrumbBuilder.getNewTopicBreadcrumb(branch));
             data.put(TOPIC_DTO, topicDto);
+            data.put(HTML_ESCAPER, htmlEscaper);
             data.put(RESULT, result);
             model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
             return PLUGIN_VIEW_NAME;
@@ -281,6 +283,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Map<String, Object> data = getDefaultModel(request);
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(TOPIC_DTO, topicDto);
+        data.put(HTML_ESCAPER, htmlEscaper);
         data.put(EDIT_MODE, true);
         model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
@@ -312,6 +315,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             engine.init();
             data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
             data.put(TOPIC_DTO, topicDto);
+            data.put(HTML_ESCAPER, htmlEscaper);
             data.put(EDIT_MODE, true);
             data.put(RESULT, result);
             model.addAttribute(CONTENT, getMergedTemplate(engine, QUESTION_FORM_TEMPLATE_PATH, "UTF-8", data));
@@ -343,6 +347,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         Map<String, Object> data = getDefaultModel(request);
         data.put(QEUSTION_TITLE, answer.getTopic().getTitle());
         data.put(POST_DTO, answerDto);
+        data.put(HTML_ESCAPER, htmlEscaper);
         model.addAttribute(CONTENT, getMergedTemplate(engine, ANSWER_FORM_TEMPLATE_PATH, "UTF-8", data));
         return PLUGIN_VIEW_NAME;
     }
@@ -371,9 +376,9 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             data.put(QEUSTION_TITLE, answer.getTopic().getTitle());
             data.put(POST_DTO, postDto);
             data.put(RESULT, result);
+            data.put(HTML_ESCAPER, htmlEscaper);
             model.addAttribute(CONTENT, getMergedTemplate(engine, ANSWER_FORM_TEMPLATE_PATH, "UTF-8", data));
             return PLUGIN_VIEW_NAME;
-
         }
         getPluginPostService().updatePost(answer, postDto.getBodyText());
         return "redirect:" + QuestionsAndAnswersPlugin.CONTEXT + "/" + answer.getTopic().getId() + "#" + id;
