@@ -78,7 +78,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
   <script>#include("org/jtalks/jcommune/plugin/questionsandanswers/template/js/question.js")</script>
   <title>
     ${propertiesHolder.allPagesTitlePrefix}
-    ${esc.html(${question.title})}
+    ${htmlEscaper.process(${question.title})}
   </title>
 </head>
 <body>
@@ -86,7 +86,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 <div class="container">
   <div id="branch-header">
     <h1>
-      <a class="invisible-link" href="${request.contextPath}/topics/question/${question.id}">${esc.html(${question.title})}</a>
+      <a class="invisible-link" href="${request.contextPath}/topics/question/${question.id}">${htmlEscaper.process(${question.title})}</a>
     </h1>
 
     <div id="right-block">
