@@ -436,11 +436,13 @@ function showDeleteGroupDialog(event) {
         title: $labelDelete,
         bodyMessage: $deleteGroupDialogMessage,
         footerContent: footerContent,
+        tabNavigation: ['#delete-group-ok', '#delete-group-cancel', 'button.close'],
         handlers: {
             '#delete-group-ok': {'click': sendDeleteGroupRequest},
             '#delete-group-cancel': {'static':'close'}
         }
     });
+    $('#delete-group-ok').focus();
 
     function sendDeleteGroupRequest(event) {
         event.preventDefault();
@@ -799,11 +801,13 @@ function showDeleteSpamRuleDialog(event) {
         title: $labelDelete,
         bodyMessage: $labelDeleteSpamRule,
         footerContent: footerContent,
+        tabNavigation: ['#delete-spam-rule-ok', '#delete-spam-rule-cancel', 'button.close'],
         handlers: {
             '#delete-spam-rule-ok': {'click': sendDeleteSpamRuleRequest},
             '#delete-spam-rule-cancel': {'static': 'close'}
         }
     });
+    $('#delete-spam-rule-ok').focus();
 
     function sendDeleteSpamRuleRequest(event) {
         event.preventDefault();
