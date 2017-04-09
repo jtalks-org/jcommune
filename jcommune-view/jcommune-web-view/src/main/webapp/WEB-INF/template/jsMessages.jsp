@@ -95,6 +95,7 @@ $labelTopicMove = '<spring:message code="label.topic.move" htmlEscape="true"/>';
 $labelTopicMoveFull = '<spring:message code="label.topic.move.full" htmlEscape="true"/>';
 
 $labelReviewSays = '<spring:message code="label.review.says" htmlEscape="true"/>';
+$labelModified= '<spring:message code="label.modify" htmlEscape="true"/>';
 
 $labelUnexpectedError = '<spring:message code="label.unexpected.error" htmlEscape="true"/>';
 $labelAdd = '<spring:message code="label.add" htmlEscape="true"/>';

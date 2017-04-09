@@ -54,6 +54,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <div class="comment-date pull-left">
               ${dateTool.format($comment.creationDate)}
             </div>
+              #if($comment.userChanged)
+                  <div class="comment-editor-info">
+                      <jcommune:message>label.modify</jcommune:message>
+                      <a class="no-right-space" href="${request.contextPath}/users/$comment.userChanged.id"
+                                           data-original-title="${esc.html(${messages.getString("label.tips.view_profile")})}">
+                         ${esc.html($comment.userChanged.username)}
+                       </a>,
+                    ${dateTool.format($comment.modificationDate)}
+                  </div>
+              #end
             <div class="cleared"></div>
           </div>
           <div class="comment-body">

@@ -271,6 +271,17 @@ public final class PersistedObjectsFactory {
         return comment2;
     }
 
+    public static PostComment getModifiedPostComment() {
+        PostComment comment3 = new PostComment();
+        comment3.setAuthor(persist(ObjectsFactory.getRandomUser()));
+        comment3.setBody("Comment3 body");
+        comment3.setCreationDate(new DateTime(3));
+        comment3.setPost(getDefaultPost());
+        comment3.setUserChanged(persist(ObjectsFactory.getRandomUser()));
+        comment3.setModificationDate(new DateTime(4));
+        return comment3;
+    }
+
     public static PostVote getDefaultPostVote() {
         return new PostVote(getDefaultUser());
     }

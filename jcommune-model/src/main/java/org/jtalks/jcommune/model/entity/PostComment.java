@@ -43,6 +43,8 @@ public class PostComment extends Entity {
     private Post post;
     private Map<String, String> attributes = new HashMap<>();
     private DateTime deletionDate;
+    private DateTime modificationDate;
+    private JCUser userChanged;
 
     /**
      * @return the author
@@ -174,5 +176,21 @@ public class PostComment extends Entity {
      */
     public void setDeletionDate(DateTime deletionDate) {
         this.deletionDate = deletionDate;
+    }
+
+    public DateTime getModificationDate() {
+        return modificationDate;
+    }
+
+    public void setModificationDate(DateTime modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+
+    public JCUser getUserChanged() {
+        return userChanged;
+    }
+
+    public void setUserChanged(JCUser userChanged) {
+        this.userChanged = userChanged;
     }
 }
