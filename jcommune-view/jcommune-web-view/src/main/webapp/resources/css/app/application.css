@@ -586,6 +586,11 @@ div.signup {
     font-style: italic;
 }
 
+.review-footer{
+    font-style: italic;
+    float:right;
+}
+
 .review-group {
     background-color: #A0C0F0;
     border-radius: 5px 5px 5px 5px;

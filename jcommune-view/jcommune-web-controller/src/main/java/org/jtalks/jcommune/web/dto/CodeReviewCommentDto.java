@@ -14,6 +14,7 @@
  */
 package org.jtalks.jcommune.web.dto;
 
+import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.model.validation.annotations.NotBlankSized;
 
@@ -30,15 +31,14 @@ public class CodeReviewCommentDto {
     public static final String LINE_NUMBER_PROPERTY_NAME = "line_number";
 
     private long id;
-    
     private int lineNumber;
-
     @NotBlankSized(min = PostComment.BODY_MIN_LENGTH, max = PostComment.BODY_MAX_LENGTH)
     private String body;
-    
     private long authorId;
-    
     private String authorUsername;
+    private long editorId;
+    private String editorUsername;
+    private DateTime modificationDate;
 
     public CodeReviewCommentDto() {
     }
@@ -56,6 +56,11 @@ public class CodeReviewCommentDto {
         this.body = comment.getBody();
         this.authorId = comment.getAuthor().getId();
         this.authorUsername = comment.getAuthor().getUsername();
+        if (comment.getUserChanged() != null) {
+            this.editorId = comment.getUserChanged().getId();
+            this.editorUsername = comment.getUserChanged().getUsername();
+        }
+        this.modificationDate = comment.getModificationDate();
     }
 
     /**
@@ -128,6 +133,30 @@ public class CodeReviewCommentDto {
         this.authorUsername = authorUsername;
     }
 
+    public long getEditorId() {
+        return editorId;
+    }
+
+    public void setEditorId(long editorId) {
+        this.editorId = editorId;
+    }
+
+    public String getEditorUsername() {
+        return editorUsername;
+    }
+
+    public void setEditorUsername(String editorUsername) {
+        this.editorUsername = editorUsername;
+    }
+
+    public DateTime getModificationDate() {
+        return modificationDate;
+    }
+
+    public void setModificationDate(DateTime modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+
     /**
      * Gets list of attributes for comment. In this case contains only line_number property
      *
@@ -138,5 +167,4 @@ public class CodeReviewCommentDto {
         properties.put(LINE_NUMBER_PROPERTY_NAME, String.valueOf(lineNumber));
         return properties;
     }
-    
 }

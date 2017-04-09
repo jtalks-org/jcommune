@@ -183,6 +183,10 @@
     margin-bottom: 5px;
 }
 
+.comment-editor-info{
+    float: right;
+}
+
 .expand {
     width: 100%;
     color: #428bca;

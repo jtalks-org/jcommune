@@ -45,12 +45,12 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
         session = sessionFactory.getCurrentSession();
         PersistedObjectsFactory.setSession(session);
     }
-    
+
     /*===== Common methods =====*/
 
     @Test
     public void testGet() {
-        PostComment comment = PersistedObjectsFactory.getDefaultPostComment();
+        PostComment comment = PersistedObjectsFactory.getModifiedPostComment();
         session.save(comment);
         flushAndClearSession();
 
@@ -61,6 +61,8 @@ public class PostCommentHibernateDaoTest extends AbstractTransactionalTestNGSpri
         assertEquals(result.getBody(), comment.getBody());
         assertEquals(result.getCreationDate(), comment.getCreationDate());
         assertEquals(result.getAuthor(), comment.getAuthor());
+        assertEquals(result.getUserChanged(), comment.getUserChanged());
+        assertEquals(result.getModificationDate(), comment.getModificationDate());
     }
 
 

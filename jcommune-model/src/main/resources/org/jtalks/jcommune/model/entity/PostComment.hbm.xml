@@ -30,13 +30,18 @@
                   not-null="true"/>
         <property column="BODY" name="body" type="text"/>
         <property column="DELETION_DATE" name="deletionDate" type="org.joda.time.contrib.hibernate.PersistentDateTime" />
-        
+        <property column="MODIFICATION_DATE" name="modificationDate" type="org.joda.time.contrib.hibernate.PersistentDateTime" />
+
         <many-to-one name="author" column="AUTHOR_ID" class="org.jtalks.jcommune.model.entity.JCUser"
                      lazy="false"
                      not-null="true" foreign-key="FK_COMMENT_AUTHOR"/>
         <many-to-one name="post" column="POST_ID" class="org.jtalks.jcommune.model.entity.Post"
                      lazy="false"
                      not-null="true" foreign-key="FK_COMMENT_POST"/>
+        <many-to-one name="userChanged" column="USER_CHANGED" class="org.jtalks.jcommune.model.entity.JCUser"
+                     lazy="false"
+                     not-null="false" foreign-key="FK_USER_CHANGED"/>
+
         <map name="attributes" table="COMMENT_ATTRIBUTE" cascade="all-delete-orphan">
           <cache usage="read-write"/>
           <key column="COMMENT_ID" foreign-key="FK_COMMENT_ATTRIBUTE"/>

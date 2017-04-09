@@ -166,7 +166,7 @@ function CodeHighlighting() {
 	        Antimultipost.disableSubmit(formContainer);
 	
 	        
-			var data = {id: 0, authorId:0, authorUsername:""};
+			var data = {id: 0, authorId:0, authorUsername:"", editorId:0, editorUsername:"", modificationDate:""};
 	        data.lineNumber = $('#' + _this.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
 	        data.body = $('#' + _this.ADD_COMMENT_FORM_ID + ' [name=body]').val();
 			data.postId = $('#firstPostId').val();
@@ -370,7 +370,25 @@ function CodeHighlighting() {
 		reviewContainer.after(this.getCommentHtml(comment));
 		reviewContainer.remove();
 	}
-	
+
+    /**
+     * If comment was changed, builds HTML footer for this comment. Includes editor and modification date
+     * @param comment code review comment
+     * @return div (string) with footer
+     */
+    this.getCommentFooter = function (comment) {
+        var result = '';
+		if (comment.editorId !==0) {
+            result = '<div class="review-footer">'
+				+ $labelModified + ' '+ '<a href="' + baseUrl + '/users/' + comment.editorId + '">' + Utils.htmlEncode(comment.editorUsername) + '</a>'
+				+ '<br/><span class="post-update-mark">'
+					+ new Date(comment.modificationDate).toLocaleString()
+				+ '</span>'
+			+ '</div>';
+		}
+        return result;
+    }
+
 	/**
 	 * Build HTML piece for review comment
 	 * @param comment code review comment
@@ -409,13 +427,14 @@ function CodeHighlighting() {
 							+ ' ' + $labelReviewSays + ': '
 	                    + '</div>'
 	                    + '<div class="review-body">'
-							+ Utils.lf2br(Utils.htmlEncode(comment.body));
+							+ Utils.lf2br(Utils.htmlEncode(comment.body))
 	                    + '</div>'
+						+ this.getCommentFooter(comment)
 	                + '</div>'
 	            + '</div>';
 	    return result;
 	}
-	
+
 	/**
 	 * Build HTML piece for add comment form
 	 * @param submitButtonTitle title of submit button
