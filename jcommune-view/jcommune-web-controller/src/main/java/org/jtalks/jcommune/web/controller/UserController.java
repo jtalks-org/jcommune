@@ -47,8 +47,8 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.retry.RetryCallback;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.support.RetryTemplate;
-import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -114,6 +114,7 @@ public class UserController {
     private final ComponentService componentService;
     private final GroupService groupService;
     private final SpamProtectionService spamProtectionService;
+    private final RequestCache requestCache;
 
     /**
      * @param userService              to delegate business logic invocation
@@ -128,7 +129,8 @@ public class UserController {
     public UserController(UserService userService, Authenticator authenticator, PluginService pluginService,
                           UserService plainPasswordUserService, MailService mailService,
                           RetryTemplate retryTemplate, ComponentService componentService,
-                          GroupService groupService, SpamProtectionService spamProtectionService) {
+                          GroupService groupService, SpamProtectionService spamProtectionService,
+                          RequestCache requestCache) {
         this.userService = userService;
         this.authenticator = authenticator;
         this.pluginService = pluginService;
@@ -138,6 +140,7 @@ public class UserController {
         this.componentService = componentService;
         this.groupService = groupService;
         this.spamProtectionService = spamProtectionService;
+        this.requestCache = requestCache;
     }
 
     /**
@@ -396,10 +399,9 @@ public class UserController {
      * @return login view name or redirect to main page
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView loginPage(HttpServletRequest request) {
+    public ModelAndView loginPage(HttpServletRequest request, HttpServletResponse response) {
         JCUser currentUser = userService.getCurrentUser();
-
-        String referer = getReferer(request);
+        String referer = getReferer(request, response);
         if (currentUser.isAnonymous()) {
             ModelAndView mav = new ModelAndView(LOGIN);
             mav.addObject(REFERER_ATTR, referer);
@@ -416,11 +418,11 @@ public class UserController {
      * most cases when user browses our forum we put the referer on our own - the page user previously was at. This is
      * done so that we can sign in and sign out user and redirect him back to original page.
      */
-    private String getReferer(HttpServletRequest request) {
+    private String getReferer(HttpServletRequest request, HttpServletResponse response) {
         String referer = request.getHeader("referer");
+        SavedRequest savedRequest = requestCache.getRequest(request, response);
         HttpSession session = request.getSession(false);
         if (session != null) {
-            SavedRequest savedRequest = (SavedRequest) session.getAttribute(WebAttributes.SAVED_REQUEST);
             if (savedRequest != null) {
                 referer = savedRequest.getRedirectUrl();
             } else {

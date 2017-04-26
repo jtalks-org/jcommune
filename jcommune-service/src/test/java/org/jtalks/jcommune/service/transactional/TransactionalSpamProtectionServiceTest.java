@@ -15,6 +15,8 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import org.jtalks.common.service.exceptions.NotFoundException;
+import org.jtalks.common.validation.ValidationException;
 import org.jtalks.jcommune.model.dao.SpamRuleDao;
 import org.jtalks.jcommune.model.entity.SpamRule;
 import org.jtalks.jcommune.service.SpamProtectionService;
@@ -27,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.qala.datagen.RandomShortApi.alphanumeric;
+import static io.qala.datagen.RandomShortApi.bool;
 import static io.qala.datagen.RandomValue.between;
 import static io.qala.datagen.StringModifier.Impls.prefix;
 import static org.mockito.Mockito.when;
@@ -63,6 +66,13 @@ public class TransactionalSpamProtectionServiceTest {
         when(dao.getEnabledRules()).thenReturn(spamRules);
         boolean inBlackList = spamProtectionService.isEmailInBlackList(address);
         Assert.assertFalse(inBlackList);
+    }
+
+    @Test(expectedExceptions = ValidationException.class)
+    public void shouldThrowValidationExceptionIfRegexIsNotValid() throws NotFoundException {
+        String brokenRegex = "())";
+        SpamRule spamRule = new SpamRule(brokenRegex, alphanumeric(255), bool());
+        spamProtectionService.saveOrUpdate(spamRule);
     }
 
     private String randomDomain() {

@@ -48,7 +48,7 @@ public class SpamRuleDtoTest {
     public void convertFromEntityShouldCopyRequiredFields(){
         SpamRule expected = randomSpamRule();
         SpamRuleDto dto = SpamRuleDto.fromEntity(expected);
-        SpamRule actual = SpamRule.toEntity(dto);
+        SpamRule actual = dto.toEntity();
         actual.setUuid(expected.getUuid());
         assertReflectionEquals(expected, actual);
     }
@@ -59,7 +59,7 @@ public class SpamRuleDtoTest {
         List<SpamRuleDto> dtoList = SpamRuleDto.fromEntities(entities);
         for (int i = 0; i < entities.size(); i++) {
             SpamRule expected = entities.get(i);
-            SpamRule actual = SpamRule.toEntity(dtoList.get(i));
+            SpamRule actual = dtoList.get(i).toEntity();
             actual.setUuid(expected.getUuid());
             assertReflectionEquals(expected, actual);
         }

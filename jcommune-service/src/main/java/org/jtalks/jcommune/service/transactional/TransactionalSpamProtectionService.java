@@ -15,12 +15,17 @@
 
 package org.jtalks.jcommune.service.transactional;
 
+import com.google.common.collect.Sets;
 import org.jtalks.common.service.exceptions.NotFoundException;
+import org.jtalks.common.validation.ValidationError;
+import org.jtalks.common.validation.ValidationException;
 import org.jtalks.jcommune.model.dao.SpamRuleDao;
 import org.jtalks.jcommune.model.entity.SpamRule;
 import org.jtalks.jcommune.service.SpamProtectionService;
 
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static java.util.regex.Pattern.matches;
 
@@ -35,6 +40,7 @@ public class TransactionalSpamProtectionService extends AbstractTransactionalEnt
 
     @Override
     public boolean isEmailInBlackList(String email) {
+        if (email == null) return false;
         List<SpamRule> enabledRules = getDao().getEnabledRules();
         for (SpamRule enabledRule : enabledRules) {
             if (matches(enabledRule.getRegex(), email)) return true;
@@ -44,6 +50,11 @@ public class TransactionalSpamProtectionService extends AbstractTransactionalEnt
 
     @Override
     public void saveOrUpdate(SpamRule rule) throws NotFoundException {
+        try {
+            Pattern.compile(rule.getRegex());
+        } catch (PatternSyntaxException ex){
+            throw new ValidationException(Sets.newHashSet(new ValidationError("regex", ex.getDescription() + " near index " + ex.getIndex())));
+        }
         getDao().saveOrUpdate(rule);
     }
 

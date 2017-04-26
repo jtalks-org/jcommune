@@ -18,24 +18,28 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:security="http://www.springframework.org/schema/security"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
        ">
   <!-- Http Security -->
-  <security:http auto-config="true" use-expressions="true" create-session="ifRequired" disable-url-rewriting="true">
+  <!--
+      We need disable filtering of all resources e.g. js, css, images, errors to provide
+      filtering of only one request to every page. Otherwise bug JC-1743 will occur.
+  -->
+  <security:http pattern="/resources/**" security="none"/>
+  <security:http pattern="/admin/logo" security="none"/>
+  <security:http pattern="/admin/icon/**" security="none"/>
+  <security:http pattern="/errors/**" security="none"/>
+  <security:http pattern="/users/*/avatar" security="none"/>
 
+  <security:http pattern="/api/**" entry-point-ref="entryPoint403" use-expressions="true">
+    <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
+    <security:intercept-url pattern="/api/**" access="isAuthenticated()"/>
+  </security:http>
+
+  <security:http auto-config="true" use-expressions="true" create-session="ifRequired" disable-url-rewriting="true">
     <security:session-management session-authentication-strategy-ref="concurrentSessionControlStrategy"/>
     <security:custom-filter ref="rememberMeCheckFilter" before="FORM_LOGIN_FILTER"/>
-    <!--
-        We need disable filtering of all resources e.g. js, css, images, errors to provide 
-        filtering of only one request to every page. Otherwise bug JC-1743 will occur.
-    -->
-    <security:intercept-url pattern="/resources/**" filters="none"/>
-    <security:intercept-url pattern="/admin/logo" filters="none"/>
-    <security:intercept-url pattern="/admin/icon/**" filters="none"/>
-    <security:intercept-url pattern="/errors/**" filters="none"/>
-    <security:intercept-url pattern="/users/*/avatar" filters="none"/>
-    
     <security:intercept-url pattern="/posts/new" access="isAuthenticated()"/>
     <security:intercept-url pattern="/posts/*/delete" method="GET" access="isAuthenticated()"/>
     <security:intercept-url pattern="/posts/*" method="DELETE" access="isAuthenticated()"/>
@@ -109,6 +113,11 @@
     <security:intercept-url pattern="/spamprotection" access="isAuthenticated()"/>
     <security:intercept-url pattern="/spam-rule/**" access="isAuthenticated()"/>
   </security:http>
+
+  <bean id="entryPoint403" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+  <!-- Since HttpSessionRequestCache bean created for every <security:http> element declared in the context
+        we need to define another HttpSessionRequestCache bean to make @Autowire possible-->
+  <bean id="requestCache" class="org.springframework.security.web.savedrequest.HttpSessionRequestCache"/>
 
   <bean id="rememberMeServices"
         class="org.jtalks.jcommune.web.rememberme.ThrottlingRememberMeService">

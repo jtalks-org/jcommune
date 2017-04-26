@@ -46,7 +46,7 @@ class SpamProtectionRestApiTest extends Specification{
         forumComponent = componentService.createForumComponent()
     }
 
-    def '[POST] /spam-rule/ should create new spam rule'(){
+    def '[POST] /api/spam-rules/ should create new spam rule'(){
         given: 'random spam rule dto created'
             def session = transactionalUsers.signInAsAdmin()
             def dto = randomRule()
@@ -68,7 +68,7 @@ class SpamProtectionRestApiTest extends Specification{
             spamRules.assertNotExists(dto.regex)
     }
 
-    def '[GET] /spam-rule/{id} should return saved spam rule'(){
+    def '[GET] /api/spam-rules/{id} should return saved spam rule'(){
         given: 'spam rule created and saved'
             def session = transactionalUsers.signInAsAdmin()
             def created = spamRules.post(session, randomRule())
@@ -88,7 +88,7 @@ class SpamProtectionRestApiTest extends Specification{
             thrown(AccessDeniedException)
     }
 
-    def '[PUT] /spam-rule/{id} should update existed spam rule'(){
+    def '[PUT] /api/spam-rules/{id} should update existed spam rule'(){
         given: 'spam rule created and saved'
             def session = transactionalUsers.signInAsAdmin()
             def created = spamRules.post(session, randomRule())
@@ -114,7 +114,7 @@ class SpamProtectionRestApiTest extends Specification{
 
     }
 
-    def '[DELETE] /spam-rule/{id} should delete spam rule'(){
+    def '[DELETE] /api/spam-rules/{id} should delete spam rule'(){
         given: 'random spam rule created'
             def session = transactionalUsers.signInAsAdmin()
             def created = spamRules.post(session, randomRule())

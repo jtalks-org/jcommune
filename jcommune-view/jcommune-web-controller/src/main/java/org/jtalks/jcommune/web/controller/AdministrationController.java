@@ -18,14 +18,9 @@ import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.permissions.JtalksPermission;
 import org.jtalks.common.validation.ValidationError;
 import org.jtalks.common.validation.ValidationException;
-import org.jtalks.jcommune.model.dto.GroupAdministrationDto;
-import org.jtalks.jcommune.model.dto.GroupsPermissions;
-import org.jtalks.jcommune.model.dto.PermissionChanges;
-import org.jtalks.jcommune.model.dto.SpamRuleDto;
 import org.jtalks.jcommune.model.dto.*;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
-import org.jtalks.jcommune.model.entity.SpamRule;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
@@ -72,9 +67,9 @@ public class AdministrationController {
     /**
      * Session's marker attribute name for Administration mode
      */
-    public static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
+    static final String ADMIN_ATTRIBUTE_NAME = "adminMode";
     private static final String ACCESS_DENIED_MESSAGE = "access.denied";
-    static final int GROUP_USER_PAGE_SIZE = 20;
+    private static final int GROUP_USER_PAGE_SIZE = 20;
 
     private final ComponentService componentService;
     private final GroupService groupService;
@@ -335,59 +330,6 @@ public class AdministrationController {
         checkForAdminPermissions();
         List<SpamRuleDto> ruleDtos = SpamRuleDto.fromEntities(spamProtectionService.getAllRules());
         return new ModelAndView("spamProtection").addObject("rules", ruleDtos);
-    }
-
-    @ResponseBody @RequestMapping(value = "/spam-rule", method = RequestMethod.GET)
-    public JsonResponse getAllSpamRules(){
-        checkForAdminPermissions();
-        List<SpamRuleDto> ruleDtos = SpamRuleDto.fromEntities(spamProtectionService.getAllRules());
-        return new JsonResponse(JsonResponseStatus.SUCCESS, ruleDtos);
-    }
-
-    @ResponseBody @RequestMapping(value = "/spam-rule", method = RequestMethod.POST)
-    public JsonResponse addSpamRule(@Valid @RequestBody SpamRuleDto ruleDto, BindingResult result) throws org.jtalks.common.service.exceptions.NotFoundException, InterruptedException {
-        checkForAdminPermissions();
-        if (result.hasFieldErrors() || result.hasGlobalErrors()) {
-            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
-        }
-        SpamRule spamRule = SpamRule.toEntity(ruleDto);
-        spamProtectionService.saveOrUpdate(spamRule);
-        return new JsonResponse(JsonResponseStatus.SUCCESS, SpamRuleDto.fromEntity(spamRule));
-    }
-
-    @ResponseBody @RequestMapping(value = "/spam-rule/{ruleId}", method = RequestMethod.GET)
-    public JsonResponse getSpamRule(@PathVariable("ruleId") long ruleId){
-        checkForAdminPermissions();
-        SpamRuleDto spamRule = null;
-        try {
-            spamRule = SpamRuleDto.fromEntity(spamProtectionService.get(ruleId));
-        } catch (NotFoundException e) {
-            return new JsonResponse(JsonResponseStatus.FAIL, e.getMessage());
-        }
-        return new JsonResponse(JsonResponseStatus.SUCCESS, spamRule);
-    }
-
-    @ResponseBody @RequestMapping(value = "/spam-rule/{ruleId}", method = RequestMethod.PUT)
-    public JsonResponse editSpamRule(@Valid @RequestBody SpamRuleDto ruleDto, BindingResult result, @PathVariable("ruleId") long ruleId) {
-        checkForAdminPermissions();
-        if (result.hasFieldErrors() || result.hasGlobalErrors()) {
-            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
-        }
-        SpamRule spamRule = SpamRule.toEntity(ruleDto);
-        spamRule.setId(ruleId);
-        try {
-            spamProtectionService.saveOrUpdate(spamRule);
-        } catch (org.jtalks.common.service.exceptions.NotFoundException e) {
-            return new JsonResponse(JsonResponseStatus.FAIL, e.getMessage());
-        }
-        return new JsonResponse(JsonResponseStatus.SUCCESS, SpamRuleDto.fromEntity(spamRule));
-    }
-
-    @ResponseBody @RequestMapping(value = "/spam-rule/{ruleId}", method = RequestMethod.DELETE)
-    public JsonResponse deleteSpamRule(@PathVariable("ruleId") long ruleId) {
-        checkForAdminPermissions();
-        spamProtectionService.deleteRule(ruleId);
-        return new JsonResponse(JsonResponseStatus.SUCCESS);
     }
 
     /**

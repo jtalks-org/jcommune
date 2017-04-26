@@ -83,6 +83,10 @@ public class SpamRuleDto {
         return new SpamRuleDto(entity.getId(), entity.getRegex(), entity.getDescription(), entity.isEnabled());
     }
 
+    public SpamRule toEntity() {
+        return new SpamRule(this.getRegex(), this.getDescription(), this.isEnabled());
+    }
+
     public static List<SpamRuleDto> fromEntities(List<SpamRule> original) {
         List<SpamRuleDto> dtoList = new ArrayList<>(original.size());
         for (SpamRule spamRule : original) {

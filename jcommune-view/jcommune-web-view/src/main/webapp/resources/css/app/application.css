@@ -1242,6 +1242,14 @@ pre.prettyprint {
     background-color: #ffffff !important;
 }
 
+#spam-rules-table td {
+    max-width: 100px;
+}
+
+.status-column {
+    width: 65px !important;
+}
+
 .management-block {
     width: 52px;
     height: 17px;

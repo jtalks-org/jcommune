@@ -26,7 +26,6 @@
 </head>
 <body>
 <div class="container">
-    <div id="status-message" class="alert plugin-popup hide alert-success"></div>
     <div class="inline-block">
         <h2><spring:message code="label.spamProtection.settings"/></h2>
     </div>
@@ -39,13 +38,13 @@
         <tr>
             <th><spring:message code="label.spamProtection.column.rules"/></th>
             <th><spring:message code="label.spamProtection.column.description"/></th>
-            <th><spring:message code="label.spamProtection.column.enabled"/></th>
+            <th class="status-column"><spring:message code="label.spamProtection.column.enabled"/></th>
         </tr>
         </thead>
         <c:forEach var="rule" items="${rules}">
             <tr id="spam-rule-${rule.id}" data-rule-id="${rule.id}" class="grid-row highlighted-row">
-                <td id="regex-${rule.id}"><c:out value="${rule.regex}"/></td>
-                <td id="description-${rule.id}"><c:out value="${rule.description}"/></td>
+                <td id="regex-${rule.id}" class="word-wrap"><c:out value="${rule.regex}"/></td>
+                <td id="description-${rule.id}" class="word-wrap"><c:out value="${rule.description}"/></td>
                 <td>
                     <input type="checkbox" id="status-${rule.id}" <c:if test="${rule.enabled}">checked</c:if>/>
                     <div class="inline-block pull-right management-block">
