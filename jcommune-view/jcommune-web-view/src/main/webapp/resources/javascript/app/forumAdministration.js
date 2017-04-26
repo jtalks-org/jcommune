@@ -753,34 +753,31 @@ function showSpamManagementDialog(event) {
         if (!editMode) spamRule.enabled = true;
 
         $.ajax({
-            url: $root + '/spam-rule/' + (editMode ? spamRule.id : ''),
+            url: $root + '/api/spam-rules/' + (editMode ? spamRule.id : ''),
             type: editMode ? 'PUT' : 'POST',
             contentType: 'application/json',
             async: false,
             data: JSON.stringify(spamRule),
-            success: function (response) {
-                if (response.status === 'SUCCESS') {
-                    location.reload();
-                } else {
-                    if (response.result instanceof Array) {
-                        jDialog.prepareDialog(jDialog.dialog);
-                        jDialog.showErrors(jDialog.dialog, response.result, 'spam', '');
-                    } else {
-                        jDialog.createDialog({
-                            type: jDialog.alertType,
-                            bodyMessage: response.result
-                        });
-                    }
-                }
-            },
-            error: function () {
-                jDialog.createDialog({
-                    type: jDialog.alertType,
-                    bodyMessage: $labelError500Detail
-                });
-            }
+            success: successHandler,
+            statusCode: {403: showAccessDeniedAlert}
         });
+
+        function successHandler(response) {
+            if (response.status === 'FAIL' && response.result instanceof Array) {
+                jDialog.prepareDialog(jDialog.dialog);
+                jDialog.showErrors(jDialog.dialog, response.result, 'spam', '');
+            } else {
+                location.reload();
+            }
+        }
     }
+}
+
+function showAccessDeniedAlert() {
+    jDialog.createDialog({
+        type: jDialog.alertType,
+        bodyMessage: $labelAccessDeniedMessage
+    });
 }
 
 function fillDialogInputFields(elements) {
@@ -812,55 +809,37 @@ function showDeleteSpamRuleDialog(event) {
     function sendDeleteSpamRuleRequest(event) {
         event.preventDefault();
         $.ajax({
-            url: $root + '/spam-rule/' + spamRuleId,
+            url: $root + '/api/spam-rules/' + spamRuleId,
             type: 'DELETE',
             async: false,
+            statusCode: {403: showAccessDeniedAlert},
             success: function (response) {
                 if (response.status === 'SUCCESS') {
                     $('#spam-rule-' + spamRuleId).remove();
                     jDialog.closeDialog();
                 }
-            },
-            error: function () {
-                jDialog.createDialog({
-                    type: jDialog.alertType,
-                    bodyMessage: $labelError500Detail
-                });
             }
         });
     }
 }
 function sendChangeSpamRuleStatusRequest(event) {
     event.preventDefault();
-    var row = $(this).closest('tr');
+    var checkbox = $(this);
+    var row = checkbox.closest('tr');
     var spamRule = parseSpamRuleDataFrom(row);
     $.ajax({
-        url: $root + '/spam-rule/' + spamRule.id,
+        url: $root + '/api/spam-rules/' + spamRule.id,
         type: 'PUT',
         contentType: 'application/json',
         async: false,
         data: JSON.stringify(spamRule),
-        success: function (response) {
-            if (response.status === 'SUCCESS') {
-                successActivationHandler();
+        statusCode: {
+            403: function (result) {
+                showAccessDeniedAlert(result);
+                checkbox[0].checked = !checkbox[0].checked;
             }
-        },
-        error: function () {
-            jDialog.createDialog({
-                type: jDialog.alertType,
-                bodyMessage: $labelError500Detail
-            });
         }
     });
-    function successActivationHandler() {
-        var message = spamRule.enabled ? $labelSpamRuleActivated : $labelSpamRuleDeactivated;
-        var statusMessageHolder = $("#status-message");
-        statusMessageHolder.html("<span>" + message + "</span>");
-        statusMessageHolder.show();
-        setTimeout(function () {
-            statusMessageHolder.hide();
-        }, 2000);
-    }
 }
 
 function parseSpamRuleDataFrom(row) {

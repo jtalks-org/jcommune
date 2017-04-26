@@ -205,5 +205,7 @@ $spamProtectionDescriptionPlaceholder = '<spring:message code="label.spamRule.de
 $labelNewSpamRule = '<spring:message code="label.spamRule.new" htmlEscape="true"/>';
 $labelSpamRuleEnabled = '<spring:message code="label.spamProtection.column.enabled" htmlEscape="true"/>';
 $labelDeleteSpamRule = '<spring:message code="label.spamRule.delete" htmlEscape="true"/>';
-$labelSpamRuleActivated = '<spring:message code="label.spamRule.activated" htmlEscape="true"/>';
-$labelSpamRuleDeactivated = '<spring:message code="label.spamRule.deactivated" htmlEscape="true"/>';
+$labelAccessDeniedMessage = '<spring:message code="access.denied" htmlEscape="true"/>' + ' ' +
+                    '<spring:message code="label.accessDenied.detail" htmlEscape="true"/>' + ' ' +
+                    '<spring:message code="label.accessDenied.checkPrivilegies" htmlEscape="true"/>' + ' ' +
+                    '<spring:message code="label.back2main" htmlEscape="true"/>';

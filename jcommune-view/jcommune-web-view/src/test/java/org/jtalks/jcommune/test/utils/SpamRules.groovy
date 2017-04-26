@@ -50,7 +50,7 @@ class SpamRules {
     }
 
     SpamRuleDto get(HttpSession session, long id){
-        def result = mockMvc.perform(get("/spam-rule/${id}")
+        def result = mockMvc.perform(get("/api/spam-rules/${id}")
                 .session(session as MockHttpSession)
                 .contentType(MediaType.APPLICATION_JSON)).andReturn()
         isAccessGranted(result)
@@ -58,7 +58,7 @@ class SpamRules {
     }
 
     List<SpamRuleDto> getAll(HttpSession session){
-        def result = mockMvc.perform(get("/spam-rule/")
+        def result = mockMvc.perform(get("/api/spam-rules/")
                 .session(session as MockHttpSession)
                 .contentType(MediaType.APPLICATION_JSON)).andReturn()
         isAccessGranted(result)
@@ -68,7 +68,7 @@ class SpamRules {
     }
 
     SpamRuleDto post(HttpSession session, SpamRuleDto rule){
-        def result = mockMvc.perform(post('/spam-rule/')
+        def result = mockMvc.perform(post('/api/spam-rules/')
                 .session(session as MockHttpSession)
                 .content(JsonResponseUtils.pojoToJsonString(rule))
                 .contentType(MediaType.APPLICATION_JSON)).andReturn()
@@ -77,7 +77,7 @@ class SpamRules {
     }
 
     def put(HttpSession session, SpamRuleDto rule){
-        def result = mockMvc.perform(put("/spam-rule/${rule.id}")
+        def result = mockMvc.perform(put("/api/spam-rules/${rule.id}")
                 .session(session as MockHttpSession)
                 .content(JsonResponseUtils.pojoToJsonString(rule))
                 .contentType(MediaType.APPLICATION_JSON)).andReturn()
@@ -86,7 +86,7 @@ class SpamRules {
     }
 
     def delete(HttpSession session, long id){
-        def result = mockMvc.perform(delete("/spam-rule/${id}")
+        def result = mockMvc.perform(delete("/api/spam-rules/${id}")
                 .session(session as MockHttpSession)).andReturn()
         isAccessGranted(result)
     }

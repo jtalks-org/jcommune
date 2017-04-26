@@ -14,15 +14,15 @@
  */
 package org.jtalks.jcommune.web.rememberme;
 
-import static org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.crypto.codec.Base64;
+import org.testng.annotations.Test;
 
 import javax.servlet.http.Cookie;
 
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.security.core.codec.Base64;
-import org.testng.annotations.Test;
+import static org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 
 /**

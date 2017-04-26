@@ -43,6 +43,8 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.retry.policy.NeverRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -82,6 +84,7 @@ public class UserControllerTest {
     private ComponentService componentService;
     private GroupService groupService;
     private SpamProtectionService spamProtectionService;
+    private RequestCache requestCache;
 
     @BeforeMethod
     public void setUp() throws IOException {
@@ -95,6 +98,7 @@ public class UserControllerTest {
         groupService = mock(GroupService.class);
         retryTemplate = new RetryTemplate();
         spamProtectionService = mock(SpamProtectionService.class);
+        requestCache = new HttpSessionRequestCache();
         retryTemplate.setRetryPolicy(new NeverRetryPolicy());
         SecurityContextFacade securityFacade = mock(SecurityContextFacade.class);
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -102,7 +106,7 @@ public class UserControllerTest {
         when(request.getHeader("X-FORWARDED-FOR")).thenReturn("192.168.1.1");
         when(spamProtectionService.isEmailInBlackList(anyString())).thenReturn(false);
         userController = new UserController(userService, authenticator, pluginService, userService,
-                mailService, retryTemplate, componentService, groupService, spamProtectionService);
+                mailService, retryTemplate, componentService, groupService, spamProtectionService, requestCache);
     }
 
     @Test
@@ -360,7 +364,7 @@ public class UserControllerTest {
         when(userService.getCurrentUser()).thenReturn(new JCUser("username", null, null));
         when(request.getHeader("referer")).thenReturn(referer);
 
-        ModelAndView mav = userController.loginPage(request);
+        ModelAndView mav = userController.loginPage(request, response);
 
         assertEquals(mav.getViewName(), "redirect:" + referer);
         verify(userService).getCurrentUser();
@@ -370,7 +374,7 @@ public class UserControllerTest {
     public void testLoginUserNotLogged() {
         when(userService.getCurrentUser()).thenReturn(new AnonymousUser());
 
-        ModelAndView mav = userController.loginPage(request);
+        ModelAndView mav = userController.loginPage(request, response);
 
         assertEquals(mav.getViewName(), UserController.LOGIN);
         verify(userService).getCurrentUser();

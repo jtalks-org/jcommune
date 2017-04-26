@@ -16,7 +16,6 @@
 package org.jtalks.jcommune.model.entity;
 
 import org.jtalks.common.model.entity.Entity;
-import org.jtalks.jcommune.model.dto.SpamRuleDto;
 
 /**
  * @author Oleg Tkachenko
@@ -61,8 +60,4 @@ public class SpamRule extends Entity {
         this.enabled = enabled;
     }
 
-    public static SpamRule toEntity(SpamRuleDto dto) {
-        if (dto == null) return null;
-        return new SpamRule(dto.getRegex(), dto.getDescription(), dto.isEnabled());
-    }
 }
