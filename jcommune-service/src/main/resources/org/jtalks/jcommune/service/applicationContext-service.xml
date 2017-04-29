@@ -337,6 +337,8 @@
     <constructor-arg ref="userService"/>
   </bean>
 
+  <bean id="urlToLinkConvertPostProcessor" class="org.jtalks.jcommune.service.bb2htmlprocessors.UrlToLinkConvertPostProcessor"/>
+
   <bean id="bbCodeService" class="org.jtalks.jcommune.service.nontransactional.BBCodeService">
     <property name="preprocessors">
       <list>
@@ -348,7 +350,7 @@
     <property name="postprocessors">
       <list>
         <ref local="bbCodeReviewProcessor"/>
-        <bean class="org.jtalks.jcommune.service.bb2htmlprocessors.UrlToLinkConvertPostProcessor"/>
+        <ref local="urlToLinkConvertPostProcessor"/>
         <ref local="bbForeignLinksPostprocessor"/>
       </list>
     </property>

@@ -71,6 +71,10 @@ public class UrlToLinkConvertPostProcessorTest {
                         "<a href=\"file://javatalks.ru/common\">file://javatalks.ru/common</a>"},
                 {"<div class=divclass>http://javatalks.ru/common</div>",
                         "<div class=divclass><a href=\"http://javatalks.ru/common\">http://javatalks.ru/common</a></div>"},
+                {"<pre class=divclass>http://javatalks.ru/common</pre>",
+                        "<pre class=divclass><a href=\"http://javatalks.ru/common\">http://javatalks.ru/common</a></pre>"},
+                {"text text <pre class=divclass>http://javatalks.ru/common</pre> ttt text",
+                        "text text <pre class=divclass><a href=\"http://javatalks.ru/common\">http://javatalks.ru/common</a></pre> ttt text"},
                 {"Text текст ftp.javatalks.ru/common text \n text http://javatalks.ru/common text and text и текст \n the end.",
                         "Text текст <a href=\"ftp://ftp.javatalks.ru/common\">ftp.javatalks.ru/common</a> text \n text " +
                         "<a href=\"http://javatalks.ru/common\">http://javatalks.ru/common</a> text and text и текст \n the end."},
@@ -90,11 +94,6 @@ public class UrlToLinkConvertPostProcessorTest {
     @DataProvider
     public Object[][] urlShouldNotBeHighlighted() {
         return new Object[][] {
-                {"<pre class=cls>http://google.com</pre>"},
-                {"<pre>http://google.com</pre>"},
-                {"<pre>http://привет.рф/информация</pre>"},
-                {"<pre class=cls>http://google.com\nwww.ya.ru\nabc abc abc ftp.server.com</pre>"},
-                {"Text <pre class=cls>http://google.com\nwww.ya.ru\nabc abc abc ftp.server.com</pre> text"},
                 {"<a href=http://www.google.com>www.google.com</a>"},
                 {"<img src=http://www.ya.ru/img.jpg>img.jpg</img>"},
                 {"text <img src=http://www.ya.ru/img.jpg>img.jpg</img> text"}

@@ -19,6 +19,7 @@ import org.jtalks.jcommune.model.entity.PostComment;
 import org.jtalks.jcommune.service.PostCommentService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
 import org.jtalks.jcommune.plugin.api.web.dto.json.FailJsonResponse;
@@ -50,16 +51,15 @@ public class CodeReviewCommentController {
 
     private PostCommentService postCommentService;
     private PostService postService;
+    private BBCodeService bbCodeService;
 
-    /**
-     * @param postCommentService to operate with {@link org.jtalks.jcommune.model.entity.PostComment} entities
-     * @param postService to operate with {@link org.jtalks.jcommune.model.entity.Post} entities
-     */
     @Autowired
     public CodeReviewCommentController(PostCommentService postCommentService,
-                                PostService postService) {
+                                       PostService postService,
+                                       BBCodeService bbCodeService) {
         this.postCommentService = postCommentService;
         this.postService = postService;
+        this.bbCodeService = bbCodeService;
     }
     
     /**
@@ -83,14 +83,31 @@ public class CodeReviewCommentController {
      *         result field
      * @throws NotFoundException if code review was not found
      */
-    @RequestMapping(value = "/reviews/{postId}/json", method = RequestMethod.GET)
+    @RequestMapping(value = "/reviews/{postId}", method = RequestMethod.GET)
     @ResponseBody
     public JsonResponse getCodeReview(@PathVariable("postId") Long postId) throws NotFoundException {
-
         Post post = postService.get(postId);
-        return new JsonResponse(JsonResponseStatus.SUCCESS, new CodeReviewDto(post));
+        CodeReviewDto postDto = new CodeReviewDto(post);
+        for (CodeReviewCommentDto postComment : postDto.getComments()) {
+            postComment.setBody(bbCodeService.convertBbToHtml(postComment.getBody()));
+        }
+        return new JsonResponse(JsonResponseStatus.SUCCESS, postDto);
     }
 
+    @RequestMapping(value = "/review/comment/edit/{commentId}", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse getCodeReviewCommentForEdit(@PathVariable("commentId") Long commentId) throws NotFoundException {
+        PostComment postComment = postCommentService.get(commentId);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, new CodeReviewCommentDto(postComment));
+    }
+
+    @RequestMapping(value = "/review/comment/render/{commentId}", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse getCodeReviewCommentForRender(@PathVariable("commentId") Long commentId) throws NotFoundException {
+        PostComment postComment = postCommentService.get(commentId);
+        postComment.setBody(bbCodeService.convertBbToHtml(postComment.getBody()));
+        return new JsonResponse(JsonResponseStatus.SUCCESS, new CodeReviewCommentDto(postComment));
+    }
 
     /**
      * Adds CR comment to review
@@ -112,6 +129,7 @@ public class CodeReviewCommentController {
         }
         PostComment addedComment = postService.addComment(postId, commentDto.getCommentAttributes(),
                 commentDto.getBody());
+        addedComment.setBody(bbCodeService.convertBbToHtml(addedComment.getBody()));
         CodeReviewCommentDto addedCommentDto = new CodeReviewCommentDto(addedComment);
         return new JsonResponse(JsonResponseStatus.SUCCESS, addedCommentDto);
     }

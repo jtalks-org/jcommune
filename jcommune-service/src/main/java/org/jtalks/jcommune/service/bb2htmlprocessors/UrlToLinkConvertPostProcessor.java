@@ -18,14 +18,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This text postprocessor searches URLs in text and wrap them in {@Code <a>} tag to highlight.
- * Links which are already inside {@code <a>, <img> or <pre>} tag are skipped.
+ * This text postprocessor searches URLs in text and wrap them in {@code <a>} tag to highlight.
+ * Links which are already inside {@code <a>, <img>} tag are skipped.
  * Created by Alexey Usharovskiy on 25.12.16.
  */
 public class UrlToLinkConvertPostProcessor implements TextPostProcessor {
 
     private static final Pattern htmlTagsToSkip = Pattern.compile(
-            "(<a.*?>.*?</a>|<img.*?>.*?</img>|<pre.*?>.*?</pre>)",
+            "(<a.*?>.*?</a>|<img.*?>.*?</img>)",
             Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private static final Pattern urlInText = Pattern.compile(
             "(\\b((?:https?|ftp|file):\\/\\/|www\\.|ftp\\.)[-A-ZА-Я0-9+&@#\\/%?=~_|!:,.;]*[-A-ZА-Я0-9+&@#\\/%=~_|])",
@@ -38,7 +38,7 @@ public class UrlToLinkConvertPostProcessor implements TextPostProcessor {
     }
 
     /**
-     * Search for text blocks outside {@code <a>, <img> and <pre>} tags,
+     * Search for text blocks outside {@code <a>, <img>} tags,
      * pass them to URL process method and build resulting post text
      * with highlighted URLs
      *

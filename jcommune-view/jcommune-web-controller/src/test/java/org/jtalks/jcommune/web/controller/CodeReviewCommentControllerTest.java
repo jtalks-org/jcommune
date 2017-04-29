@@ -19,6 +19,7 @@ import org.jtalks.jcommune.plugin.api.web.dto.json.*;
 import org.jtalks.jcommune.service.PostCommentService;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.service.PostService;
+import org.jtalks.jcommune.service.nontransactional.BBCodeService;
 import org.jtalks.jcommune.service.nontransactional.NotificationService;
 import org.jtalks.jcommune.web.dto.CodeReviewCommentDto;
 import org.jtalks.jcommune.web.dto.CodeReviewDto;
@@ -60,6 +61,8 @@ public class CodeReviewCommentControllerTest {
     private NotificationService notificationService;
     @Mock
     private PostService postService;
+    @Mock
+    private BBCodeService bbCodeService;
 
     private CodeReviewCommentController controller;
 
@@ -68,7 +71,8 @@ public class CodeReviewCommentControllerTest {
         initMocks(this);
         controller = new CodeReviewCommentController(
                 postCommentService,
-                postService);
+                postService,
+                bbCodeService);
     }
 
     @BeforeMethod
@@ -111,7 +115,7 @@ public class CodeReviewCommentControllerTest {
         when(bindingResult.hasErrors()).thenReturn(false);
         when(postService.addComment(anyLong(), anyMap(), anyString()))
             .thenReturn(createComment());
-
+        when(bbCodeService.convertBbToHtml(COMMENT_BODY)).thenReturn(COMMENT_BODY);
 
         JsonResponse response = controller.addComment(
                 new CodeReviewCommentDto(), bindingResult, 1L);

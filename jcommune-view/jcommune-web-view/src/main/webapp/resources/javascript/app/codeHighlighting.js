@@ -85,14 +85,15 @@ function CodeHighlighting() {
 		var _this = this;
 	    var postId = $('#firstPostId').val();
 	    return $.ajax({
-	        url: baseUrl + '/reviews/' + postId + '/json',
+	        url: baseUrl + '/reviews/' + postId,
 	        type: "GET",
+            beforeSend: function(request) {
+                request.setRequestHeader("Accept", "application/json");
+            },
 	        success: function (data) {
-	            var comments = data.result.comments;
-				console.log(comments.length);
-	            for (var i = 0; i < comments.length; i++) {
-	                _this.addComment(comments[i]);
-	            }
+                data.result.comments.forEach(function(comment) {
+                	_this.addComment(comment);
+                });
 	        },
 	        error: function () {
 	            jDialog.createDialog({
@@ -122,29 +123,29 @@ function CodeHighlighting() {
 	        event.stopPropagation();
 	        _this.removeCommentForm();
 	    });
+
+        // don't propagate click on links in codereview and comments
+        this.firstPostContainer.on('click', 'ol.linenums li a', function (event) {
+            event.stopPropagation();
+        });
 		
-		// don't handle clicks on comments
-		this.firstPostContainer.on('click', 'ol.linenums li div.review-group', function () {
-			return false;
-		});	
-		
-		this.firstPostContainer.on('click', 'ol.linenums li', function () {
-	        var addCommentForm = $('#' + _this.ADD_COMMENT_FORM_ID);
-	        if (addCommentForm.length == 0) {
-	            var lineNumber = $(this).index() + 1;
-				// display form before first comment
-				var elementBeforeForm = $(this).find('div.review-container:last');
-				var hasComments = (elementBeforeForm.length != 0);
-				if (!hasComments) {
-					elementBeforeForm = $(this).find('span:last');
-				}
-				_this.showAddCommentForm(elementBeforeForm, lineNumber);
+        this.firstPostContainer.on('click', 'ol.linenums li', function () {
+            var addCommentForm = $('#' + _this.ADD_COMMENT_FORM_ID);
+            if (addCommentForm.length == 0) {
+                var lineNumber = $(this).index() + 1;
+                // display form before first comment
+                var elementBeforeForm = $(this).find('div.review-container:last');
+                var hasComments = (elementBeforeForm.length != 0);
+                if (!hasComments) {
+                    elementBeforeForm = $(this).find('span:last');
+                }
+                _this.showAddCommentForm(elementBeforeForm, lineNumber);
 				if (hasComments) {
-					$(document).scrollTop($('#' + _this.ADD_COMMENT_FORM_ID).offset().top - 150);
+					$(document).scrollTop(addCommentForm.offset().top - 150);
 				}
-	        }
-	        
-	    });	
+            }
+        });
+
 		this.firstPostContainer.on('click', 'ol.linenums li input[name="' + this.ADD_COMMENT_BUTTON_NAME + '"]', function () {
 	        var addCommentForm = $('#' + _this.ADD_COMMENT_FORM_ID);
 	        if (addCommentForm.length == 0) {
@@ -153,7 +154,6 @@ function CodeHighlighting() {
 				// display form before first comment
 				_this.showAddCommentForm($(line).find('div.review-container:last'), lineNumber);
 	        }
-	        
 	    });
 	
 		this.firstPostContainer.on('click', "input:button[name=add]", function (event) {
@@ -164,8 +164,7 @@ function CodeHighlighting() {
 	            return;
 	        }
 	        Antimultipost.disableSubmit(formContainer);
-	
-	        
+
 			var data = {id: 0, authorId:0, authorUsername:"", editorId:0, editorUsername:"", modificationDate:""};
 	        data.lineNumber = $('#' + _this.ADD_COMMENT_FORM_ID + ' [name=lineNumber]').val();
 	        data.body = $('#' + _this.ADD_COMMENT_FORM_ID + ' [name=body]').val();
@@ -178,7 +177,7 @@ function CodeHighlighting() {
 							_this.addComment(data.result)
 	                    } else if (data.reason == 'VALIDATION') {
 	                        _this.displayValidationErrors(data.result);
-	                    } else if (data.reason == 'SECURITY'){
+	                    } else if (data.reason == 'SECURITY') {
 	                        jDialog.createDialog({
 	                            type: jDialog.alertType,
 	                            bodyMessage: $labelYouDontHavePermissions
@@ -224,8 +223,23 @@ function CodeHighlighting() {
 				var reviewContainer = $(this).closest('.review-container');
 				var comment = {};
 				comment.id = reviewContainer.find('input[name=id]').val();
-				comment.body = Utils.br2lf(reviewContainer.find('.review-body').html());
-				_this.showEditCommentForm(reviewContainer, comment);
+                $.ajax({
+                    url: baseUrl + '/review/comment/edit/' + comment.id,
+                    type: "GET",
+                    beforeSend: function(request) {
+                        request.setRequestHeader("Accept", "application/json");
+                    },
+                    success: function (data) {
+                        comment.body = data.result.body;
+                        _this.showEditCommentForm(reviewContainer, comment);
+                    },
+                    error: function () {
+                        jDialog.createDialog({
+                            type: jDialog.alertType,
+                            bodyMessage: $labelUnexpectedError
+                        });
+                    }
+                });
 	        }
 			
 			return false;
@@ -242,19 +256,22 @@ function CodeHighlighting() {
 	        var footerContent = ' \
 	            <button id="remove-review-cancel" class="btn cancel">' + $labelCancel + '</button> \
 	            <button id="remove-review-ok" class="btn btn-primary">' + $labelOk + '</button>'
-	
+
 	        var submitFunc = function (e) {
 	            e.preventDefault();
 	            $.ajax({
 	                url:baseUrl + '/reviewcomments/delete?postId=' + postId + '&commentId=' + commentId,
 	                type:"GET",
+                    beforeSend: function(request) {
+                        request.setRequestHeader("Accept", "application/json");
+                    },
 	                success:function (data) {
 						if (data.status == 'SUCCESS') {
 							var lineNumber = $(reviewContainer).closest('li').index() + 1;
 							$(reviewContainer).remove();					
 							if (_this.getNumberOfComments(lineNumber) == 0) {
 								_this.removeReviewGroup(lineNumber);
-							}						
+							}
 	                    } else if (data.reason == 'SECURITY'){
 	                        jDialog.createDialog({
 	                            type: jDialog.alertType,
@@ -366,9 +383,26 @@ function CodeHighlighting() {
 	 * Function to update existing comment. Actually removes existing comment and adds new.
 	 */
 	this.updateComment = function (comment) {
+		_this = this;
 	    var reviewContainer = this.firstPostContainer.find('.review-container input[name=id][value=' + comment.id + ']').parent();
-		reviewContainer.after(this.getCommentHtml(comment));
-		reviewContainer.remove();
+        $.ajax({
+            url: baseUrl + '/review/comment/render/' + comment.id,
+            type: "GET",
+            beforeSend: function(request) {
+                request.setRequestHeader("Accept", "application/json");
+            },
+            success: function (data) {
+                comment.body = data.result.body;
+                reviewContainer.after(_this.getCommentHtml(comment));
+                reviewContainer.remove();
+            },
+            error: function () {
+                jDialog.createDialog({
+                    type: jDialog.alertType,
+                    bodyMessage: $labelUnexpectedError
+                });
+            }
+        });
 	}
 
     /**
@@ -427,7 +461,7 @@ function CodeHighlighting() {
 							+ ' ' + $labelReviewSays + ': '
 	                    + '</div>'
 	                    + '<div class="review-body">'
-							+ Utils.lf2br(Utils.htmlEncode(comment.body))
+							+ comment.body
 	                    + '</div>'
 						+ this.getCommentFooter(comment)
 	                + '</div>'
