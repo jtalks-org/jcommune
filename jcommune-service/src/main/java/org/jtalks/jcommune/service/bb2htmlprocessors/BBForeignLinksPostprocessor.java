@@ -40,19 +40,18 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
     private static final String URL_PATTERN = "(<a .*?href=(\"|').*?(\"|')|<img .*?src=(\"|').*?(\"|'))";
 
     /**
-     * Process incoming text with adding prefix "/out" to foreign links. This prefix
-     * will be excluded from indexing by search engines (robots.txt)
+     * Process incoming text with adding attribute rel="nofollow" to foreign links.
      *
      * @return resultant text
      */
     @Override
     public String postProcess(String bbDecodedText) {
         HttpServletRequest httpServletRequest = getServletRequest();
-        return addPrefixToForeignLinks(bbDecodedText, httpServletRequest.getServerName());
+        return addRelNoFollowToForeignLinks(bbDecodedText, httpServletRequest.getServerName());
     }
 
 
-    private String addPrefixToForeignLinks(String decodedText, String serverName) {
+    private String addRelNoFollowToForeignLinks(String decodedText, String serverName) {
         Pattern linkPattern = Pattern.compile(URL_PATTERN, Pattern.DOTALL);
         Matcher linkMatcher = linkPattern.matcher(decodedText);
         String href;
@@ -63,7 +62,7 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
             if (!href.contains(serverName) && href.split("(http|ftp|https)://", 2).length == 2
                     && href.startsWith("<a")) {
                 decodedText = decodedText.replace(href,
-                        encoded.replaceFirst("<a.*href=\"", "<a rel=\"nofollow\" href=\"" + getHrefPrefix()));
+                        encoded.replaceFirst("<a.*href=\"", "<a rel=\"nofollow\" href=\""));
             } else if(href.startsWith("<a")){
                 decodedText = decodedText.replace(href,
                         encoded.replaceFirst("<a.*href=\"", "<a href=\""));
@@ -85,16 +84,6 @@ public class BBForeignLinksPostprocessor implements TextPostProcessor {
     protected HttpServletRequest getServletRequest() {
         RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
         return ((ServletRequestAttributes) attributes).getRequest();
-    }
-
-    /**
-     * Gets prefix to add href
-     *
-     * @return prefix
-     */
-    @VisibleForTesting
-    protected String getHrefPrefix() {
-        return "/out?url=";
     }
 
 }
