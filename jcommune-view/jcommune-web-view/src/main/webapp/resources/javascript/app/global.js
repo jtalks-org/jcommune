@@ -147,19 +147,6 @@ $(document).ready(function () {
 
     });
 
-    //redirect to external links in the body of posts (and signature, profile contacts)
-    $(document).delegate('.post-content-td a, .content a, #contacts a, .test-signature a, .pm_message_view a, #editorBbCodeDiv a',
-        'mousedown', function (e) {
-            var tagName = $(e.target).prop("tagName").toLowerCase();
-            var link = $(e.target);
-            //prettyPhoto img link
-            if (tagName == 'img' || tagName != 'link') {
-                link = $(link).closest("a");
-            }
-
-            link.attr('href', link.attr('href').replace('/out?url=', ''));
-        });
-
     $(window).resize();
 
     // html5 placeholder emulation for old IE
