@@ -22,6 +22,7 @@ import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dao.PostDao;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NoConnectionException;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
@@ -343,6 +344,11 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
     @PreAuthorize("hasPermission(#forumComponentId, 'COMPONENT', 'GeneralPermission.ADMIN')")
     public List<JCUser> findByUsernameOrEmail(long forumComponentId, String searchKey) {
         return getDao().findByUsernameOrEmail(searchKey, MAX_SEARCH_USER_COUNT);
+    }
+
+    @Override
+    public List<UserDto> findByUsernameOrEmailNotInGroup(String pattern, long groupId, int count) {
+        return getDao().findByUsernameOrEmailNotInGroup(pattern, groupId, count);
     }
 
     @Override

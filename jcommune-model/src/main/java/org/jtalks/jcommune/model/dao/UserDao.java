@@ -16,6 +16,7 @@ package org.jtalks.jcommune.model.dao;
 
 import org.hibernate.ObjectNotFoundException;
 import org.jtalks.common.model.entity.User;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 
 import java.util.Collection;
@@ -115,4 +116,6 @@ public interface UserDao extends org.jtalks.common.model.dao.UserDao<JCUser> {
      * @return proxy of JCUser object.
      */
     JCUser loadById(Long id);
+
+    List<UserDto> findByUsernameOrEmailNotInGroup(String pattern, long groupId, int count);
 }

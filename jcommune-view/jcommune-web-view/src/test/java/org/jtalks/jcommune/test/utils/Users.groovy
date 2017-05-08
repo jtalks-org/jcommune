@@ -15,6 +15,7 @@
 package org.jtalks.jcommune.test.utils
 
 import org.jtalks.common.model.entity.Component
+import org.jtalks.common.model.entity.Group
 import org.jtalks.common.model.permissions.GeneralPermission
 import org.jtalks.common.service.security.SecurityContextFacade
 import org.jtalks.jcommune.model.dao.GroupDao
@@ -121,6 +122,16 @@ abstract class Users {
             userDao.saveOrUpdate(fromDb)
             userDao.flush()
         }
+    }
+
+    JCUser createUserInGroup(String username, String email, String groupname) {
+        def user = new JCUser(username, email, "12fafadGHssa6")
+        def group = groupDao.getGroupByName(groupname)
+        user.enabled = true
+        user.addGroup(group)
+        userDao.saveOrUpdate(user)
+        userDao.flush()
+        return user
     }
 
     def createdButNotActivated(User user) {

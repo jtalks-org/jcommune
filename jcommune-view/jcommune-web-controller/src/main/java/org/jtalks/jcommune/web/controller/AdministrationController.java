@@ -24,15 +24,9 @@ import org.jtalks.jcommune.model.entity.ComponentInformation;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.ComponentService;
-import org.jtalks.jcommune.service.GroupService;
-import org.jtalks.jcommune.service.SpamProtectionService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.service.security.PermissionManager;
-import org.jtalks.jcommune.web.dto.BranchDto;
-import org.jtalks.jcommune.web.dto.BranchPermissionDto;
-import org.jtalks.jcommune.web.dto.GroupDto;
-import org.jtalks.jcommune.web.dto.PermissionGroupsDto;
+import org.jtalks.jcommune.web.dto.*;
 import org.jtalks.jcommune.web.listeners.SessionSetupListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -73,32 +67,27 @@ public class AdministrationController {
 
     private final ComponentService componentService;
     private final GroupService groupService;
+    private final UserService userService;
     private final MessageSource messageSource;
     private final BranchService branchService;
     private final PermissionManager permissionManager;
     private final SpamProtectionService spamProtectionService;
 
-    /**
-     * Creates instance of the service
-     *
-     * @param componentService service to work with the forum component
-     * @param messageSource    to resolve locale-dependent messages
-     * @param permissionManager
-     * @param spamProtectionService service to check is email in blacklist
-     */
     @Autowired
     public AdministrationController(ComponentService componentService,
                                     MessageSource messageSource,
                                     BranchService branchService,
                                     PermissionManager permissionManager,
                                     GroupService groupService,
-                                    SpamProtectionService spamProtectionService) {
+                                    SpamProtectionService spamProtectionService,
+                                    UserService userService) {
         this.messageSource = messageSource;
         this.componentService = componentService;
         this.branchService = branchService;
         this.permissionManager = permissionManager;
         this.groupService = groupService;
         this.spamProtectionService = spamProtectionService;
+        this.userService = userService;
     }
 
     /**
@@ -279,7 +268,7 @@ public class AdministrationController {
     public ModelAndView showGroupsWithUsers() {
         checkForAdminPermissions();
         List<GroupAdministrationDto> groupAdministrationDtos = groupService.getGroupNamesWithCountOfUsers();
-        return new ModelAndView("groupAdministration").addObject("groups",groupAdministrationDtos);
+        return new ModelAndView("groupAdministration").addObject("groups", groupAdministrationDtos);
     }
 
     /**
@@ -330,6 +319,16 @@ public class AdministrationController {
         checkForAdminPermissions();
         List<SpamRuleDto> ruleDtos = SpamRuleDto.fromEntities(spamProtectionService.getAllRules());
         return new ModelAndView("spamProtection").addObject("rules", ruleDtos);
+    }
+
+    @RequestMapping(value = "/user", params = {"notInGroupId", "pattern"}, method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse findUserNotInGroup(@RequestParam("notInGroupId") long notInGroupId,
+                                           @RequestParam("pattern") String pattern) {
+        List<UserDto> users = userService.findByUsernameOrEmailNotInGroup(pattern, notInGroupId, 20);
+        JsonResponse response = new JsonResponse(JsonResponseStatus.SUCCESS);
+        response.setResult(users);
+        return response;
     }
 
     /**

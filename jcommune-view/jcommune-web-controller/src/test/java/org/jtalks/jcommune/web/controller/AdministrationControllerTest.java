@@ -20,11 +20,8 @@ import org.jtalks.common.model.permissions.BranchPermission;
 import org.jtalks.jcommune.model.dto.*;
 import org.jtalks.jcommune.model.entity.Branch;
 import org.jtalks.jcommune.model.entity.ComponentInformation;
-import org.jtalks.jcommune.service.BranchService;
-import org.jtalks.jcommune.service.ComponentService;
+import org.jtalks.jcommune.service.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
-import org.jtalks.jcommune.service.GroupService;
-import org.jtalks.jcommune.service.SpamProtectionService;
 import org.jtalks.jcommune.service.nontransactional.ImageService;
 import org.jtalks.jcommune.service.security.PermissionManager;
 import org.jtalks.jcommune.web.dto.BranchDto;
@@ -86,6 +83,8 @@ public class AdministrationControllerTest {
     PermissionManager permissionManager;
     @Mock
     GroupService groupService;
+    @Mock
+    UserService userService;
 
     @Mock
     private SpamProtectionService spamProtectionService;
@@ -99,7 +98,7 @@ public class AdministrationControllerTest {
     public void init() {
         initMocks(this);
 
-        administrationController = new AdministrationController(componentService, messageSource, branchService, permissionManager,groupService, spamProtectionService);
+        administrationController = new AdministrationController(componentService, messageSource, branchService, permissionManager, groupService, spamProtectionService, userService);
     }
 
     @Test

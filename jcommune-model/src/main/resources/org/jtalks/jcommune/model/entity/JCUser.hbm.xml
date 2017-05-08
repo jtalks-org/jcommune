@@ -108,4 +108,25 @@
                          LOWER(USERNAME) ]]>
   </query>
 
+  <query name="searchByEmailOrUsernameNotInGroupId">
+    <![CDATA[SELECT new org.jtalks.jcommune.model.dto.UserDto(u.username, u.email, u.id)
+             FROM User u
+             LEFT JOIN u.groups g
+            WHERE (g.id != :groupId OR g.id IS NULL) AND
+                  (LOWER(u.username) LIKE (:pattern) ESCAPE '|' OR
+                   LOWER(u.email) LIKE (:pattern) ESCAPE '|')
+            ORDER BY     CASE
+                          WHEN LOWER(u.username)=:exactMatch OR LOWER(u.email)=:exactMatch THEN 0
+                          WHEN LOWER(u.username) LIKE (:primaryPattern) ESCAPE '|' OR LOWER(u.email) LIKE (:primaryPattern) ESCAPE '|' THEN 1
+                          WHEN LOWER(u.username) LIKE (:thirdaryPattern) ESCAPE '|' OR LOWER(u.email) LIKE (:thirdaryPattern) ESCAPE '|' THEN 3
+                          WHEN LOWER(u.username) LIKE (:secondaryPattern) ESCAPE '|' OR LOWER(u.email) LIKE (:secondaryPattern) ESCAPE '|' THEN 2
+                         END,
+                         CASE
+                          WHEN LOWER(u.username) LIKE (:pattern) ESCAPE '|' AND LOWER(u.email) LIKE (:pattern) ESCAPE '|' THEN 0
+                          WHEN LOWER(u.username) LIKE (:pattern) ESCAPE '|' THEN 1
+                          WHEN LOWER(u.email) LIKE (:pattern) ESCAPE '|' THEN 2
+                         END,
+                         LOWER(u.username) ]]>
+  </query>
+
 </hibernate-mapping>

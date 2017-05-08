@@ -156,4 +156,20 @@ public class UserDto {
     public void setCaptchas(Map<String, String> captchas) {
         this.captchas = captchas;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserDto userDto = (UserDto) o;
+
+        return id == userDto.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
 }

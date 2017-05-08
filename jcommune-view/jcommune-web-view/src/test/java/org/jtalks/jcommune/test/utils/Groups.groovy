@@ -14,9 +14,11 @@
  */
 package org.jtalks.jcommune.test.utils
 
+import org.codehaus.jackson.map.ObjectMapper
 import org.jtalks.common.model.entity.Group
 import org.jtalks.jcommune.model.dao.GroupDao
 import org.jtalks.jcommune.model.dto.UserDto
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse
 import org.jtalks.jcommune.test.model.GroupDto
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
@@ -94,11 +96,26 @@ class Groups {
         return result
     }
 
+    JsonResponse getUserNotInGroupByPattern(long groupId, String pattern, HttpSession session) {
+        MvcResult result = mockMvc.perform(get("/user/?notInGroupId=${groupId}&pattern=${pattern}")
+                .session(session as MockHttpSession))
+                .andReturn()
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(result.response.contentAsString, JsonResponse.class)
+    }
+
     void assertGroupUserPage(page, groupUserList) {
         Page<UserDto> pagedGroupUsers = page.modelAndView.getModel().get("groupUsersPage")
         assertThat(pagedGroupUsers.content.size(), is(groupUserList.size()));
         for (int i=0; i<pagedGroupUsers.content.size(); i++) {
             assertThat(pagedGroupUsers.content.get(i).username, is(groupUserList.get(i).username))
+        }
+    }
+
+    void assertUserDtoList(List expected, List actual) {
+        assertThat(expected.size(), is(actual.size()));
+        for (int i=0; i<expected.size(); i++) {
+            assertThat(expected.get(i).username, is(actual.get(i).username))
         }
     }
 

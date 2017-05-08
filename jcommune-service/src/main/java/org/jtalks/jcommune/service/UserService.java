@@ -16,6 +16,7 @@ package org.jtalks.jcommune.service;
 
 import org.jtalks.common.model.entity.User;
 import org.jtalks.jcommune.model.dto.LoginUserDto;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.Language;
 import org.jtalks.jcommune.model.entity.Post;
@@ -213,6 +214,8 @@ public interface UserService extends EntityService<JCUser> {
      * @return first 20 users with email or username matching key
      */
     List<JCUser> findByUsernameOrEmail(long forumComponentId, String searchKey);
+
+    List<UserDto> findByUsernameOrEmailNotInGroup(String pattern, long groupId, int count);
 
     List<Long> getUserGroupIDs(long forumComponentId, long userID) throws NotFoundException;
 

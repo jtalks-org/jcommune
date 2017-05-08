@@ -15,6 +15,8 @@
 package org.jtalks.jcommune.test
 
 import org.jtalks.common.model.entity.Component
+import org.jtalks.jcommune.model.dto.UserDto
+import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponseStatus
 import org.jtalks.jcommune.test.model.User
 import org.jtalks.jcommune.test.service.ComponentService
 import org.jtalks.jcommune.test.service.GroupsService
@@ -31,6 +33,7 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
+import static junit.framework.Assert.assertEquals
 import static org.jtalks.jcommune.service.security.AdministrationGroup.*
 import static org.jtalks.jcommune.test.utils.Groups.randomDto
 /**
@@ -212,5 +215,21 @@ class AdministrationControllerTest extends Specification {
             groups.assertGroupUserPage(page1, groupUserList.subList(0, 20))
             groups.assertGroupUserPage(page2, groupUserList.subList(20, 40))
             groups.assertGroupUserPage(page3, groupUserList.subList(40, 45))
+    }
+
+    def 'interface of search user not in group should be appropriate'() {
+        given: 'User logged in and has admin rights'
+            def session = users.signInAsAdmin(forum)
+        and: 'Two groups created'
+            def groupDto1 = randomDto()
+            def groupId1 = groups.create(groupDto1, session)
+            def groupId2 = groupId1 + 1
+        and: 'Users in first group'
+            def user1group1 = users.createUserInGroup("f_user1gr1", "us1group1@mail.ru", groupDto1.name)
+        when: 'Attempt to get filtered by name users out of first group'
+            def jsonResponse = groups.getUserNotInGroupByPattern(groupId2, "user", session)
+        then:
+            assertEquals(JsonResponseStatus.SUCCESS, jsonResponse.status)
+            groups.assertUserDtoList([user1group1], (List<UserDto>) jsonResponse.result)
     }
 }

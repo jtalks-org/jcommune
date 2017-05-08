@@ -19,6 +19,7 @@ import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.jtalks.jcommune.model.dao.UserDao;
 import org.jtalks.jcommune.model.entity.JCUser;
@@ -29,13 +30,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.testng.Assert.*;
@@ -50,7 +50,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
 @Transactional
 public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
-    private UserDao dao;
+    private UserDao userDao;
     @Autowired
     private GroupDao groupDao;
     @Autowired
@@ -69,7 +69,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void testSave() {
         JCUser user = ObjectsFactory.getDefaultUser();
 
-        dao.saveOrUpdate(user);
+        userDao.saveOrUpdate(user);
 
         assertNotSame(user.getId(), 0, "Id not created");
 
@@ -84,8 +84,8 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = ObjectsFactory.getDefaultUser();
         JCUser user2 = ObjectsFactory.getDefaultUser();
 
-        dao.saveOrUpdate(user);
-        dao.saveOrUpdate(user2);
+        userDao.saveOrUpdate(user);
+        userDao.saveOrUpdate(user2);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        JCUser result = dao.get(user.getId());
+        JCUser result = userDao.get(user.getId());
 
         assertNotNull(result);
         assertEquals(result.getId(), user.getId());
@@ -101,7 +101,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testGetInvalidId() {
-        JCUser result = dao.get(-567890L);
+        JCUser result = userDao.get(-567890L);
 
         assertNull(result);
     }
@@ -112,7 +112,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
         user.setFirstName(newName);
-        dao.saveOrUpdate(user);
+        userDao.saveOrUpdate(user);
         session.flush();
         session.evict(user);
         JCUser result = (JCUser) session.get(JCUser.class, user.getId());//!
@@ -124,7 +124,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
         user.setEmail(null);
-        dao.saveOrUpdate(user);
+        userDao.saveOrUpdate(user);
         session.flush();
     }
 
@@ -133,7 +133,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        boolean result = dao.delete(user.getId());
+        boolean result = userDao.delete(user.getId());
         int userCount = getCount();
 
         assertTrue(result, "Entity is not deleted");
@@ -142,7 +142,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
 
     @Test
     public void testDeleteInvalidId() {
-        boolean result = dao.delete(-100500L);
+        boolean result = userDao.delete(-100500L);
 
         assertFalse(result, "Entity deleted");
     }
@@ -154,7 +154,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        JCUser result = dao.getByUsername(user.getUsername());
+        JCUser result = userDao.getByUsername(user.getUsername());
 
         assertNotNull(result);
         assertReflectionEquals(user, result);
@@ -165,7 +165,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        JCUser result = dao.getByUsername(user.getUsername().toUpperCase());
+        JCUser result = userDao.getByUsername(user.getUsername().toUpperCase());
 
         assertNotNull(result);
         assertReflectionEquals(user, result);
@@ -177,7 +177,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(user);
         session.save(ObjectsFactory.getUser("Username", "Username@mail.com"));
 
-        JCUser result = dao.getByUsername("usernamE");
+        JCUser result = userDao.getByUsername("usernamE");
 
         assertNotNull(result);
         assertReflectionEquals(user, result);
@@ -188,7 +188,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        JCUser result = dao.getByUsername("Name");
+        JCUser result = userDao.getByUsername("Name");
 
         assertNull(result);
     }
@@ -198,7 +198,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(ObjectsFactory.getUser("usernamE", "username@mail.com"));
         session.save(ObjectsFactory.getUser("Username", "Username@mail.com"));
 
-        JCUser result = dao.getByUsername("username");
+        JCUser result = userDao.getByUsername("username");
 
         assertNull(result);
     }
@@ -207,7 +207,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void getCommonUserByUsernameShouldFindOne() {
         User expected = givenCommonUserWithUsernameStoredInDb("username");
 
-        User actual = dao.getCommonUserByUsername("username");
+        User actual = userDao.getCommonUserByUsername("username");
         assertNotNull(actual);
         assertReflectionEquals(actual, expected);
     }
@@ -216,13 +216,13 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void getCommonUserByUsernameShouldNotFind() {
         givenCommonUserWithUsernameStoredInDb("username");
 
-        User actual = dao.getCommonUserByUsername("wrong username there is no such user");
+        User actual = userDao.getCommonUserByUsername("wrong username there is no such user");
         assertNull(actual);
     }
 
     @Test
     public void getCommonUserByUsernameShouldNotFindInEmptyDb() {
-        User actual = dao.getCommonUserByUsername("username");
+        User actual = userDao.getCommonUserByUsername("username");
         assertNull(actual);
     }
 
@@ -232,7 +232,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         String uuid = user.getUuid();
         session.save(user);
 
-        JCUser result = dao.getByUuid(uuid);
+        JCUser result = userDao.getByUuid(uuid);
 
         assertReflectionEquals(user, result);
     }
@@ -242,7 +242,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
 
-        JCUser result = dao.getByUuid("uuid");
+        JCUser result = userDao.getByUuid("uuid");
 
         assertNull(result);
     }
@@ -251,7 +251,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void testFetchByEMail() {
         JCUser user = ObjectsFactory.getDefaultUser();
         session.save(user);
-        assertNotNull(dao.getByEmail(user.getEmail()));
+        assertNotNull(userDao.getByEmail(user.getEmail()));
     }
 
     @Test
@@ -262,7 +262,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         session.save(activated);
         session.save(nonActivated);
 
-        Collection<JCUser> users = dao.getNonActivatedUsers();
+        Collection<JCUser> users = userDao.getNonActivatedUsers();
 
         assertTrue(users.contains(nonActivated));
         assertEquals(users.size(), 1);
@@ -296,7 +296,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser firstExistsUser = givenJCUserWithUsernameStoredInDb(firstExistsUsername);
         Set<String> existsUsernames = new HashSet<>(asList(firstExistsUsername));
 
-        List<JCUser> foundByUsernames = dao.getByUsernames(existsUsernames);
+        List<JCUser> foundByUsernames = userDao.getByUsernames(existsUsernames);
 
         assertTrue(foundByUsernames.size() == existsUsernames.size(), "It should return all users by their names.");
         assertTrue(foundByUsernames.contains(firstExistsUser), firstExistsUser.getUsername() + "should be found by his name.");
@@ -307,7 +307,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user = givenJCUserWithUsernameStoredInDb("test-user");
         Group group = PersistedObjectsFactory.group("test-group");
         user.addGroup(group);
-        dao.saveOrUpdate(user);
+        userDao.saveOrUpdate(user);
         flushAndClearSession(session);
 
         Group selected = groupDao.get(group.getId());
@@ -319,7 +319,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     public void getByUsernamesShouldReturnEmptyListWhenFoundUsersDoNotExist() {
         Set<String> existsUsernames = new HashSet<>(asList("Shogun", "jk1", "masyan"));
 
-        List<JCUser> foundByUsernames = dao.getByUsernames(existsUsernames);
+        List<JCUser> foundByUsernames = userDao.getByUsernames(existsUsernames);
 
         assertTrue(foundByUsernames.isEmpty(), "It should return empty list, cause found users not exist.");
     }
@@ -331,7 +331,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         createUser("User1", true);
         createUser("uSer2", true);
         createUser("user3", true);
-        assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 2);
+        assertEquals(userDao.getUsernames(usernamePattern, resultCount).size(), 2);
     }
 
     @Test
@@ -341,7 +341,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         createUser("User1", true);
         createUser("uSer2", true);
         createUser("user3", false);
-        assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 2);
+        assertEquals(userDao.getUsernames(usernamePattern, resultCount).size(), 2);
     }
 
     @Test
@@ -352,7 +352,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         createUserWithMail("user2", "user2@mail.com", true);
         createUserWithMail("@/|\"&' <>#${}()", "user3@mail.com", true);
 
-        assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 1);
+        assertEquals(userDao.getUsernames(usernamePattern, resultCount).size(), 1);
     }
 
     @Test
@@ -363,7 +363,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         createUserWithMail("user2", "user2@mail.com", true);
         createUserWithMail("Some_us%2r", "user3@mail.com", true);
 
-        assertEquals(dao.getUsernames(usernamePattern, resultCount).size(), 1);
+        assertEquals(userDao.getUsernames(usernamePattern, resultCount).size(), 1);
     }
 
     @Test
@@ -372,7 +372,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("Barbara", "email2@mail.com", true);
         createUserWithMail("Epolit", "email3@mail.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail("ar", 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail("ar", 20);
 
         assertEquals(result.size(), 2);
         assertTrue(result.contains(user1));
@@ -385,7 +385,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("Barbara", "email2@mail.com", true);
         createUserWithMail("Epolit", "post@google.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail("email", 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail("email", 20);
 
         assertEquals(result.size(), 2);
         assertTrue(result.contains(user1));
@@ -397,7 +397,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user1 = createUserWithMail("Arthur", "emAIL1@mail.com", true);
         JCUser user2 = createUserWithMail("Barbara", "email2@mail.com", false);
 
-        List<JCUser> result = dao.findByUsernameOrEmail("email", 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail("email", 20);
 
         assertEquals(result.size(), 2);
         assertTrue(result.contains(user1));
@@ -410,7 +410,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         createUserWithMail("user2", "email2@mail.com", true);
         createUserWithMail("user3", "email3@mail.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail("user", 2);
+        List<JCUser> result = userDao.findByUsernameOrEmail("user", 2);
 
         assertEquals(result.size(), 2);
     }
@@ -422,7 +422,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         createUserWithMail("user2", "user2@mail.com", true);
         JCUser user = createUserWithMail("Some_us%2r", "user3@mail.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(usernamePattern, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(usernamePattern, 20);
 
         assertEquals(result.size(), 1);
         assertTrue(result.contains(user));
@@ -435,7 +435,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         createUserWithMail("user2", "user2@mail.com", true);
         JCUser user = createUserWithMail("@/|\"&' <>#${}()", "user3@mail.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(usernamePattern, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(usernamePattern, 20);
 
         assertEquals(result.size(), 1);
         assertTrue(result.contains(user));
@@ -450,7 +450,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail(keyWord + "1", "user2@email.com", true);
         JCUser user1 = createUserWithMail(keyWord, "user1@email.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
@@ -466,7 +466,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("user2", keyWord + "a", true);
         JCUser user1 = createUserWithMail("user1", keyWord, true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
@@ -482,7 +482,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail(keyWord + "a", "user2@email.com", true);
         JCUser user1 = createUserWithMail("user1", keyWord, true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
@@ -496,7 +496,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("user2", keyWord, true);
         JCUser user1 = createUserWithMail(keyWord, "user1@email.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
@@ -510,7 +510,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user3 = createUserWithMail(keyWord + "11", keyWord + "1@email.com", true);
 
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user3);
         assertEquals(result.get(1), user1);
@@ -523,7 +523,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail(keyWord + "z", "user2@email.com", true);
         JCUser user1 = createUserWithMail(keyWord + "a", "user1@email.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
@@ -537,7 +537,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("zzzz", keyWord + "1@email.com", true);
         JCUser user1 = createUserWithMail("aaaa", keyWord + "2@email.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user3);
@@ -552,7 +552,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("user2", "a" + keyWord + "@email.com", true);
         JCUser user1 = createUserWithMail("1" + keyWord + "11", "a" + keyWord + "1@email.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user3);
@@ -566,7 +566,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("z" + keyWord + "aa", "user2@email.com", true);
         JCUser user1 = createUserWithMail("a" + keyWord + "aa", "user1@email.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
@@ -578,7 +578,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("zuser", "11" + keyWord + "@email.com", true);
         JCUser user1 = createUserWithMail("auser", "1" + keyWord + "@email.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
@@ -591,7 +591,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("user2" + keyWord, "user2@email.com", true);
         JCUser user1 = createUserWithMail("1" + keyWord, "user1@email." + keyWord, true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
@@ -605,7 +605,7 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("z" + keyWord, "user2@email.com", true);
         JCUser user1 = createUserWithMail("a" + keyWord, "user1@email.com", true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
@@ -618,12 +618,162 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         JCUser user2 = createUserWithMail("zuser", "user2@email." + keyWord, true);
         JCUser user1 = createUserWithMail("auser", "user1@email." + keyWord, true);
 
-        List<JCUser> result = dao.findByUsernameOrEmail(keyWord, 20);
+        List<JCUser> result = userDao.findByUsernameOrEmail(keyWord, 20);
 
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
     }
 
+    @Test
+    public void testFindByUsernameNotInGroupId() {
+        String keyWord = "mark";
+        Group group1 = createGroup("testGroup1");
+        Group group2 = createGroup("testGroup2");
+
+        JCUser jcUser1group1 = createUserWithGroup(keyWord + "1gr1", "mail1gr1@mail.ru", group1);
+        createUserWithGroup("petrgr1", "petr1gr1@mail.ru", group1);
+        JCUser jcUser1group2 = createUserWithGroup(keyWord + "1gr2", "mail2gr2@mail.ru", group2);
+        createUserWithGroup("petrgr2", "petr1gr2@mail.ru", group2);
+
+        List<UserDto> result;
+        result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group1.getId(), 20);
+        Assert.assertEquals(result.size(), 1);
+        Assert.assertEquals(jcUser1group2.getUsername(), result.get(0).getUsername());
+
+        result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group2.getId(), 20);
+        Assert.assertEquals(result.size(), 1);
+        Assert.assertEquals(jcUser1group1.getUsername(), result.get(0).getUsername());
+    }
+
+    @Test
+    public void testFindByEmailNotInGroupId() {
+        String keyWord = "mark";
+        Group group1 = createGroup("testGroup1");
+        Group group2 = createGroup("testGroup2");
+
+        JCUser jcUser1group1 = createUserWithGroup("user1gr1", keyWord + "mail1gr1@mail.ru", group1);
+        createUserWithGroup("petrgr1", "petr1gr1@mail.ru", group1);
+        JCUser jcUser1group2 = createUserWithGroup("user1gr2", keyWord + "mail2gr2@mail.ru", group2);
+        createUserWithGroup("petrgr2", "petr1gr2@mail.ru", group2);
+
+        List<UserDto> result;
+        result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group1.getId(), 20);
+        Assert.assertEquals(result.size(), 1);
+        Assert.assertEquals(jcUser1group2.getUsername(), result.get(0).getUsername());
+
+        result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group2.getId(), 20);
+        Assert.assertEquals(result.size(), 1);
+        Assert.assertEquals(jcUser1group1.getUsername(), result.get(0).getUsername());
+    }
+
+    @Test
+    public void testFindUser_IfHeHasNoGroups() {
+        final String keyWord = "keyword";
+        Group group1 = createGroup("testGroup1");
+        JCUser jcUser;
+        Random rnd = new Random();
+        if (rnd.nextBoolean()) {
+            jcUser = createUserWithMail(keyWord.toUpperCase(), "mail@mail.ru", true);
+        } else {
+            jcUser = createUserWithMail("username", keyWord.toUpperCase() + "@mail.ru", true);
+        }
+        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group1.getId(), 20);
+
+        Assert.assertEquals(result.size(), 1);
+        Assert.assertEquals(jcUser.getUsername(), result.get(0).getUsername());
+    }
+
+    @Test(invocationCount = 5)
+    public void testDontFindUser_IfHeIsInGroup() {
+        final String keyWord = "keyword";
+        Group group1 = createGroup("testGroup1");
+        Random rnd = new Random();
+        if (rnd.nextBoolean()) {
+            createUserWithGroup(keyWord, "mail@mail.ru", group1);
+        } else {
+            createUserWithGroup("username", keyWord + "@mail.ru", group1);
+        }
+        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group1.getId(), 20);
+        Assert.assertEquals(result.size(), 0);
+    }
+
+    @Test(invocationCount = 5)
+    public void testFindUserNotInGroupIdLimit() {
+        Random rnd = new Random();
+        final int limit = 10 + rnd.nextInt(20);
+        String keyWord = "petr";
+        Group group1 = createGroup("testGroup1");
+        long group2id = group1.getId() + 1;
+        for (int i=0; i<limit+rnd.nextInt(50); i++) {
+            createUserWithGroup(keyWord + i, keyWord + i + "@mail.ru", group1);
+        }
+        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group2id, limit);
+        Assert.assertEquals(result.size(), limit);
+    }
+
+    @Test(invocationCount = 5)
+    public void testFindUserNotInGroupByEmptyPattern() {
+        Random rnd = new Random();
+        final int count = 15 + rnd.nextInt(50);
+        String keyWord = "petr";
+        Group group1 = createGroup("testGroup1");
+        long group2id = group1.getId() + 1;
+        for (int i=0; i<count; i++) {
+            createUserWithGroup(keyWord + String.format("%02d", i), keyWord + i + "@mail.ru", group1);
+        }
+        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup("", group2id, count);
+        Assert.assertEquals(result.size(), count);
+        Assert.assertEquals(result.get(count - 1).getUsername(), keyWord + String.format("%02d", count - 1));
+    }
+
+    @Test(dataProvider = "usersForTestResultOrderDataProvider")
+    public void testFindUserNotInGroupResultOrder(List<String> shuffledList, List<String> userPatternList) {
+        String pattern = "keyword";
+        Group group1 = createGroup("testGroup1");
+        for (String str : shuffledList) {
+            createUserWithGroup(str, str + "@mail.ru", group1);
+        }
+        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(pattern, group1.getId() + 1, 20);
+        Assert.assertEquals(result.size(), userPatternList.size());
+        for (int i=0; i<result.size(); i++) {
+            Assert.assertEquals(result.get(i).getUsername(), userPatternList.get(i));
+        }
+    }
+
+    @DataProvider
+    public Object[][] usersForTestResultOrderDataProvider() {
+        String pattern = "keyword";
+        List<String> userPatternList = new ArrayList<>();
+        userPatternList.add(pattern);
+        userPatternList.add(pattern + "wqrrw");
+        userPatternList.add("a_rtet" + pattern + "gghghgh");
+        userPatternList.add("b_rtet" + pattern + "gghghgh");
+        userPatternList.add("a_rtert" + pattern);
+        userPatternList.add("b_rtert" + pattern);
+
+        List<String> shuffledList = new ArrayList<>(userPatternList);
+        shuffledList.add("someNotMatchingPattern1");
+        shuffledList.add("someNotMatchingPattern2");
+        shuffledList.add("someNotMatchingPattern3");
+        Collections.shuffle(shuffledList, new Random());
+
+        return new Object[][] {
+                {shuffledList, userPatternList}
+        };
+    }
+
+    private JCUser createUserWithGroup(String userName, String email, Group group) {
+        JCUser jcUser = createUserWithMail(userName, email, true);
+        jcUser.addGroup(group);
+        userDao.saveOrUpdate(jcUser);
+        return jcUser;
+    }
+
+    private Group createGroup(String groupName) {
+        Group group = new Group(groupName);
+        groupDao.saveOrUpdate(group);
+        return group;
+    }
 
     private JCUser givenJCUserWithUsernameStoredInDb(String username) {
         JCUser expected = new JCUser(username, username + "@mail.com", username + "pass");
