@@ -42,6 +42,10 @@ $(function () {
             $(this).find('.management-element').hide()
         }
     );
+    // new feature toggling, if url contain request param 'display-button=on', the button will become visible.
+    if (window.location.search.indexOf("display-button=on") != -1){
+        $('.add_button').css({'visibility': 'visible'});
+    }
 });
 
 /**

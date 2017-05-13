@@ -62,5 +62,7 @@
             <jtalks:pagination uri="${group.id}" page="${groupUsersPage}"/>
         </ul>
     </div>
+    <div class='add_button circle'>&plus;</div>
+</div>
 </div>
 </body>

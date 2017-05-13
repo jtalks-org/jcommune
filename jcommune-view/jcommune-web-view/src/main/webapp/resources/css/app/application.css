@@ -1265,3 +1265,118 @@ pre.prettyprint {
 .management-element:hover {
     opacity: 1;
 }
+
+.add_button {
+    visibility: hidden; /* the button is hidden because rest of logic is not implemented yet*/
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    display: block;
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    overflow: visible;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    color: white;
+    background-color: #006dcc;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    box-shadow: rgba(0, 0, 0, 0.14902) 0px 1px 1px 0px, rgba(0, 0, 0, 0.09804) 0px 1px 2px 0px;
+    -webkit-transition: all, 250ms ease;
+    transition: all, 250ms ease;
+}
+.add_button:hover {
+    background-color: #008AE9;
+    box-shadow: 0px 4px 10px 0 rgba(0, 0, 0, 0.1), 0px 2px 10px 0px rgba(0, 0, 0, 0.1);
+    -webkit-transform: translate(0, -1px);
+    transform: translate(0, -1px);
+}
+.add_button:active {
+    box-shadow: rgba(0, 0, 0, 0.09804) 0px 4px 10px 0px, rgba(0, 0, 0, 0.09804) 0px 2px 10px 0px;
+    -webkit-transform: translate(0, -2px);
+    transform: translate(0, -2px);
+}
+.add_button:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    content: '';
+    background-color: rgba(9, 41, 53, 0.25);
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    -webkit-transition: all 250ms ease-out;
+    transition: all 250ms ease-out;
+}
+.add_button.circle {
+    font-size: 28px;
+    line-height: 3.6rem;
+}
+.add_button.circle, .add_button.circle:after {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+}
+.add_button.circle:hover:after {
+    opacity: .4;
+    -webkit-transform: scale(0.5);
+    transform: scale(0.5);
+    -webkit-animation-name: button-circle-hover;
+    animation-name: button-circle-hover;
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-direction: normal;
+    animation-direction: normal;
+    -webkit-animation-delay: 0;
+    animation-delay: 0;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+.add_button.circle:active:after {
+    opacity: .75;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-animation-play-state: paused;
+    animation-play-state: paused;
+    -webkit-animation-name: none;
+    animation-name: none;
+}
+
+@-webkit-keyframes button-circle-hover {
+    0% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+        opacity: .1;
+    }
+    33% {
+        -webkit-transform: scale(0.5);
+        transform: scale(0.5);
+        opacity: .35;
+    }
+    50% {
+        -webkit-transform: scale(0.6);
+        transform: scale(0.6);
+        opacity: .35;
+    }
+    66% {
+        -webkit-transform: scale(0.5);
+        transform: scale(0.5);
+        opacity: .25;
+    }
+    100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+        opacity: .1;
+    }
+}
