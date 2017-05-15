@@ -204,6 +204,7 @@ $labelSpamProtectionErrorMessage = '<spring:message code="label.spamProtection.b
 $spamProtectionRegexPlaceholder = '<spring:message code="label.spamRule.regex" htmlEscape="true"/>';
 $spamProtectionDescriptionPlaceholder = '<spring:message code="label.spamRule.description" htmlEscape="true"/>';
 $labelNewSpamRule = '<spring:message code="label.spamRule.new" htmlEscape="true"/>';
+$labelEditSpamRule = '<spring:message code="label.spamRule.edit" htmlEscape="true"/>';
 $labelSpamRuleEnabled = '<spring:message code="label.spamProtection.column.enabled" htmlEscape="true"/>';
 $labelDeleteSpamRule = '<spring:message code="label.spamRule.delete" htmlEscape="true"/>';
 $labelAccessDeniedMessage = '<spring:message code="access.denied" htmlEscape="true"/>' + ' ' +

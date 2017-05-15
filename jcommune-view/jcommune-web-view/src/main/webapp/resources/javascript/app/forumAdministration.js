@@ -46,6 +46,11 @@ $(function () {
     if (window.location.search.indexOf("display-button=on") != -1){
         $('.add_button').css({'visibility': 'visible'});
     }
+    $('.management-element').keypress(function (e) {
+        if(isEnterKeyPressed(e)){
+            this.click();
+        }
+    });
 });
 
 /**
@@ -727,7 +732,7 @@ function showSpamManagementDialog(event) {
 
     jDialog.createDialog({
         dialogId: 'spamProtectionDialog',
-        title: $labelNewSpamRule,
+        title: editMode ? $labelEditSpamRule : $labelNewSpamRule,
         bodyContent: bodyContent,
         footerContent: footerContent,
         maxWidth: 350,

@@ -46,9 +46,9 @@
                 <td id="regex-${rule.id}" class="word-wrap"><c:out value="${rule.regex}"/></td>
                 <td id="description-${rule.id}" class="word-wrap"><c:out value="${rule.description}"/></td>
                 <td>
-                    <input type="checkbox" id="status-${rule.id}" <c:if test="${rule.enabled}">checked</c:if>/>
+                    <input type="checkbox" id="status-${rule.id}"  <c:if test="${rule.enabled}">checked</c:if>/>
                     <div class="inline-block pull-right management-block">
-                        <span class="edit-spam-rule-btn icon-pencil management-element"></span><span class="delete-spam-rule-btn icon-trash management-element"></span>
+                        <a class="edit-spam-rule-btn icon-pencil management-element" tabindex="0"></a><a class="delete-spam-rule-btn icon-trash management-element" tabindex="0"></a>
                     </div>
                 </td>
             </tr>

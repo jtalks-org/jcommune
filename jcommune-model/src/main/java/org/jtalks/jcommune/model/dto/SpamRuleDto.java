@@ -28,9 +28,9 @@ import java.util.List;
 public class SpamRuleDto {
     private long id;
     @NotNull
-    @Length(min = 1, max = 255)
+    @Length(min = 1, max = 255, message = "{spam.regex.illegal_length}")
     private String regex;
-    @Length(max = 255)
+    @Length(max = 255, message = "{spam.description.illegal_length}")
     private String description;
     private boolean enabled;
 
