@@ -111,8 +111,7 @@
   <query name="searchByEmailOrUsernameNotInGroupId">
     <![CDATA[SELECT new org.jtalks.jcommune.model.dto.UserDto(u.username, u.email, u.id)
              FROM User u
-             LEFT JOIN u.groups g
-            WHERE (g.id != :groupId OR g.id IS NULL) AND
+            WHERE NOT EXISTS (from u.groups g where g.id = :groupId) AND
                   (LOWER(u.username) LIKE (:pattern) ESCAPE '|' OR
                    LOWER(u.email) LIKE (:pattern) ESCAPE '|')
             ORDER BY     CASE

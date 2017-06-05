@@ -37,7 +37,11 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
+import static io.qala.datagen.RandomShortApi.bool;
+import static io.qala.datagen.RandomShortApi.integer;
+import static io.qala.datagen.RandomShortApi.sample;
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
 import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -625,15 +629,17 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testFindByUsernameNotInGroupId() {
-        String keyWord = "mark";
+    public void findByUsernameNotInGroupId() {
+        String keyWord = randomAlphanumeric(7);;
         Group group1 = createGroup("testGroup1");
         Group group2 = createGroup("testGroup2");
 
         JCUser jcUser1group1 = createUserWithGroup(keyWord + "1gr1", "mail1gr1@mail.ru", group1);
+        addRandomGroupsToUser(jcUser1group1);
         createUserWithGroup("petrgr1", "petr1gr1@mail.ru", group1);
         JCUser jcUser1group2 = createUserWithGroup(keyWord + "1gr2", "mail2gr2@mail.ru", group2);
-        createUserWithGroup("petrgr2", "petr1gr2@mail.ru", group2);
+        JCUser jcUser2group2 = createUserWithGroup("petrgr2", "petr1gr2@mail.ru", group2);
+        addRandomGroupsToUser(jcUser2group2);
 
         List<UserDto> result;
         result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group1.getId(), 20);
@@ -646,15 +652,17 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
     }
 
     @Test
-    public void testFindByEmailNotInGroupId() {
-        String keyWord = "mark";
+    public void findByEmailNotInGroupId() {
+        String keyWord = randomAlphanumeric(7);;
         Group group1 = createGroup("testGroup1");
         Group group2 = createGroup("testGroup2");
 
         JCUser jcUser1group1 = createUserWithGroup("user1gr1", keyWord + "mail1gr1@mail.ru", group1);
+        addRandomGroupsToUser(jcUser1group1);
         createUserWithGroup("petrgr1", "petr1gr1@mail.ru", group1);
         JCUser jcUser1group2 = createUserWithGroup("user1gr2", keyWord + "mail2gr2@mail.ru", group2);
-        createUserWithGroup("petrgr2", "petr1gr2@mail.ru", group2);
+        JCUser jcUser1group3 = createUserWithGroup("petrgr2", "petr1gr2@mail.ru", group2);
+        addRandomGroupsToUser(jcUser1group3);
 
         List<UserDto> result;
         result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group1.getId(), 20);
@@ -666,56 +674,58 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         Assert.assertEquals(jcUser1group1.getUsername(), result.get(0).getUsername());
     }
 
-    @Test
-    public void testFindUser_IfHeHasNoGroups() {
-        final String keyWord = "keyword";
+    @Test(invocationCount = 5)
+    public void findsUser_ifHeIsNotInAnyGroup() {
+        final String keyword = randomAlphanumeric(7);
         Group group1 = createGroup("testGroup1");
-        JCUser jcUser;
-        Random rnd = new Random();
-        if (rnd.nextBoolean()) {
-            jcUser = createUserWithMail(keyWord.toUpperCase(), "mail@mail.ru", true);
+        JCUser jcUser = createUserWithMail(
+                sample("username", keyword.toUpperCase()),
+                sample("m@m.ru", keyword.toUpperCase() + "@mm.ru"), true);
+        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyword, group1.getId(), 20);
+        Assert.assertTrue(result.size() <= 1);
+        if (result.size() == 1) {
+            Assert.assertEquals(jcUser.getUsername(), result.get(0).getUsername());
         } else {
-            jcUser = createUserWithMail("username", keyWord.toUpperCase() + "@mail.ru", true);
+            Assert.assertFalse(jcUser.getUsername().contains(keyword));
+            Assert.assertFalse(jcUser.getEmail().contains(keyword));
         }
-        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group1.getId(), 20);
-
-        Assert.assertEquals(result.size(), 1);
-        Assert.assertEquals(jcUser.getUsername(), result.get(0).getUsername());
     }
 
     @Test(invocationCount = 5)
-    public void testDontFindUser_IfHeIsInGroup() {
-        final String keyWord = "keyword";
-        Group group1 = createGroup("testGroup1");
-        Random rnd = new Random();
-        if (rnd.nextBoolean()) {
-            createUserWithGroup(keyWord, "mail@mail.ru", group1);
-        } else {
-            createUserWithGroup("username", keyWord + "@mail.ru", group1);
+    public void doesNotFindUser_ifHeIsInGroup() {
+        final String keyword = randomAlphanumeric(7);
+        final String word = randomAlphanumeric(7);
+        JCUser user = createUserWithGroup(
+                sample(keyword, word),
+                sample(keyword + "@mail.ru", word + "@gmail.com"), createGroup("testGroup0"));
+        List<Group> grpList = addRandomGroupsToUser(user);
+        for (Group group : grpList) {
+            List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyword, group.getId(), 20);
+            Assert.assertEquals(result.size(), 0);
         }
-        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group1.getId(), 20);
-        Assert.assertEquals(result.size(), 0);
     }
 
     @Test(invocationCount = 5)
     public void testFindUserNotInGroupIdLimit() {
-        Random rnd = new Random();
-        final int limit = 10 + rnd.nextInt(20);
-        String keyWord = "petr";
+        final int limit = 10 + integer(20);
+        String keyWord = randomAlphanumeric(7);
         Group group1 = createGroup("testGroup1");
-        long group2id = group1.getId() + 1;
-        for (int i=0; i<limit+rnd.nextInt(50); i++) {
-            createUserWithGroup(keyWord + i, keyWord + i + "@mail.ru", group1);
+        for (int i=0; i<limit + integer(50); i++) {
+            JCUser user = createUserWithGroup(keyWord + String.format("%02d", i), keyWord + i + "@mail.ru", group1);
+            if (bool()) {
+                addRandomGroupsToUser(user);
+            }
         }
-        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group2id, limit);
+        Group emptyGroup = createGroup("emptyGroup");
+        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyWord, emptyGroup.getId(), limit);
         Assert.assertEquals(result.size(), limit);
+        Assert.assertEquals(result.get(limit - 1).getUsername(), keyWord + String.format("%02d", limit - 1));
     }
 
     @Test(invocationCount = 5)
     public void testFindUserNotInGroupByEmptyPattern() {
-        Random rnd = new Random();
-        final int count = 15 + rnd.nextInt(50);
-        String keyWord = "petr";
+        final int count = 15 + integer(50);
+        String keyWord = randomAlphanumeric(7);
         Group group1 = createGroup("testGroup1");
         long group2id = group1.getId() + 1;
         for (int i=0; i<count; i++) {
@@ -767,6 +777,19 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         jcUser.addGroup(group);
         userDao.saveOrUpdate(jcUser);
         return jcUser;
+    }
+
+    private List<Group> addRandomGroupsToUser(JCUser user) {
+        List<Group> result = new ArrayList<>();
+        Random rnd = new Random();
+        int count = 3 + rnd.nextInt(10);
+        for (int i=0; i<count; i++) {
+            Group group = createGroup(randomAlphanumeric(12));
+            result.add(group);
+            user.addGroup(group);
+        }
+        userDao.saveOrUpdate(user);
+        return result;
     }
 
     private Group createGroup(String groupName) {
