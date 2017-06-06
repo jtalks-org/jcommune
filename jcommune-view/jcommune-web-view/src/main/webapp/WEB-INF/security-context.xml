@@ -73,6 +73,7 @@
     <security:intercept-url pattern="/topics/*/unsubscribe" access="isAuthenticated()"/>
     <security:intercept-url pattern="/topics/json/**" access="isAuthenticated()"/>
     <security:intercept-url pattern="/topics/*/edit" access="isAuthenticated()"/>
+    <security:intercept-url pattern="/topics/question/*/edit" access="isAuthenticated()"/>
 
     <security:intercept-url pattern="/reviews/new" access="isAuthenticated()"/>
 
