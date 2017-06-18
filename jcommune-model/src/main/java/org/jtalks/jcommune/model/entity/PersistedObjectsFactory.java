@@ -38,6 +38,10 @@ public final class PersistedObjectsFactory {
     public static void setSession(Session session) {
         PersistedObjectsFactory.session = session;
     }
+    public static void flushAndClear() {
+        session.flush();
+        session.clear();
+    }
 
     public static Branch getDefaultBranch() {
         Branch branch = ObjectsFactory.getDefaultBranch();
@@ -335,7 +339,7 @@ public final class PersistedObjectsFactory {
                 .executeUpdate();
     }
 
-    private static <T> T persist(T entity) {
+    public static <T> T persist(T entity) {
         session.save(entity);
         return entity;
     }

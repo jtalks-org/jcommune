@@ -14,16 +14,18 @@
  */
 package org.jtalks.jcommune.model.dao.hibernate;
 
+import org.hamcrest.MatcherAssert;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.jtalks.common.model.dao.GroupDao;
 import org.jtalks.common.model.entity.Group;
 import org.jtalks.common.model.entity.User;
-import org.jtalks.jcommune.model.dto.UserDto;
-import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
+import org.jtalks.jcommune.model.RandomUser;
 import org.jtalks.jcommune.model.dao.UserDao;
+import org.jtalks.jcommune.model.dto.UserDto;
 import org.jtalks.jcommune.model.entity.JCUser;
 import org.jtalks.jcommune.model.entity.ObjectsFactory;
+import org.jtalks.jcommune.model.entity.PersistedObjectsFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
@@ -37,11 +39,11 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-import static io.qala.datagen.RandomShortApi.bool;
-import static io.qala.datagen.RandomShortApi.integer;
-import static io.qala.datagen.RandomShortApi.sample;
+import static io.qala.datagen.RandomShortApi.Long;
+import static io.qala.datagen.RandomShortApi.*;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
+import static org.hamcrest.core.AnyOf.anyOf;
 import static org.testng.Assert.*;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
@@ -51,7 +53,7 @@ import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEqua
  */
 @ContextConfiguration(locations = {"classpath:/org/jtalks/jcommune/model/entity/applicationContext-dao.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-@Transactional
+@Transactional @Test
 public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private UserDao userDao;
@@ -627,6 +629,53 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         assertEquals(result.get(0), user1);
         assertEquals(result.get(1), user2);
     }
+
+    public void findsUserNotInGroup_byUsername() {
+        String searchBy = unicode(1, 25);
+        JCUser expected = RandomUser.create().withUsername(searchBy).maybeInGroups().persist();
+
+        List<UserDto> users = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), integer(1, 10));
+        assertEquals(users.get(0).getId(), expected.getId());
+    }
+    public void findsUserNotInGroup_byEmail() {
+        String searchBy = alphanumeric(1, 41);
+        JCUser expected = RandomUser.create().withEmailPrefix(searchBy).maybeInGroups().persist();
+
+        List<UserDto> users = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), integer(1, 10));
+        assertEquals(users.get(0).getId(), expected.getId());
+    }
+    public void findsUserNotInGroup_byPartialEmailOrUsername() {
+        String searchBy = alphanumeric(25);
+        JCUser expected = RandomUser.create().withUsernameOrEmailPrefix(searchBy).maybeInGroups().persist();
+        String searchPart = searchBy.substring(integer(0, 12), integer(13, 25));
+
+        List<UserDto> users = userDao.findByUsernameOrEmailNotInGroup(searchPart, Long(), integer(1, 10));
+        assertEquals(users.get(0).getId(), expected.getId());
+    }
+    public void doesNotFindUserNotInGroup_ifUserIsActuallyInGroup() {
+        String searchBy = english(1) + alphanumeric(1, 24);
+        JCUser expected = RandomUser.create().withUsernameOrEmailPrefix(searchBy).inGroups().persist();
+
+        Long oneOfGroups = sample(expected.getGroupsIDs());
+        List<UserDto> users = userDao.findByUsernameOrEmailNotInGroup(searchBy, oneOfGroups, integer(1, 10));
+        assertEquals(users.size(), 0);
+    }
+    public void findsMultipleUsersNotInGroup_byUsernameOrEmail() {
+        String searchBy = alphanumeric(1, 20);
+        List<JCUser> expected = createMultipleWithUsernameOrEmailPrefix(searchBy);
+
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), integer(1, 10));
+        assertEquals(actual.size(), expected.size());
+    }
+    private static List<JCUser> createMultipleWithUsernameOrEmailPrefix(String prefix) {
+        List<JCUser> expected = new ArrayList<>();
+        for(int i = 0; i < integer(1, 20); i++) {
+            JCUser user = RandomUser.create().withUsernameOrEmailPrefix(prefix + alphanumeric(5)).maybeInGroups().persist();
+            expected.add(user);
+        }
+        return expected;
+    }
+
 
     @Test
     public void findByUsernameNotInGroupId() {
