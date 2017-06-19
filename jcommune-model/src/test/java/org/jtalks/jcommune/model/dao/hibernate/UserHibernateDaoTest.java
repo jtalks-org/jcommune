@@ -634,155 +634,98 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         String searchBy = unicode(1, 25);
         JCUser expected = RandomUser.create().withUsername(searchBy).maybeInGroups().persist();
 
-        List<UserDto> users = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), integer(1, 10));
-        assertEquals(users.get(0).getId(), expected.getId());
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), integer(1, 10));
+        assertEquals(actual.get(0).getId(), expected.getId());
     }
     public void findsUserNotInGroup_byEmail() {
         String searchBy = alphanumeric(1, 41);
         JCUser expected = RandomUser.create().withEmailPrefix(searchBy).maybeInGroups().persist();
 
-        List<UserDto> users = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), integer(1, 10));
-        assertEquals(users.get(0).getId(), expected.getId());
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), integer(1, 10));
+        assertEquals(actual.get(0).getId(), expected.getId());
     }
     public void findsUserNotInGroup_byPartialEmailOrUsername() {
         String searchBy = alphanumeric(25);
         JCUser expected = RandomUser.create().withUsernameOrEmailPrefix(searchBy).maybeInGroups().persist();
         String searchPart = searchBy.substring(integer(0, 12), integer(13, 25));
 
-        List<UserDto> users = userDao.findByUsernameOrEmailNotInGroup(searchPart, Long(), integer(1, 10));
-        assertEquals(users.get(0).getId(), expected.getId());
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(searchPart, Long(), integer(1, 10));
+        assertEquals(actual.get(0).getId(), expected.getId());
     }
     public void doesNotFindUserNotInGroup_ifUserIsActuallyInGroup() {
         String searchBy = english(1) + alphanumeric(1, 24);
         JCUser expected = RandomUser.create().withUsernameOrEmailPrefix(searchBy).inGroups().persist();
 
         Long oneOfGroups = sample(expected.getGroupsIDs());
-        List<UserDto> users = userDao.findByUsernameOrEmailNotInGroup(searchBy, oneOfGroups, integer(1, 10));
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(searchBy, oneOfGroups, integer(1, 10));
+        assertEquals(actual.size(), 0);
+    }
+    public void doesNotFindUserNotInGroup_ifUsernameOrEmailDoNotMatch() {
+        JCUser expected = RandomUser.create().maybeInGroups().persist();
+
+        Long oneOfGroups = sample(expected.getGroupsIDs());
+        List<UserDto> users = userDao.findByUsernameOrEmailNotInGroup(alphanumeric(10, 25), oneOfGroups, integer(1, 10));
         assertEquals(users.size(), 0);
     }
     public void findsMultipleUsersNotInGroup_byUsernameOrEmail() {
         String searchBy = alphanumeric(1, 20);
-        List<JCUser> expected = createMultipleWithUsernameOrEmailPrefix(searchBy);
+        List<JCUser> expected = createMultipleWithUsernameOrEmailPrefix(integer(1, 20), searchBy);
 
-        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), integer(1, 10));
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), expected.size());
         assertEquals(actual.size(), expected.size());
     }
-    private static List<JCUser> createMultipleWithUsernameOrEmailPrefix(String prefix) {
+    public void limitsSearchResults() {
+        String searchBy = alphanumeric(1, 20);
+        int nOfSearchResults = integer(1, 20);
+        createMultipleWithUsernameOrEmailPrefix(nOfSearchResults + integer(1, 10), searchBy);
+
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), nOfSearchResults);
+        assertEquals(actual.size(), nOfSearchResults);
+    }
+    public void emptySearchWord_findsAllUsers_butLimitsByUpperBoundary() {
+        int nOfSearchResults = integer(1, 20);
+        createMultipleWithUsernameOrEmailPrefix(nOfSearchResults + integer(1, 10), alphanumeric(1, 20));
+
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup("", Long(), nOfSearchResults);
+        assertEquals(actual.size(), nOfSearchResults);
+    }
+    public void searchByUsername_returnsExactMatchFirst() {
+        String searchBy = alphanumeric(1, 20);
+        createMultipleWithUsernameOrEmailPrefix(integer(1, 5), searchBy);
+        JCUser exactlyMatched = RandomUser.create().withUsername(searchBy).maybeInGroups().persist();
+
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(searchBy, Long(), integer(1, 20));
+        assertEquals(actual.get(0).getId(), exactlyMatched.getId());
+    }
+    public void searchByEmail_returnsExactMatchFirst() {
+        String prefix = alphanumeric(1, 20);
+        createMultipleWithUsernameOrEmailPrefix(integer(1, 5), prefix);
+        JCUser exactlyMatched = RandomUser.create().withEmail(prefix + "@bla.com").maybeInGroups().persist();
+
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(prefix + "@bla.com", Long(), integer(1, 20));
+        assertEquals(actual.get(0).getId(), exactlyMatched.getId());
+    }
+    public void searchByUsernameOrEmail_sortsByRelevancy() {
+        String part = alphanumeric(1, 20);
+        JCUser exact = RandomUser.create().withUsername(part).maybeInGroups().persist();
+        JCUser prefixed = RandomUser.create().withUsername(part + alphanumeric(1)).maybeInGroups().persist();
+        RandomUser.create().withUsername(alphanumeric(1) + part).maybeInGroups().persist();
+
+        List<UserDto> actual = userDao.findByUsernameOrEmailNotInGroup(part, Long(), integer(3, 20));
+        assertEquals(actual.get(0).getId(), exact.getId());
+        assertEquals(actual.get(2).getId(), prefixed.getId());
+    }
+    private static List<JCUser> createMultipleWithUsernameOrEmailPrefix(int nOfUsers, String prefix) {
         List<JCUser> expected = new ArrayList<>();
-        for(int i = 0; i < integer(1, 20); i++) {
-            JCUser user = RandomUser.create().withUsernameOrEmailPrefix(prefix + alphanumeric(5)).maybeInGroups().persist();
+        for(int i = 0; i < nOfUsers; i++) {
+            String usernameOrEmailPrefix = cased(prefix + alphanumeric(5));
+            JCUser user = RandomUser.create().withUsernameOrEmailPrefix(usernameOrEmailPrefix).maybeInGroups().persist();
             expected.add(user);
         }
         return expected;
     }
-
-
-    @Test
-    public void findByUsernameNotInGroupId() {
-        String keyWord = randomAlphanumeric(7);;
-        Group group1 = createGroup("testGroup1");
-        Group group2 = createGroup("testGroup2");
-
-        JCUser jcUser1group1 = createUserWithGroup(keyWord + "1gr1", "mail1gr1@mail.ru", group1);
-        addRandomGroupsToUser(jcUser1group1);
-        createUserWithGroup("petrgr1", "petr1gr1@mail.ru", group1);
-        JCUser jcUser1group2 = createUserWithGroup(keyWord + "1gr2", "mail2gr2@mail.ru", group2);
-        JCUser jcUser2group2 = createUserWithGroup("petrgr2", "petr1gr2@mail.ru", group2);
-        addRandomGroupsToUser(jcUser2group2);
-
-        List<UserDto> result;
-        result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group1.getId(), 20);
-        Assert.assertEquals(result.size(), 1);
-        Assert.assertEquals(jcUser1group2.getUsername(), result.get(0).getUsername());
-
-        result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group2.getId(), 20);
-        Assert.assertEquals(result.size(), 1);
-        Assert.assertEquals(jcUser1group1.getUsername(), result.get(0).getUsername());
-    }
-
-    @Test
-    public void findByEmailNotInGroupId() {
-        String keyWord = randomAlphanumeric(7);;
-        Group group1 = createGroup("testGroup1");
-        Group group2 = createGroup("testGroup2");
-
-        JCUser jcUser1group1 = createUserWithGroup("user1gr1", keyWord + "mail1gr1@mail.ru", group1);
-        addRandomGroupsToUser(jcUser1group1);
-        createUserWithGroup("petrgr1", "petr1gr1@mail.ru", group1);
-        JCUser jcUser1group2 = createUserWithGroup("user1gr2", keyWord + "mail2gr2@mail.ru", group2);
-        JCUser jcUser1group3 = createUserWithGroup("petrgr2", "petr1gr2@mail.ru", group2);
-        addRandomGroupsToUser(jcUser1group3);
-
-        List<UserDto> result;
-        result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group1.getId(), 20);
-        Assert.assertEquals(result.size(), 1);
-        Assert.assertEquals(jcUser1group2.getUsername(), result.get(0).getUsername());
-
-        result = userDao.findByUsernameOrEmailNotInGroup(keyWord, group2.getId(), 20);
-        Assert.assertEquals(result.size(), 1);
-        Assert.assertEquals(jcUser1group1.getUsername(), result.get(0).getUsername());
-    }
-
-    @Test(invocationCount = 5)
-    public void findsUser_ifHeIsNotInAnyGroup() {
-        final String keyword = randomAlphanumeric(7);
-        Group group1 = createGroup("testGroup1");
-        JCUser jcUser = createUserWithMail(
-                sample("username", keyword.toUpperCase()),
-                sample("m@m.ru", keyword.toUpperCase() + "@mm.ru"), true);
-        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyword, group1.getId(), 20);
-        Assert.assertTrue(result.size() <= 1);
-        if (result.size() == 1) {
-            Assert.assertEquals(jcUser.getUsername(), result.get(0).getUsername());
-        } else {
-            Assert.assertFalse(jcUser.getUsername().contains(keyword));
-            Assert.assertFalse(jcUser.getEmail().contains(keyword));
-        }
-    }
-
-    @Test(invocationCount = 5)
-    public void doesNotFindUser_ifHeIsInGroup() {
-        final String keyword = randomAlphanumeric(7);
-        final String word = randomAlphanumeric(7);
-        JCUser user = createUserWithGroup(
-                sample(keyword, word),
-                sample(keyword + "@mail.ru", word + "@gmail.com"), createGroup("testGroup0"));
-        List<Group> grpList = addRandomGroupsToUser(user);
-        for (Group group : grpList) {
-            List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyword, group.getId(), 20);
-            Assert.assertEquals(result.size(), 0);
-        }
-    }
-
-    @Test(invocationCount = 5)
-    public void testFindUserNotInGroupIdLimit() {
-        final int limit = 10 + integer(20);
-        String keyWord = randomAlphanumeric(7);
-        Group group1 = createGroup("testGroup1");
-        for (int i=0; i<limit + integer(50); i++) {
-            JCUser user = createUserWithGroup(keyWord + String.format("%02d", i), keyWord + i + "@mail.ru", group1);
-            if (bool()) {
-                addRandomGroupsToUser(user);
-            }
-        }
-        Group emptyGroup = createGroup("emptyGroup");
-        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup(keyWord, emptyGroup.getId(), limit);
-        Assert.assertEquals(result.size(), limit);
-        Assert.assertEquals(result.get(limit - 1).getUsername(), keyWord + String.format("%02d", limit - 1));
-    }
-
-    @Test(invocationCount = 5)
-    public void testFindUserNotInGroupByEmptyPattern() {
-        final int count = 15 + integer(50);
-        String keyWord = randomAlphanumeric(7);
-        Group group1 = createGroup("testGroup1");
-        long group2id = group1.getId() + 1;
-        for (int i=0; i<count; i++) {
-            createUserWithGroup(keyWord + String.format("%02d", i), keyWord + i + "@mail.ru", group1);
-        }
-        List<UserDto> result = userDao.findByUsernameOrEmailNotInGroup("", group2id, count);
-        Assert.assertEquals(result.size(), count);
-        Assert.assertEquals(result.get(count - 1).getUsername(), keyWord + String.format("%02d", count - 1));
+    private static String cased(String s) {
+        return sample(s, s.toLowerCase(), s.toUpperCase());
     }
 
     @Test(dataProvider = "usersForTestResultOrderDataProvider")
@@ -827,20 +770,6 @@ public class UserHibernateDaoTest extends AbstractTransactionalTestNGSpringConte
         userDao.saveOrUpdate(jcUser);
         return jcUser;
     }
-
-    private List<Group> addRandomGroupsToUser(JCUser user) {
-        List<Group> result = new ArrayList<>();
-        Random rnd = new Random();
-        int count = 3 + rnd.nextInt(10);
-        for (int i=0; i<count; i++) {
-            Group group = createGroup(randomAlphanumeric(12));
-            result.add(group);
-            user.addGroup(group);
-        }
-        userDao.saveOrUpdate(user);
-        return result;
-    }
-
     private Group createGroup(String groupName) {
         Group group = new Group(groupName);
         groupDao.saveOrUpdate(group);

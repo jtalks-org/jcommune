@@ -57,4 +57,9 @@ public class RandomUser {
         PersistedObjectsFactory.flushAndClear();
         return user;
     }
+
+    public RandomUser withEmail(String email) {
+        user.setEmail(email);
+        return this;
+    }
 }
