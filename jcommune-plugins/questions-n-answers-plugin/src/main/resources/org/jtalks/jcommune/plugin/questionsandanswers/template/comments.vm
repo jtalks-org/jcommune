@@ -67,7 +67,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
             <div class="cleared"></div>
           </div>
           <div class="comment-body">
-            <span id="body-$comment.id" class="comment-content">${htmlEscaper.process($comment.body)}</span>
+            <span id="body-$comment.id" class="comment-content">${converter.convertBbToHtml(${comment.body})}</span>
             <div id="edit-$comment.id" class="control-group edit" style="display: none">
                   <textarea id="editable-$comment.id" name="commentBody" class="comment-textarea edit-comment"
                              rows="3">${htmlEscaper.process($comment.body)}</textarea>

@@ -227,8 +227,8 @@ var editSubmitHandler = function(e) {
         data: JSON.stringify(commentDto),
         success: function(data) {
             if(data.status == 'SUCCESS') {
-                $("#body-" + commentId).text(data.result);
-                $("#editable-" + commentId).text(data.result);
+                $("#body-" + commentId).html(data.result.renderBody);
+                $("#editable-" + commentId).text(data.result.body);
                 enableViewMode(commentId);
             } else if (data.reason == 'VALIDATION') {
                 enableEditMode(commentId);
@@ -511,7 +511,7 @@ function hideCommentForm(postId) {
 }
 
 /**
- * Adds new comment to post with specified if
+ * Adds new comment to post with specified id
  *
  * @param postId post to add comment
  * @param comment comment to be added
@@ -581,7 +581,7 @@ function getCommentHtml(comment) {
     }
     result = result + "</div><div class='comment-date pull-left'>" + comment.formattedCreationDate + "</div><div class='cleared'></div>"
         + "</div><div class='comment-body'><span id='body-" + comment.id + "' class='comment-content'>"
-        + Utils.lf2br(Utils.htmlEncode(comment.body))
+        + comment.renderBody
         + "</span><div id='edit-" + comment.id + "' class='control-group comment-container edit' style='display: none'>"
         + "<textarea id='editable-" + comment.id + "' name='commentBody' class='comment-textarea edit-comment' rows='3'>"
         + comment.body + "</textarea> <div class='comment-buttons-container'><div class='pull-right'>"

@@ -219,7 +219,7 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         data.put(POST_PAGE, new PageImpl<>(getSortedPosts(topic.getPosts())));
         data.put(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic));
         data.put(SUBSCRIBED, false);
-        data.put(CONVERTER, BbToHtmlConverter.getInstance());
+        data.put(CONVERTER, getPluginBbCodeService());
         data.put(HTML_ESCAPER, htmlEscaper);
         data.put(VIEW_LIST, getLocationService().getUsersViewing(topic));
         data.put(POST_DTO, postDto);
@@ -508,7 +508,9 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
             return new FailJsonResponse(JsonResponseReason.ENTITY_NOT_FOUND);
         }
         JodaDateTimeTool dateTimeTool = new JodaDateTimeTool(request);
-        return new JsonResponse(JsonResponseStatus.SUCCESS, new CommentDto(comment, dateTimeTool));
+        return new JsonResponse(JsonResponseStatus.SUCCESS,
+                new CommentDto(comment, dateTimeTool)
+                        .withRenderBody(getPluginBbCodeService().convertBbToHtml(comment.getBody())));
     }
 
     /**
@@ -533,7 +535,9 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
         } catch (NotFoundException ex) {
             return new FailJsonResponse(JsonResponseReason.ENTITY_NOT_FOUND);
         }
-        return new JsonResponse(JsonResponseStatus.SUCCESS, updatedComment.getBody());
+        CommentDto commentDto = new CommentDto(updatedComment.getBody(),
+                getPluginBbCodeService().convertBbToHtml(updatedComment.getBody()));
+        return new JsonResponse(JsonResponseStatus.SUCCESS, commentDto);
     }
 
     /**
@@ -717,6 +721,15 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     /**
      * Needed for mocking
      *
+     * @return Service which convert BBCode and URL to HTML
+     */
+    PluginBbCodeService getPluginBbCodeService() {
+        return BbToHtmlConverter.getInstance();
+    }
+
+    /**
+     * Needed for mocking
+     *
      * @return service for manipulating with topics
      */
     TypeAwarePluginTopicService getTypeAwarePluginTopicService() {
@@ -766,7 +779,6 @@ public class QuestionsAndAnswersController implements ApplicationContextAware, P
     PluginCommentService getCommentService() {
         return TransactionalPluginCommentService.getInstance();
     }
-
 
     /**
      * Sets specified {@link BreadcrumbBuilder}
