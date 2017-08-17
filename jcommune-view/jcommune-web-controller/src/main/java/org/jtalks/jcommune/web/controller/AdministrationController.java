@@ -298,11 +298,19 @@ public class AdministrationController {
             throws org.jtalks.common.service.exceptions.NotFoundException {
         checkForAdminPermissions();
         GroupDto groupDto = new GroupDto(groupService.get(groupId));
-        PageRequest pageRequest = new PageRequest(page, GROUP_USER_PAGE_SIZE);
-        Page<UserDto> pagedGroupUsers = groupService.getPagedGroupUsers(groupId, pageRequest);
+        Page<UserDto> pagedGroupUsers = getPagedGroupUsers(groupId, page);
         return new ModelAndView("groupUserList")
                 .addObject("group", groupDto)
                 .addObject("groupUsersPage", pagedGroupUsers);
+    }
+
+    @RequestMapping(value = "/ajax/group/{groupId}", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse ajaxGetGroupUsers(@PathVariable("groupId") long groupId,
+                                          @RequestParam(value = "page", defaultValue = "1", required = false) int page)
+            throws org.jtalks.common.service.exceptions.NotFoundException {
+        Page<UserDto> pagedGroupUsers = getPagedGroupUsers(groupId, page);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, pagedGroupUsers);
     }
 
     @RequestMapping(value = "/group/{groupId}", method = RequestMethod.DELETE)
@@ -325,7 +333,7 @@ public class AdministrationController {
     @ResponseBody
     public JsonResponse findUserNotInGroup(@RequestParam("notInGroupId") long notInGroupId,
                                            @RequestParam("pattern") String pattern) {
-        List<UserDto> users = userService.findByUsernameOrEmailNotInGroup(pattern, notInGroupId, 20);
+        List<UserDto> users = userService.findByUsernameOrEmailNotInGroup(pattern, notInGroupId, 10);
         JsonResponse response = new JsonResponse(JsonResponseStatus.SUCCESS);
         response.setResult(users);
         return response;
@@ -371,5 +379,13 @@ public class AdministrationController {
 
         }
         return objectErrors;
+    }
+
+    private Page<UserDto> getPagedGroupUsers(long groupId, int page)
+            throws org.jtalks.common.service.exceptions.NotFoundException {
+        checkForAdminPermissions();
+        GroupDto groupDto = new GroupDto(groupService.get(groupId));
+        PageRequest pageRequest = new PageRequest(page, GROUP_USER_PAGE_SIZE);
+        return groupService.getPagedGroupUsers(groupId, pageRequest);
     }
 }

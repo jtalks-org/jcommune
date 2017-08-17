@@ -211,3 +211,4 @@ $labelAccessDeniedMessage = '<spring:message code="access.denied" htmlEscape="tr
                     '<spring:message code="label.accessDenied.detail" htmlEscape="true"/>' + ' ' +
                     '<spring:message code="label.accessDenied.checkPrivilegies" htmlEscape="true"/>' + ' ' +
                     '<spring:message code="label.back2main" htmlEscape="true"/>';
+$labelGroupAddUser = '<spring:message code="label.group.add.user" htmlEscape="true"/>'

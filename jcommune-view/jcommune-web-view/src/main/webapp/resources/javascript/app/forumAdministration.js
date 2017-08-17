@@ -30,6 +30,7 @@ $(function () {
     $("[id^=branchLabel]").on('click', showBranchEditDialog);
     $("[id^=newBranch]").on('click', showNewBranchDialog);
     $("[id^=newGroup], .edit-group").on('click', showGroupManagementDialog);
+    $("[id^=addUsersInGroup]").on('click', showSearchUsersDialog);
     $(".delete-group").on('click', showDeleteGroupDialog);
     $("#addSpamRuleBtn, .edit-spam-rule-btn").on('click', showSpamManagementDialog);
     $(".delete-spam-rule-btn").on('click', showDeleteSpamRuleDialog);
@@ -42,10 +43,6 @@ $(function () {
             $(this).find('.management-element').hide()
         }
     );
-    // new feature toggling, if url contain request param 'display-button=on', the button will become visible.
-    if (window.location.search.indexOf("display-button=on") != -1){
-        $('.add_button').css({'visibility': 'visible'});
-    }
     $('.management-element').keypress(function (e) {
         if(isEnterKeyPressed(e)){
             this.click();
@@ -859,4 +856,144 @@ function parseSpamRuleDataFrom(row) {
         description: $("#description-" + ruleId)[0].textContent,
         enabled: $("#status-" + ruleId)[0].checked
     };
+}
+
+var userIds = [];
+
+/**
+ * Shows dialog for searching users by any part of username or email.
+ *
+ * @param event
+ */
+function showSearchUsersDialog(event) {
+    event.preventDefault();
+
+    var bodyContent = ' \
+          <div class="search-input form-horizontal ui-widget"> \
+             <span class="icon-search"></span> \
+             <input type="text" id="searchUsersInput" class="form-search"/>  \
+             <button type="button" id="addUsersInGroupButton" class="btn btn-sm btn-primary pull-right">' + $labelAdd + '</button> \
+          </div>';
+
+    jDialog.createDialog({
+        dialogId: 'searchUserDialog',
+        title: $labelGroupAddUser,
+        bodyContent: bodyContent,
+        maxWidth: 400,
+        maxHeight: 500,
+        tabNavigation: ['#searchUsersInput', '#addUsersInGroupButton', 'button.close'],
+        handlers: {
+            '#addUsersInGroupButton': {'click': addUsersInGroup}
+        }
+    });
+
+    var split = function(value) {
+        return value.split(/,\s*/);
+    };
+
+    var extractLast = function(term) {
+        return split(term).pop();
+    };
+
+    $('#searchUsersInput').on('keydown', function(event) {
+            if (event.keyCode === $.ui.keyCode.TAB
+                && $(this).autocomplete('instance').menu.active) {
+                event.preventDefault();
+            }
+        }).autocomplete({
+            source: function(request, response) {
+                var notInGroupId = $('#addUsersInGroup').attr('data-group-id');
+                var pattern = extractLast(request.term);
+                $.ajax({
+                    url: $root + '/user',
+                    type: 'GET',
+                    data: {
+                        notInGroupId: notInGroupId,
+                        pattern: pattern
+                    },
+                    success: function(serverResponse) {
+                        if (serverResponse.status === 'SUCCESS') {
+                            response($.map(serverResponse.result, function(user) {
+                                var username = user.username;
+                                return {
+                                    userId: user.id,
+                                    label: [username, user.email].join(' / '),
+                                    value: username
+                                };
+                            }));
+                        }
+                    }
+                });
+            },
+            focus: function(event, ui) {
+                event.preventDefault();
+                $(".ui-menu-item").removeClass("custom-selected-item");
+                var uiActiveMenuItemElement = $("#ui-active-menuitem");
+                uiActiveMenuItemElement.parent().addClass("custom-selected-item");
+                uiActiveMenuItemElement.removeClass("ui-corner-all");
+            },
+            select: function(event, ui) {
+                event.preventDefault();
+                var terms = split(this.value);
+                terms.pop();
+                terms.push(ui.item.value);
+                terms.push('');
+                this.value = terms.join(', ');
+                userIds.push(ui.item.userId);
+            },
+            delay: 1000,
+            autoFocus: true,
+            minLength: 1
+    });
+
+    /**
+     * Iterate over selected user ids and sends
+     * ajax POST request to update user group
+     * for each selected user id and then refresh
+     * users in the current group table.
+     * 
+     * @param event
+     */
+    function addUsersInGroup(event) {
+        event.preventDefault();
+
+        var groupId = $('#addUsersInGroup').attr('data-group-id');
+        userIds.forEach(function(userId) {
+            $.ajax({
+                url: $root + '/user/' + userId + '/groups/' + groupId,
+                type: 'POST',
+                success: function (serverResponse) {
+                    if (serverResponse.status === 'SUCCESS') {
+                        userIds = [];
+                        refreshUsersInGroupTable(groupId);
+                        jDialog.closeDialog();
+                    }
+                }
+            });
+        });
+    }
+
+    /**
+     * Performs ajax GET request to get the actual data
+     * by users in the group table
+     */
+    function refreshUsersInGroupTable(groupId) {
+        $.ajax({
+            url: $root + '/ajax/group/' + groupId,
+            type: 'GET',
+            success: function (serverResponse) {
+                if (serverResponse.status === 'SUCCESS') {
+                    var users = serverResponse.result.content;
+                    var tableData = $('#groupUserListTableData');
+                    tableData.empty();
+                    users.forEach(function (user) {
+                        var row = $('<tr id="' + user.id + '"/>');
+                        row.append($('<td/>').text(user.username));
+                        row.append($('<td/>').text(user.email));
+                        tableData.append(row);
+                    });
+                }
+            }
+        });
+    }
 }

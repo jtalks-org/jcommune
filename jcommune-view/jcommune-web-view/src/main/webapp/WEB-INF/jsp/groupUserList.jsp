@@ -46,6 +46,7 @@
             <th><spring:message code="label.group.user.email"/></th>
         </tr>
         </thead>
+        <tbody id="groupUserListTableData">
         <c:forEach var="user" items="${groupUsersPage.content}">
             <tr id='${user.id}' class="grid-row highlighted-row">
                 <td>
@@ -56,13 +57,14 @@
                 </td>
             </tr>
         </c:forEach>
+        </tbody>
     </table>
     <div class="pagination pull-right forum-pagination">
         <ul>
             <jtalks:pagination uri="${group.id}" page="${groupUsersPage}"/>
         </ul>
     </div>
-    <div class='add_button circle'>&plus;</div>
+    <div id="addUsersInGroup" data-group-id="<c:out value="${group.id}"/>" class='add_button circle'>&plus;</div>
 </div>
 </div>
 </body>
