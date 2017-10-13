@@ -332,11 +332,14 @@ public class AdministrationController {
     @RequestMapping(value = "/user", params = {"notInGroupId", "pattern"}, method = RequestMethod.GET)
     @ResponseBody
     public JsonResponse findUserNotInGroup(@RequestParam("notInGroupId") long notInGroupId,
-                                           @RequestParam("pattern") String pattern) {
-        List<UserDto> users = userService.findByUsernameOrEmailNotInGroup(pattern, notInGroupId, 10);
-        JsonResponse response = new JsonResponse(JsonResponseStatus.SUCCESS);
-        response.setResult(users);
-        return response;
+                                           @Valid @ModelAttribute SearchQueryDto searchQueryDto,
+                                           BindingResult result) {
+        checkForAdminPermissions();
+        if (result.hasFieldErrors() || result.hasGlobalErrors()) {
+            return new JsonResponse(JsonResponseStatus.FAIL, result.getAllErrors());
+        }
+        List<UserDto> users = userService.findByUsernameOrEmailNotInGroup(searchQueryDto.getPattern(), notInGroupId, 10);
+        return new JsonResponse(JsonResponseStatus.SUCCESS, users);
     }
 
     /**

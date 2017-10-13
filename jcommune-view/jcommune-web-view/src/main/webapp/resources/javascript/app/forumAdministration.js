@@ -858,8 +858,6 @@ function parseSpamRuleDataFrom(row) {
     };
 }
 
-var userIds = [];
-
 /**
  * Shows dialog for searching users by any part of username or email.
  *
@@ -869,10 +867,9 @@ function showSearchUsersDialog(event) {
     event.preventDefault();
 
     var bodyContent = ' \
-          <div class="search-input form-horizontal ui-widget"> \
+          <div class="controls control-group search-input form-horizontal ui-widget"> \
              <span class="icon-search"></span> \
-             <input type="text" id="searchUsersInput" class="form-search"/>  \
-             <button type="button" id="addUsersInGroupButton" class="btn btn-sm btn-primary pull-right">' + $labelAdd + '</button> \
+             <input type="text" id="searchPattern" class="form-search"/> \
           </div>';
 
     jDialog.createDialog({
@@ -881,29 +878,19 @@ function showSearchUsersDialog(event) {
         bodyContent: bodyContent,
         maxWidth: 400,
         maxHeight: 500,
-        tabNavigation: ['#searchUsersInput', '#addUsersInGroupButton', 'button.close'],
-        handlers: {
-            '#addUsersInGroupButton': {'click': addUsersInGroup}
-        }
+        tabNavigation: ['#searchPattern', 'button.close'],
     });
 
-    var split = function(value) {
-        return value.split(/,\s*/);
-    };
-
-    var extractLast = function(term) {
-        return split(term).pop();
-    };
-
-    $('#searchUsersInput').on('keydown', function(event) {
+    $('#searchPattern').on('keydown', function(event) {
             if (event.keyCode === $.ui.keyCode.TAB
                 && $(this).autocomplete('instance').menu.active) {
                 event.preventDefault();
             }
         }).autocomplete({
             source: function(request, response) {
+                ErrorUtils.removeErrorMessage('#searchPattern');
                 var notInGroupId = $('#addUsersInGroup').attr('data-group-id');
-                var pattern = extractLast(request.term);
+                var pattern = request.term;
                 $.ajax({
                     url: $root + '/user',
                     type: 'GET',
@@ -918,82 +905,71 @@ function showSearchUsersDialog(event) {
                                 return {
                                     userId: user.id,
                                     label: [username, user.email].join(' / '),
-                                    value: username
+                                    value: username,
+                                    email: user.email
                                 };
                             }));
+                        } else {
+                            if (serverResponse.result instanceof Array) {
+                                jDialog.prepareDialog(jDialog.dialog);
+                                jDialog.showErrors(jDialog.dialog, serverResponse.result, 'search', '');
+                            } else {
+                                jDialog.createDialog({
+                                    type: jDialog.alertType,
+                                    bodyMessage: serverResponse.result
+                                });
+                            }
                         }
                     }
                 });
             },
-            focus: function(event, ui) {
+            focus: function(event) {
                 event.preventDefault();
-                $(".ui-menu-item").removeClass("custom-selected-item");
+                $('.ui-menu-item').removeClass('custom-selected-item');
                 var uiActiveMenuItemElement = $("#ui-active-menuitem");
-                uiActiveMenuItemElement.parent().addClass("custom-selected-item");
-                uiActiveMenuItemElement.removeClass("ui-corner-all");
+                uiActiveMenuItemElement.parent().addClass('custom-selected-item');
+                uiActiveMenuItemElement.removeClass('ui-corner-all');
             },
             select: function(event, ui) {
                 event.preventDefault();
-                var terms = split(this.value);
-                terms.pop();
-                terms.push(ui.item.value);
-                terms.push('');
-                this.value = terms.join(', ');
-                userIds.push(ui.item.userId);
+                this.value = '';
+                addUserInGroup(ui.item);
             },
             delay: 1000,
             autoFocus: true,
-            minLength: 1
+            minLength: 2
     });
 
     /**
-     * Iterate over selected user ids and sends
-     * ajax POST request to update user group
-     * for each selected user id and then refresh
-     * users in the current group table.
-     * 
-     * @param event
+     * Sends ajax POST request to update user group
+     * and then puts user on top of users table in the current group.
+     *
+     * @param item
      */
-    function addUsersInGroup(event) {
+    function addUserInGroup(item) {
         event.preventDefault();
-
-        var groupId = $('#addUsersInGroup').attr('data-group-id');
-        userIds.forEach(function(userId) {
-            $.ajax({
-                url: $root + '/user/' + userId + '/groups/' + groupId,
-                type: 'POST',
-                success: function (serverResponse) {
-                    if (serverResponse.status === 'SUCCESS') {
-                        userIds = [];
-                        refreshUsersInGroupTable(groupId);
-                        jDialog.closeDialog();
-                    }
-                }
-            });
-        });
-    }
-
-    /**
-     * Performs ajax GET request to get the actual data
-     * by users in the group table
-     */
-    function refreshUsersInGroupTable(groupId) {
+        var currentGroupId = $('#addUsersInGroup').attr('data-group-id');
         $.ajax({
-            url: $root + '/ajax/group/' + groupId,
-            type: 'GET',
+            url: $root + '/user/' + item.userId + '/groups/' + currentGroupId,
+            type: 'POST',
             success: function (serverResponse) {
                 if (serverResponse.status === 'SUCCESS') {
-                    var users = serverResponse.result.content;
-                    var tableData = $('#groupUserListTableData');
-                    tableData.empty();
-                    users.forEach(function (user) {
-                        var row = $('<tr id="' + user.id + '"/>');
-                        row.append($('<td/>').text(user.username));
-                        row.append($('<td/>').text(user.email));
-                        tableData.append(row);
-                    });
+                    putUserOnTopOfUsersTable(item);
                 }
             }
         });
+
+    }
+
+    /**
+     * Puts user on top of the users table in the current group.
+     *
+     * @param item
+     */
+    function putUserOnTopOfUsersTable(item) {
+        var row = $('<tr id="' + item.userId + '">');
+        row.append($('<td>').text(item.value));
+        row.append($('<td>').text(item.email));
+        $('#groupUserListTableData').prepend(row);
     }
 }

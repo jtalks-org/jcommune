@@ -1316,7 +1316,7 @@ pre.prettyprint {
 }
 .add_button.circle {
     font-size: 28px;
-    line-height: 3.6rem;
+    line-height: 3.3rem;
 }
 .add_button.circle, .add_button.circle:after {
     width: 56px;
@@ -1386,6 +1386,7 @@ pre.prettyprint {
 
 .search-input input {
     padding-left: 23px;
+    width: 340px;
 }
 
 .search-input .icon-search {

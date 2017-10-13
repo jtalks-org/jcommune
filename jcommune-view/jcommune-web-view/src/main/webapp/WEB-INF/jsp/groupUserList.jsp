@@ -64,7 +64,8 @@
             <jtalks:pagination uri="${group.id}" page="${groupUsersPage}"/>
         </ul>
     </div>
-    <div id="addUsersInGroup" data-group-id="<c:out value="${group.id}"/>" class='add_button circle'>&plus;</div>
+    <div id="addUsersInGroup" title="<spring:message code="add-users-in-group.button.tooltip.message"/>"
+         data-group-id="<c:out value="${group.id}"/>" class='add_button circle' data-toggle="tooltip">&plus;</div>
 </div>
 </div>
 </body>
