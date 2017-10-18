@@ -137,6 +137,22 @@ public class MailServiceTest {
     }
 
     @Test
+    public void testSendPasswordUpdatedMail() throws Exception {
+        enableEmailNotifications();
+        service.sendPasswordUpdatedMail(user);
+
+        this.checkMailCredentials();
+        assertTrue(this.getMimeMailBody().contains(USERNAME));
+    }
+
+    @Test
+    public void testSendPasswordUpdatedMailWhenNotificationsAreDisabled() throws Exception {
+        disableEmailNotifications();
+        service.sendPasswordUpdatedMail(user);
+        verify(sender, never()).send(any(MimeMessage.class));
+    }
+
+    @Test
     public void testSendTopicUpdatesEmail() throws Exception {
         enableEmailNotifications();
         Post post = new Post(user, "content");
