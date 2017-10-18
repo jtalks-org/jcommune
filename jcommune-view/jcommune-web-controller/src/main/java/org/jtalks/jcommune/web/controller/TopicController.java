@@ -18,6 +18,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.joda.time.DateTime;
 import org.jtalks.jcommune.model.entity.*;
 import org.jtalks.jcommune.plugin.api.exceptions.NotFoundException;
+import org.jtalks.jcommune.plugin.api.service.transactional.TransactionalTypeAwarePluginTopicService;
 import org.jtalks.jcommune.plugin.api.web.dto.PostDto;
 import org.jtalks.jcommune.plugin.api.web.dto.TopicDto;
 import org.jtalks.jcommune.plugin.api.web.dto.json.JsonResponse;
@@ -75,6 +76,7 @@ public class TopicController {
 
     private TopicModificationService topicModificationService;
     private TopicFetchService topicFetchService;
+    private TransactionalTypeAwarePluginTopicService pluginTopicService;
     private TopicDraftService topicDraftService;
     private PostService postService;
     private BranchService branchService;
@@ -115,6 +117,7 @@ public class TopicController {
     @Autowired
     public TopicController(TopicModificationService topicModificationService,
                            PostService postService,
+                           TransactionalTypeAwarePluginTopicService pluginTopicService,
                            BranchService branchService,
                            UserService userService,
                            BreadcrumbBuilder breadcrumbBuilder,
@@ -126,6 +129,7 @@ public class TopicController {
                            RetryTemplate retryTemplate) {
         this.topicModificationService = topicModificationService;
         this.postService = postService;
+        this.pluginTopicService = pluginTopicService;
         this.branchService = branchService;
         this.userService = userService;
         this.breadcrumbBuilder = breadcrumbBuilder;
@@ -285,6 +289,23 @@ public class TopicController {
                 .addObject("subscribed", topic.getSubscribers().contains(currentUser))
                 .addObject(BREADCRUMB_LIST, breadcrumbBuilder.getForumBreadcrumb(topic))
                 .addObject("markAsReadLink", topic.getMarkAsReadUrl(currentUser, page).orNull());
+    }
+
+    /**
+     * Displays to user a list of messages from the topic with pagination
+     *
+     * @param topicId the id of selected Topic
+     * @param page    page
+     * @return {@code ModelAndView}
+     * @throws NotFoundException when topic or branch not found
+     */
+    @RequestMapping(value = "/topics/{topicType:[A-Za-z]+}/{topicId}", method = RequestMethod.GET)
+    public String showTopicPage(WebRequest request,@PathVariable() String topicType, @PathVariable(TOPIC_ID) Long topicId,
+                                      @RequestParam(value = "page", defaultValue = "1", required = false) String page)
+            throws NotFoundException {
+        Topic topic = pluginTopicService.get(topicId, topicType);
+
+        return "redirect:/topics/"+topicId;
     }
 
     /**
