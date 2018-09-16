@@ -147,8 +147,9 @@ public class TransactionalPrivateMessageService
      * {@inheritDoc}
      */
     @Override
-    @PreAuthorize("hasPermission(#userFrom.id, 'USER', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
-    public void saveDraft(long id, JCUser userTo, String title, String body, JCUser userFrom) {
+    public void saveDraft(long id, JCUser userTo, String title, String body) {
+        JCUser userFrom = userService.getCurrentUser();
+        userService.checkPermissionToSendPrivateMessages(userFrom.getId());
         PrivateMessage pm;
         if (this.getDao().isExist(id)) {
             pm = this.getDao().get(id);

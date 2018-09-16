@@ -332,7 +332,7 @@ public class PrivateMessageControllerTest {
                 .andExpect(model().hasNoErrors())
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/drafts"));
-        verify(pmService).saveDraft(PM_ID, JC_USER, TITLE, BODY, JC_USER);
+        verify(pmService).saveDraft(PM_ID, JC_USER, TITLE, BODY);
     }
 
     @Test
@@ -347,7 +347,7 @@ public class PrivateMessageControllerTest {
                 .andExpect(model().hasNoErrors())
                 .andExpect(status().isMovedTemporarily())
                 .andExpect(redirectedUrl("/drafts"));
-        verify(pmService).saveDraft(0, JC_USER, TITLE, BODY, JC_USER);
+        verify(pmService).saveDraft(0, JC_USER, TITLE, BODY);
     }
 
     @Test
