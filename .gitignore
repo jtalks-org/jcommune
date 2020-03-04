@@ -17,7 +17,6 @@
 *.ipr
 *.iws
 *.war
-*.jar
 
 #log files
 *.log*

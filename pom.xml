@@ -39,7 +39,7 @@
         <artifactId>jcommune-plugin-api</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- Common -->
+      <!-- Common. Needs to be built locally because we don't have JTalks Nexus anymore. -->
       <dependency>
         <groupId>org.jtalks.common</groupId>
         <artifactId>jtalks-common-model</artifactId>
@@ -196,7 +196,7 @@
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-acl</artifactId>
-        <version>3.1.1.JAVATALKS-PATCH3.RELEASE</version>
+        <version>3.1.1.CI-SNAPSHOT</version>
       </dependency>
       <!-- AOP -->
       <dependency>
@@ -600,6 +600,10 @@
   </scm>
   <repositories>
     <repository>
+      <id>local</id>
+      <url>file:${project.basedir}/lib</url>
+    </repository>
+    <repository>
       <id>jtalks-nexus</id>
       <name>jtalks nexus</name>
       <url>http://repo.jtalks.org/content/groups/public</url>
@@ -634,7 +638,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <headerBaseDir>${basedir}</headerBaseDir>
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
-    <commonVersion>0.62</commonVersion>
+    <commonVersion>0.63-SNAPSHOT</commonVersion>
     <isJsCompressed>true</isJsCompressed>
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
   </properties>
