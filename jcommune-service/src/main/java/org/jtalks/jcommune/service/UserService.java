@@ -153,6 +153,13 @@ public interface UserService extends EntityService<JCUser> {
     void checkPermissionToCreateAndEditSimplePage(Long userId);
 
     /**
+     * This method checks a permission of user to send private messages.
+     *
+     * @param userId an identified of user, for which we check permission.
+     */
+    void checkPermissionToSendPrivateMessages(Long userId);
+
+    /**
      * Searches for the common user, meaning that she might or might not be registered in JCommune, she can also be
      * registered by some other JTalks component. This might be required to search through all the users of JTalks.
      *

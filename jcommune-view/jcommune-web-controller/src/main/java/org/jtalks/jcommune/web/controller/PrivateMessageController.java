@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -242,10 +242,10 @@ public class PrivateMessageController {
      * @return redirect to "drafts" folder if saved successfully or show form with error message
      */
     @RequestMapping(value = "/pm/save", method = {RequestMethod.POST, RequestMethod.GET})
-    public ModelAndView saveDraft(@Valid @ModelAttribute("privateMessageDto") PrivateMessageDraftDto pmDto, BindingResult result) {
+    public ModelAndView saveDraft(@Valid @ModelAttribute("privateMessageDto") PrivateMessageDraftDto pmDto,
+                                  BindingResult result) {
         String targetView = "redirect:/drafts";
         long pmDtoId = pmDto.getId();
-        JCUser userFrom = userService.getCurrentUser();
         JCUser userTo = null;
         if (pmDto.getRecipient() != null) {
             try {
@@ -258,7 +258,7 @@ public class PrivateMessageController {
             // The case when field "To:" filled incorrectly and fields "Title:" and "Body" are both empty .
             if (pmDtoId != 0) { //means that we try to edit existing draft
                 try {
-                    pmService.delete(Arrays.asList(pmDtoId));
+                    pmService.delete(Collections.singletonList(pmDtoId));
                 } catch (NotFoundException e) {
                     // Catch block is empty because we don't need any additional logic in case if user removed
                     // draft in separate browser tab. We should just redirect him to list of drafts
@@ -269,7 +269,7 @@ public class PrivateMessageController {
         if (result.hasFieldErrors()){
             return new ModelAndView(PM_FORM).addObject(DTO,pmDto);
         }
-        pmService.saveDraft(pmDtoId, userTo, pmDto.getTitle(), pmDto.getBody(), userFrom);
+        pmService.saveDraft(pmDtoId, userTo, pmDto.getTitle(), pmDto.getBody());
         return new ModelAndView(targetView);
     }
 

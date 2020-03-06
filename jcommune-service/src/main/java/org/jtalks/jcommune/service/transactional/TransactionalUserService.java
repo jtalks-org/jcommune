@@ -298,6 +298,12 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
         LOGGER.debug("Check permission to create or edit simple(static) pages - " + userId);
     }
 
+    @Override
+    @PreAuthorize("hasPermission(#userId, 'USER', 'ProfilePermission.SEND_PRIVATE_MESSAGES')")
+    public void checkPermissionToSendPrivateMessages(Long userId) {
+        LOGGER.debug("Check permission to send private messages");
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -75,9 +75,8 @@ public interface PrivateMessageService extends EntityService<PrivateMessage> {
      * @param userTo    receiver of the message
      * @param title     the title of the message.
      * @param body      the body of the message.
-     * @param userFrom  sender.
      */
-    void saveDraft(long id, JCUser userTo, String title, String body, JCUser userFrom);
+    void saveDraft(long id, JCUser userTo, String title, String body);
 
     /**
      * Get count of new messages for current user.
