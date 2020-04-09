@@ -1,4 +1,4 @@
-﻿# We have collation_connection = utf8mb4_general_ci by default and if user has SUPER privileges then
+# We have collation_connection = utf8mb4_general_ci by default and if user has SUPER privileges then
 # init-connect command in mysql config file has no effect (only for SUPER users) and we need to set up
 # collation_connection to utf8mb4_unicode_ci to prevent Illegal Mix of Collations for '=' operations,
 # because on the one hand we have utf8mb4_general_ci and utf8mb4_unicode_ci on the other.
@@ -411,6 +411,8 @@ insert ignore into acl_entry (acl_object_identity, ace_order, sid, mask, grantin
 insert ignore into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
   values (@registered_group_personal_identity, 1001, @registered_group_sid_id, @EDIT_OWN_PROFILE_MASK, 1, 0, 0);
 -- admin
+insert ignore into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
+  values (@admin_group_personal_identity, 1000, @admin_group_sid_id, @SEND_PRIVATE_MESSAGES_MASK, 1, 0, 0);
 insert ignore into acl_entry (acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)
   values (@admin_group_personal_identity, 1002, @admin_group_sid_id, @EDIT_OTHERS_PROFILE_MASK, 1, 0, 0);
 -- banned
