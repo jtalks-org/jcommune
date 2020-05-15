@@ -48,12 +48,11 @@ public class ImageService {
      * user-friendly string with all valid image types
      */
     private static final String VALID_IMAGE_EXTENSIONS = "*.jpeg, *.jpg, *.gif, *.png, *.ico";
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageService.class);
     private ImageConverter imageConverter;
     private Base64Wrapper base64Wrapper;
     private JCommuneProperty imageSizeProperty;
     private String defaultImagePath;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImageService.class);
 
     /**
      * Create ImageService instance
@@ -88,6 +87,23 @@ public class ImageService {
             LOGGER.error("Failed to load default image", e);
         }
         return result;
+    }
+
+    /**
+     * Check image user avatar
+     *
+     * @param avatar image for compare with default image
+     * @return true if avatar image default
+     */
+    public boolean isDefaultImage(byte[] avatar) {
+        boolean isDefaultImage = false;
+        try {
+            isDefaultImage = Arrays.equals(getDefaultImage(), avatar) ? true
+                    : preProcessAndEncodeInString64(getDefaultImage()).equals(imageConverter.prepareHtmlImgSrc(avatar));
+        } catch (ImageProcessException e) {
+            LOGGER.error("Can't convert default image user avatar", e);
+        }
+        return isDefaultImage;
     }
 
     /**
