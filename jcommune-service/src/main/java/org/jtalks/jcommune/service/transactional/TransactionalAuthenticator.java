@@ -147,7 +147,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
             user = getByUsername(loginUserDto.getUserName());
             result = authenticateDefault(user, loginUserDto.getPassword(), loginUserDto.isRememberMe(), request, response);
         } catch (NotFoundException e) {
-            LOGGER.info("User was not found during login process, username = {}, IP={}", 
+            LOGGER.info("User was not found during login process, username = {}, IP={}",
                     loginUserDto.getUserName(), loginUserDto.getClientIp());
             result = authenticateByPluginAndUpdateUserInfo(loginUserDto, true, request, response);
         } catch(DisabledException e) {
@@ -178,7 +178,7 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         String passwordHash = encryptionService.encryptPassword(loginUserDto.getPassword());
         String encodedUsername;
         try {
-            encodedUsername = loginUserDto.getUserName() == null ? null : 
+            encodedUsername = loginUserDto.getUserName() == null ? null :
                     URLEncoder.encode(loginUserDto.getUserName(), "UTF-8").replace("+", "%20");
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("Could not encode username '{}'", loginUserDto.getUserName());
@@ -342,7 +342,12 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         }
 
         if(result.hasErrors()) {
-            userDto.setPassword(notEncodedPassword);
+            if (wrongPasswordConfirmError(result)) {
+                removePasswords(registerUserDto);
+                result = removeWrongPasswordConfirmError(result);
+            }else {
+                userDto.setPassword(notEncodedPassword);
+            }
         }
 
         return result;
@@ -447,5 +452,36 @@ public class TransactionalAuthenticator extends AbstractTransactionalEntityServi
         LOGGER.info("JCUser registered: {}", user.getUsername());
         return user;
     }
-    
+
+    private void removePasswords(final RegisterUserDto registerUserDto) {
+        registerUserDto.setPasswordConfirm(null);
+        registerUserDto.getUserDto().setPassword(null);
+    }
+
+    private BindingResult removeWrongPasswordConfirmError(BindingResult srcErrors) {
+        BindingResult result = new BeanPropertyBindingResult(srcErrors.getTarget(), srcErrors.getObjectName());
+        for (FieldError error : srcErrors.getFieldErrors()) {
+            if (wrongPasswordConfirmError(error)) {
+                result.addError(new FieldError(error.getObjectName(), error.getField(), error.getDefaultMessage()));
+            } else {
+                result.addError(error);
+            }
+        }
+
+        return result;
+    }
+
+    private boolean wrongPasswordConfirmError(final FieldError error) {
+        return "passwordConfirm".equals(error.getField());
+    }
+
+    private boolean wrongPasswordConfirmError(final BindingResult errors) {
+        for (FieldError error : errors.getFieldErrors()) {
+            if (wrongPasswordConfirmError(error)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
