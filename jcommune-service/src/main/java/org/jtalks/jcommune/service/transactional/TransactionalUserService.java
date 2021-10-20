@@ -203,6 +203,7 @@ public class TransactionalUserService extends AbstractTransactionalEntityService
             editedUser.setPassword(encryptedPassword);
         }
 
+        mailService.sendPasswordUpdatedMail(editedUser);
         this.getDao().saveOrUpdate(editedUser);
         LOGGER.info("Updated user security settings. Username: {}", editedUser.getUsername());
         return editedUser;

@@ -130,6 +130,28 @@ public class MailService {
     }
 
     /**
+     * Sends a notification to user that his e-mail was changed.
+     *
+     * @param user    a person we will send a mail
+     * @throws MailingFailedException when mailing failed
+     */
+    public void sendPasswordUpdatedMail(final JCUser user) {
+        String name = user.getUsername();
+        Locale locale = user.getLanguage().getLocale();
+        Map<String, Object> model = new HashMap<>();
+        model.put(NAME, name);
+        model.put(RECIPIENT_LOCALE, locale);
+        try {
+            this.sendEmail(user.getEmail(),
+                    messageSource.getMessage("passwordUpdatedNotification.subject", new Object[]{}, locale),
+                    model, "passwordUpdatedNotification.vm");
+            LOGGER.info("Password updated email sent for {}", name);
+        } catch (MailingFailedException e) {
+            LOGGER.info("Password update for '{}' wasn't sent because {}", name, e.getMessage());
+        }
+    }
+
+    /**
      * Sends update notification to user specified if
      * {@link SubscriptionAwareEntity} was updated, e.g. when some new
      * information were added to the subscribed entity. This method won't check if user
