@@ -634,7 +634,7 @@
 
   <properties>
     <hibernateVersion>3.6.6.Final</hibernateVersion>
-    <springVersion>3.2.4.RELEASE</springVersion>
+    <springVersion>5.2.21.RELEASE</springVersion>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <headerBaseDir>${basedir}</headerBaseDir>
     <pathtoHeader>${headerBaseDir}/header.txt</pathtoHeader>
