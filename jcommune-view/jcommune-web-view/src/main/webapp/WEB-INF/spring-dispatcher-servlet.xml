@@ -31,6 +31,8 @@
   <mvc:annotation-driven/>
   <bean class="org.jtalks.jcommune.plugin.api.web.PluginHandlerMapping" factory-method="getInstance">
     <property name="pluginLoader" ref="pluginLoader"/>
+    <!--The fix for the correct URL mapping priority, when a plugin and an other controller use a same URL.-->
+    <property name="order" value="-2147483648"/>
   </bean>
 
   <!-- Beans -->
